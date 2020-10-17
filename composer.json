@@ -1,0 +1,38 @@
+{
+    "name": "lake/larke-admin",
+    "description": "The Library is admin Package",
+    "license": "Apache-2.0",
+    "type": "library",
+    "keywords": [
+        "lake",
+        "larke",
+        "admin",
+        "larke-admin"
+    ],
+    "homepage": "https://github.com/deatil/larke-admin",
+    "authors": [
+        {
+            "name": "deatil",
+            "email": "deatil@github.com",
+            "homepage": "https://github.com/deatil"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Larke\\Admin\\": "src/larke/admin"
+        },
+        "files": [
+            "src/larke/helper.php"
+        ]
+    },
+    "extra" : {
+        "laravel" : {
+            "providers" : [
+                "Larke\\Admin\\ServiceProvider"
+            ]
+        }
+    }
+}
