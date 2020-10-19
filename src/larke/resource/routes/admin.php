@@ -3,11 +3,11 @@
 use Illuminate\Support\Facades\Route;
 
 Route::group([
-    'prefix' => config('larke.route.prefix'),
+    'prefix' => env('LARKE_ADMIN_ROUTE_PREFIX', 'admin'),
 ], function ($router) {
-    $router->namespace(config('larke.route.namespace'))->group(function ($router) {
-        $router->get('index', 'Index@index')->name('larke-admin-index');
-        $router->get('menu', 'Menu@index')->name('larke-admin-menu-index');
-        $router->post('menu', 'Menu@store')->name('larke-admin-menu-post');
+    $router->namespace('Larke\\Admin\\Controller')->group(function ($router) {
+        
+        $router->get('/', 'Index@index')->name('larke-admin-index');
+
     });
 });

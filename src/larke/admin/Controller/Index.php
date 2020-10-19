@@ -2,10 +2,12 @@
 
 namespace Larke\Admin\Controller;
 
-class Index
+class Index extends Base
 {
     public function index()
     {
-        return 'larke-admin';
+        return $this->successJson('获取成功', [
+            'msg' => 'larke-admin',
+        ]);
     }
 }
