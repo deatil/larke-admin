@@ -3,9 +3,9 @@
 namespace Larke\Admin\Controller;
 
 use Larke\Admin\Service\JwtAuth;
-use Larke\Admin\Service\Password as PasswordFacade;
+use Larke\Admin\Service\Password as PasswordService;
 use Larke\Admin\Model\Admin as AdminModel;
-use Larke\Admin\Model\Log as LogModel;
+use Larke\Admin\Model\AdminLog as AdminLogModel;
 
 /**
  * 登陆
@@ -20,8 +20,8 @@ class Passport extends Base
      */
     public function login()
     {
-        $username = request()->get('username');
-        if (empty($username)) {
+        $name = request()->get('name');
+        if (empty($name)) {
             $this->errorJson('账号不能为空');
         }
 
@@ -34,14 +34,15 @@ class Passport extends Base
         }
         
         // 校验密码
-        $adminInfo = AdminModel::where('adminname', $adminname)
-            ->find();
+        $adminInfo = AdminModel::where('name', $name)->first()->toArray();
         if (empty($adminInfo)) {
             $this->errorJson('帐号错误');
         }
         
-        $password2 = PasswordFacade::encryptPassword($password, $adminInfo['salt']); 
-        if ($password2 != $user['password']) {
+        $password2 = (new PasswordService())
+            ->withSalt(config('larke.passport.salt'))
+            ->encrypt($password, $adminInfo['passport_salt']); 
+        if ($password2 != $adminInfo['password']) {
             $this->errorJson('账号密码错误');
         }
         
@@ -51,7 +52,7 @@ class Passport extends Base
         
         // 获取jwt的句柄
         $jwtAuth = JwtAuth::getInstance();
-        $token = $jwtAuth->setClaim([
+        $token = $jwtAuth->withClaim([
             'adminid' => $adminInfo['id'],
         ])->encode()->getToken();
         if (empty($token)) {
@@ -65,8 +66,11 @@ class Passport extends Base
         ]);
         
         // 记录日志
-        LogModel::record([
-            'user_id' => $user['id'],
+        AdminLogModel::record([
+            'admin_id' => $adminInfo['id'],
+            'admin_name' => $adminInfo['name'],
+            'info' => '登陆成功',
+            'status' => 1,
         ]);
         
         $this->successJson('登录成功', [

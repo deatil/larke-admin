@@ -10,9 +10,9 @@ use Illuminate\Database\Eloquent\Model;
  * @create 2020-10-19
  * @author deatil
  */
-class Log extends Model
+class AdminLog extends Model
 {
-    protected $table = 'larke_log';
+    protected $table = 'larke_admin_log';
     protected $keyType = 'string';
     protected $pk = 'id';
     
@@ -38,14 +38,13 @@ class Log extends Model
     public static function record($data = [])
     {
         $data = array_merge([
-            'login_time' => time(),
-            'login_ip' => request()->ip(),
-            'login_useragent' => request()->server('HTTP_USER_AGENT'),
-            'login_referer' => request()->server('HTTP_REFERER'),
-            'add_time' => time(),
-            'add_ip' => request()->ip(),
+            'id' => md5(mt_rand(100000, 999999).microtime()),
+            'method' => app()->request->method(),
+            'url' => urldecode(request()->getUri()),
+            'ip' => request()->ip(),
+            'useragent' => request()->server('HTTP_USER_AGENT'),
         ], $data);
-        self::create($data);
+        self::insert($data);
     }
 
 }

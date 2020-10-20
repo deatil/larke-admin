@@ -13,17 +13,14 @@ class ServiceProvider extends BaseServiceProvider
     protected $commands = [
         Install::class,
     ];
-
-    public function register()
-    {
-        $this->commands($this->commands);
-    }
     
     /**
      * {@inheritdoc}
      */
     public function boot()
     {
+        $this->registerConfig();
+        
         $this->loadViewsFrom(__DIR__ . '/../resource/views', 'larke-admin');
         
         $this->loadRoutesFrom(__DIR__ . '/../resource/routes/admin.php');
@@ -31,6 +28,24 @@ class ServiceProvider extends BaseServiceProvider
         $this->registerBind();
         
         $this->registerPublishing();
+    }
+
+    public function register()
+    {
+        $this->commands($this->commands);
+    }
+    
+    protected function registerConfig()
+    {
+        $configDir = __DIR__.'/../resource/config';
+        
+        $files = [];
+        $files = array_merge($files, glob($configDir . '/*.php'));
+        foreach ($files as $file) {
+            config([
+                pathinfo($file, PATHINFO_FILENAME) => include($file),
+            ]);
+        }
     }
     
     protected function registerBind()
@@ -43,14 +58,10 @@ class ServiceProvider extends BaseServiceProvider
     protected function registerPublishing()
     {
         if ($this->app->runningInConsole()) {
-            $this->publishes([
-                __DIR__.'/../config' => config_path()
-            ], 'larke-admin-config');
-            
             if ($this->app->runningInConsole()) {
                 $this->publishes([
-                    __DIR__.'/../resource/assets' => public_path('larke-admin'),
-                ], 'larke-admin-assets');
+                    __DIR__.'/../resource/assets' => public_path('web'),
+                ], 'larke-admin-web');
             }
         }
     }

@@ -2,7 +2,7 @@
 
 namespace Larke\Admin\Service;
 
-use Larke\Admin\Jwt;
+use Larke\Admin\Service\Jwt;
 
 /**
  * jwt验证
@@ -27,27 +27,26 @@ class JwtAuth extends Jwt
     // 私有化构造函数
     private function __construct()
     {
-        $configInfo = config('larke');
-        $config = array_merge($configInfo, $config);
+        $config = config('larke.jwt');
 
-        $this->withAlg($config['jwt_alg']);
-        $this->withIss($config['jwt_iss']);
-        $this->withAud($config['jwt_aud']);
-        $this->withSub($config['jwt_sub']);
+        $this->withAlg($config['alg']);
+        $this->withIss($config['iss']);
+        $this->withAud($config['aud']);
+        $this->withSub($config['sub']);
         
-        $deviceId = request()->param('device_id');
+        $deviceId = request()->get('device_id');
         if (!empty($deviceId)) {
             $this->withJti($deviceId);
         } else {
-            $this->withJti($config['jwt_jti']);
+            $this->withJti($config['jti']);
         }
-        $this->withExpTime(intval($config['jwt_exptime']));
-        $this->withNotBeforeTime($config['jwt_notbeforetime']);
+        $this->withExpTime(intval($config['exptime']));
+        $this->withNotBeforeTime($config['notbeforetime']);
         
-        $this->withSignerType($config['jwt_signer_type']);
-        $this->withSecrect($config['jwt_secrect']);
-        $this->withPrivateKey($config['jwt_private_key']);
-        $this->withPublicKey($config['jwt_public_key']);
+        $this->withSignerType($config['signer_type']);
+        $this->withSecrect($config['secrect']);
+        $this->withPrivateKey($config['private_key']);
+        $this->withPublicKey($config['public_key']);
     }
 
     // 私有化clone函数
