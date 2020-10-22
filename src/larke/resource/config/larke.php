@@ -3,10 +3,13 @@
 return [
     'passport' => [
         'salt' => env('LARKE_ADMIN_SALT', 'd,d7ja0db1a974;38cE84976abbac2cd'),
+        'expired_in' => env('LARKE_ADMIN_EXPIRED_IN', 86400),
+        'refresh_expired_in' => env('LARKE_ADMIN_REFRESH_EXPIRED_IN', 604800),
     ],
     'route' => [
         'prefix' => env('LARKE_ADMIN_ROUTE_PREFIX', 'admin-api'),
         'namespace' => env('LARKE_ADMIN_ROUTE_NAMESPACE', 'Larke\\Admin\\Controller'),
+        'middleware' => env('LARKE_ADMIN_ROUTE_MIDDLEWARE') ? explode(',', env('LARKE_ADMIN_ROUTE_MIDDLEWARE')) : ['admin'],
     ],
     'jwt' => [
         'alg' => env('LARKE_ADMIN_JWT_ALG', 'HS256'),

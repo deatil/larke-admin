@@ -1,6 +1,6 @@
 <?php
 
-namespace Larke\Admin\Service;
+namespace Larke\Admin\Jwt;
 
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Parser;
@@ -8,13 +8,15 @@ use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key;
 use Lcobucci\JWT\ValidationData;
 
+use Larke\Admin\Contracts\Jwt as JwtContract;
+
 /**
  * jwt
  *
  * @create 2020-10-19
  * @author deatil
  */
-class Jwt
+class Jwt implements JwtContract
 {
     // alg
     private $alg = 'HS256';

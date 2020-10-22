@@ -14,7 +14,8 @@ class AuthRuleAccess extends Model
 {
     protected $table = 'larke_auth_rule_access';
     protected $keyType = 'string';
-    protected $pk = 'id';
+    protected $primaryKey = 'id';
     
+    public $incrementing = false;
     public $timestamps = false;
 }

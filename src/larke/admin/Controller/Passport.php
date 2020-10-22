@@ -2,10 +2,10 @@
 
 namespace Larke\Admin\Controller;
 
-use Larke\Admin\Service\JwtAuth;
+use Illuminate\Support\Facades\Cache;
+
 use Larke\Admin\Service\Password as PasswordService;
 use Larke\Admin\Model\Admin as AdminModel;
-use Larke\Admin\Model\AdminLog as AdminLogModel;
 
 /**
  * 登陆
@@ -22,41 +22,66 @@ class Passport extends Base
     {
         $name = request()->get('name');
         if (empty($name)) {
-            $this->errorJson('账号不能为空');
+            $this->errorJson(__('账号不能为空'));
         }
 
         $password = request()->post('password');
         if (empty($password)) {
-            $this->errorJson('密码不能为空');
+            $this->errorJson(__('密码不能为空'));
         }
         if (strlen($password) != 32) {
-            $this->errorJson('用户密码错误');
+            $this->errorJson(__('用户密码错误'));
         }
         
         // 校验密码
-        $adminInfo = AdminModel::where('name', $name)->first()->toArray();
+        $adminInfo = AdminModel::where('name', $name)
+            ->first();
         if (empty($adminInfo)) {
-            $this->errorJson('帐号错误');
+            $this->errorJson(__('帐号错误'));
         }
+        
+        $adminInfo = $adminInfo->toArray();
         
         $password2 = (new PasswordService())
             ->withSalt(config('larke.passport.salt'))
             ->encrypt($password, $adminInfo['passport_salt']); 
         if ($password2 != $adminInfo['password']) {
-            $this->errorJson('账号密码错误');
+            $this->errorJson(__('账号密码错误'));
         }
         
         if ($adminInfo['status'] == 0) {
-            $this->errorJson('用户已被禁用或者不存在');
+            $this->errorJson(__('用户已被禁用或者不存在'));
         }
         
+        /*
+        $deviceId = request()->get('device_id');
+        if (empty($deviceId)) {
+            $this->errorJson(__('设备ID不能为空'));
+        }
+        $jwtAuth->withJti($deviceId);
+        */
+        
         // 获取jwt的句柄
-        $jwtAuth = JwtAuth::getInstance();
-        $token = $jwtAuth->withClaim([
+        $expiredIn = config('larke.passport.expired_in', 86400);
+        $accessToken = app('larke.jwt')->withClaim([
             'adminid' => $adminInfo['id'],
-        ])->encode()->getToken();
-        if (empty($token)) {
-            $this->errorJson('登陆失败');
+        ])->withExpTime($expiredIn)
+            ->encode()
+            ->getToken();
+        if (empty($accessToken)) {
+            $this->errorJson(__('登陆失败'));
+        }
+        
+        // 刷新token
+        $refreshExpiredIn = config('larke.passport.refresh_expired_in', 300);
+        $refreshToken = app('larke.jwt')->withClaim([
+            'adminid' => $adminInfo['id'],
+            'expired_in' => $refreshExpiredIn,
+        ])->withExpTime($refreshExpiredIn)
+            ->encode()
+            ->getToken();
+        if (empty($refreshToken)) {
+            $this->errorJson(__('登陆失败'));
         }
         
         // 更新信息
@@ -65,16 +90,160 @@ class Passport extends Base
             'last_ip' => request()->ip(),
         ]);
         
-        // 记录日志
-        AdminLogModel::record([
-            'admin_id' => $adminInfo['id'],
-            'admin_name' => $adminInfo['name'],
-            'info' => '登陆成功',
-            'status' => 1,
-        ]);
-        
-        $this->successJson('登录成功', [
-            'token' => $token,
+        $this->successJson(__('登录成功'), [
+            'access_token' => $accessToken,
+            'expired_in' => $expiredIn, // 过期时间
+            'refresh_token' => $refreshToken,
         ]);
     }
+    
+    /**
+     * 刷新token
+     */
+    public function refreshToken()
+    {
+        $accessToken = request()->get('access_token');
+        if (empty($accessToken)) {
+            $this->errorJson(__('accessToken不能为空'));
+        }
+        
+        $refreshToken = request()->get('refresh_token');
+        if (empty($refreshToken)) {
+            $this->errorJson(__('refreshToken不能为空'));
+        }
+        
+        if (Cache::has(md5($refreshToken))) {
+            $this->errorJson(__('refreshToken已失效'));
+        }
+        
+        $jwtAuth = app('larke.jwt');
+        
+        try {
+            $jwtAuth->withToken($refreshToken)->decode();
+        } catch(\Exception $e) {
+            $this->errorJson(__("JWT格式错误：:message", [
+                'message' => $e->getMessage(),
+            ]));
+        }
+        
+        if (!($jwtAuth->validate() && $jwtAuth->verify())) {
+            $this->errorJson(__('token已过期'));
+        }
+        
+        try {
+            $adminid = $jwtAuth->getClaim('adminid');
+        } catch(\Exception $e) {
+            $this->errorJson(__("JWT格式错误：:message", [
+                'message' => $e->getMessage(),
+            ]));
+        }
+        
+        try {
+            $refreshTokenExpiredIn = $jwtAuth->getClaim('expired_in');
+        } catch(\Exception $e) {
+            $this->errorJson(__("JWT格式错误：:message", [
+                'message' => $e->getMessage(),
+            ]));
+        }
+        
+        $expiredIn = config('larke.passport.expired_in', 300);
+        $newAccessToken = app('larke.jwt')->withClaim([
+            'adminid' => $adminid,
+        ])->withExpTime($expiredIn)
+            ->encode()
+            ->getToken();
+        if (empty($newAccessToken)) {
+            $this->errorJson(__('刷新Token失败'));
+        }
+        
+        // 添加缓存黑名单
+        Cache::put(md5($accessToken), $accessToken, $refreshTokenExpiredIn);
+        
+        $this->successJson(__('刷新Token成功'), [
+            'access_token' => $newAccessToken,
+            'expired_in' => $expiredIn,
+        ]);
+    }
+    
+    /**
+     * 退出
+     */
+    public function logout()
+    {
+        $accessToken = request()->get('access_token');
+        if (empty($accessToken)) {
+            $this->errorJson(__('accessToken不能为空'));
+        }
+        
+        $refreshToken = request()->get('refresh_token');
+        if (empty($refreshToken)) {
+            $this->errorJson(__('refreshToken不能为空'));
+        }
+        
+        if (Cache::has(md5($refreshToken))) {
+            $this->errorJson(__('refreshToken已失效'));
+        }
+        
+        // accessToken
+        $accessJwt = app('larke.jwt');
+        try {
+            $accessJwt->withToken($accessToken)->decode();
+        } catch(\Exception $e) {
+            $this->errorJson(__("JWT格式错误：:message", [
+                'message' => $e->getMessage(),
+            ]));
+        }
+        if (!($accessJwt->validate() && $accessJwt->verify())) {
+            $this->errorJson(__('accessToken已过期'));
+        }
+        try {
+            $accessAdminid = $accessJwt->getClaim('adminid');
+        } catch(\Exception $e) {
+            $this->errorJson(__("JWT格式错误：:message", [
+                'message' => $e->getMessage(),
+            ]));
+        }
+        
+        // 刷新Token
+        $refreshJwt = app('larke.jwt');
+        
+        try {
+            $refreshJwt->withToken($refreshToken)->decode();
+        } catch(\Exception $e) {
+            $this->errorJson(__("JWT格式错误：:message", [
+                'message' => $e->getMessage(),
+            ]));
+        }
+        
+        if (!($refreshJwt->validate() && $refreshJwt->verify())) {
+            $this->errorJson(__('refreshToken已过期'));
+        }
+        
+        try {
+            $refreshAdminid = $refreshJwt->getClaim('adminid');
+        } catch(\Exception $e) {
+            $this->errorJson(__("JWT格式错误：:message", [
+                'message' => $e->getMessage(),
+            ]));
+        }
+        
+        try {
+            $refreshTokenExpiredIn = $refreshJwt->getClaim('expired_in');
+        } catch(\Exception $e) {
+            $this->errorJson(__("JWT格式错误：:message", [
+                'message' => $e->getMessage(),
+            ]));
+        }
+        
+        if ($accessAdminid != $refreshAdminid) {
+            $this->errorJson(__('退出失败'));
+        }
+        
+        // 添加缓存黑名单
+        Cache::put(md5($accessToken), $accessToken, $refreshTokenExpiredIn);
+        Cache::put(md5($refreshToken), $refreshToken, $refreshTokenExpiredIn);
+        
+        $this->successJson(__('退出成功'));
+    }
+    
 }

@@ -14,8 +14,9 @@ class AdminLog extends Model
 {
     protected $table = 'larke_admin_log';
     protected $keyType = 'string';
-    protected $pk = 'id';
+    protected $primaryKey = 'id';
     
+    public $incrementing = false;
     public $timestamps = false;
     
     /**
@@ -43,6 +44,8 @@ class AdminLog extends Model
             'url' => urldecode(request()->getUri()),
             'ip' => request()->ip(),
             'useragent' => request()->server('HTTP_USER_AGENT'),
+            'add_time' => time(),
+            'add_ip' => request()->ip(),
         ], $data);
         self::insert($data);
     }

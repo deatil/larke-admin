@@ -14,7 +14,13 @@ use Illuminate\Support\Facades\Cache;
 class Admin extends Model
 {
     protected $table = 'larke_admin';
-    protected $pk = 'id';
+    protected $primaryKey = 'id';
     
+    public $incrementing = false;
     public $timestamps = false;
+    
+    public function attachments()
+    {
+        return $this->morphMany(Attachment::class, 'attachmentable', 'type', 'type_id');
+    }
 }
