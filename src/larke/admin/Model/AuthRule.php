@@ -2,15 +2,13 @@
 
 namespace Larke\Admin\Model;
 
-use Illuminate\Database\Eloquent\Model;
-
 /*
  * AuthRule
  *
  * @create 2020-10-20
  * @author deatil
  */
-class AuthRule extends Model
+class AuthRule extends Base
 {
     protected $table = 'larke_auth_rule';
     protected $keyType = 'string';

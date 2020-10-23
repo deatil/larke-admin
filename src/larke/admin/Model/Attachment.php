@@ -2,15 +2,13 @@
 
 namespace Larke\Admin\Model;
 
-use Illuminate\Database\Eloquent\Model;
-
 /**
  * 附件模型
  *
  * @create 2020-10-19
  * @author deatil
  */
-class Attachment extends Model
+class Attachment extends Base
 {
     protected $table = 'larke_attachment';
     protected $keyType = 'string';

@@ -4,6 +4,7 @@ namespace Larke\Admin\Controller;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;  
 
 use Larke\Admin\Model\Attachment as AttachmentModel;
 
@@ -24,6 +25,9 @@ class Attachment extends Base
     public function upload(Request $request)
     {
         $requestFile = $request->file('file');
+        if (empty($requestFile)) {
+            $this->errorJson(__('上传文件不能为空'));
+        }
         
         // Pathname
         $pathname = $requestFile->getPathname();
@@ -48,6 +52,13 @@ class Attachment extends Base
         
         $fileInfo = AttachmentModel::where(['md5' => $md5])->first();
         if (!empty($fileInfo)) {
+            @unlink($pathname);
+            
+            AttachmentModel::where('md5', $md5)->update([
+                'update_time' => time(), 
+                'update_ip' => request()->ip(),
+            ]);
+            
             $this->successJson(__('上传成功'), [
                 'id' => $fileInfo['id'],
                 'url' => Storage::url($fileInfo['path']),
@@ -64,7 +75,7 @@ class Attachment extends Base
         $data = [
             'id' => $id,
             'type' => 'admin',
-            'type' => config('larke.auth.adminid'),
+            'type_id' => config('larke.auth.adminid'),
             'name' => $name,
             'path' => $path,
             'mime' => $mimeType,
@@ -92,4 +103,93 @@ class Attachment extends Base
             'url' => $url,
         ]);
     }
+    
+    /**
+     * 列表
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function index(Request $request)
+    {
+        $start = request()->get('start', 0);
+        $limit = request()->get('limit', 10);
+        
+        $order = request()->get('order', 'DESC');
+        if (!in_array(strtoupper($order), ['ASC', 'DESC'])) {
+            $order = 'DESC';
+        }
+        
+        $total = AttachmentModel::count(); 
+        $list = AttachmentModel::offset($start)
+            ->limit($limit)
+            ->orderBy('add_time', $order)
+            ->get()
+            ->toArray(); 
+        foreach ($list as $key => $value) {
+            $list[$key]['path'] = Storage::url($value['path']);
+        }
+        
+        $this->successJson(__('获取成功'), [
+            'start' => $start,
+            'limit' => $limit,
+            'total' => $total,
+            'list' => $list,
+        ]);
+    }
+    
+    /**
+     * 详情
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function detail(Request $request)
+    {
+        $fileId = $request->get('id');
+        if (empty($fileId)) {
+            $this->errorJson(__('文件ID不能为空'));
+        }
+        
+        $fileInfo = AttachmentModel::where(['id' => $fileId])
+            ->first();
+        if (empty($fileInfo)) {
+            $this->errorJson(__('文件信息不存在'));
+        }
+        
+        $fileInfo['path'] = Storage::url($fileInfo['path']);
+        
+        $this->successJson(__('获取成功'), $fileInfo);
+    }
+    
+    /**
+     * 删除
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function delete(Request $request)
+    {
+        $fileId = $request->get('id');
+        if (empty($fileId)) {
+            $this->errorJson(__('文件ID不能为空'));
+        }
+        
+        $fileInfo = AttachmentModel::where(['id' => $fileId])
+            ->first();
+        if (empty($fileInfo)) {
+            $this->errorJson(__('文件信息不存在'));
+        }
+        
+        $deleteStatus = AttachmentModel::where(['id' => $fileId])
+            ->delete();
+        if ($deleteStatus === false) {
+            $this->errorJson(__('文件删除失败'));
+        }
+        
+        Storage::disk('public')->delete($fileInfo['path']);
+        
+        $this->successJson(__('文件删除成功'));
+    }
+    
 }

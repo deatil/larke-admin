@@ -2,15 +2,13 @@
 
 namespace Larke\Admin\Model;
 
-use Illuminate\Database\Eloquent\Model;
-
 /*
  * AuthGroupAccess
  *
  * @create 2020-10-20
  * @author deatil
  */
-class AuthGroupAccess extends Model
+class AuthGroupAccess extends Base
 {
     protected $table = 'larke_auth_group_access';
     protected $keyType = 'string';

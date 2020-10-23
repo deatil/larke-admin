@@ -2,8 +2,7 @@
 
 namespace Larke\Admin\Model;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 /*
  * Admin 模型
@@ -11,7 +10,7 @@ use Illuminate\Support\Facades\Cache;
  * @create 2020-10-19
  * @author deatil
  */
-class Admin extends Model
+class Admin extends Base
 {
     protected $table = 'larke_admin';
     protected $primaryKey = 'id';
@@ -23,4 +22,16 @@ class Admin extends Model
     {
         return $this->morphMany(Attachment::class, 'attachmentable', 'type', 'type_id');
     }
+    
+    public function getAvatarAttribute($value) 
+    {
+        $attach = Attachment::path($value);
+        if (empty($attach)) {
+            return '';
+        }
+        
+        $avatar = Storage::url($attach);
+        return $avatar;
+    }
+    
 }

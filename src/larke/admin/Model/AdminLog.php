@@ -2,15 +2,13 @@
 
 namespace Larke\Admin\Model;
 
-use Illuminate\Database\Eloquent\Model;
-
 /*
  * 登陆日志
  *
  * @create 2020-10-19
  * @author deatil
  */
-class AdminLog extends Model
+class AdminLog extends Base
 {
     protected $table = 'larke_admin_log';
     protected $keyType = 'string';
@@ -18,6 +16,12 @@ class AdminLog extends Model
     
     public $incrementing = false;
     public $timestamps = false;
+    
+    public function setUrlAttribute($value) 
+    {
+        $this->attributes['id'] = md5(mt_rand(100000, 999999).microtime());
+        $this->attributes['url'] = $value;
+    }
     
     /**
      * 日志用户

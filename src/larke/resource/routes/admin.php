@@ -16,6 +16,20 @@ Route::group([
         $router->post('/profile/password', 'Profile@changePasssword')->name('larke-admin-profile-password');
         
         $router->post('/attachment/upload', 'Attachment@upload')->name('larke-admin-attachment-upload');
+        $router->get('/attachment/index', 'Attachment@index')->name('larke-admin-attachment-index');
+        $router->get('/attachment/detail', 'Attachment@detail')->name('larke-admin-attachment-detail');
+        $router->post('/attachment/delete', 'Attachment@delete')->name('larke-admin-attachment-delete');
+
+        $router->get('/admin/index', 'Admin@index')->name('larke-admin-admin-index');
+        $router->get('/admin/detail', 'Admin@detail')->name('larke-admin-admin-detail');
+        $router->post('/admin/delete', 'Admin@delete')->name('larke-admin-admin-delete');
+        $router->post('/admin/create', 'Admin@create')->name('larke-admin-admin-create');
+        $router->post('/admin/update', 'Admin@update')->name('larke-admin-admin-update');
+        $router->post('/admin/password', 'Admin@changePasssword')->name('larke-admin-admin-password');
+
+        $router->get('/log/index', 'Log@index')->name('larke-admin-log-index');
+        $router->get('/log/detail', 'Log@detail')->name('larke-admin-log-detail');
+        $router->post('/log/delete', 'Log@delete')->name('larke-admin-log-delete');
 
     });
 });

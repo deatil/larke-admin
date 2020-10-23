@@ -37,8 +37,6 @@ class Profile extends Base
             $this->errorJson(__('帐号错误'));
         }
         
-        $adminInfo['avatar'] = Storage::url(AttachmentModel::path($adminInfo['avatar']));
-        
         return $this->successJson(__('获取成功'), $adminInfo);
     }
     
