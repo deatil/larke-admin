@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 
+use Larke\Admin\Service\Tree;
 use Larke\Admin\Model\AuthGroup as AuthGroupModel;
 use Larke\Admin\Model\AuthRuleAccess as AuthRuleAccessModel;
 
@@ -25,10 +26,10 @@ class AuthGroup extends Base
      */
     public function index(Request $request)
     {
-        $start = request()->get('start', 0);
-        $limit = request()->get('limit', 10);
+        $start = $request->get('start', 0);
+        $limit = $request->get('limit', 10);
         
-        $order = request()->get('order', 'desc');
+        $order = $request->get('order', 'desc');
         $order = strtoupper($order);
         if (!in_array($order, ['ASC', 'DESC'])) {
             $order = 'DESC';
@@ -45,6 +46,28 @@ class AuthGroup extends Base
             'start' => $start,
             'limit' => $limit,
             'total' => $total,
+            'list' => $list,
+        ]);
+    }
+    
+    /**
+     * 分组列表
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function groupForIndex(Request $request)
+    {
+        $result = AuthGroupModel::orderBy('listorder', 'ASC')
+            ->orderBy('create_time', 'ASC')
+            ->get()
+            ->toArray(); 
+        
+        $Tree = new Tree();
+        $resultTree = $Tree->withData($result)->buildArray(0);
+        $list = $Tree->buildFormatList($resultTree);
+        
+        $this->successJson(__('获取成功'), [
             'list' => $list,
         ]);
     }
@@ -114,7 +137,7 @@ class AuthGroup extends Base
      */
     public function create(Request $request)
     {
-        $data = request()->all();
+        $data = $request->all();
         
         $validator = Validator::make($data, [
             'parentid' => 'required',
@@ -141,9 +164,9 @@ class AuthGroup extends Base
             'is_root' => (isset($data['is_root']) && $data['is_root'] == 1) ? 1 : 0,
             'status' => ($data['status'] == 1) ? 1 : 0,
             'update_time' => time(),
-            'update_ip' => request()->ip(),
+            'update_ip' => $request->ip(),
             'create_time' => time(),
-            'create_ip' => request()->ip(),
+            'create_ip' => $request->ip(),
         ];
         if (!empty($data['avatar'])) {
             $insertData['avatar'] = $data['avatar'];
@@ -190,7 +213,7 @@ class AuthGroup extends Base
             $this->errorJson(__('信息不存在'));
         }
         
-        $data = request()->all();
+        $data = $request->all();
         $validator = Validator::make($data, [
             'parentid' => 'required',
             'title' => 'required|max:20',
@@ -214,7 +237,7 @@ class AuthGroup extends Base
             'is_root' => (isset($data['is_root']) && $data['is_root'] == 1) ? 1 : 0,
             'status' => ($data['status'] == 1) ? 1 : 0,
             'update_time' => time(),
-            'update_ip' => request()->ip(),
+            'update_ip' => $request->ip(),
         ];
         
         // 更新信息

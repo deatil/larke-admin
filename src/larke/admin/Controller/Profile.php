@@ -20,7 +20,7 @@ class Profile extends Base
     /**
      * 我的信息
      */
-    public function index()
+    public function index(Request $request)
     {
         $adminid = config('larke.auth.adminid');
         $adminInfo = AdminModel::select(
@@ -43,9 +43,9 @@ class Profile extends Base
     /**
      * 修改我的信息
      */
-    public function update()
+    public function update(Request $request)
     {
-        $data = request()->only(['nickname', 'email', 'avatar']);
+        $data = $request->only(['nickname', 'email', 'avatar']);
         
         $validator = Validator::make($data, [
             'nickname' => 'required|max:150',
@@ -88,21 +88,21 @@ class Profile extends Base
      * @create 2020-8-22
      * @author deatil
      */
-    public function changePasssword()
+    public function changePasssword(Request $request)
     {
         // 密码长度错误
-        $oldPassword = request()->post('oldPassword');
+        $oldPassword = $request->get('oldPassword');
         if (strlen($oldPassword) != 32) {
             $this->errorJson(__('旧密码错误'));
         }
 
         // 密码长度错误
-        $newPassword = request()->post('newPassword');
+        $newPassword = $request->get('newPassword');
         if (strlen($newPassword) != 32) {
             $this->errorJson(__('新密码错误'));
         }
 
-        $newPassword2 = request()->post('newPassword2');
+        $newPassword2 = $request->get('newPassword2');
         if (strlen($newPassword2) != 32) {
             $this->errorJson(__('确认密码错误'));
         }

@@ -26,10 +26,10 @@ class Admin extends Base
      */
     public function index(Request $request)
     {
-        $start = request()->get('start', 0);
-        $limit = request()->get('limit', 10);
+        $start = $request->get('start', 0);
+        $limit = $request->get('limit', 10);
         
-        $order = request()->get('order', 'DESC');
+        $order = $request->get('order', 'DESC');
         if (!in_array(strtoupper($order), ['ASC', 'DESC'])) {
             $order = 'DESC';
         }
@@ -141,7 +141,7 @@ class Admin extends Base
      */
     public function create(Request $request)
     {
-        $data = request()->all();
+        $data = $request->all();
         $validator = Validator::make($data, [
             'name' => 'required|max:20|unique:'.AdminModel::class,
             'nickname' => 'required|max:150',
@@ -168,9 +168,9 @@ class Admin extends Base
             'email' => $data['email'],
             'status' => ($data['status'] == 1) ? 1 : 0,
             'last_active' => time(),
-            'last_ip' => request()->ip(),
+            'last_ip' => $request->ip(),
             'create_time' => time(),
-            'create_ip' => request()->ip(),
+            'create_ip' => $request->ip(),
         ];
         if (!empty($data['avatar'])) {
             $insertData['avatar'] = $data['avatar'];
@@ -222,7 +222,7 @@ class Admin extends Base
             $this->errorJson(__('要修改的账号不存在'));
         }
         
-        $data = request()->all();
+        $data = $request->all();
         $validator = Validator::make($data, [
             'name' => 'required|max:20',
             'nickname' => 'required|max:150',
@@ -304,7 +304,7 @@ class Admin extends Base
         }
 
         // 密码长度错误
-        $password = request()->post('password');
+        $password = $request->get('password');
         if (strlen($password) != 32) {
             $this->errorJson(__('密码格式错误'));
         }
@@ -342,7 +342,7 @@ class Admin extends Base
             $this->errorJson(__('你不能修改退出你的登陆'));
         }
         
-        $refreshToken = request()->get('refresh_token');
+        $refreshToken = $request->get('refresh_token');
         if (empty($refreshToken)) {
             $this->errorJson(__('refreshToken不能为空'));
         }

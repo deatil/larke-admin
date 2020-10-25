@@ -45,7 +45,8 @@ class Authenticate
             $this->errorJson(__('token已失效'));
         }
         
-        $jwtAuth = app('larke.jwt');
+        $jwtAuth = app('larke.jwt')
+            ->withJti(config('larke.passport.access_token_id'));
         
         try {
             $jwtAuth->withToken($token)->decode();

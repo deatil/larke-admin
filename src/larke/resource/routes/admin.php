@@ -7,6 +7,9 @@ Route::group([
     'middleware' => config('larke.route.middleware'),
 ], function ($router) {
     $router->namespace(config('larke.route.namespace'))->group(function ($router) {
+        $router->post('/sys/clear-cache', 'Sys@clearCache')->name('larke-admin-sys-clear-cache');
+        
+        $router->get('/passport/captcha', 'Passport@captcha')->name('larke-admin-passport-captcha');
         $router->post('/passport/login', 'Passport@login')->name('larke-admin-passport-login');
         $router->post('/passport/logout', 'Passport@logout')->name('larke-admin-passport-logout');
         $router->post('/passport/refresh-token', 'Passport@refreshToken')->name('larke-admin-passport-refresh-token');
@@ -30,12 +33,14 @@ Route::group([
         $router->post('/admin/logout', 'Admin@logout')->name('larke-admin-admin-logout');
         
         $router->get('/auth/rule/index', 'AuthRule@index')->name('larke-admin-auth-rule-index');
+        $router->get('/auth/rule/group-index', 'AuthRule@groupForIndex')->name('larke-admin-auth-rule-group-index');
         $router->get('/auth/rule/detail', 'AuthRule@detail')->name('larke-admin-auth-rule-detail');
         $router->post('/auth/rule/create', 'AuthRule@create')->name('larke-admin-auth-rule-create');
         $router->post('/auth/rule/update', 'AuthRule@update')->name('larke-admin-auth-rule-update');
         $router->post('/auth/rule/delete', 'AuthRule@delete')->name('larke-admin-auth-rule-delete');
         
         $router->get('/auth/group/index', 'AuthGroup@index')->name('larke-admin-auth-group-index');
+        $router->get('/auth/group/group-index', 'AuthGroup@groupForIndex')->name('larke-admin-auth-group-group-index');
         $router->get('/auth/group/detail', 'AuthGroup@detail')->name('larke-admin-auth-group-detail');
         $router->post('/auth/group/create', 'AuthGroup@create')->name('larke-admin-auth-group-create');
         $router->post('/auth/group/update', 'AuthGroup@update')->name('larke-admin-auth-group-update');

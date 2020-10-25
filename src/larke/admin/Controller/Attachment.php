@@ -56,7 +56,7 @@ class Attachment extends Base
             
             AttachmentModel::where('md5', $md5)->update([
                 'update_time' => time(), 
-                'update_ip' => request()->ip(),
+                'update_ip' => $request->ip(),
             ]);
             
             $this->successJson(__('上传成功'), [
@@ -86,9 +86,9 @@ class Attachment extends Base
             'driver' => $driver,
             'status' => 1,
             'update_time' => time(),
-            'update_ip' => request()->ip(),
+            'update_ip' => $request->ip(),
             'create_time' => time(),
-            'create_ip' => request()->ip(),
+            'create_ip' => $request->ip(),
         ];
         $status = AttachmentModel::insert($data);
         if ($status === false) {
@@ -112,10 +112,10 @@ class Attachment extends Base
      */
     public function index(Request $request)
     {
-        $start = request()->get('start', 0);
-        $limit = request()->get('limit', 10);
+        $start = $request->get('start', 0);
+        $limit = $request->get('limit', 10);
         
-        $order = request()->get('order', 'DESC');
+        $order = $request->get('order', 'DESC');
         $order = strtoupper($order);
         if (!in_array($order, ['ASC', 'DESC'])) {
             $order = 'DESC';

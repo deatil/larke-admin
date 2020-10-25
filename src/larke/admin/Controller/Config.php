@@ -24,20 +24,20 @@ class Config extends Base
      */
     public function index(Request $request)
     {
-        $start = request()->get('start', 0);
-        $limit = request()->get('limit', 10);
+        $start = $request->get('start', 0);
+        $limit = $request->get('limit', 10);
         
-        $order = request()->get('order', 'desc');
+        $order = $request->get('order', 'desc');
         $order = strtoupper($order);
         if (!in_array($order, ['ASC', 'DESC'])) {
             $order = 'DESC';
         }
         
-        $keywords = request()->get('keywords');
+        $keywords = $request->get('keywords');
        
-        $group = request()->get('group');
+        $group = $request->get('group');
         if (!empty($group)) {
-            $validator = Validator::make(request()->only(['group']), [
+            $validator = Validator::make($request->only(['group']), [
                 'group' => 'required|alpha_num',
             ], [
                 'group.required' => __('分组不能为空'),
@@ -131,7 +131,7 @@ class Config extends Base
      */
     public function create(Request $request)
     {
-        $data = request()->all();
+        $data = $request->all();
         $validator = Validator::make($data, [
             'group' => 'required|alpha_num',
             'type' => 'required',
@@ -162,13 +162,13 @@ class Config extends Base
             'value' => $data['value'] ?? '',
             'description' => $data['description'],
             'listorder' => $data['listorder'] ?? 100,
-            'is_show' => (request()->get('is_show', 0) == 1) ? 1 : 0,
-            'is_system' => (request()->get('is_system', 0) == 1) ? 1 : 0,
+            'is_show' => ($request->get('is_show', 0) == 1) ? 1 : 0,
+            'is_system' => ($request->get('is_system', 0) == 1) ? 1 : 0,
             'status' => ($data['status'] == 1) ? 1 : 0,
             'update_time' => time(),
-            'update_ip' => request()->ip(),
+            'update_ip' => $request->ip(),
             'create_time' => time(),
-            'create_ip' => request()->ip(),
+            'create_ip' => $request->ip(),
         ];
         
         $status = ConfigModel::insert($insertData);
@@ -200,7 +200,7 @@ class Config extends Base
             $this->errorJson(__('信息不存在'));
         }
         
-        $data = request()->all();
+        $data = $request->all();
         $validator = Validator::make($data, [
             'group' => 'required|alpha_num',
             'type' => 'required',
@@ -239,7 +239,7 @@ class Config extends Base
             'is_system' => (isset($data['is_system']) && $data['is_system'] == 1) ? 1 : 0,
             'status' => ($data['status'] == 1) ? 1 : 0,
             'update_time' => time(),
-            'update_ip' => request()->ip(),
+            'update_ip' => $request->ip(),
         ];
         
         // 更新信息
@@ -255,9 +255,9 @@ class Config extends Base
     /**
      * 配置设置
      */
-    public function setting()
+    public function setting(Request $request)
     {
-        $fields = request()->get('fields');
+        $fields = $request->get('fields');
         
         if (!empty($fields)) {
             foreach ($fields as $name => $item) {

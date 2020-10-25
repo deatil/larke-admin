@@ -22,10 +22,10 @@ class Log extends Base
      */
     public function index(Request $request)
     {
-        $start = request()->get('start', 0);
-        $limit = request()->get('limit', 10);
+        $start = $request->get('start', 0);
+        $limit = $request->get('limit', 10);
         
-        $order = request()->get('order', 'desc');
+        $order = $request->get('order', 'desc');
         $order = strtoupper($order);
         if (!in_array($order, ['ASC', 'DESC'])) {
             $order = 'DESC';

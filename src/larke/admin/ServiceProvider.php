@@ -5,10 +5,10 @@ namespace Larke\Admin;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 use Larke\Admin\Command\Install;
+use Larke\Admin\Jwt\Jwt;
 use Larke\Admin\Contracts\Response as ResponseContract;
 use Larke\Admin\Contracts\Jwt as JwtContract;
 use Larke\Admin\Http\Response as ResponseHttp;
-use Larke\Admin\Jwt\Jwt;
 
 class ServiceProvider extends BaseServiceProvider
 {
@@ -22,8 +22,8 @@ class ServiceProvider extends BaseServiceProvider
      * @var array
      */
     protected $routeMiddleware = [
-        'admin.auth' => Middleware\Authenticate::class,
-        'admin.log' => Middleware\Log::class,
+        'larke.admin.auth' => Middleware\Authenticate::class,
+        'larke.admin.log' => Middleware\Log::class,
     ];
 
     /**
@@ -32,9 +32,9 @@ class ServiceProvider extends BaseServiceProvider
      * @var array
      */
     protected $middlewareGroups = [
-        'admin' => [
-            'admin.auth',
-            'admin.log',
+        'larke.admin' => [
+            'larke.admin.auth',
+            'larke.admin.log',
         ],
     ];
     
@@ -87,7 +87,7 @@ class ServiceProvider extends BaseServiceProvider
             $Jwt->withAud($config['aud']);
             $Jwt->withSub($config['sub']);
             
-            $Jwt->withJti($config['jti']); // device_id
+            $Jwt->withJti($config['jti']); // JWT ID
             $Jwt->withExpTime(intval($config['exptime']));
             $Jwt->withNotBeforeTime($config['notbeforetime']);
             

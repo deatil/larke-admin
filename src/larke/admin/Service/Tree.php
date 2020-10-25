@@ -268,10 +268,9 @@ class Tree
     /**
      * 将buildArray的结果返回为二维数组
      * @param array     $data 数据
-     * @param string    $field 要加前缀信息的字段
      * @return array
      */
-    public function buildFormatList($data = [], $field = 'title')
+    public function buildFormatList($data = [])
     {
         if (empty($data)) {
             return [];
@@ -286,11 +285,12 @@ class Tree
                 
                 $child = isset($v[$this->buildChildKey]) ? $v[$this->buildChildKey] : [];
                 $v[$this->haschildKey] = $child ? 1 : 0;
+                unset($v[$this->buildChildKey]);
                 
                 $list[] = $v;
 
                 if (!empty($child)) {
-                    $list = array_merge($list, $this->buildFormatList($child, $field));
+                    $list = array_merge($list, $this->buildFormatList($child));
                 }
             }
         }

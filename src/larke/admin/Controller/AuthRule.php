@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 
+use Larke\Admin\Service\Tree;
 use Larke\Admin\Model\AuthRule as AuthRuleModel;
 
 /**
@@ -24,16 +25,16 @@ class AuthRule extends Base
      */
     public function index(Request $request)
     {
-        $start = request()->get('start', 0);
-        $limit = request()->get('limit', 10);
+        $start = $request->get('start', 0);
+        $limit = $request->get('limit', 10);
         
-        $order = request()->get('order', 'desc');
+        $order = $request->get('order', 'desc');
         $order = strtoupper($order);
         if (!in_array($order, ['ASC', 'DESC'])) {
             $order = 'DESC';
         }
         
-        $keywords = request()->get('keywords');
+        $keywords = $request->get('keywords');
         
         $total = AuthRuleModel::count(); 
         $list = AuthRuleModel::offset($start)
@@ -48,6 +49,28 @@ class AuthRule extends Base
             'start' => $start,
             'limit' => $limit,
             'total' => $total,
+            'list' => $list,
+        ]);
+    }
+    
+    /**
+     * 分组列表
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function groupForIndex(Request $request)
+    {
+        $result = AuthRuleModel::orderBy('listorder', 'ASC')
+            ->orderBy('create_time', 'ASC')
+            ->get()
+            ->toArray(); 
+        
+        $Tree = new Tree();
+        $resultTree = $Tree->withData($result)->buildArray(0);
+        $list = $Tree->buildFormatList($resultTree);
+        
+        $this->successJson(__('获取成功'), [
             'list' => $list,
         ]);
     }
@@ -116,7 +139,7 @@ class AuthRule extends Base
      */
     public function create(Request $request)
     {
-        $data = request()->all();
+        $data = $request->all();
         
         $validator = Validator::make($data, [
             'parentid' => 'required',
@@ -157,9 +180,9 @@ class AuthRule extends Base
             'is_system' => (isset($data['is_system']) && $data['is_system'] == 1) ? 1 : 0,
             'status' => ($data['status'] == 1) ? 1 : 0,
             'update_time' => time(),
-            'update_ip' => request()->ip(),
+            'update_ip' => $request->ip(),
             'create_time' => time(),
-            'create_ip' => request()->ip(),
+            'create_ip' => $request->ip(),
         ];
         if (!empty($data['avatar'])) {
             $insertData['avatar'] = $data['avatar'];
@@ -183,7 +206,7 @@ class AuthRule extends Base
      */
     public function update(Request $request)
     {
-        $requestData = request()->all();
+        $requestData = $request->all();
         
         $id = $request->get('id');
         if (empty($id)) {
@@ -239,7 +262,7 @@ class AuthRule extends Base
             'is_system' => (isset($requestData['is_system']) && $requestData['is_system'] == 1) ? 1 : 0,
             'status' => ($requestData['status'] == 1) ? 1 : 0,
             'update_time' => time(),
-            'update_ip' => request()->ip(),
+            'update_ip' => $request->ip(),
         ];
         
         // 更新信息

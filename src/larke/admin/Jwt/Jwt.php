@@ -18,81 +18,119 @@ use Larke\Admin\Contracts\Jwt as JwtContract;
  */
 class Jwt implements JwtContract
 {
-    // alg
+    /**
+     * alg
+     */
     private $alg = 'HS256';
     
-    // claim issuer
+    /**
+     * claim issuer
+     */
     private $issuer = '';
     
-    // claim audience
+    /**
+     * claim audience
+     */
     private $audience = '';
     
-    // subject
+    /**
+     * subject
+     */
     private $subject = '';
     
-    // jwt 过期时间
+    /**
+     * jwt 过期时间
+     */
     private $expTime = 3600;
     
-    // 时间内不能访问
+    /**
+     * 时间内不能访问
+     */
     private $notBeforeTime = 10;
     
-    // decode token
+    /**
+     * decode token
+     */
     private $decodeToken;
     
-    // jwt token
+    /**
+     * jwt token
+     */
     private $token;
     
-    // claims 
+    /**
+     * jwt claims
+     */
     private $claims = [];
     
-    // secrect
+    /**
+     * 密钥
+     */
     private $secrect = '';
     
-    // 文件地址
+    /**
+     * 私钥地址
+     */
     private $privateKey = '';
     
-    // 文件地址
+    /**
+     * 公钥地址
+     */
     private $publicKey = '';
     
-    // 填写 RSA(RSA and ECDSA) 或者 SECRECT
+    /**
+     * 填写 RSA(RSA and ECDSA) 或者 SECRECT
+     */
     private $signerType = 'SECRECT';
     
-    // 设置alg
+    /**
+     * 设置alg
+     */
     public function withAlg($alg)
     {
         $this->alg = $alg;
         return $this;
     }
     
-    // 设置iss
+    /**
+     * 设置iss
+     */
     public function withIss($issuer)
     {
         $this->issuer = $issuer;
         return $this;
     }
     
-    // 设置aud
+    /**
+     * 设置aud
+     */
     public function withAud($audience)
     {
         $this->audience = $audience;
         return $this;
     }
     
-    // 设置subject
+    /**
+     * 设置subject
+     */
     public function withSub($subject)
     {
         $this->subject = $subject;
         return $this;
     }
     
-    // 设置jti
+    /**
+     * 设置jti
+     */
     public function withJti($jti)
     {
         $this->jti = $jti;
         return $this;
     }
     
-    // 设置notBeforeTime
+    /**
+     * 设置notBeforeTime
+     */
     public function withNotBeforeTime($notBeforeTime)
     {
         if ($notBeforeTime < 0) {
@@ -103,62 +141,80 @@ class Jwt implements JwtContract
         return $this;
     }
     
-    // 设置expTime
+    /**
+     * 设置expTime
+     */
     public function withExpTime($expTime)
     {
         $this->expTime = $expTime;
         return $this;
     }
     
-    // 设置token
+    /**
+     * 设置token
+     */
     public function withToken($token)
     {
         $this->token = $token;
         return $this;
     }
     
-    // 获取token
+    /**
+     * 获取token
+     */
     public function getToken()
     {
         return (string) $this->token;
     }
     
-    // 设置claim
+    /**
+     * 设置claim
+     */
     public function withClaim($claim)
     {
         $this->claims = array_merge($this->claims, $claim);
         return $this;
     }
     
-    // 设置claims
+    /**
+     * 设置claims
+     */
     public function withClaims($claims)
     {
         $this->claims = $claims;
         return $this;
     }
     
-    // 设置secrect
+    /**
+     * 设置secrect
+     */
     public function withSecrect($secrect)
     {
         $this->secrect = $secrect;
         return $this;
     }
     
-    // 设置 privateKey
+    /**
+     * 设置 privateKey
+     */
     public function withPrivateKey($privateKey)
     {
         $this->privateKey = $privateKey;
         return $this;
     }
     
-    // 设置 publicKey
+    /**
+     * 设置 publicKey
+     */
     public function withPublicKey($publicKey)
     {
         $this->publicKey = $publicKey;
         return $this;
     }
     
-    // 设置 signerType
+    /**
+     * 设置 signerType
+     */
     public function withSignerType($signerType)
     {
         if ($signerType != 'RSA') {
@@ -168,7 +224,9 @@ class Jwt implements JwtContract
         return $this;
     }
     
-    // 编码jwt token
+    /**
+     * 编码 jwt token
+     */
     public function encode()
     {
         $Builder = new Builder();
@@ -178,7 +236,7 @@ class Jwt implements JwtContract
         $Builder->permittedFor($this->audience); // 接收者
         
         if (!empty($this->subject)) {
-            $Builder->relatedTo($this->subject); // 接收者
+            $Builder->relatedTo($this->subject); // 主题
         }
         
         $Builder->identifiedBy($this->jti); // 对当前token设置的标识
@@ -207,6 +265,9 @@ class Jwt implements JwtContract
         return $this;
     }
     
+    /**
+     * 解码
+     */
     public function decode()
     {
         if (!$this->decodeToken) {
