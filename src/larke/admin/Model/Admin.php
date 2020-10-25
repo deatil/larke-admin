@@ -2,8 +2,6 @@
 
 namespace Larke\Admin\Model;
 
-use Illuminate\Support\Facades\Storage;
-
 /*
  * Admin 模型
  *
@@ -18,6 +16,14 @@ class Admin extends Base
     public $incrementing = false;
     public $timestamps = false;
     
+    /**
+     * 授权
+     */
+    public function groupAccesses()
+    {
+        return $this->hasMany(AuthGroupAccess::class, 'admin_id', 'id');
+    }
+    
     public function attachments()
     {
         return $this->morphMany(Attachment::class, 'attachmentable', 'type', 'type_id');
@@ -26,12 +32,8 @@ class Admin extends Base
     public function getAvatarAttribute($value) 
     {
         $attach = Attachment::path($value);
-        if (empty($attach)) {
-            return '';
-        }
         
-        $avatar = Storage::url($attach);
-        return $avatar;
+        return $attach;
     }
     
 }

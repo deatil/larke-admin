@@ -6,6 +6,9 @@ return [
         'expired_in' => env('LARKE_ADMIN_EXPIRED_IN', 86400),
         'refresh_expired_in' => env('LARKE_ADMIN_REFRESH_EXPIRED_IN', 604800),
     ],
+    'auth' => [
+        'excepts' => env('LARKE_ADMIN_AUTH_EXCEPTS') ? explode(',', env('LARKE_ADMIN_AUTH_EXCEPTS')) : [],
+    ],
     'route' => [
         'prefix' => env('LARKE_ADMIN_ROUTE_PREFIX', 'admin-api'),
         'namespace' => env('LARKE_ADMIN_ROUTE_NAMESPACE', 'Larke\\Admin\\Controller'),

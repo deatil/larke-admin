@@ -53,14 +53,6 @@ class Passport extends Base
             $this->errorJson(__('用户已被禁用或者不存在'));
         }
         
-        /*
-        $deviceId = request()->get('device_id');
-        if (empty($deviceId)) {
-            $this->errorJson(__('设备ID不能为空'));
-        }
-        $jwtAuth->withJti($deviceId);
-        */
-        
         // 获取jwt的句柄
         $expiredIn = config('larke.passport.expired_in', 86400);
         $accessToken = app('larke.jwt')->withClaim([

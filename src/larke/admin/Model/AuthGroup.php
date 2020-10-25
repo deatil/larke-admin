@@ -20,9 +20,9 @@ class AuthGroup extends Base
     /**
      * 组的规则授权
      */
-    public function ruleAccess()
+    public function ruleAccesses()
     {
-        return $this->hasOne(AuthRuleAccess::class, 'group_id', 'id');
+        return $this->hasMany(AuthRuleAccess::class, 'group_id', 'id');
     }
     
     /**

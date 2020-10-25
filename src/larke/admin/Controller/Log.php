@@ -25,8 +25,9 @@ class Log extends Base
         $start = request()->get('start', 0);
         $limit = request()->get('limit', 10);
         
-        $order = request()->get('order', 'DESC');
-        if (!in_array(strtoupper($order), ['ASC', 'DESC'])) {
+        $order = request()->get('order', 'desc');
+        $order = strtoupper($order);
+        if (!in_array($order, ['ASC', 'DESC'])) {
             $order = 'DESC';
         }
         
@@ -34,7 +35,7 @@ class Log extends Base
         $list = AdminLogModel::offset($start)
             ->limit($limit)
             ->withCertain('admin', ['name', 'nickname', 'email', 'avatar', 'last_active', 'last_ip'])
-            ->orderBy('add_time', $order)
+            ->orderBy('create_time', $order)
             ->get()
             ->toArray(); 
         

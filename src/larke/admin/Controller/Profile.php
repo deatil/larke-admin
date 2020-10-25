@@ -5,9 +5,9 @@ namespace Larke\Admin\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
-use Larke\Admin\Service\Password as PasswordService;
 use Larke\Admin\Model\Admin as AdminModel;
 use Larke\Admin\Model\Attachment as AttachmentModel;
+use Larke\Admin\Service\Password as PasswordService;
 
 /**
  * 个人信息

@@ -67,8 +67,13 @@ class Authenticate
             ]));
         }
         
-        $adminInfo = AdminModel::where('id', $adminid)->first()->toArray();
-        if (empty($adminInfo) || $adminInfo['status'] != 1) {
+        $adminInfo = AdminModel::where('id', $adminid)
+            ->first();
+        if (empty($adminInfo)) {
+            $this->errorJson(__('帐号不存在或者已被锁定'));
+        }
+        $adminInfo = $adminInfo->toArray();
+        if ($adminInfo['status'] != 1) {
             $this->errorJson(__('帐号不存在或者已被锁定'));
         }
         
@@ -92,6 +97,7 @@ class Authenticate
         $excepts = array_merge(config('larke.auth.excepts', []), [
             'larke-admin-passport-login',
             'larke-admin-passport-refresh-token',
+            'larke-admin-attachment-download',
         ]);
 
         return collect($excepts)

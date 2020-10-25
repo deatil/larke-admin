@@ -3,8 +3,8 @@
 namespace Larke\Admin\Controller;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\DB;  
 
 use Larke\Admin\Model\Attachment as AttachmentModel;
 
@@ -61,7 +61,7 @@ class Attachment extends Base
             
             $this->successJson(__('上传成功'), [
                 'id' => $fileInfo['id'],
-                'url' => Storage::url($fileInfo['path']),
+                'url' => $fileInfo['path'],
             ]);
         }
         
@@ -87,8 +87,8 @@ class Attachment extends Base
             'status' => 1,
             'update_time' => time(),
             'update_ip' => request()->ip(),
-            'add_time' => time(),
-            'add_ip' => request()->ip(),
+            'create_time' => time(),
+            'create_ip' => request()->ip(),
         ];
         $status = AttachmentModel::insert($data);
         if ($status === false) {
@@ -116,19 +116,17 @@ class Attachment extends Base
         $limit = request()->get('limit', 10);
         
         $order = request()->get('order', 'DESC');
-        if (!in_array(strtoupper($order), ['ASC', 'DESC'])) {
+        $order = strtoupper($order);
+        if (!in_array($order, ['ASC', 'DESC'])) {
             $order = 'DESC';
         }
         
         $total = AttachmentModel::count(); 
         $list = AttachmentModel::offset($start)
             ->limit($limit)
-            ->orderBy('add_time', $order)
+            ->orderBy('create_time', $order)
             ->get()
             ->toArray(); 
-        foreach ($list as $key => $value) {
-            $list[$key]['path'] = Storage::url($value['path']);
-        }
         
         $this->successJson(__('获取成功'), [
             'start' => $start,
@@ -156,8 +154,6 @@ class Attachment extends Base
         if (empty($fileInfo)) {
             $this->errorJson(__('文件信息不存在'));
         }
-        
-        $fileInfo['path'] = Storage::url($fileInfo['path']);
         
         $this->successJson(__('获取成功'), $fileInfo);
     }
@@ -190,6 +186,28 @@ class Attachment extends Base
         Storage::disk('public')->delete($fileInfo['path']);
         
         $this->successJson(__('文件删除成功'));
+    }
+    
+    /**
+     * 下载
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function download(Request $request)
+    {
+        $fileId = $request->get('id');
+        if (empty($fileId)) {
+            $this->errorJson(__('文件ID不能为空'));
+        }
+        
+        $fileInfo = AttachmentModel::where(['id' => $fileId])
+            ->first();
+        if (empty($fileInfo)) {
+            $this->errorJson(__('文件不存在'));
+        }
+        
+        return Storage::disk('public')->download($fileInfo['path'], $fileInfo['name']);
     }
     
 }
