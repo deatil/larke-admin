@@ -26,6 +26,14 @@ class Admin extends Base
         return $this->hasMany(AuthGroupAccess::class, 'admin_id', 'id');
     }
     
+    /**
+     * 分组列表
+     */
+    public function groups()
+    {
+        return $this->belongsToMany(AuthGroup::class, AuthGroupAccess::class, 'admin_id', 'group_id');
+    }
+    
     public function attachments()
     {
         return $this->morphMany(Attachment::class, 'attachmentable', 'type', 'type_id');

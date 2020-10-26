@@ -49,6 +49,8 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function boot()
     {
+        $this->ensureHttps();
+        
         $this->registerConfig();
         
         $this->loadViewsFrom(__DIR__ . '/../resource/views', 'larke-admin');
@@ -70,6 +72,19 @@ class ServiceProvider extends BaseServiceProvider
         $this->registerRouteMiddleware();
         
         $this->commands($this->commands);
+    }
+
+    /**
+     * Force to set https scheme if https enabled.
+     *
+     * @return void
+     */
+    protected function ensureHttps()
+    {
+        if (config('admin.https') || config('admin.secure')) {
+            url()->forceScheme('https');
+            $this->app['request']->server->set('HTTPS', true);
+        }
     }
 
     /**

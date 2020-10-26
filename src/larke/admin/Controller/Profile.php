@@ -2,12 +2,14 @@
 
 namespace Larke\Admin\Controller;
 
+use Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
 use Larke\Admin\Model\Admin as AdminModel;
 use Larke\Admin\Model\Attachment as AttachmentModel;
+use Larke\Admin\Model\AuthGroup as AuthGroupModel;
 use Larke\Admin\Service\Password as PasswordService;
 
 /**
@@ -143,7 +145,51 @@ class Profile extends Base
      */
     public function menus(Request $request)
     {
-        \Enforcer::addPermissionForUser('eve', 'articles', 'read');
+        $adminid = app('larke.auth')->getId();
+        $info = AdminModel::where(['id' => $adminid])
+            ->select(
+                'id', 
+                'name', 
+                'nickname', 
+                'email', 
+                'avatar', 
+                'status', 
+            )
+            ->first();
+        if (empty($info)) {
+            return $this->errorJson(__('账号信息不存在'));
+        }
+        
+        $groupAccesses = collect($info['groupAccesses'])->map(function($data) {
+            return $data['group_id'];
+        });
+        
+        $groupRules = AuthGroupModel::with(['rules' => function($query) {
+            $query->select([
+                'parentid', 
+                'title', 
+                'url',
+                'method',
+                'description',
+            ]);
+        }])->whereHas('rules', function($query) {
+            $query->where('status', 1);
+        })->whereIn('id', $groupAccesses)
+            ->get()->toArray();
+        
+        $rules = collect($groupRules)->filter(function($data) {
+            return !empty($data['rules']);
+        })->map(function($data) {
+            return $data['rules'];
+        });
+        
+        $rules = Arr::collapse($rules);
+        $res = collect($rules)->map(function($data) {
+            unset($data['pivot']);
+            return $data;
+        });
+        
+        return $this->successJson(__('获取成功'), $res);
     }
 
 }
