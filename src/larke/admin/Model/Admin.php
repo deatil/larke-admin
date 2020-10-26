@@ -13,6 +13,8 @@ class Admin extends Base
     protected $table = 'larke_admin';
     protected $primaryKey = 'id';
     
+    protected $guarded = [];
+    
     public $incrementing = false;
     public $timestamps = false;
     

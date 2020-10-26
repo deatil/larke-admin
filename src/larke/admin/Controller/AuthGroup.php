@@ -42,7 +42,7 @@ class AuthGroup extends Base
             ->get()
             ->toArray(); 
         
-        $this->successJson(__('获取成功'), [
+        return $this->successJson(__('获取成功'), [
             'start' => $start,
             'limit' => $limit,
             'total' => $total,
@@ -67,7 +67,7 @@ class AuthGroup extends Base
         $resultTree = $Tree->withData($result)->buildArray(0);
         $list = $Tree->buildFormatList($resultTree);
         
-        $this->successJson(__('获取成功'), [
+        return $this->successJson(__('获取成功'), [
             'list' => $list,
         ]);
     }
@@ -82,14 +82,14 @@ class AuthGroup extends Base
     {
         $id = $request->get('id');
         if (empty($id)) {
-            $this->errorJson(__('ID不能为空'));
+            return $this->errorJson(__('ID不能为空'));
         }
         
         $info = AuthGroupModel::where(['id' => $id])
             ->with('ruleAccesses')
             ->first();
         if (empty($info)) {
-            $this->errorJson(__('信息不存在'));
+            return $this->errorJson(__('信息不存在'));
         }
         
         $ruleAccesses = collect($info['ruleAccesses'])->map(function($data) {
@@ -98,7 +98,7 @@ class AuthGroup extends Base
         unset($info['ruleAccesses']);
         $info['rule_accesses'] = $ruleAccesses;
         
-        $this->successJson(__('获取成功'), $info);
+        return $this->successJson(__('获取成功'), $info);
     }
     
     /**
@@ -111,22 +111,22 @@ class AuthGroup extends Base
     {
         $id = $request->get('id');
         if (empty($id)) {
-            $this->errorJson(__('ID不能为空'));
+            return $this->errorJson(__('ID不能为空'));
         }
         
         $info = AuthGroupModel::where(['id' => $id])
             ->first();
         if (empty($info)) {
-            $this->errorJson(__('信息不存在'));
+            return $this->errorJson(__('信息不存在'));
         }
         
         $deleteStatus = AuthGroupModel::where(['id' => $id])
             ->delete();
         if ($deleteStatus === false) {
-            $this->errorJson(__('信息删除失败'));
+            return $this->errorJson(__('信息删除失败'));
         }
         
-        $this->successJson(__('信息删除成功'));
+        return $this->successJson(__('信息删除成功'));
     }
     
     /**
@@ -150,7 +150,7 @@ class AuthGroup extends Base
         ]);
 
         if ($validator->fails()) {
-            $this->errorJson($validator->errors()->first());
+            return $this->errorJson($validator->errors()->first());
         }
         
         $id = md5(mt_rand(100000, 999999).microtime());
@@ -174,7 +174,7 @@ class AuthGroup extends Base
         
         $status = AuthGroupModel::insert($insertData);
         if ($status === false) {
-            $this->errorJson(__('信息添加失败'));
+            return $this->errorJson(__('信息添加失败'));
         }
         
         if (isset($data['access'])) {
@@ -189,7 +189,7 @@ class AuthGroup extends Base
             AuthRuleAccessModel::insert($accessData);
         }
         
-        $this->successJson(__('信息添加成功'), [
+        return $this->successJson(__('信息添加成功'), [
             'id' => $id,
         ]);
     }
@@ -204,13 +204,13 @@ class AuthGroup extends Base
     {
         $id = $request->get('id');
         if (empty($id)) {
-            $this->errorJson(__('账号ID不能为空'));
+            return $this->errorJson(__('账号ID不能为空'));
         }
         
         $info = AuthGroupModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            $this->errorJson(__('信息不存在'));
+            return $this->errorJson(__('信息不存在'));
         }
         
         $data = $request->all();
@@ -225,7 +225,7 @@ class AuthGroup extends Base
         ]);
 
         if ($validator->fails()) {
-            $this->errorJson($validator->errors()->first());
+            return $this->errorJson($validator->errors()->first());
         }
         
         $updateData = [
@@ -244,7 +244,7 @@ class AuthGroup extends Base
         $status = AuthGroupModel::where('id', $id)
             ->update($updateData);
         if ($status === false) {
-            $this->errorJson(__('信息修改失败'));
+            return $this->errorJson(__('信息修改失败'));
         }
         
         if (isset($data['access'])) {
@@ -261,7 +261,7 @@ class AuthGroup extends Base
             AuthRuleAccessModel::insert($accessData);
         }
         
-        $this->successJson(__('信息修改成功'));
+        return $this->successJson(__('信息修改成功'));
         
     }
     

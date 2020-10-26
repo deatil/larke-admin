@@ -45,7 +45,7 @@ class AuthRule extends Base
             ->get()
             ->toArray(); 
         
-        $this->successJson(__('获取成功'), [
+        return $this->successJson(__('获取成功'), [
             'start' => $start,
             'limit' => $limit,
             'total' => $total,
@@ -70,7 +70,7 @@ class AuthRule extends Base
         $resultTree = $Tree->withData($result)->buildArray(0);
         $list = $Tree->buildFormatList($resultTree);
         
-        $this->successJson(__('获取成功'), [
+        return $this->successJson(__('获取成功'), [
             'list' => $list,
         ]);
     }
@@ -85,16 +85,16 @@ class AuthRule extends Base
     {
         $id = $request->get('id');
         if (empty($id)) {
-            $this->errorJson(__('ID不能为空'));
+            return $this->errorJson(__('ID不能为空'));
         }
         
         $info = AuthRuleModel::where(['id' => $id])
             ->first();
         if (empty($info)) {
-            $this->errorJson(__('信息不存在'));
+            return $this->errorJson(__('信息不存在'));
         }
         
-        $this->successJson(__('获取成功'), $info);
+        return $this->successJson(__('获取成功'), $info);
     }
     
     /**
@@ -107,28 +107,28 @@ class AuthRule extends Base
     {
         $id = $request->get('id');
         if (empty($id)) {
-            $this->errorJson(__('ID不能为空'));
+            return $this->errorJson(__('ID不能为空'));
         }
         
         $info = AuthRuleModel::where(['id' => $id])
             ->first();
         if (empty($info)) {
-            $this->errorJson(__('信息不存在'));
+            return $this->errorJson(__('信息不存在'));
         }
         
         $childInfo = AuthRuleModel::where(['parentid' => $id])
             ->first();
         if (!empty($childInfo)) {
-            $this->errorJson(__('还有子权限链接存在，请删除子权限链接后再操作！'));
+            return $this->errorJson(__('还有子权限链接存在，请删除子权限链接后再操作！'));
         }
         
         $deleteStatus = AuthRuleModel::where(['id' => $id])
             ->delete();
         if ($deleteStatus === false) {
-            $this->errorJson(__('信息删除失败'));
+            return $this->errorJson(__('信息删除失败'));
         }
         
-        $this->successJson(__('信息删除成功'));
+        return $this->successJson(__('信息删除成功'));
     }
     
     /**
@@ -163,7 +163,7 @@ class AuthRule extends Base
         ]);
 
         if ($validator->fails()) {
-            $this->errorJson($validator->errors()->first());
+            return $this->errorJson($validator->errors()->first());
         }
         
         $id = md5(mt_rand(100000, 999999).microtime());
@@ -190,10 +190,10 @@ class AuthRule extends Base
         
         $status = AuthRuleModel::insert($insertData);
         if ($status === false) {
-            $this->errorJson(__('信息添加失败'));
+            return $this->errorJson(__('信息添加失败'));
         }
         
-        $this->successJson(__('信息添加成功'), [
+        return $this->successJson(__('信息添加成功'), [
             'id' => $id,
         ]);
     }
@@ -210,13 +210,13 @@ class AuthRule extends Base
         
         $id = $request->get('id');
         if (empty($id)) {
-            $this->errorJson(__('账号ID不能为空'));
+            return $this->errorJson(__('账号ID不能为空'));
         }
         
         $info = AuthRuleModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            $this->errorJson(__('信息不存在'));
+            return $this->errorJson(__('信息不存在'));
         }
         
         $validator = Validator::make($requestData, [
@@ -240,14 +240,14 @@ class AuthRule extends Base
         ]);
 
         if ($validator->fails()) {
-            $this->errorJson($validator->errors()->first());
+            return $this->errorJson($validator->errors()->first());
         }
         
         $slugInfo = AuthRuleModel::where('slug', $requestData['slug'])
             ->where('id', '!=', $id)
             ->first();
         if (!empty($slugInfo)) {
-            $this->errorJson(__('链接标识已经存在'));
+            return $this->errorJson(__('链接标识已经存在'));
         }
         
         $updateData = [
@@ -269,10 +269,10 @@ class AuthRule extends Base
         $status = AuthRuleModel::where('id', $id)
             ->update($updateData);
         if ($status === false) {
-            $this->errorJson(__('信息修改失败'));
+            return $this->errorJson(__('信息修改失败'));
         }
         
-        $this->successJson(__('信息修改成功'));
+        return $this->successJson(__('信息修改成功'));
         
     }
     

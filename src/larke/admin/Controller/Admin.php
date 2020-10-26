@@ -53,7 +53,7 @@ class Admin extends Base
             ->get()
             ->toArray(); 
         
-        $this->successJson(__('获取成功'), [
+        return $this->successJson(__('获取成功'), [
             'start' => $start,
             'limit' => $limit,
             'total' => $total,
@@ -71,7 +71,7 @@ class Admin extends Base
     {
         $id = $request->get('id');
         if (empty($id)) {
-            $this->errorJson(__('账号ID不能为空'));
+            return $this->errorJson(__('账号ID不能为空'));
         }
         
         $info = AdminModel::where(['id' => $id])
@@ -89,7 +89,7 @@ class Admin extends Base
             )
             ->first();
         if (empty($info)) {
-            $this->errorJson(__('账号信息不存在'));
+            return $this->errorJson(__('账号信息不存在'));
         }
         
         $groupAccesses = collect($info['groupAccesses'])->map(function($data) {
@@ -98,7 +98,7 @@ class Admin extends Base
         unset($info['groupAccesses']);
         $info['group_accesses'] = $groupAccesses;
         
-        $this->successJson(__('获取成功'), $info);
+        return $this->successJson(__('获取成功'), $info);
     }
     
     /**
@@ -111,26 +111,26 @@ class Admin extends Base
     {
         $id = $request->get('id');
         if (empty($id)) {
-            $this->errorJson(__('账号ID不能为空'));
+            return $this->errorJson(__('账号ID不能为空'));
         }
-        $adminid = config('larke.auth.adminid');
+        $adminid = app('larke.auth')->getId();
         if ($id == $adminid) {
-            $this->errorJson(__('你不能删除你自己'));
+            return $this->errorJson(__('你不能删除你自己'));
         }
         
         $info = AdminModel::where(['id' => $id])
             ->first();
         if (empty($info)) {
-            $this->errorJson(__('账号信息不存在'));
+            return $this->errorJson(__('账号信息不存在'));
         }
         
         $deleteStatus = AdminModel::where(['id' => $id])
             ->delete();
         if ($deleteStatus === false) {
-            $this->errorJson(__('账号删除失败'));
+            return $this->errorJson(__('账号删除失败'));
         }
         
-        $this->successJson(__('账号删除成功'));
+        return $this->successJson(__('账号删除成功'));
     }
     
     /**
@@ -157,7 +157,7 @@ class Admin extends Base
         ]);
 
         if ($validator->fails()) {
-            $this->errorJson($validator->errors()->first());
+            return $this->errorJson($validator->errors()->first());
         }
         
         $id = md5(mt_rand(100000, 999999).microtime());
@@ -176,9 +176,9 @@ class Admin extends Base
             $insertData['avatar'] = $data['avatar'];
         }
         
-        $status = AdminModel::insertGetid($insertData);
+        $status = AdminModel::create($insertData);
         if ($status === false) {
-            $this->errorJson(__('添加信息失败'));
+            return $this->errorJson(__('添加信息失败'));
         }
         
         if (isset($data['access'])) {
@@ -193,7 +193,7 @@ class Admin extends Base
             AuthGroupAccessModel::insert($accessData);
         }
         
-        $this->successJson(__('添加信息成功'), [
+        return $this->successJson(__('添加信息成功'), [
             'id' => $id,
         ]);
     }
@@ -208,18 +208,18 @@ class Admin extends Base
     {
         $id = $request->get('id');
         if (empty($id)) {
-            $this->errorJson(__('账号ID不能为空'));
+            return $this->errorJson(__('账号ID不能为空'));
         }
         
-        $adminid = config('larke.auth.adminid');
+        $adminid = app('larke.auth')->getId();
         if ($id == $adminid) {
-            $this->errorJson(__('你不能修改自己的信息'));
+            return $this->errorJson(__('你不能修改自己的信息'));
         }
         
         $adminInfo = AdminModel::where('id', '=', $id)
             ->first();
         if (empty($adminInfo)) {
-            $this->errorJson(__('要修改的账号不存在'));
+            return $this->errorJson(__('要修改的账号不存在'));
         }
         
         $data = $request->all();
@@ -235,14 +235,14 @@ class Admin extends Base
         ]);
 
         if ($validator->fails()) {
-            $this->errorJson($validator->errors()->first());
+            return $this->errorJson($validator->errors()->first());
         }
         
         $nameInfo = AdminModel::where('name', $data['name'])
             ->where('id', '!=', $id)
             ->first();
         if (!empty($nameInfo)) {
-            $this->errorJson(__('要修改成的管理账号已经存在'));
+            return $this->errorJson(__('要修改成的管理账号已经存在'));
         }
         
         $updateData = [
@@ -259,7 +259,7 @@ class Admin extends Base
         $status = AdminModel::where('id', $id)
             ->update($updateData);
         if ($status === false) {
-            $this->errorJson(__('信息修改失败'));
+            return $this->errorJson(__('信息修改失败'));
         }
         
         if (isset($data['access'])) {
@@ -276,7 +276,7 @@ class Admin extends Base
             AuthGroupAccessModel::insert($accessData);
         }
         
-        $this->successJson(__('信息修改成功'));
+        return $this->successJson(__('信息修改成功'));
     }
     
     /**
@@ -289,24 +289,24 @@ class Admin extends Base
     {
         $id = $request->get('id');
         if (empty($id)) {
-            $this->errorJson(__('账号ID不能为空'));
+            return $this->errorJson(__('账号ID不能为空'));
         }
         
-        $adminid = config('larke.auth.adminid');
+        $adminid = app('larke.auth')->getId();
         if ($id == $adminid) {
-            $this->errorJson(__('你不能修改自己的密码'));
+            return $this->errorJson(__('你不能修改自己的密码'));
         }
         
         $adminInfo = AdminModel::where('id', '=', $id)
             ->first();
         if (empty($adminInfo)) {
-            $this->errorJson(__('要修改的账号不存在'));
+            return $this->errorJson(__('要修改的账号不存在'));
         }
 
         // 密码长度错误
         $password = $request->get('password');
         if (strlen($password) != 32) {
-            $this->errorJson(__('密码格式错误'));
+            return $this->errorJson(__('密码格式错误'));
         }
 
         // 新密码
@@ -321,10 +321,10 @@ class Admin extends Base
                 'passport_salt' => $newPasswordInfo['encrypt'],
             ]);
         if ($status === false) {
-            $this->errorJson(__('密码修改失败'));
+            return $this->errorJson(__('密码修改失败'));
         }
         
-        $this->successJson(__('密码修改成功'));
+        return $this->successJson(__('密码修改成功'));
     }
     
     /**
@@ -334,27 +334,27 @@ class Admin extends Base
     {
         $id = $request->get('id');
         if (empty($id)) {
-            $this->errorJson(__('账号ID不能为空'));
+            return $this->errorJson(__('账号ID不能为空'));
         }
         
-        $adminid = config('larke.auth.adminid');
+        $adminid = app('larke.auth')->getId();
         if ($id == $adminid) {
-            $this->errorJson(__('你不能修改退出你的登陆'));
+            return $this->errorJson(__('你不能修改退出你的登陆'));
         }
         
         $refreshToken = $request->get('refresh_token');
         if (empty($refreshToken)) {
-            $this->errorJson(__('refreshToken不能为空'));
+            return $this->errorJson(__('refreshToken不能为空'));
         }
         
         $adminInfo = AdminModel::where('id', '=', $id)
             ->first();
         if (empty($adminInfo)) {
-            $this->errorJson(__('账号不存在'));
+            return $this->errorJson(__('账号不存在'));
         }
         
         if (Cache::has(md5($refreshToken))) {
-            $this->errorJson(__('refreshToken已失效'));
+            return $this->errorJson(__('refreshToken已失效'));
         }
         
         $refreshJwt = app('larke.jwt');
@@ -362,19 +362,19 @@ class Admin extends Base
         try {
             $refreshJwt->withToken($refreshToken)->decode();
         } catch(\Exception $e) {
-            $this->errorJson(__("JWT格式错误：:message", [
+            return $this->errorJson(__("JWT格式错误：:message", [
                 'message' => $e->getMessage(),
             ]));
         }
         
         if (!($refreshJwt->validate() && $refreshJwt->verify())) {
-            $this->errorJson(__('refreshToken已过期'));
+            return $this->errorJson(__('refreshToken已过期'));
         }
         
         try {
             $refreshAdminid = $refreshJwt->getClaim('adminid');
         } catch(\Exception $e) {
-            $this->errorJson(__("JWT格式错误：:message", [
+            return $this->errorJson(__("JWT格式错误：:message", [
                 'message' => $e->getMessage(),
             ]));
         }
@@ -382,19 +382,19 @@ class Admin extends Base
         try {
             $refreshTokenExpiredIn = $refreshJwt->getClaim('expired_in');
         } catch(\Exception $e) {
-            $this->errorJson(__("JWT格式错误：:message", [
+            return $this->errorJson(__("JWT格式错误：:message", [
                 'message' => $e->getMessage(),
             ]));
         }
         
         if ($id != $refreshAdminid) {
-            $this->errorJson(__('退出失败'));
+            return $this->errorJson(__('退出失败'));
         }
         
         // 添加缓存黑名单
         Cache::put(md5($refreshToken), $refreshToken, $refreshTokenExpiredIn);
         
-        $this->successJson(__('退出成功'));
+        return $this->successJson(__('退出成功'));
     }
     
 }

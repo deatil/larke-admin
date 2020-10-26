@@ -78,12 +78,8 @@ class Authenticate
             $this->errorJson(__('帐号不存在或者已被锁定'));
         }
         
-        config([
-            'larke.auth' => [
-                'adminid' => $adminid,
-                'admininfo' => $adminInfo,
-            ],
-        ]);
+        app('larke.auth')->withId($adminid)
+            ->withData($adminInfo);
     }
 
     /**

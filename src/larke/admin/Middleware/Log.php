@@ -16,16 +16,16 @@ class Log
 {
     public function handle($request, Closure $next)
     {
+        $adminInfo = app('larke.auth')->getData();
+        
         $response = $next($request);
         
-        $adminInfo = config('larke.auth.admininfo');
-        
-        $input = $request->except(['password', 'passport_salt']);
+        $input = $request->except(['password', 'password2', 'passport_salt']);
         
         // 记录日志
         AdminLogModel::record([
-            'admin_id' => $adminInfo['id'],
-            'admin_name' => $adminInfo['name'],
+            'admin_id' => $adminInfo['id'] ?? 0,
+            'admin_name' => $adminInfo['name'] ?? '-',
             'info' => json_encode($input, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE),
             'status' => 1,
         ]);

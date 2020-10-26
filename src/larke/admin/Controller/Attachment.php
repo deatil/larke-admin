@@ -26,7 +26,7 @@ class Attachment extends Base
     {
         $requestFile = $request->file('file');
         if (empty($requestFile)) {
-            $this->errorJson(__('上传文件不能为空'));
+            return $this->errorJson(__('上传文件不能为空'));
         }
         
         // Pathname
@@ -59,7 +59,7 @@ class Attachment extends Base
                 'update_ip' => $request->ip(),
             ]);
             
-            $this->successJson(__('上传成功'), [
+            return $this->successJson(__('上传成功'), [
                 'id' => $fileInfo['id'],
                 'url' => $fileInfo['path'],
             ]);
@@ -71,11 +71,9 @@ class Attachment extends Base
             'public'
         );
         
-        $id = md5(mt_rand(100000, 999999).microtime());
         $data = [
-            'id' => $id,
             'type' => 'admin',
-            'type_id' => config('larke.auth.adminid'),
+            'type_id' => app('larke.auth')->getId(),
             'name' => $name,
             'path' => $path,
             'mime' => $mimeType,
@@ -90,16 +88,16 @@ class Attachment extends Base
             'create_time' => time(),
             'create_ip' => $request->ip(),
         ];
-        $status = AttachmentModel::insert($data);
-        if ($status === false) {
+        $Attachment = AttachmentModel::create($data);
+        if ($Attachment === false) {
             Storage::disk('public')->delete($path);
-            $this->errorJson(__('上传失败'));
+            return $this->errorJson(__('上传失败'));
         }
         
         $url = Storage::url($path);
         
-        $this->successJson(__('上传成功'), [
-            'id' => $id,
+        return $this->successJson(__('上传成功'), [
+            'id' => $Attachment->id,
             'url' => $url,
         ]);
     }
@@ -128,7 +126,7 @@ class Attachment extends Base
             ->get()
             ->toArray(); 
         
-        $this->successJson(__('获取成功'), [
+        return $this->successJson(__('获取成功'), [
             'start' => $start,
             'limit' => $limit,
             'total' => $total,
@@ -146,16 +144,16 @@ class Attachment extends Base
     {
         $fileId = $request->get('id');
         if (empty($fileId)) {
-            $this->errorJson(__('文件ID不能为空'));
+            return $this->errorJson(__('文件ID不能为空'));
         }
         
         $fileInfo = AttachmentModel::where(['id' => $fileId])
             ->first();
         if (empty($fileInfo)) {
-            $this->errorJson(__('文件信息不存在'));
+            return $this->errorJson(__('文件信息不存在'));
         }
         
-        $this->successJson(__('获取成功'), $fileInfo);
+        return $this->successJson(__('获取成功'), $fileInfo);
     }
     
     /**
@@ -168,24 +166,24 @@ class Attachment extends Base
     {
         $fileId = $request->get('id');
         if (empty($fileId)) {
-            $this->errorJson(__('文件ID不能为空'));
+            return $this->errorJson(__('文件ID不能为空'));
         }
         
         $fileInfo = AttachmentModel::where(['id' => $fileId])
             ->first();
         if (empty($fileInfo)) {
-            $this->errorJson(__('文件信息不存在'));
+            return $this->errorJson(__('文件信息不存在'));
         }
         
         $deleteStatus = AttachmentModel::where(['id' => $fileId])
             ->delete();
         if ($deleteStatus === false) {
-            $this->errorJson(__('文件删除失败'));
+            return $this->errorJson(__('文件删除失败'));
         }
         
         Storage::disk('public')->delete($fileInfo['path']);
         
-        $this->successJson(__('文件删除成功'));
+        return $this->successJson(__('文件删除成功'));
     }
     
     /**
@@ -198,13 +196,13 @@ class Attachment extends Base
     {
         $fileId = $request->get('id');
         if (empty($fileId)) {
-            $this->errorJson(__('文件ID不能为空'));
+            return $this->errorJson(__('文件ID不能为空'));
         }
         
         $fileInfo = AttachmentModel::where(['id' => $fileId])
             ->first();
         if (empty($fileInfo)) {
-            $this->errorJson(__('文件不存在'));
+            return $this->errorJson(__('文件不存在'));
         }
         
         return Storage::disk('public')->download($fileInfo['path'], $fileInfo['name']);

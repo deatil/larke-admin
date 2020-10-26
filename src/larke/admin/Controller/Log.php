@@ -39,7 +39,7 @@ class Log extends Base
             ->get()
             ->toArray(); 
         
-        $this->successJson(__('获取成功'), [
+        return $this->successJson(__('获取成功'), [
             'start' => $start,
             'limit' => $limit,
             'total' => $total,
@@ -57,17 +57,17 @@ class Log extends Base
     {
         $id = $request->get('id');
         if (empty($id)) {
-            $this->errorJson(__('日志ID不能为空'));
+            return $this->errorJson(__('日志ID不能为空'));
         }
         
         $info = AdminLogModel::where(['id' => $id])
             ->withCertain('admin', ['name', 'email', 'avatar', 'last_active', 'last_ip'])
             ->first();
         if (empty($info)) {
-            $this->errorJson(__('日志信息不存在'));
+            return $this->errorJson(__('日志信息不存在'));
         }
         
-        $this->successJson(__('获取成功'), $info);
+        return $this->successJson(__('获取成功'), $info);
     }
     
     /**
@@ -80,22 +80,22 @@ class Log extends Base
     {
         $id = $request->get('id');
         if (empty($id)) {
-            $this->errorJson(__('日志ID不能为空'));
+            return $this->errorJson(__('日志ID不能为空'));
         }
         
         $info = AdminLogModel::where(['id' => $id])
             ->first();
         if (empty($info)) {
-            $this->errorJson(__('日志信息不存在'));
+            return $this->errorJson(__('日志信息不存在'));
         }
         
         $deleteStatus = AdminLogModel::where(['id' => $id])
             ->delete();
         if ($deleteStatus === false) {
-            $this->errorJson(__('日志删除失败'));
+            return $this->errorJson(__('日志删除失败'));
         }
         
-        $this->successJson(__('日志删除成功'));
+        return $this->successJson(__('日志删除成功'));
     }
     
 }

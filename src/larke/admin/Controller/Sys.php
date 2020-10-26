@@ -22,11 +22,17 @@ class Sys extends Base
     public function clearCache(Request $request)
     {
         Artisan::call('cache:clear');
-        Artisan::call('route:cache');
-        Artisan::call('config:cache');
+        Artisan::call('route:clear');
+        Artisan::call('config:clear');
         Artisan::call('view:clear');
         
-        $this->successJson(__('清除缓存成功'));
+        /**
+        // 设置缓存
+        Artisan::call('route:cache');
+        Artisan::call('config:cache');
+        */
+        
+        return $this->successJson(__('清除缓存成功'));
     }
     
 }

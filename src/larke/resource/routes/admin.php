@@ -17,6 +17,7 @@ Route::group([
         $router->get('/profile', 'Profile@index')->name('larke-admin-profile');
         $router->post('/profile/update', 'Profile@update')->name('larke-admin-profile-update');
         $router->post('/profile/password', 'Profile@changePasssword')->name('larke-admin-profile-password');
+        $router->get('/profile/menus', 'Profile@menus')->name('larke-admin-profile-menus');
         
         $router->get('/attachment/index', 'Attachment@index')->name('larke-admin-attachment-index');
         $router->get('/attachment/detail', 'Attachment@detail')->name('larke-admin-attachment-detail');

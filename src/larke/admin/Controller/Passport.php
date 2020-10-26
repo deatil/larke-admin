@@ -34,7 +34,7 @@ class Passport extends Base
         ]);
         
         if ($validator->fails()) {
-            $this->errorJson($validator->errors()->first());
+            return $this->errorJson($validator->errors()->first());
         }
         
         $id = $request->get('id');
@@ -45,7 +45,7 @@ class Passport extends Base
         
         $captcha = $Captcha->getData();
         
-        $this->successJson(__('获取成功'), [
+        return $this->successJson(__('获取成功'), [
             'captcha' => $captcha,
         ]);
     }
@@ -57,30 +57,30 @@ class Passport extends Base
     {
         $name = $request->get('name');
         if (empty($name)) {
-            $this->errorJson(__('账号不能为空'));
+            return $this->errorJson(__('账号不能为空'));
         }
 
         $password = $request->post('password');
         if (empty($password)) {
-            $this->errorJson(__('密码不能为空'));
+            return $this->errorJson(__('密码不能为空'));
         }
         if (strlen($password) != 32) {
-            $this->errorJson(__('用户密码错误'));
+            return $this->errorJson(__('用户密码错误'));
         }
         
         $captcha = $request->get('captcha');
         if (empty($captcha)) {
-            $this->errorJson(__('验证码不能为空'));
+            return $this->errorJson(__('验证码不能为空'));
         }
         if (!Captcha::check($captcha, md5($name))) {
-            $this->errorJson(__('验证码错误'));
+            return $this->errorJson(__('验证码错误'));
         }
         
         // 校验密码
         $adminInfo = AdminModel::where('name', $name)
             ->first();
         if (empty($adminInfo)) {
-            $this->errorJson(__('帐号错误'));
+            return $this->errorJson(__('帐号错误'));
         }
         
         $adminInfo = $adminInfo->toArray();
@@ -89,11 +89,11 @@ class Passport extends Base
             ->withSalt(config('larke.passport.salt'))
             ->encrypt($password, $adminInfo['passport_salt']); 
         if ($password2 != $adminInfo['password']) {
-            $this->errorJson(__('账号密码错误'));
+            return $this->errorJson(__('账号密码错误'));
         }
         
         if ($adminInfo['status'] == 0) {
-            $this->errorJson(__('用户已被禁用或者不存在'));
+            return $this->errorJson(__('用户已被禁用或者不存在'));
         }
         
         // 获取jwt的句柄
@@ -105,7 +105,7 @@ class Passport extends Base
             ->encode()
             ->getToken();
         if (empty($accessToken)) {
-            $this->errorJson(__('登陆失败'));
+            return $this->errorJson(__('登陆失败'));
         }
         
         // 刷新token
@@ -118,7 +118,7 @@ class Passport extends Base
             ->encode()
             ->getToken();
         if (empty($refreshToken)) {
-            $this->errorJson(__('登陆失败'));
+            return $this->errorJson(__('登陆失败'));
         }
         
         // 更新信息
@@ -127,7 +127,7 @@ class Passport extends Base
             'last_ip' => $request->ip(),
         ]);
         
-        $this->successJson(__('登录成功'), [
+        return $this->successJson(__('登录成功'), [
             'access_token' => $accessToken,
             'expired_in' => $expiredIn, // 过期时间
             'refresh_token' => $refreshToken,
@@ -141,16 +141,16 @@ class Passport extends Base
     {
         $accessToken = $request->get('access_token');
         if (empty($accessToken)) {
-            $this->errorJson(__('accessToken不能为空'));
+            return $this->errorJson(__('accessToken不能为空'));
         }
         
         $refreshToken = $request->get('refresh_token');
         if (empty($refreshToken)) {
-            $this->errorJson(__('refreshToken不能为空'));
+            return $this->errorJson(__('refreshToken不能为空'));
         }
         
         if (Cache::has(md5($refreshToken))) {
-            $this->errorJson(__('refreshToken已失效'));
+            return $this->errorJson(__('refreshToken已失效'));
         }
         
         // accessToken
@@ -160,19 +160,19 @@ class Passport extends Base
         try {
             $accessJwt->withToken($accessToken)->decode();
         } catch(\Exception $e) {
-            $this->errorJson(__("JWT格式错误：:message", [
+            return $this->errorJson(__("JWT格式错误：:message", [
                 'message' => $e->getMessage(),
             ]));
         }
         
         if (!$accessJwt->verify()) {
-            $this->errorJson(__('accessToken错误'));
+            return $this->errorJson(__('accessToken错误'));
         }
         
         try {
             $accessAdminid = $accessJwt->getClaim('adminid');
         } catch(\Exception $e) {
-            $this->errorJson(__("JWT格式错误：:message", [
+            return $this->errorJson(__("JWT格式错误：:message", [
                 'message' => $e->getMessage(),
             ]));
         }
@@ -183,19 +183,19 @@ class Passport extends Base
         try {
             $refreshJwt->withToken($refreshToken)->decode();
         } catch(\Exception $e) {
-            $this->errorJson(__("JWT格式错误：:message", [
+            return $this->errorJson(__("JWT格式错误：:message", [
                 'message' => $e->getMessage(),
             ]));
         }
         
         if (!($refreshJwt->validate() && $refreshJwt->verify())) {
-            $this->errorJson(__('token已过期'));
+            return $this->errorJson(__('token已过期'));
         }
         
         try {
             $refreshAdminid = $refreshJwt->getClaim('adminid');
         } catch(\Exception $e) {
-            $this->errorJson(__("JWT格式错误：:message", [
+            return $this->errorJson(__("JWT格式错误：:message", [
                 'message' => $e->getMessage(),
             ]));
         }
@@ -203,13 +203,13 @@ class Passport extends Base
         try {
             $refreshTokenExpiredIn = $refreshJwt->getClaim('expired_in');
         } catch(\Exception $e) {
-            $this->errorJson(__("JWT格式错误：:message", [
+            return $this->errorJson(__("JWT格式错误：:message", [
                 'message' => $e->getMessage(),
             ]));
         }
         
         if ($accessAdminid != $refreshAdminid) {
-            $this->errorJson(__('刷新Token失败'));
+            return $this->errorJson(__('刷新Token失败'));
         }
         
         $expiredIn = config('larke.passport.expired_in', 300);
@@ -220,13 +220,13 @@ class Passport extends Base
             ->encode()
             ->getToken();
         if (empty($newAccessToken)) {
-            $this->errorJson(__('刷新Token失败'));
+            return $this->errorJson(__('刷新Token失败'));
         }
         
         // 添加缓存黑名单
         Cache::add(md5($accessToken), $accessToken, $refreshTokenExpiredIn);
         
-        $this->successJson(__('刷新Token成功'), [
+        return $this->successJson(__('刷新Token成功'), [
             'access_token' => $newAccessToken,
             'expired_in' => $expiredIn,
         ]);
@@ -239,16 +239,16 @@ class Passport extends Base
     {
         $accessToken = $request->get('access_token');
         if (empty($accessToken)) {
-            $this->errorJson(__('accessToken不能为空'));
+            return $this->errorJson(__('accessToken不能为空'));
         }
         
         $refreshToken = $request->get('refresh_token');
         if (empty($refreshToken)) {
-            $this->errorJson(__('refreshToken不能为空'));
+            return $this->errorJson(__('refreshToken不能为空'));
         }
         
         if (Cache::has(md5($refreshToken))) {
-            $this->errorJson(__('refreshToken已失效'));
+            return $this->errorJson(__('refreshToken已失效'));
         }
         
         // accessToken
@@ -256,17 +256,17 @@ class Passport extends Base
         try {
             $accessJwt->withToken($accessToken)->decode();
         } catch(\Exception $e) {
-            $this->errorJson(__("JWT格式错误：:message", [
+            return $this->errorJson(__("JWT格式错误：:message", [
                 'message' => $e->getMessage(),
             ]));
         }
         if (!($accessJwt->validate() && $accessJwt->verify())) {
-            $this->errorJson(__('accessToken已过期'));
+            return $this->errorJson(__('accessToken已过期'));
         }
         try {
             $accessAdminid = $accessJwt->getClaim('adminid');
         } catch(\Exception $e) {
-            $this->errorJson(__("JWT格式错误：:message", [
+            return $this->errorJson(__("JWT格式错误：:message", [
                 'message' => $e->getMessage(),
             ]));
         }
@@ -277,19 +277,19 @@ class Passport extends Base
         try {
             $refreshJwt->withToken($refreshToken)->decode();
         } catch(\Exception $e) {
-            $this->errorJson(__("JWT格式错误：:message", [
+            return $this->errorJson(__("JWT格式错误：:message", [
                 'message' => $e->getMessage(),
             ]));
         }
         
         if (!($refreshJwt->validate() && $refreshJwt->verify())) {
-            $this->errorJson(__('refreshToken已过期'));
+            return $this->errorJson(__('refreshToken已过期'));
         }
         
         try {
             $refreshAdminid = $refreshJwt->getClaim('adminid');
         } catch(\Exception $e) {
-            $this->errorJson(__("JWT格式错误：:message", [
+            return $this->errorJson(__("JWT格式错误：:message", [
                 'message' => $e->getMessage(),
             ]));
         }
@@ -297,20 +297,20 @@ class Passport extends Base
         try {
             $refreshTokenExpiredIn = $refreshJwt->getClaim('expired_in');
         } catch(\Exception $e) {
-            $this->errorJson(__("JWT格式错误：:message", [
+            return $this->errorJson(__("JWT格式错误：:message", [
                 'message' => $e->getMessage(),
             ]));
         }
         
         if ($accessAdminid != $refreshAdminid) {
-            $this->errorJson(__('退出失败'));
+            return $this->errorJson(__('退出失败'));
         }
         
         // 添加缓存黑名单
         Cache::add(md5($accessToken), $accessToken, $refreshTokenExpiredIn);
         Cache::add(md5($refreshToken), $refreshToken, $refreshTokenExpiredIn);
         
-        $this->successJson(__('退出成功'));
+        return $this->successJson(__('退出成功'));
     }
     
 }
