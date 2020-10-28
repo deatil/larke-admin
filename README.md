@@ -4,7 +4,6 @@
 ### 项目介绍
 
 *  `larke-admin` 基于 `Laravel` 框架，提供后台API相关接口
-*  后台页面基于 `layui` 搭建
 
 
 ### 开源协议
