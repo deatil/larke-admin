@@ -4,7 +4,6 @@ namespace Larke\Admin\Auth;
 
 use Larke\Admin\Repository\Admin as AdminRepository;
 use Larke\Admin\Repository\AuthGroup as AuthGroupRepository;
-use Larke\Admin\Repository\AuthRule as AuthRuleRepository;
 
 /*
  * 管理员信息
@@ -169,41 +168,6 @@ class Admin
     {
         $ruleids = $this->getRules();
         return collect($ruleids)->pluck('id');
-    }
-    
-    /*
-     * 获取 ChildrenRules
-     */
-    public function getRuleChildren()
-    {
-        $groupids = $this->getGroupids();
-        if (empty($groupids)) {
-            return [];
-        }
-        
-        $list = AuthRuleRepository::getChildren($groupids);
-        
-        $list = collect($list)->map(function($data) {
-            return [
-                'id' => $data['id'],
-                'parentid' => $data['parentid'],
-                'title' => $data['title'],
-                'url' => $data['url'],
-                'method' => $data['method'],
-                'description' => $data['description'],
-            ];
-        });
-        
-        return $list;
-    }
-    
-    /*
-     * 获取 ChildrenRuleids
-     */
-    public function getRuleChildrenIds()
-    {
-        $list = $this->getRuleChildren();
-        return collect($list)->pluck('id');
     }
 
 }

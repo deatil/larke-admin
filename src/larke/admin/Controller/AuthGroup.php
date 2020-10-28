@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Larke\Admin\Service\Tree;
 use Larke\Admin\Model\AuthGroup as AuthGroupModel;
 use Larke\Admin\Model\AuthRuleAccess as AuthRuleAccessModel;
+use Larke\Admin\Repository\AuthGroup as AuthGroupRepository;
 
 /**
  * AuthGroup
@@ -69,6 +70,29 @@ class AuthGroup extends Base
         return $this->successJson(__('获取成功'), [
             'list' => $list,
         ]);
+    }
+    
+    /**
+     * 分组子列表
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function indexChildren(Request $request)
+    {
+        $id = $request->get('id');
+        if (empty($id) || is_array($id)) {
+            return $this->errorJson(__('ID不能为空'));
+        }
+        
+        $type = $request->get('type');
+        if ($type == 'list') {
+            $data = AuthGroupRepository::getChildren($id);
+        } else {
+            $data = AuthGroupRepository::getChildrenIds($id);
+        }
+        
+        return $this->successJson(__('获取成功'), $data);
     }
     
     /**

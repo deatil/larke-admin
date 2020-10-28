@@ -26,13 +26,21 @@ class Sys extends Base
         Artisan::call('config:clear');
         Artisan::call('view:clear');
         
-        /**
-        // 设置缓存
+        return $this->successJson(__('清除缓存成功'));
+    }
+    
+    /**
+     * 设置缓存
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function cache(Request $request)
+    {
         Artisan::call('route:cache');
         Artisan::call('config:cache');
-        */
         
-        return $this->successJson(__('清除缓存成功'));
+        return $this->successJson(__('路由及配置信息缓存成功'));
     }
     
 }

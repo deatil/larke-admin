@@ -15,7 +15,6 @@ use Larke\Admin\Model\AuthRule as AuthRuleModel;
  */
 class AuthRule
 {
-    
     /*
      * 获取 Children
      */

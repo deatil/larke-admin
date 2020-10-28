@@ -29,6 +29,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected $routeMiddleware = [
         'larke.admin.auth' => Middleware\Authenticate::class,
+        'larke.admin.auth.admin' => Middleware\AdminCheck::class,
         'larke.admin.log' => Middleware\Log::class,
     ];
 
@@ -81,7 +82,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function ensureHttps()
     {
-        if (config('admin.https') || config('admin.secure')) {
+        if (config('larke.https') || config('larke.secure')) {
             url()->forceScheme('https');
             $this->app['request']->server->set('HTTPS', true);
         }

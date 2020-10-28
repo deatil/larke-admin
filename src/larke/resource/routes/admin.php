@@ -7,6 +7,26 @@ Route::group([
     'middleware' => config('larke.route.middleware'),
 ], function ($router) {
     $router->namespace(config('larke.route.namespace'))->group(function ($router) {
+        $router->group([
+            'middleware' => config('larke.route.admin_middleware'),
+        ], function ($router) {
+            $router->get('/auth/rule/index', 'AuthRule@index')->name('larke-admin-auth-rule-index');
+            $router->get('/auth/rule/index-tree', 'AuthRule@indexTree')->name('larke-admin-auth-rule-index-tree');
+            $router->get('/auth/rule/index-children', 'AuthRule@indexChildren')->name('larke-admin-auth-rule-index-children');
+            $router->get('/auth/rule/detail', 'AuthRule@detail')->name('larke-admin-auth-rule-detail');
+            $router->post('/auth/rule/create', 'AuthRule@create')->name('larke-admin-auth-rule-create');
+            $router->put('/auth/rule/update', 'AuthRule@update')->name('larke-admin-auth-rule-update');
+            $router->delete('/auth/rule/delete', 'AuthRule@delete')->name('larke-admin-auth-rule-delete');
+            
+            $router->get('/auth/group/index', 'AuthGroup@index')->name('larke-admin-auth-group-index');
+            $router->get('/auth/group/index-tree', 'AuthGroup@indexTree')->name('larke-admin-auth-group-index-tree');
+            $router->get('/auth/group/index-children', 'AuthGroup@indexChildren')->name('larke-admin-auth-group-index-children');
+            $router->get('/auth/group/detail', 'AuthGroup@detail')->name('larke-admin-auth-group-detail');
+            $router->post('/auth/group/create', 'AuthGroup@create')->name('larke-admin-auth-group-create');
+            $router->put('/auth/group/update', 'AuthGroup@update')->name('larke-admin-auth-group-update');
+            $router->delete('/auth/group/delete', 'AuthGroup@delete')->name('larke-admin-auth-group-delete');
+        });
+        
         $router->get('/passport/captcha', 'Passport@captcha')->name('larke-admin-passport-captcha');
         $router->post('/passport/login', 'Passport@login')->name('larke-admin-passport-login');
         $router->post('/passport/logout', 'Passport@logout')->name('larke-admin-passport-logout');
@@ -31,20 +51,6 @@ Route::group([
         $router->put('/admin/password', 'Admin@changePasssword')->name('larke-admin-admin-password');
         $router->post('/admin/logout', 'Admin@logout')->name('larke-admin-admin-logout');
         
-        $router->get('/auth/rule/index', 'AuthRule@index')->name('larke-admin-auth-rule-index');
-        $router->get('/auth/rule/index-tree', 'AuthRule@indexTree')->name('larke-admin-auth-rule-group-index');
-        $router->get('/auth/rule/detail', 'AuthRule@detail')->name('larke-admin-auth-rule-detail');
-        $router->post('/auth/rule/create', 'AuthRule@create')->name('larke-admin-auth-rule-create');
-        $router->put('/auth/rule/update', 'AuthRule@update')->name('larke-admin-auth-rule-update');
-        $router->delete('/auth/rule/delete', 'AuthRule@delete')->name('larke-admin-auth-rule-delete');
-        
-        $router->get('/auth/group/index', 'AuthGroup@index')->name('larke-admin-auth-group-index');
-        $router->get('/auth/group/index-tree', 'AuthGroup@indexTree')->name('larke-admin-auth-group-group-index');
-        $router->get('/auth/group/detail', 'AuthGroup@detail')->name('larke-admin-auth-group-detail');
-        $router->post('/auth/group/create', 'AuthGroup@create')->name('larke-admin-auth-group-create');
-        $router->put('/auth/group/update', 'AuthGroup@update')->name('larke-admin-auth-group-update');
-        $router->delete('/auth/group/delete', 'AuthGroup@delete')->name('larke-admin-auth-group-delete');
-        
         $router->get('/config/index', 'Config@index')->name('larke-admin-config-index');
         $router->get('/config/detail', 'Config@detail')->name('larke-admin-config-detail');
         $router->post('/config/create', 'Config@create')->name('larke-admin-config-create');
@@ -56,6 +62,7 @@ Route::group([
         $router->get('/log/detail', 'Log@detail')->name('larke-admin-log-detail');
         $router->delete('/log/delete', 'Log@delete')->name('larke-admin-log-delete');
         
+        $router->post('/sys/cache', 'Sys@cache')->name('larke-admin-sys-cache');
         $router->post('/sys/clear-cache', 'Sys@clearCache')->name('larke-admin-sys-clear-cache');
     });
 });
