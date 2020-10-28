@@ -3,6 +3,8 @@
 namespace Larke\Admin\Auth;
 
 use Larke\Admin\Repository\Admin as AdminRepository;
+use Larke\Admin\Repository\AuthGroup as AuthGroupRepository;
+use Larke\Admin\Repository\AuthRule as AuthRuleRepository;
 
 /*
  * 管理员信息
@@ -60,6 +62,7 @@ class Admin
             "avatar",
             "email",
             "last_active",
+            "last_ip",
             "groups",
         ]);
         
@@ -108,7 +111,7 @@ class Admin
     public function getGroupids()
     {
         $groupids = $this->getGroups();
-        return collect($groupids)->pluck('id');
+        return collect($groupids)->pluck('id')->toArray();
     }
     
     /*
@@ -116,12 +119,12 @@ class Admin
      */
     public function getGroupChildren()
     {
-        $id = $this->id;
-        if (empty($id)) {
+        $groupids = $this->getGroupids();
+        if (empty($groupids)) {
             return [];
         }
         
-        $list = AdminRepository::getGroupChildren($id);
+        $list = AuthGroupRepository::getChildren($groupids);
         
         $list = collect($list)->map(function($data) {
             return [
@@ -141,7 +144,7 @@ class Admin
     public function getGroupChildrenIds()
     {
         $list = $this->getGroupChildren();
-        return collect($list)->pluck('id');
+        return collect($list)->pluck('id')->toArray();
     }
     
     /*
@@ -178,7 +181,7 @@ class Admin
             return [];
         }
         
-        $list = AdminRepository::getRuleChildren($groupids);
+        $list = AuthRuleRepository::getChildren($groupids);
         
         $list = collect($list)->map(function($data) {
             return [

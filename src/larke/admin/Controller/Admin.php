@@ -207,8 +207,13 @@ class Admin extends Base
         
         if (isset($data['access'])) {
             $accessData = [];
-            $accessArr = explode(',', $data['access']);
-            foreach ($accessArr as $access) {
+            
+            $groupIds = app('larke.admin')->getGroupChildrenIds();
+            $accessIds = explode(',', $data['access']);
+            
+            // 取交集
+            $intersectAccess = array_intersect_assoc($groupIds, $accessIds);
+            foreach ($intersectAccess as $access) {
                 $accessData[] = [
                     'admin_id' => $id,
                     'group_id' => $access,
@@ -297,8 +302,13 @@ class Admin extends Base
             AuthGroupAccessModel::where(['admin_id' => $id])->delete();
             
             $accessData = [];
-            $accessArr = explode(',', $data['access']);
-            foreach ($accessArr as $access) {
+            
+            $groupIds = app('larke.admin')->getGroupChildrenIds();
+            $accessIds = explode(',', $data['access']);
+            
+            // 取交集
+            $intersectAccess = array_intersect_assoc($groupIds, $accessIds);
+            foreach ($intersectAccess as $access) {
                 $accessData[] = [
                     'admin_id' => $id,
                     'group_id' => $access,

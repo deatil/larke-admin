@@ -289,7 +289,9 @@ class Tree
                 $v[$this->haschildKey] = $child ? 1 : 0;
                 unset($v[$this->buildChildKey]);
                 
-                $v[$this->parentidKey] = $parentid;
+                if (!isset($v[$this->parentidKey])) {
+                    $v[$this->parentidKey] = $parentid;
+                }
                 
                 $list[] = $v;
 
