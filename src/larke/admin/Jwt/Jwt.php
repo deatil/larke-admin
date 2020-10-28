@@ -271,7 +271,13 @@ class Jwt implements JwtContract
     public function decode()
     {
         if (!$this->decodeToken) {
-            $this->decodeToken = (new Parser())->parse((string) $this->token); 
+            $Parser = (new Parser());
+            
+            try {
+                $this->decodeToken = $Parser->parse((string) $this->token); 
+            } catch(\Exception $e) {
+                $this->decodeToken = false;
+            }
         }
         
         return $this;
@@ -282,6 +288,10 @@ class Jwt implements JwtContract
      */
     public function validate()
     {
+        if (!$this->decodeToken) {
+            return false;
+        }
+        
         $data = new ValidationData(); 
         $data->setIssuer($this->issuer);
         $data->setAudience($this->audience);
@@ -297,6 +307,10 @@ class Jwt implements JwtContract
      */
     public function verify()
     {
+        if (!$this->decodeToken) {
+            return false;
+        }
+        
         if ($this->signerType == 'RSA') {
             $key = 'file://'.$this->publicKey;
         } else {
@@ -313,7 +327,17 @@ class Jwt implements JwtContract
      */
     public function getClaim($name = 'uid')
     {
-        return $this->decodeToken->getClaim($name);
+        if (!$this->decodeToken) {
+            return false;
+        }
+        
+        try {
+            $claim = $this->decodeToken->getClaim($name);
+        } catch(\Exception $e) {
+            return false;
+        }
+        
+        return $claim;
     }
 
 }

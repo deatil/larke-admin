@@ -56,7 +56,7 @@ class AuthGroup extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function groupForIndex(Request $request)
+    public function indexTree(Request $request)
     {
         $result = AuthGroupModel::orderBy('listorder', 'ASC')
             ->orderBy('create_time', 'ASC')
@@ -64,8 +64,7 @@ class AuthGroup extends Base
             ->toArray(); 
         
         $Tree = new Tree();
-        $resultTree = $Tree->withData($result)->buildArray(0);
-        $list = $Tree->buildFormatList($resultTree);
+        $list = $Tree->withData($result)->buildArray(0);
         
         return $this->successJson(__('获取成功'), [
             'list' => $list,
@@ -161,7 +160,6 @@ class AuthGroup extends Base
             'description' => $data['description'],
             'listorder' => $data['listorder'] ? intval($data['listorder']) : 100,
             'is_system' => (isset($data['is_system']) && $data['is_system'] == 1) ? 1 : 0,
-            'is_root' => (isset($data['is_root']) && $data['is_root'] == 1) ? 1 : 0,
             'status' => ($data['status'] == 1) ? 1 : 0,
             'update_time' => time(),
             'update_ip' => $request->ip(),
@@ -234,7 +232,6 @@ class AuthGroup extends Base
             'description' => $data['description'],
             'listorder' => $data['listorder'] ? intval($data['listorder']) : 100,
             'is_system' => (isset($data['is_system']) && $data['is_system'] == 1) ? 1 : 0,
-            'is_root' => (isset($data['is_root']) && $data['is_root'] == 1) ? 1 : 0,
             'status' => ($data['status'] == 1) ? 1 : 0,
             'update_time' => time(),
             'update_ip' => $request->ip(),

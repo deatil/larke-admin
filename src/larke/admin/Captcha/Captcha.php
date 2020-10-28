@@ -144,7 +144,7 @@ class Captcha
         if (empty($uniqid)) {
             return false;
         }
-        $val = Cache::get($uniqid); // 获取并删除
+        $val = Cache::pull($uniqid); // 获取并删除
         return is_string($val) && strtolower($val) === strtolower($code);
     }
 }

@@ -14,6 +14,11 @@ class AuthGroup extends Base
     protected $keyType = 'string';
     protected $primaryKey = 'id';
     
+    protected $casts = [
+        'id' => 'string',
+        'parentid' => 'string',
+    ];
+    
     public $incrementing = false;
     public $timestamps = false;
     
@@ -47,5 +52,21 @@ class AuthGroup extends Base
     public function admins()
     {
         return $this->belongsToMany(Admin::class, AuthGroupAccess::class, 'admin_id', 'group_id');
+    }
+    
+    /**
+     * 获取子模块
+     */
+    public function childrenModule()
+    {
+        return $this->hasMany($this, 'parentid', 'id');
+    }
+    
+    /**
+     * 递归获取子模块
+     */
+    public function children()
+    {
+        return $this->childrenModule()->with('children');
     }
 }

@@ -7,10 +7,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
+use Larke\Admin\Service\Tree as TreeService;
+use Larke\Admin\Service\Password as PasswordService;
 use Larke\Admin\Model\Admin as AdminModel;
 use Larke\Admin\Model\Attachment as AttachmentModel;
-use Larke\Admin\Model\AuthGroup as AuthGroupModel;
-use Larke\Admin\Service\Password as PasswordService;
+use Larke\Admin\Repository\Admin as AdminRepository;
 
 /**
  * 个人信息
@@ -25,22 +26,9 @@ class Profile extends Base
      */
     public function index(Request $request)
     {
-        $adminid = app('larke.auth')->getId();
-        $adminInfo = AdminModel::select(
-                "name",
-                "nickname",
-                "avatar",
-                "email",
-                "last_active"
-            )
-            ->where('id', $adminid)
-            ->first();
+        $data = app('larke.admin')->getData();
         
-        if (empty($adminInfo)) {
-            return $this->errorJson(__('帐号错误'));
-        }
-        
-        return $this->successJson(__('获取成功'), $adminInfo);
+        return $this->successJson(__('获取成功'), $data);
     }
     
     /**
@@ -72,7 +60,7 @@ class Profile extends Base
         }
         
         // 更新信息
-        $adminid = app('larke.auth')->getId();
+        $adminid = app('larke.admin')->getId();
         $status = AdminModel::where('id', $adminid)
             ->update($updateData);
         if ($status === false) {
@@ -108,7 +96,7 @@ class Profile extends Base
             return $this->errorJson(__('两次密码输入不一致'));
         }
 
-        $adminid = app('larke.auth')->getId();
+        $adminid = app('larke.admin')->getId();
         $adminInfo = AdminModel::where('id', $adminid)
             ->first();
         if (empty($adminInfo)) {
@@ -145,7 +133,8 @@ class Profile extends Base
      */
     public function menus(Request $request)
     {
-        $adminid = app('larke.auth')->getId();
+        $adminid = app('larke.admin')->getId();
+        
         $info = AdminModel::where(['id' => $adminid])
             ->select(
                 'id', 
@@ -160,36 +149,15 @@ class Profile extends Base
             return $this->errorJson(__('账号信息不存在'));
         }
         
-        $groupAccesses = collect($info['groupAccesses'])->map(function($data) {
-            return $data['group_id'];
-        });
+        $groupids = collect($info['groupAccesses'])->pluck('group_id');
         
-        $groupRules = AuthGroupModel::with(['rules' => function($query) {
-            $query->select([
-                'parentid', 
-                'title', 
-                'url',
-                'method',
-                'description',
-            ]);
-        }])->whereHas('rules', function($query) {
-            $query->where('status', 1);
-        })->whereIn('id', $groupAccesses)
-            ->get()->toArray();
+        $list = AdminRepository::getRules($groupids);
         
-        $rules = collect($groupRules)->filter(function($data) {
-            return !empty($data['rules']);
-        })->map(function($data) {
-            return $data['rules'];
-        });
+        $TreeService = new TreeService();
+        $menus = $TreeService->withData($list)
+            ->buildArray(0);
         
-        $rules = Arr::collapse($rules);
-        $res = collect($rules)->map(function($data) {
-            unset($data['pivot']);
-            return $data;
-        });
-        
-        return $this->successJson(__('获取成功'), $res);
+        return $this->successJson(__('获取成功'), $menus);
     }
 
 }

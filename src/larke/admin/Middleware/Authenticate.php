@@ -3,7 +3,6 @@
 namespace Larke\Admin\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\Cache;
 
 use Larke\Admin\Traits\Json as JsonTrait;
 use Larke\Admin\Model\Admin as AdminModel;
@@ -41,44 +40,37 @@ class Authenticate
             $this->errorJson(__('token格式错误'));
         }
         
-        if (Cache::has(md5($token))) {
+        if (app('larke.cache')->has(md5($token))) {
             $this->errorJson(__('token已失效'));
         }
         
         $jwtAuth = app('larke.jwt')
-            ->withJti(config('larke.passport.access_token_id'));
-        
-        try {
-            $jwtAuth->withToken($token)->decode();
-        } catch(\Exception $e) {
-            $this->errorJson(__("JWT解析错误：:message", [
-                'message' => $e->getMessage(),
-            ]));
-        }
+            ->withJti(config('larke.passport.access_token_id'))
+            ->withToken($token)
+            ->decode();
         
         if (!($jwtAuth->validate() && $jwtAuth->verify())) {
             $this->errorJson(__('token已过期'));
         }
         
-        try {
-            $adminid = $jwtAuth->getClaim('adminid');
-        } catch(\Exception $e) {
-            $this->errorJson(__("JWT解析错误：:message", [
-                'message' => $e->getMessage(),
-            ]));
+        $adminid = $jwtAuth->getClaim('adminid');
+        if ($adminid === false) {
+            $this->errorJson(__('token错误'));
         }
         
         $adminInfo = AdminModel::where('id', $adminid)
+            ->with(['groups'])
             ->first();
         if (empty($adminInfo)) {
             $this->errorJson(__('帐号不存在或者已被锁定'));
         }
+        
         $adminInfo = $adminInfo->toArray();
         if ($adminInfo['status'] != 1) {
             $this->errorJson(__('帐号不存在或者已被锁定'));
         }
         
-        app('larke.auth')->withId($adminid)
+        app('larke.admin')->withId($adminid)
             ->withData($adminInfo);
     }
 
@@ -92,6 +84,7 @@ class Authenticate
     protected function shouldPassThrough($request)
     {
         $excepts = array_merge(config('larke.auth.excepts', []), [
+            'larke-admin-passport-captcha',
             'larke-admin-passport-login',
             'larke-admin-passport-refresh-token',
             'larke-admin-attachment-download',

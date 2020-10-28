@@ -3,7 +3,6 @@
 namespace Larke\Admin\Controller;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 use Larke\Admin\Model\Admin as AdminModel;
@@ -34,8 +33,14 @@ class Admin extends Base
             $order = 'DESC';
         }
         
-        $total = AdminModel::count(); 
-        $list = AdminModel::offset($start)
+        $AdminModel = AdminModel::with('groupAccesses')
+            ->whereHas('groupAccesses', function($query) {
+                $groupids = app('larke.admin')->getGroupChildrenIds();
+                $query->whereIn('group_id', $groupids);
+            });
+        
+        $total = $AdminModel->count(); 
+        $list = $AdminModel->offset($start)
             ->limit($limit)
             ->select(
                 'id', 
@@ -43,6 +48,7 @@ class Admin extends Base
                 'nickname', 
                 'email', 
                 'avatar', 
+                'is_root', 
                 'status', 
                 'last_active', 
                 'last_ip',
@@ -74,13 +80,20 @@ class Admin extends Base
             return $this->errorJson(__('账号ID不能为空'));
         }
         
-        $info = AdminModel::where(['id' => $id])
+        $AdminModel = AdminModel::with('groupAccesses')
+            ->whereHas('groupAccesses', function($query) {
+                $groupids = app('larke.admin')->getGroupChildrenIds();
+                $query->whereIn('group_id', $groupids);
+            });
+        
+        $info = $AdminModel->where(['id' => $id])
             ->select(
                 'id', 
                 'name', 
                 'nickname', 
                 'email', 
                 'avatar', 
+                'is_root', 
                 'status', 
                 'last_active', 
                 'last_ip',
@@ -113,15 +126,25 @@ class Admin extends Base
         if (empty($id)) {
             return $this->errorJson(__('账号ID不能为空'));
         }
-        $adminid = app('larke.auth')->getId();
+        $adminid = app('larke.admin')->getId();
         if ($id == $adminid) {
             return $this->errorJson(__('你不能删除你自己'));
         }
         
-        $info = AdminModel::where(['id' => $id])
+        $AdminModel = AdminModel::with('groupAccesses')
+            ->whereHas('groupAccesses', function($query) {
+                $groupids = app('larke.admin')->getGroupChildrenIds();
+                $query->whereIn('group_id', $groupids);
+            });
+            
+        $info = $AdminModel->where(['id' => $id])
             ->first();
         if (empty($info)) {
             return $this->errorJson(__('账号信息不存在'));
+        }
+        
+        if ($info['id'] == config('larke.auth.admin_id')) {
+            return $this->errorJson(__('当前账号不能被删除'));
         }
         
         $deleteStatus = AdminModel::where(['id' => $id])
@@ -167,6 +190,7 @@ class Admin extends Base
             'nickname' => $data['nickname'],
             'email' => $data['email'],
             'status' => ($data['status'] == 1) ? 1 : 0,
+            'is_root' => (isset($data['is_root']) && $data['is_root'] == 1) ? 1 : 0,
             'last_active' => time(),
             'last_ip' => $request->ip(),
             'create_time' => time(),
@@ -211,12 +235,18 @@ class Admin extends Base
             return $this->errorJson(__('账号ID不能为空'));
         }
         
-        $adminid = app('larke.auth')->getId();
+        $adminid = app('larke.admin')->getId();
         if ($id == $adminid) {
             return $this->errorJson(__('你不能修改自己的信息'));
         }
         
-        $adminInfo = AdminModel::where('id', '=', $id)
+        $AdminModel = AdminModel::with('groupAccesses')
+            ->whereHas('groupAccesses', function($query) {
+                $groupids = app('larke.admin')->getGroupChildrenIds();
+                $query->whereIn('group_id', $groupids);
+            });
+            
+        $adminInfo = $AdminModel->where('id', '=', $id)
             ->first();
         if (empty($adminInfo)) {
             return $this->errorJson(__('要修改的账号不存在'));
@@ -250,6 +280,7 @@ class Admin extends Base
             'nickname' => $data['nickname'],
             'email' => $data['email'],
             'status' => ($data['status'] == 1) ? 1 : 0,
+            'is_root' => (isset($data['is_root']) && $data['is_root'] == 1) ? 1 : 0,
         ];
         if (!empty($data['avatar'])) {
             $updateData['avatar'] = $data['avatar'];
@@ -292,12 +323,18 @@ class Admin extends Base
             return $this->errorJson(__('账号ID不能为空'));
         }
         
-        $adminid = app('larke.auth')->getId();
+        $adminid = app('larke.admin')->getId();
         if ($id == $adminid) {
             return $this->errorJson(__('你不能修改自己的密码'));
         }
         
-        $adminInfo = AdminModel::where('id', '=', $id)
+        $AdminModel = AdminModel::with('groupAccesses')
+            ->whereHas('groupAccesses', function($query) {
+                $groupids = app('larke.admin')->getGroupChildrenIds();
+                $query->whereIn('group_id', $groupids);
+            });
+        
+        $adminInfo = $AdminModel->where('id', '=', $id)
             ->first();
         if (empty($adminInfo)) {
             return $this->errorJson(__('要修改的账号不存在'));
@@ -337,7 +374,7 @@ class Admin extends Base
             return $this->errorJson(__('账号ID不能为空'));
         }
         
-        $adminid = app('larke.auth')->getId();
+        $adminid = app('larke.admin')->getId();
         if ($id == $adminid) {
             return $this->errorJson(__('你不能修改退出你的登陆'));
         }
@@ -353,38 +390,27 @@ class Admin extends Base
             return $this->errorJson(__('账号不存在'));
         }
         
-        if (Cache::has(md5($refreshToken))) {
+        if (app('larke.cache')->has(md5($refreshToken))) {
             return $this->errorJson(__('refreshToken已失效'));
         }
         
-        $refreshJwt = app('larke.jwt');
-        
-        try {
-            $refreshJwt->withToken($refreshToken)->decode();
-        } catch(\Exception $e) {
-            return $this->errorJson(__("JWT格式错误：:message", [
-                'message' => $e->getMessage(),
-            ]));
-        }
+        $refreshJwt = app('larke.jwt')
+            ->withJti(config('larke.passport.refresh_token_id'))
+            ->withToken($refreshToken)
+            ->decode();
         
         if (!($refreshJwt->validate() && $refreshJwt->verify())) {
             return $this->errorJson(__('refreshToken已过期'));
         }
         
-        try {
-            $refreshAdminid = $refreshJwt->getClaim('adminid');
-        } catch(\Exception $e) {
-            return $this->errorJson(__("JWT格式错误：:message", [
-                'message' => $e->getMessage(),
-            ]));
+        $refreshAdminid = $refreshJwt->getClaim('adminid');
+        if ($refreshAdminid === false) {
+            $this->errorJson(__('token错误'));
         }
         
-        try {
-            $refreshTokenExpiredIn = $refreshJwt->getClaim('expired_in');
-        } catch(\Exception $e) {
-            return $this->errorJson(__("JWT格式错误：:message", [
-                'message' => $e->getMessage(),
-            ]));
+        $refreshTokenExpiredIn = $refreshJwt->getClaim('expired_in');
+        if ($refreshTokenExpiredIn === false) {
+            $this->errorJson(__('token错误'));
         }
         
         if ($id != $refreshAdminid) {
@@ -392,7 +418,7 @@ class Admin extends Base
         }
         
         // 添加缓存黑名单
-        Cache::put(md5($refreshToken), $refreshToken, $refreshTokenExpiredIn);
+        app('larke.cache')->add(md5($refreshToken), $refreshToken, $refreshTokenExpiredIn);
         
         return $this->successJson(__('退出成功'));
     }

@@ -106,6 +106,8 @@ class Tree
                 $childInfo[$this->buildChildKey] = $childList;
             }
             
+            unset($childInfo[$this->parentidKey]);
+            
             $data[] = $childInfo;
             $number++;
         }
@@ -270,7 +272,7 @@ class Tree
      * @param array     $data 数据
      * @return array
      */
-    public function buildFormatList($data = [])
+    public function buildFormatList($data = [], $parentid = 0)
     {
         if (empty($data)) {
             return [];
@@ -287,10 +289,12 @@ class Tree
                 $v[$this->haschildKey] = $child ? 1 : 0;
                 unset($v[$this->buildChildKey]);
                 
+                $v[$this->parentidKey] = $parentid;
+                
                 $list[] = $v;
 
                 if (!empty($child)) {
-                    $list = array_merge($list, $this->buildFormatList($child));
+                    $list = array_merge($list, $this->buildFormatList($child, $v[$this->idKey]));
                 }
             }
         }

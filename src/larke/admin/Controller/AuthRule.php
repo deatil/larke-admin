@@ -59,7 +59,7 @@ class AuthRule extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function groupForIndex(Request $request)
+    public function indexTree(Request $request)
     {
         $result = AuthRuleModel::orderBy('listorder', 'ASC')
             ->orderBy('create_time', 'ASC')
@@ -67,8 +67,7 @@ class AuthRule extends Base
             ->toArray(); 
         
         $Tree = new Tree();
-        $resultTree = $Tree->withData($result)->buildArray(0);
-        $list = $Tree->buildFormatList($resultTree);
+        $list = $Tree->withData($result)->buildArray(0);
         
         return $this->successJson(__('获取成功'), [
             'list' => $list,

@@ -27,4 +27,28 @@ class AuthRule extends Base
     {
         return $this->belongsToMany(AuthGroup::class, AuthRuleAccess::class, 'group_id', 'rule_id');
     }
+    
+    /**
+     * 授权
+     */
+    public function ruleAccess()
+    {
+        return $this->hasOne(AuthRuleAccess::class, 'rule_id', 'id');
+    }
+    
+    /**
+     * 获取子模块
+     */
+    public function childrenModule()
+    {
+        return $this->hasMany($this, 'parentid', 'id');
+    }
+    
+    /**
+     * 递归获取子模块
+     */
+    public function children()
+    {
+        return $this->childrenModule()->with('children');
+    }
 }

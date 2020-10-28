@@ -9,8 +9,8 @@ use Larke\Admin\Contracts\Response as ResponseContract;
 use Larke\Admin\Contracts\Jwt as JwtContract;
 use Larke\Admin\Jwt\Jwt;
 use Larke\Admin\Http\Response as ResponseHttp;
+use Larke\Admin\Service\Cache as CacheService;
 use Larke\Admin\Auth\Admin as AdminData;
-
 use Larke\Admin\Model\AdminLog as AdminLogModel;
 use Larke\Admin\Model\Attachment as AttachmentModel;
 use Larke\Admin\Observer\AdminLog as AdminLogObserver;
@@ -116,8 +116,18 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function registerBind()
     {
-        // admin
-        $this->app->singleton('larke.auth', AdminData::class);
+        // json响应
+        $this->app->bind('larke.json', ResponseContract::class);
+        $this->app->bind(ResponseContract::class, ResponseHttp::class);
+        
+        // 系统使用缓存
+        $this->app->singleton('larke.cache', function() {
+            $CacheService = new CacheService();
+            return $CacheService->store();
+        });
+        
+        // 管理员登陆信息
+        $this->app->singleton('larke.admin', AdminData::class);
         
         // jwt
         $this->app->bind('larke.jwt', JwtContract::class);
@@ -141,10 +151,6 @@ class ServiceProvider extends BaseServiceProvider
             
             return $Jwt;
         });
-        
-        // json响应
-        $this->app->bind('larke.json', ResponseContract::class);
-        $this->app->bind(ResponseContract::class, ResponseHttp::class);
     }
     
     /**
@@ -156,8 +162,8 @@ class ServiceProvider extends BaseServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__.'/../resource/assets/admin' => public_path('admin'),
-            ], 'larke-admin-web');
+                __DIR__.'/../resource/config/larke.php' => config_path('larke.php'),
+            ], 'larke-admin-config');
         }
     }
     

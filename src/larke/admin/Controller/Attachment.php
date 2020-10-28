@@ -73,7 +73,7 @@ class Attachment extends Base
         
         $data = [
             'type' => 'admin',
-            'type_id' => app('larke.auth')->getId(),
+            'type_id' => app('larke.admin')->getId(),
             'name' => $name,
             'path' => $path,
             'mime' => $mimeType,
