@@ -27,10 +27,10 @@ class Install extends Command
      */
     public function handle()
     {
-        $this->call('vendor:publish', ['--tag' => 'larke-admin', '--force' => true]);
-
         if ($this->option('force')) {
-            
+            $this->call('vendor:publish', ['--tag' => 'larke-admin-config', '--force' => true]);
+        } else {
+            $this->call('vendor:publish', ['--tag' => 'larke-admin-config']);
         }
 
         $this->info('Larke-admin install success.');

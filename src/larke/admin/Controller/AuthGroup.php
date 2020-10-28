@@ -171,7 +171,7 @@ class AuthGroup extends Base
             'title.required' => __('名称不能为空'),
             'status.required' => __('状态选项不能为空'),
         ]);
-
+        
         if ($validator->fails()) {
             return $this->errorJson($validator->errors()->first());
         }
@@ -199,18 +199,6 @@ class AuthGroup extends Base
             return $this->errorJson(__('信息添加失败'));
         }
         
-        if (isset($data['access'])) {
-            $accessData = [];
-            $accessArr = explode(',', $data['access']);
-            foreach ($accessArr as $access) {
-                $accessData[] = [
-                    'rule_id' => $access,
-                    'group_id' => $id,
-                ];
-            }
-            AuthRuleAccessModel::insert($accessData);
-        }
-        
         return $this->successJson(__('信息添加成功'), [
             'id' => $id,
         ]);
@@ -226,7 +214,7 @@ class AuthGroup extends Base
     {
         $id = $request->get('id');
         if (empty($id)) {
-            return $this->errorJson(__('账号ID不能为空'));
+            return $this->errorJson(__('ID不能为空'));
         }
         
         $info = AuthGroupModel::where('id', '=', $id)
@@ -268,22 +256,45 @@ class AuthGroup extends Base
             return $this->errorJson(__('信息修改失败'));
         }
         
-        if (isset($data['access'])) {
-            AuthRuleAccessModel::where(['group_id' => $id])->delete();
-            
+        return $this->successJson(__('信息修改成功'));
+    }
+    
+    /**
+     * 授权
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function access(Request $request)
+    {
+        $id = $request->get('id');
+        if (empty($id)) {
+            return $this->errorJson(__('ID不能为空'));
+        }
+        
+        $info = AuthGroupModel::where('id', '=', $id)
+            ->first();
+        if (empty($info)) {
+            return $this->errorJson(__('信息不存在'));
+        }
+        
+        AuthRuleAccessModel::where(['group_id' => $id])->delete();
+        
+        $access = $request->get('access');
+        if (!empty($access)) {
             $accessData = [];
-            $accessArr = explode(',', $data['access']);
+            $accessArr = explode(',', $access);
             foreach ($accessArr as $access) {
                 $accessData[] = [
                     'rule_id' => $access,
                     'group_id' => $id,
                 ];
             }
+            
             AuthRuleAccessModel::insert($accessData);
         }
         
-        return $this->successJson(__('信息修改成功'));
-        
+        return $this->successJson(__('授权成功'));
     }
     
 }

@@ -25,6 +25,7 @@ Route::group([
             $router->post('/auth/group/create', 'AuthGroup@create')->name('larke-admin-auth-group-create');
             $router->put('/auth/group/update', 'AuthGroup@update')->name('larke-admin-auth-group-update');
             $router->delete('/auth/group/delete', 'AuthGroup@delete')->name('larke-admin-auth-group-delete');
+            $router->put('/auth/group/access', 'AuthGroup@access')->name('larke-admin-auth-group-access');
         });
         
         $router->get('/passport/captcha', 'Passport@captcha')->name('larke-admin-passport-captcha');

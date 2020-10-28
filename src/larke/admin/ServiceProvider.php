@@ -5,6 +5,7 @@ namespace Larke\Admin;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 use Larke\Admin\Command\Install;
+use Larke\Admin\Command\ImportRoute;
 use Larke\Admin\Contracts\Response as ResponseContract;
 use Larke\Admin\Contracts\Jwt as JwtContract;
 use Larke\Admin\Jwt\Jwt;
@@ -20,6 +21,7 @@ class ServiceProvider extends BaseServiceProvider
 {
     protected $commands = [
         Install::class,
+        ImportRoute::class,
     ];
 
     /**
@@ -30,6 +32,7 @@ class ServiceProvider extends BaseServiceProvider
     protected $routeMiddleware = [
         'larke.admin.auth' => Middleware\Authenticate::class,
         'larke.admin.auth.admin' => Middleware\AdminCheck::class,
+        'larke.admin.permission' => Middleware\Permission::class,
         'larke.admin.log' => Middleware\Log::class,
     ];
 
@@ -41,6 +44,7 @@ class ServiceProvider extends BaseServiceProvider
     protected $middlewareGroups = [
         'larke.admin' => [
             'larke.admin.auth',
+            'larke.admin.permission',
             'larke.admin.log',
         ],
     ];

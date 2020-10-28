@@ -14,6 +14,8 @@ class AuthGroup extends Base
     protected $keyType = 'string';
     protected $primaryKey = 'id';
     
+    protected $guarded = [];
+    
     protected $casts = [
         'id' => 'string',
         'parentid' => 'string',

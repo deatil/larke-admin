@@ -14,6 +14,8 @@ class AuthRuleAccess extends Base
     protected $keyType = 'string';
     protected $primaryKey = 'id';
     
+    protected $guarded = [];
+    
     public $incrementing = false;
     public $timestamps = false;
 }

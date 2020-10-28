@@ -42,7 +42,8 @@ class AuthRule extends Base
             ->limit($limit)
             ->where('slug', 'like', '%'.$keywords.'%')
             ->orWhere('url', 'like', '%'.$keywords.'%')
-            ->orderBy('create_time', $order)
+            ->orderBy('slug', $order)
+            ->orderBy('create_time', 'ASC')
             ->get()
             ->toArray(); 
         
