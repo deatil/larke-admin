@@ -33,14 +33,8 @@ class Admin extends Base
             $order = 'DESC';
         }
         
-        $AdminModel = AdminModel::with('groupAccesses')
-            ->whereHas('groupAccesses', function($query) {
-                $groupids = app('larke.admin')->getGroupChildrenIds();
-                $query->whereIn('group_id', $groupids);
-            });
-        
-        $total = $AdminModel->count(); 
-        $list = $AdminModel->offset($start)
+        $total = AdminModel::withAccess()->count(); 
+        $list = AdminModel::withAccess()->offset($start)
             ->limit($limit)
             ->select(
                 'id', 
@@ -80,13 +74,7 @@ class Admin extends Base
             return $this->errorJson(__('账号ID不能为空'));
         }
         
-        $AdminModel = AdminModel::with('groupAccesses')
-            ->whereHas('groupAccesses', function($query) {
-                $groupids = app('larke.admin')->getGroupChildrenIds();
-                $query->whereIn('group_id', $groupids);
-            });
-        
-        $info = $AdminModel->where(['id' => $id])
+        $info = AdminModel::withAccess()->where(['id' => $id])
             ->select(
                 'id', 
                 'name', 
@@ -131,13 +119,7 @@ class Admin extends Base
             return $this->errorJson(__('你不能删除你自己'));
         }
         
-        $AdminModel = AdminModel::with('groupAccesses')
-            ->whereHas('groupAccesses', function($query) {
-                $groupids = app('larke.admin')->getGroupChildrenIds();
-                $query->whereIn('group_id', $groupids);
-            });
-            
-        $info = $AdminModel->where(['id' => $id])
+        $info = AdminModel::withAccess()->where(['id' => $id])
             ->first();
         if (empty($info)) {
             return $this->errorJson(__('账号信息不存在'));
@@ -205,22 +187,12 @@ class Admin extends Base
             return $this->errorJson(__('添加信息失败'));
         }
         
-        if (isset($data['access'])) {
-            $accessData = [];
-            
-            $groupIds = app('larke.admin')->getGroupChildrenIds();
-            $accessIds = explode(',', $data['access']);
-            
-            // 取交集
-            $intersectAccess = array_intersect_assoc($groupIds, $accessIds);
-            foreach ($intersectAccess as $access) {
-                $accessData[] = [
-                    'admin_id' => $id,
-                    'group_id' => $access,
-                ];
-            }
-            AuthGroupAccessModel::insert($accessData);
-        }
+        // 用户组默认取当前用户的用户组的其中之一
+        $groupIds = app('larke.admin')->getGroupids();
+        AuthGroupAccessModel::insert([
+            'admin_id' => $id,
+            'group_id' => $groupIds[0],
+        ]);
         
         return $this->successJson(__('添加信息成功'), [
             'id' => $id,
@@ -245,13 +217,7 @@ class Admin extends Base
             return $this->errorJson(__('你不能修改自己的信息'));
         }
         
-        $AdminModel = AdminModel::with('groupAccesses')
-            ->whereHas('groupAccesses', function($query) {
-                $groupids = app('larke.admin')->getGroupChildrenIds();
-                $query->whereIn('group_id', $groupids);
-            });
-            
-        $adminInfo = $AdminModel->where('id', '=', $id)
+        $adminInfo = AdminModel::withAccess()->where('id', '=', $id)
             ->first();
         if (empty($adminInfo)) {
             return $this->errorJson(__('要修改的账号不存在'));
@@ -298,25 +264,6 @@ class Admin extends Base
             return $this->errorJson(__('信息修改失败'));
         }
         
-        if (isset($data['access'])) {
-            AuthGroupAccessModel::where(['admin_id' => $id])->delete();
-            
-            $accessData = [];
-            
-            $groupIds = app('larke.admin')->getGroupChildrenIds();
-            $accessIds = explode(',', $data['access']);
-            
-            // 取交集
-            $intersectAccess = array_intersect_assoc($groupIds, $accessIds);
-            foreach ($intersectAccess as $access) {
-                $accessData[] = [
-                    'admin_id' => $id,
-                    'group_id' => $access,
-                ];
-            }
-            AuthGroupAccessModel::insert($accessData);
-        }
-        
         return $this->successJson(__('信息修改成功'));
     }
     
@@ -338,13 +285,8 @@ class Admin extends Base
             return $this->errorJson(__('你不能修改自己的密码'));
         }
         
-        $AdminModel = AdminModel::with('groupAccesses')
-            ->whereHas('groupAccesses', function($query) {
-                $groupids = app('larke.admin')->getGroupChildrenIds();
-                $query->whereIn('group_id', $groupids);
-            });
-        
-        $adminInfo = $AdminModel->where('id', '=', $id)
+        $adminInfo = AdminModel::withAccess()
+            ->where('id', '=', $id)
             ->first();
         if (empty($adminInfo)) {
             return $this->errorJson(__('要修改的账号不存在'));
@@ -394,7 +336,8 @@ class Admin extends Base
             return $this->errorJson(__('refreshToken不能为空'));
         }
         
-        $adminInfo = AdminModel::where('id', '=', $id)
+        $adminInfo = AdminModel::withAccess()
+            ->where('id', '=', $id)
             ->first();
         if (empty($adminInfo)) {
             return $this->errorJson(__('账号不存在'));
@@ -431,6 +374,49 @@ class Admin extends Base
         app('larke.cache')->add(md5($refreshToken), $refreshToken, $refreshTokenExpiredIn);
         
         return $this->successJson(__('退出成功'));
+    }
+    
+    /**
+     * 授权
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function access(Request $request)
+    {
+        $id = $request->get('id');
+        if (empty($id)) {
+            return $this->errorJson(__('ID不能为空'));
+        }
+        
+        $info = AdminModel::withAccess()
+            ->where('id', '=', $id)
+            ->first();
+        if (empty($info)) {
+            return $this->errorJson(__('信息不存在'));
+        }
+        
+        AuthGroupAccessModel::where(['admin_id' => $id])->delete();
+        
+        $access = $request->get('access');
+        if (!empty($access)) {
+            $groupIds = app('larke.admin')->getGroupChildrenIds();
+            $accessIds = explode(',', $data['access']);
+            
+            // 取交集
+            $intersectAccess = array_intersect_assoc($groupIds, $accessIds);
+            
+            $accessData = [];
+            foreach ($intersectAccess as $access) {
+                $accessData[] = [
+                    'admin_id' => $id,
+                    'group_id' => $access,
+                ];
+            }
+            AuthGroupAccessModel::insert($accessData);
+        }
+        
+        return $this->successJson(__('授权分组成功'));
     }
     
 }

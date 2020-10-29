@@ -54,6 +54,10 @@ class Admin
      */
     public function getData()
     {
+        if (empty($this->data)) {
+            return [];
+        }
+        
         $data = collect($this->data)->only([
             "id",
             "name",

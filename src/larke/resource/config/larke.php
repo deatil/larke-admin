@@ -36,4 +36,25 @@ return [
         'excepts' => env('LARKE_ADMIN_AUTH_EXCEPTS') ? explode(',', env('LARKE_ADMIN_AUTH_EXCEPTS')) : [],
         'admin_id' => env('LARKE_ADMIN_AUTH_ADMIN_ID', '04f65b19e5a2513fe5a89100309da9b7'),
     ],
+    'upload' => [
+        // Disk in `config/filesystem.php`.
+        'disk' => env('LARKE_ADMIN_UPLOAD_DISK', 'public'),
+        
+        'directory' => [
+            'image' => env('LARKE_ADMIN_UPLOAD_DIRECTORY_IMAGE', 'images'),
+            'file' => env('LARKE_ADMIN_UPLOAD_DIRECTORY_FILE', 'files'),
+        ],
+        
+        'file_types' => [
+            'image'  => '/^(gif|png|jpe?g|svg|webp)$/i',
+            'html'   => '/^(htm|html)$/i',
+            'office' => '/^(docx?|xlsx?|pptx?|pps|potx?)$/i',
+            'gdocs'  => '/^(docx?|xlsx?|pptx?|pps|potx?|rtf|ods|odt|pages|ai|dxf|ttf|tiff?|wmf|e?ps)$/i',
+            'text'   => '/^(txt|md|csv|nfo|ini|json|php|js|css|ts|sql)$/i',
+            'video'  => '/^(og?|mp4|webm|mp?g|mov|3gp)$/i',
+            'audio'  => '/^(og?|mp3|mp?g|wav)$/i',
+            'pdf'    => '/^(pdf)$/i',
+            'flash'  => '/^(swf)$/i',
+        ],
+    ],
 ];

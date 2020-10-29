@@ -149,6 +149,10 @@ class AuthGroup extends Base
             return $this->errorJson(__('信息删除失败'));
         }
         
+        // 删除权限
+        AuthRuleAccessModel::where(['group_id' => $id])
+            ->delete();;
+        
         return $this->successJson(__('信息删除成功'));
     }
     

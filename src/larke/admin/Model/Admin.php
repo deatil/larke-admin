@@ -46,4 +46,18 @@ class Admin extends Base
         return $attach;
     }
     
+    public function scopeWithAccess($query, Array $ids = [])
+    {
+        return $query->with(['groupAccesses' => function ($query) use ($ids) {
+            if (!app('larke.admin')->isAdministrator()) {
+                $groupids = app('larke.admin')->getGroupChildrenIds();
+                $query->whereIn('group_id', $groupids);
+                
+                if (!empty($ids)) {
+                    $query->whereIn('group_id', $ids);
+                }
+            }
+        }]);
+    }
+    
 }

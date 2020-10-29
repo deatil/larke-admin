@@ -49,6 +49,7 @@ Route::group([
         $router->post('/admin/create', 'Admin@create')->name('larke-admin-admin-create');
         $router->put('/admin/update', 'Admin@update')->name('larke-admin-admin-update');
         $router->delete('/admin/delete', 'Admin@delete')->name('larke-admin-admin-delete');
+        $router->put('/admin/access', 'Admin@access')->name('larke-admin-admin-access');
         $router->put('/admin/password', 'Admin@changePasssword')->name('larke-admin-admin-password');
         $router->post('/admin/logout', 'Admin@logout')->name('larke-admin-admin-logout');
         

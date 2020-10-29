@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 use Larke\Admin\Model\Attachment as AttachmentModel;
+use Larke\Admin\Service\Upload as UploadService;
 
 /**
  * 附件
@@ -16,92 +17,6 @@ use Larke\Admin\Model\Attachment as AttachmentModel;
  */
 class Attachment extends Base
 {
-    /**
-     * 上传文件
-     *
-     * @param  Request  $request
-     * @return Response
-     */
-    public function upload(Request $request)
-    {
-        $requestFile = $request->file('file');
-        if (empty($requestFile)) {
-            return $this->errorJson(__('上传文件不能为空'));
-        }
-        
-        // Pathname
-        $pathname = $requestFile->getPathname();
-        
-        // 原始名称
-        $name = $requestFile->getClientOriginalName();
-        
-        // mimeType
-        $mimeType = $requestFile->getClientMimeType();
-        
-        // 扩展名
-        $extension = $requestFile->extension();
-        
-        // 大小
-        $size = $requestFile->getSize();
-        
-        $md5 = hash_file('md5', $pathname);
-        
-        $sha1 = hash_file('sha1', $pathname);
-        
-        $driver = config('filesystems.disks')[config('filesystems.default')]['driver'] ?? 'local';
-        
-        $fileInfo = AttachmentModel::where(['md5' => $md5])->first();
-        if (!empty($fileInfo)) {
-            @unlink($pathname);
-            
-            AttachmentModel::where('md5', $md5)->update([
-                'update_time' => time(), 
-                'update_ip' => $request->ip(),
-            ]);
-            
-            return $this->successJson(__('上传成功'), [
-                'id' => $fileInfo['id'],
-                'url' => $fileInfo['path'],
-            ]);
-        }
-        
-        $path = $request->file('file')->storeAs(
-            'larke', 
-            md5(time().mt_rand(100000, 999999)).'.'.$extension,
-            'public'
-        );
-        
-        $data = [
-            'type' => 'admin',
-            'type_id' => app('larke.admin')->getId(),
-            'name' => $name,
-            'path' => $path,
-            'mime' => $mimeType,
-            'extension' => $extension,
-            'size' => $size,
-            'md5' => $md5,
-            'sha1' => $sha1,
-            'driver' => $driver,
-            'status' => 1,
-            'update_time' => time(),
-            'update_ip' => $request->ip(),
-            'create_time' => time(),
-            'create_ip' => $request->ip(),
-        ];
-        $Attachment = AttachmentModel::create($data);
-        if ($Attachment === false) {
-            Storage::disk('public')->delete($path);
-            return $this->errorJson(__('上传失败'));
-        }
-        
-        $url = Storage::url($path);
-        
-        return $this->successJson(__('上传成功'), [
-            'id' => $Attachment->id,
-            'url' => $url,
-        ]);
-    }
-    
     /**
      * 列表
      *
@@ -175,15 +90,121 @@ class Attachment extends Base
             return $this->errorJson(__('文件信息不存在'));
         }
         
+        $UploadService = (new UploadService())->initStorage();
+        if ($UploadService === false) {
+            return $this->errorJson(__('文件删除失败'));
+        }
+        
         $deleteStatus = AttachmentModel::where(['id' => $fileId])
             ->delete();
         if ($deleteStatus === false) {
             return $this->errorJson(__('文件删除失败'));
         }
         
-        Storage::disk('public')->delete($fileInfo['path']);
+        $UploadService->destroy($fileInfo['path']);
         
         return $this->successJson(__('文件删除成功'));
+    }
+    
+    /**
+     * 上传文件
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function upload(Request $request)
+    {
+        $requestFile = $request->file('file');
+        if (empty($requestFile)) {
+            return $this->errorJson(__('上传文件不能为空'));
+        }
+        
+        // Pathname
+        $pathname = $requestFile->getPathname();
+        
+        // 原始名称
+        $name = $requestFile->getClientOriginalName();
+        
+        // mimeType
+        $mimeType = $requestFile->getClientMimeType();
+        
+        // 扩展名
+        $extension = $requestFile->extension();
+        
+        // 大小
+        $size = $requestFile->getSize();
+        
+        $md5 = hash_file('md5', $pathname);
+        
+        $sha1 = hash_file('sha1', $pathname);
+        
+        $UploadService = (new UploadService())->initStorage();
+        if ($UploadService === false) {
+            return $this->errorJson(__('上传文件失败'));
+        }
+        
+        $fileInfo = AttachmentModel::where(['md5' => $md5])->first();
+        if (!empty($fileInfo)) {
+            @unlink($pathname);
+            
+            AttachmentModel::where('md5', $md5)->update([
+                'update_time' => time(), 
+                'update_ip' => $request->ip(),
+            ]);
+            
+            return $this->successJson(__('上传成功'), [
+                'id' => $fileInfo['id'],
+                'url' => $UploadService->objectUrl($fileInfo['path']),
+            ]);
+        }
+        
+        $uploadDisk = config('larke.upload.disk');
+        
+        $driver = config('filesystems.disks')[$uploadDisk]['driver'] ?? 'local';
+        
+        $mimeType = $UploadService->getMimeType($requestFile);
+        
+        $filetype = $UploadService->getFileType($requestFile);
+        
+        if ($filetype == 'image') {
+            $uploadDir = config('larke.upload.directory.image');
+        } else {
+            $uploadDir = config('larke.upload.directory.file');
+        }
+        
+        $path = $UploadService->dir($uploadDir)
+            ->uniqueName()
+            ->upload($requestFile);
+        
+        $data = [
+            'type' => 'admin',
+            'type_id' => app('larke.admin')->getId(),
+            'name' => $name,
+            'path' => $path,
+            'mime' => $mimeType,
+            'extension' => $extension,
+            'size' => $size,
+            'md5' => $md5,
+            'sha1' => $sha1,
+            'driver' => $driver,
+            'status' => 1,
+            'update_time' => time(),
+            'update_ip' => $request->ip(),
+            'create_time' => time(),
+            'create_ip' => $request->ip(),
+        ];
+        $Attachment = AttachmentModel::create($data);
+        if ($Attachment === false) {
+            $UploadService->destroy($path);
+            return $this->errorJson(__('上传失败'));
+        }
+        
+        $url = $UploadService->objectUrl($path);
+        
+        return $this->successJson(__('上传成功'), [
+            'id' => $Attachment->id,
+            'url' => $url,
+        ]);
     }
     
     /**
@@ -205,7 +226,12 @@ class Attachment extends Base
             return $this->errorJson(__('文件不存在'));
         }
         
-        return Storage::disk('public')->download($fileInfo['path'], $fileInfo['name']);
+        $UploadService = (new UploadService())->initStorage();
+        if ($UploadService === false) {
+            return $this->errorJson(__('下载文件失败'));
+        }
+        
+        return $UploadService->getStorage()->download($fileInfo['path'], $fileInfo['name']);
     }
     
 }
