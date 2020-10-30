@@ -143,15 +143,10 @@ class AuthGroup extends Base
             return $this->errorJson(__('信息不存在'));
         }
         
-        $deleteStatus = AuthGroupModel::where(['id' => $id])
-            ->delete();
+        $deleteStatus = $info->delete();
         if ($deleteStatus === false) {
             return $this->errorJson(__('信息删除失败'));
         }
-        
-        // 删除权限
-        AuthRuleAccessModel::where(['group_id' => $id])
-            ->delete();;
         
         return $this->successJson(__('信息删除成功'));
     }
@@ -180,9 +175,7 @@ class AuthGroup extends Base
             return $this->errorJson($validator->errors()->first());
         }
         
-        $id = md5(mt_rand(100000, 999999).microtime());
         $insertData = [
-            'id' => $id,
             'parentid' => $data['parentid'],
             'title' => $data['title'],
             'description' => $data['description'],
@@ -198,13 +191,13 @@ class AuthGroup extends Base
             $insertData['avatar'] = $data['avatar'];
         }
         
-        $status = AuthGroupModel::insert($insertData);
-        if ($status === false) {
+        $createInfo = AuthGroupModel::create($insertData);
+        if ($createInfo === false) {
             return $this->errorJson(__('信息添加失败'));
         }
         
         return $this->successJson(__('信息添加成功'), [
-            'id' => $id,
+            'id' => $createInfo->id,
         ]);
     }
     
@@ -255,6 +248,7 @@ class AuthGroup extends Base
         
         // 更新信息
         $status = AuthGroupModel::where('id', $id)
+            ->first()
             ->update($updateData);
         if ($status === false) {
             return $this->errorJson(__('信息修改失败'));
@@ -284,9 +278,7 @@ class AuthGroup extends Base
         
         AuthRuleAccessModel::where([
             'group_id' => $id
-        ])->get()->each(function($data) {
-            AuthRuleAccessModel::find($data['id'])->delete();
-        });
+        ])->get()->each->delete();
         
         $access = $request->get('access');
         if (!empty($access)) {

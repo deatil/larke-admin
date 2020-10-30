@@ -2,7 +2,7 @@
 
 namespace Larke\Admin\Model;
 
-use Illuminate\Support\Facades\Storage;
+use Larke\Admin\Service\Upload as UploadService;
 
 /**
  * 附件模型
@@ -32,7 +32,7 @@ class Attachment extends Base
             return '';
         }
         
-        return Storage::url($value);
+        return (new UploadService())->initStorage()->objectUrl($value);
     }
     
     public function attachmentable()
@@ -47,7 +47,7 @@ class Attachment extends Base
             return '';
         }
         
-        return Storage::url($path);
+        return (new UploadService())->initStorage()->objectUrl($path);
     }
 
 }

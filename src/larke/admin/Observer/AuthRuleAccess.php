@@ -19,7 +19,7 @@ class AuthRuleAccess
         }
     }
     
-    public function deleted(AuthRuleAccessModel $model)
+    public function deleting(AuthRuleAccessModel $model)
     {
         $rule = $model->rule;
         if (!empty($rule)) {

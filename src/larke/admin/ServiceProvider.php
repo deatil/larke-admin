@@ -16,15 +16,22 @@ use Larke\Admin\Jwt\Jwt;
 use Larke\Admin\Http\Response as ResponseHttp;
 use Larke\Admin\Service\Cache as CacheService;
 use Larke\Admin\Auth\Admin as AdminData;
+use Larke\Admin\Extension\Service as ExtensionService;
 
 use Larke\Admin\Model\AdminLog as AdminLogModel;
 use Larke\Admin\Model\Attachment as AttachmentModel;
+use Larke\Admin\Model\AuthGroup as AuthGroupModel;
 use Larke\Admin\Model\AuthGroupAccess as AuthGroupAccessModel;
+use Larke\Admin\Model\AuthRule as AuthRuleModel;
 use Larke\Admin\Model\AuthRuleAccess as AuthRuleAccessModel;
+use Larke\Admin\Model\Extension as ExtensionModel;
 use Larke\Admin\Observer\AdminLog as AdminLogObserver;
 use Larke\Admin\Observer\Attachment as AttachmentObserver;
+use Larke\Admin\Observer\AuthGroup as AuthGroupObserver;
 use Larke\Admin\Observer\AuthGroupAccess as AuthGroupAccessObserver;
+use Larke\Admin\Observer\AuthRule as AuthRuleObserver;
 use Larke\Admin\Observer\AuthRuleAccess as AuthRuleAccessObserver;
+use Larke\Admin\Observer\Extension as ExtensionObserver;
 
 class ServiceProvider extends BaseServiceProvider
 {
@@ -74,6 +81,8 @@ class ServiceProvider extends BaseServiceProvider
         $this->registerRouteMiddleware();
         
         $this->commands($this->commands);
+        
+        $this->registerExtensions();
     }
 
     /**
@@ -86,8 +95,10 @@ class ServiceProvider extends BaseServiceProvider
         $this->loadViewsFrom(__DIR__ . '/../resource/views', 'larke-admin');
         
         $this->loadRoutesFrom(__DIR__ . '/../resource/routes/admin.php');
-
+        
         $this->bootObserver();
+        
+        $this->bootExtension();
     }
 
     /**
@@ -101,22 +112,6 @@ class ServiceProvider extends BaseServiceProvider
             url()->forceScheme('https');
             $this->app['request']->server->set('HTTPS', true);
         }
-    }
-
-    /**
-     * Boot Observer.
-     *
-     * @return void
-     */
-    protected function bootObserver()
-    {
-        AdminLogModel::observe(new AdminLogObserver());
-        
-        AttachmentModel::observe(new AttachmentObserver());
-        
-        AuthGroupAccessModel::observe(new AuthGroupAccessObserver());
-        
-        AuthRuleAccessModel::observe(new AuthRuleAccessObserver());
     }
     
     /**
@@ -228,6 +223,60 @@ class ServiceProvider extends BaseServiceProvider
         foreach ($this->middlewareGroups as $key => $middleware) {
             app('router')->middlewareGroup($key, $middleware);
         }
+    }
+
+    /**
+     * Boot Observer.
+     *
+     * @return void
+     */
+    protected function bootObserver()
+    {
+        AdminLogModel::observe(new AdminLogObserver());
+        
+        AttachmentModel::observe(new AttachmentObserver());
+        
+        AuthGroupModel::observe(new AuthGroupObserver());
+        
+        AuthGroupAccessModel::observe(new AuthGroupAccessObserver());
+        
+        AuthRuleModel::observe(new AuthRuleObserver());
+        
+        AuthRuleAccessModel::observe(new AuthRuleAccessObserver());
+        
+        ExtensionModel::observe(new ExtensionObserver());
+    }
+    
+    /**
+     * Register Extensions.
+     */
+    public function registerExtensions()
+    {
+        app('larke.extension')->loadExtension();
+    }
+
+    /**
+     * Boot Extension.
+     *
+     * @return void
+     */
+    protected function bootExtension()
+    {
+        $list = ExtensionModel::where('status', 1)
+            ->orderBy('listorder', 'ASC')
+            ->orderBy('upgradetime', 'DESC')
+            ->select(['name', 'class_name'])
+            ->get()
+            ->toArray();
+            
+        collect($list)->each(function($data) {
+            $newClass = app($data['class_name']);
+            if ($newClass instanceof ExtensionService) {
+                if (method_exists($newClass, 'boot')) {
+                    $newClass->boot();
+                }
+            }
+        });
     }
     
 }

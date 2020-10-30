@@ -155,12 +155,16 @@ class Admin
      */
     public function getRules()
     {
-        $groupids = $this->getGroupids();
-        if (empty($groupids)) {
-            return [];
+        if ($this->isAdministrator()) {
+            $rules = AdminRepository::getAllRules();
+        } else {
+            $groupids = $this->getGroupids();
+            if (empty($groupids)) {
+                return [];
+            }
+            
+            $rules = AdminRepository::getRules($groupids);
         }
-        
-        $rules = AdminRepository::getRules($groupids);
         
         return $rules;
     }

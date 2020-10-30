@@ -398,9 +398,7 @@ class Admin extends Base
         
         AuthGroupAccessModel::where([
             'admin_id' => $id,
-        ])->get()->each(function($data) {
-            AuthGroupAccessModel::find($data['id'])->delete();
-        });
+        ])->get()->each->delete();
         
         $access = $request->get('access');
         if (!empty($access)) {

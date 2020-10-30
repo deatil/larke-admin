@@ -16,7 +16,7 @@ class AuthGroupAccess
         \Enforcer::addRoleForUser($model->admin_id, $model->group_id);
     }
     
-    public function deleted(AuthGroupAccessModel $model)
+    public function deleting(AuthGroupAccessModel $model)
     {
         \Enforcer::deleteRoleForUser($model->admin_id, $model->group_id);
     }

@@ -146,8 +146,7 @@ class AuthRule extends Base
             return $this->errorJson(__('还有子权限链接存在，请删除子权限链接后再操作！'));
         }
         
-        $deleteStatus = AuthRuleModel::where(['id' => $id])
-            ->delete();
+        $deleteStatus = $info->delete();
         if ($deleteStatus === false) {
             return $this->errorJson(__('信息删除失败'));
         }
@@ -190,9 +189,7 @@ class AuthRule extends Base
             return $this->errorJson($validator->errors()->first());
         }
         
-        $id = md5(mt_rand(100000, 999999).microtime());
         $insertData = [
-            'id' => $id,
             'parentid' => $data['parentid'],
             'title' => $data['title'],
             'url' => $data['url'],
@@ -212,13 +209,13 @@ class AuthRule extends Base
             $insertData['avatar'] = $data['avatar'];
         }
         
-        $status = AuthRuleModel::insert($insertData);
-        if ($status === false) {
+        $createInfo = AuthRuleModel::create($insertData);
+        if ($createInfo === false) {
             return $this->errorJson(__('信息添加失败'));
         }
         
         return $this->successJson(__('信息添加成功'), [
-            'id' => $id,
+            'id' => $createInfo->id,
         ]);
     }
     
@@ -291,6 +288,7 @@ class AuthRule extends Base
         
         // 更新信息
         $status = AuthRuleModel::where('id', $id)
+            ->first()
             ->update($updateData);
         if ($status === false) {
             return $this->errorJson(__('信息修改失败'));

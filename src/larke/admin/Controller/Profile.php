@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Validator;
 use Larke\Admin\Service\Tree as TreeService;
 use Larke\Admin\Service\Password as PasswordService;
 use Larke\Admin\Model\Admin as AdminModel;
-use Larke\Admin\Repository\Admin as AdminRepository;
 
 /**
  * 个人信息
@@ -127,35 +126,17 @@ class Profile extends Base
     }
 
     /**
-     * 我的菜单信息
+     * 权限信息
      */
-    public function menus(Request $request)
+    public function rules(Request $request)
     {
-        $adminid = app('larke.admin')->getId();
-        
-        $info = AdminModel::where(['id' => $adminid])
-            ->select(
-                'id', 
-                'name', 
-                'nickname', 
-                'email', 
-                'avatar', 
-                'status', 
-            )
-            ->first();
-        if (empty($info)) {
-            return $this->errorJson(__('账号信息不存在'));
-        }
-        
-        $groupids = collect($info['groupAccesses'])->pluck('group_id');
-        
-        $list = AdminRepository::getRules($groupids);
+        $rules = app('larke.admin')->getRules();
         
         $TreeService = new TreeService();
-        $menus = $TreeService->withData($list)
+        $list = $TreeService->withData($rules)
             ->buildArray(0);
         
-        return $this->successJson(__('获取成功'), $menus);
+        return $this->successJson(__('获取成功'), $list);
     }
 
 }

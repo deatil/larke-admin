@@ -2,8 +2,12 @@
 
 namespace Larke\Admin;
 
+use Composer\Autoload\ClassLoader;
+
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
+
+use Larke\Admin\Extension\Service;
 
 /*
  * 扩展
@@ -50,22 +54,92 @@ class Extension
     }
     
     /**
+     * Get extensions directory.
+     *
+     * @param array
+     */
+    public function getExtensionDirectory($path = '')
+    {
+        $extensionDirectory =  config('larke.extension.directory');
+        return $extensionDirectory.($path ? DIRECTORY_SEPARATOR.$path : $path);
+    }
+    
+    /**
+     * Load extensions.
+     *
+     * @param array
+     */
+    public function loadExtension()
+    {
+        $dir = $this->getExtensionDirectory();
+        
+        // 注入扩展命名空间
+        $loader = new ClassLoader();
+        $useStaticLoader = PHP_VERSION_ID >= 50600 && !defined('HHVM_VERSION') && (!function_exists('zend_loader_file_encoded') || !zend_loader_file_encoded());
+        if ($useStaticLoader) {
+            call_user_func(\Closure::bind(function () use ($loader, $dir) {
+                $loader->prefixLengthsPsr4 = [];
+                $loader->prefixDirsPsr4 = [];
+                $loader->fallbackDirsPsr0 = [
+                    0 => $dir,
+                ];
+                $loader->classMap = [];
+            }, null, ClassLoader::class));
+        } else {
+            $loader->set('', $dir);
+        }
+        $loader->register(true);
+        
+        // 注入在扩展目录的扩展
+        $dirs = isset($dir) ? scandir($dir) : [];
+        foreach ($dirs as $value) {
+            $bootstrapDir = $dir . DIRECTORY_SEPARATOR . $value;
+            $bootstrap = $bootstrapDir . DIRECTORY_SEPARATOR . 'bootstrap.php';
+            if ($bootstrapDir != '.' 
+                && $bootstrapDir != '..'
+                && file_exists($bootstrap)
+            ) {
+                include_once $bootstrap;
+            }
+        }
+    }
+    
+    /**
+     * Get extension new class.
+     *
+     * @param boolen|object
+     */
+    public function getExtensionNewClass($name = null)
+    {
+        if (empty($name)) {
+            return false;
+        }
+        
+        $className = Arr::get($this->extensions, $name);
+        if (!class_exists($className)) {
+            return false;
+        }
+        
+        $newClass = app($className);
+        if (!($newClass instanceof Service)) {
+            return false;
+        }
+        
+        return $newClass;
+    }
+    
+    /**
      * Get extension info.
      *
      * @param array
      */
     public function getExtension($name = null)
     {
-        if (empty($name)) {
+        $newClass = $this->getExtensionNewClass($name);
+        if ($newClass === false) {
             return [];
         }
         
-        $className = Arr::get($this->extensions, $name);
-        if (class_exists($className)) {
-            return [];
-        }
-        
-        $newClass = app($className);
         if (!isset($newClass->info)) {
             return [];
         }
@@ -82,28 +156,28 @@ class Extension
             'version' => Arr::get($info, 'version'),
             'adaptation' => Arr::get($info, 'adaptation'),
             'need_module' => Arr::get($info, 'need_module', []),
-            'setting' => Arr::get($info, 'setting', []),
-            'class_name' => $className,
+            'config' => Arr::get($info, 'config', []),
+            'class_name' => Arr::get($this->extensions, $name),
         ];
     }
     
     /**
-     * Get extension new class.
+     * Get extension config.
      *
-     * @param boolen|object
+     * @param array
      */
-    public function getExtensionNewClass($name = null)
+    public function getExtensionConfig($name = null)
     {
-        if (empty($name)) {
-            return false;
+        $info = $this->getExtension($name);
+        if (empty($info)) {
+            return [];
         }
         
-        $className = Arr::get($this->extensions, $name);
-        if (class_exists($className)) {
-            return false;
+        if (empty($info['config'])) {
+            return [];
         }
         
-        return app($className);
+        return $info['config'];
     }
     
     /**
@@ -115,27 +189,12 @@ class Extension
     {
         $extensions = $this->extensions;
         
-        $list = collect($extensions)->map(function($className) {
-            if (class_exists($className)) {
-                $newClass = app($className);
-                
-                if (isset($newClass->info)) {
-                    $info = $newClass->info;
-                    
-                    return [
-                        'name' => Arr::get($info, 'name'),
-                        'title' => Arr::get($info, 'title'),
-                        'introduce' => Arr::get($info, 'introduce'),
-                        'author' => Arr::get($info, 'author'), 
-                        'authorsite' => Arr::get($info, 'authorsite'),
-                        'authoremail' => Arr::get($info, 'authoremail'),
-                        'version' => Arr::get($info, 'version'),
-                        'adaptation' => Arr::get($info, 'adaptation'),
-                        'need_module' => Arr::get($info, 'need_module', []),
-                        'setting' => Arr::get($info, 'setting', []),
-                        'class_name' => $className,
-                    ];
-                }
+        $thiz = $this;
+        
+        $list = collect($extensions)->map(function($className, $name) use($thiz) {
+            $info = $thiz->getExtension($name);
+            if (!empty($info)) {
+                return $info;
             }
         })->filter(function($data) {
             return !empty($data);

@@ -4,6 +4,7 @@ return [
     'admin' => [
         'name' => "LarkeAdmin",
         'name_mini' => "Larke",
+        'logo' => '<b>Larke</b> admin',
         'release' => 20201030,
         'version' => "1.0.0",
     ],
@@ -58,6 +59,10 @@ return [
     'auth' => [
         'excepts' => env('LARKE_ADMIN_AUTH_EXCEPTS') ? explode(',', env('LARKE_ADMIN_AUTH_EXCEPTS')) : [],
         'admin_id' => env('LARKE_ADMIN_AUTH_ADMIN_ID', '04f65b19e5a2513fe5a89100309da9b7'),
+    ],
+    
+    'extension' => [
+        'directory' => env('LARKE_ADMIN_EXTENSION_DIRECTORY', base_path('extension')),
     ],
     
     'upload' => [

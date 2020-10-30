@@ -75,6 +75,7 @@ class ImportRoute extends Command
                         'update_ip' => request()->ip(),
                     ];
                     AuthRuleModel::where('id', $ruleInfo['id'])
+                        ->first()
                         ->update($data);
                 } else {
                     $data = [

@@ -5,7 +5,6 @@ namespace Larke\Admin\Repository;
 use Arr;
 
 use Larke\Admin\Model\Admin as AdminModel;
-use Larke\Admin\Model\AuthGroup as AuthGroupModel;
 use Larke\Admin\Model\AuthRule as AuthRuleModel;
 
 /*
@@ -62,30 +61,25 @@ class Admin
             return [];
         }
         
-        $groupRules = AuthGroupModel::with(['rules' => function($query) {
-            $query->select([
+        $rules = AuthRuleModel::with('ruleAccess')
+            ->select([
                 'id', 
                 'parentid', 
                 'title', 
                 'url',
                 'method',
                 'description',
-            ]);
-        }])->whereHas('rules', function($query) {
-            $query->where('status', 1);
-        })->whereIn('id', $groupids)
+            ])
+            ->whereHas('ruleAccess', function($query) use($groupids) {
+                $query->whereIn('group_id', $groupids);
+            })
+            ->where('status', 1)
+            ->orderBy('listorder', 'ASC')
             ->get()
             ->toArray();
         
-        $rules = collect($groupRules)->filter(function($data) {
-            return !empty($data['rules']);
-        })->map(function($data) {
-            return $data['rules'];
-        });
-        
-        $rules = Arr::collapse($rules);
         $list = collect($rules)->map(function($data) {
-            unset($data['pivot']);
+            unset($data['rule_access']);
             return $data;
         })->toArray();
         
@@ -99,6 +93,27 @@ class Admin
     {
         $list = self::getRules($groupids);
         return collect($list)->pluck('id');
+    }
+    
+    /*
+     * 获取 AllRules
+     */
+    public static function getAllRules()
+    {
+        $rules = AuthRuleModel::select([
+            'id', 
+            'parentid', 
+            'title', 
+            'url',
+            'method',
+            'description',
+        ])->where('status', 1)
+            ->orderBy('listorder', 'ASC')
+            ->orderBy('create_time', 'ASC')
+            ->get()
+            ->toArray();
+        
+        return $rules;
     }
 
 }

@@ -9,78 +9,78 @@ class AdminLog
     /**
      * 获取模型实例后
      */
-    public function retrieved(AdminLogModel $log)
+    public function retrieved(AdminLogModel $model)
     {
     }
 
     /**
      * 插入到数据库
      */
-    public function creating(AdminLogModel $log)
+    public function creating(AdminLogModel $model)
     {
-        $log->id = md5(mt_rand(100000, 999999).microtime());
+        $model->id = md5(mt_rand(100000, 999999).microtime());
     }
 
     /**
      * 插入到数据库
      */
-    public function created(AdminLogModel $log)
+    public function created(AdminLogModel $model)
     {
     }
 
     /**
      * 更新到数据库
      */
-    public function updating(AdminLogModel $log)
+    public function updating(AdminLogModel $model)
     {
     }
 
     /**
      * 更新到数据库
      */
-    public function updated(AdminLogModel $log)
+    public function updated(AdminLogModel $model)
     {
     }
 
     /**
      * 保存到数据库
      */
-    public function saving(AdminLogModel $log)
+    public function saving(AdminLogModel $model)
     {
     }
 
     /**
      * 保存到数据库
      */
-    public function saved(AdminLogModel $log)
+    public function saved(AdminLogModel $model)
     {
     }
 
     /**
      * 删除
      */
-    public function deleting(AdminLogModel $log)
+    public function deleting(AdminLogModel $model)
     {
     }
 
     /**
      * 删除
      */
-    public function deleted(AdminLogModel $log)
+    public function deleted(AdminLogModel $model)
     {
     }
 
     /**
      * 恢复软删除前
      */
-    public function restoring(AdminLogModel $log)
+    public function restoring(AdminLogModel $model)
     {
     }
     
     /**
      * 恢复软删除后
      */
-    public function restored(AdminLogModel $log)
+    public function restored(AdminLogModel $model)
     {
     }
 }

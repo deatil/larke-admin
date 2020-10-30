@@ -3,12 +3,12 @@
 namespace Larke\Admin\Extension;
 
 /*
- * 扩展服务提供者
+ * 扩展服务，类似于服务提供者
  *
  * @create 2020-10-30
  * @author deatil
  */
-abstract class ServiceProvider
+abstract class Service
 {
     /**
      * 扩展信息
@@ -23,14 +23,8 @@ abstract class ServiceProvider
         'version' => '1.0.0',
         'adaptation' => '1.0.0',
         'need_module' => [], // 选填
-        'setting' => [], // 选填
+        'config' => [], // 配置，选填
     ];
-    
-    /**
-     * 注册，只有启用后加载
-     */
-    public function register()
-    {}
     
     /**
      * 引导，只有启用后加载
@@ -53,7 +47,7 @@ abstract class ServiceProvider
     /**
      * 更新后
      */
-    public function Upgrade()
+    public function upgrade()
     {}
     
     /**

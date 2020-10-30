@@ -27,7 +27,7 @@ class AuthRule extends Base
      */
     public function groups()
     {
-        return $this->belongsToMany(AuthGroup::class, AuthRuleAccess::class, 'group_id', 'rule_id');
+        return $this->belongsToMany(AuthGroup::class, AuthRuleAccess::class, 'rule_id', 'group_id');
     }
     
     /**

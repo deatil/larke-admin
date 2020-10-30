@@ -36,7 +36,7 @@ Route::group([
         $router->get('/profile', 'Profile@index')->name('larke-admin-profile');
         $router->put('/profile/update', 'Profile@update')->name('larke-admin-profile-update');
         $router->put('/profile/password', 'Profile@changePasssword')->name('larke-admin-profile-password');
-        $router->get('/profile/menus', 'Profile@menus')->name('larke-admin-profile-menus');
+        $router->get('/profile/rules', 'Profile@rules')->name('larke-admin-profile-rules');
         
         $router->get('/attachment/index', 'Attachment@index')->name('larke-admin-attachment-index');
         $router->get('/attachment/detail', 'Attachment@detail')->name('larke-admin-attachment-detail');
@@ -64,6 +64,18 @@ Route::group([
         $router->get('/log/detail', 'Log@detail')->name('larke-admin-log-detail');
         $router->delete('/log/delete', 'Log@delete')->name('larke-admin-log-delete');
         
+        $router->get('/extension/index', 'Extension@index')->name('larke-admin-extension-index');
+        $router->get('/extension/local', 'Extension@local')->name('larke-admin-extension-local');
+        $router->put('/extension/config', 'Extension@config')->name('larke-admin-extension-config');
+        $router->post('/extension/install', 'Extension@install')->name('larke-admin-extension-install');
+        $router->delete('/extension/uninstall', 'Extension@uninstall')->name('larke-admin-extension-uninstall');
+        $router->put('/extension/upgrade', 'Extension@upgrade')->name('larke-admin-extension-upgrade');
+        $router->put('/extension/enable', 'Extension@enable')->name('larke-admin-extension-enable');
+        $router->put('/extension/disable', 'Extension@disable')->name('larke-admin-extension-disable');
+        $router->put('/extension/listorder', 'Extension@listorder')->name('larke-admin-extension-listorder');
+        $router->post('/extension/upload', 'Extension@upload')->name('larke-admin-extension-upload');
+        
+        $router->get('/sys/info', 'Sys@info')->name('larke-admin-sys-info');
         $router->post('/sys/cache', 'Sys@cache')->name('larke-admin-sys-cache');
         $router->post('/sys/clear-cache', 'Sys@clearCache')->name('larke-admin-sys-clear-cache');
     });
