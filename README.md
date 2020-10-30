@@ -8,11 +8,10 @@
 
 ### 安装步骤
 
+推送配置文件
 ~~~
 php artisan vendor:publish --tag=larke-admin-config
 ~~~
-
-*  `larke-admin` 基于 `Laravel` 框架，提供后台API相关接口
 
 
 ### 开源协议
