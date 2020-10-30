@@ -73,7 +73,7 @@ class Response implements ResponseContract
     /*
      * 预检结果缓存时间
      */
-    public function withMaxAge($maxAge = false)
+    public function withMaxAge($maxAge = '')
     {
         $this->maxAge = $maxAge;
         

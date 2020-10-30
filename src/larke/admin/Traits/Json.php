@@ -21,9 +21,9 @@ trait Json
     /*
      * 返回错误json
      */
-    protected function errorJson($msg = null, $code = 1, $data = []) 
+    protected function errorJson($message = null, $code = 1, $data = []) 
     {
-        return app('larke.json')->json(false, $code, $msg, $data);
+        return app('larke.json')->json(false, $code, $message, $data);
     }
     
 }

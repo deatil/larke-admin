@@ -4,6 +4,12 @@ namespace Larke\Admin\Command;
 
 use Illuminate\Console\Command;
 
+/**
+ * 安装
+ *
+ * php artisan llarke-admin:install [--force]
+ *
+ */
 class Install extends Command
 {
     /**

@@ -18,4 +18,12 @@ class AuthGroupAccess extends Base
     
     public $incrementing = false;
     public $timestamps = false;
+    
+    /**
+     * 分组
+     */
+    public function group()
+    {
+        return $this->hasOne(AuthGroup::class, 'id', 'group_id');
+    }
 }

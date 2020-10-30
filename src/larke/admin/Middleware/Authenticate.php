@@ -31,7 +31,20 @@ class Authenticate
      */
     protected function jwtCheck()
     {
-        $token = request()->header('token');
+        $authorization = request()->header('Authorization');
+        if (!$authorization) {
+            $this->errorJson(__('token不能为空'));
+        }
+        
+        $authorizationArr = explode(' ', $authorization);
+        if (count($authorizationArr) != 2) {
+            $this->errorJson(__('token不能为空'));
+        }
+        if ($authorizationArr[0] != 'Bearer') {
+            $this->errorJson(__('token格式错误'));
+        }
+        
+        $token = $authorizationArr[1];
         if (!$token) {
             $this->errorJson(__('token不能为空'));
         }

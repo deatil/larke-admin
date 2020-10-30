@@ -282,20 +282,22 @@ class AuthGroup extends Base
             return $this->errorJson(__('信息不存在'));
         }
         
-        AuthRuleAccessModel::where(['group_id' => $id])->delete();
+        AuthRuleAccessModel::where([
+            'group_id' => $id
+        ])->get()->each(function($data) {
+            AuthRuleAccessModel::find($data['id'])->delete();
+        });
         
         $access = $request->get('access');
         if (!empty($access)) {
             $accessData = [];
             $accessArr = explode(',', $access);
-            foreach ($accessArr as $access) {
-                $accessData[] = [
-                    'rule_id' => $access,
+            foreach ($accessArr as $value) {
+                AuthRuleAccessModel::create([
                     'group_id' => $id,
-                ];
+                    'rule_id' => $value,
+                ]);
             }
-            
-            AuthRuleAccessModel::insert($accessData);
         }
         
         return $this->successJson(__('授权成功'));

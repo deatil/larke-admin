@@ -1,13 +1,22 @@
 <?php
 
 return [
+    'admin' => [
+        'name' => "LarkeAdmin",
+        'name_mini' => "Larke",
+        'release' => 20201030,
+        'version' => "1.0.0",
+    ],
+    
     'https' => env('ADMIN_HTTPS', false),
+    
     'route' => [
         'prefix' => env('LARKE_ADMIN_ROUTE_PREFIX', 'admin-api'),
         'namespace' => env('LARKE_ADMIN_ROUTE_NAMESPACE', 'Larke\\Admin\\Controller'),
         'middleware' => env('LARKE_ADMIN_ROUTE_MIDDLEWARE') ? explode(',', env('LARKE_ADMIN_ROUTE_MIDDLEWARE')) : ['larke.admin'],
         'admin_middleware' => env('LARKE_ADMIN_ROUTE_ADMIN_MIDDLEWARE') ? explode(',', env('LARKE_ADMIN_ROUTE_ADMIN_MIDDLEWARE')) : ['larke.admin.auth.admin'],
     ],
+    
     'jwt' => [
         'alg' => env('LARKE_ADMIN_JWT_ALG', 'HS256'),
         'iss' => env('LARKE_ADMIN_JWT_ISS', 'api.larke_admin.com'),
@@ -22,6 +31,7 @@ return [
         'private_key' => env('LARKE_ADMIN_JWT_PRIVATE_KEY', ''),
         'public_key' => env('LARKE_ADMIN_JWT_PUBLIC_KEY', ''),
     ],
+    
     'passport' => [
         'salt' => env('LARKE_ADMIN_PASSPORT_SALT', 'd,d7ja0db1a974;38cE84976abbac2cd'),
         'expired_in' => env('LARKE_ADMIN_PASSPORT_EXPIRED_IN', 86400),
@@ -29,13 +39,27 @@ return [
         'access_token_id' => env('LARKE_ADMIN_PASSPORT_ACCESS_TOKEN_ID', 'larke-passport-access-token'),
         'refresh_token_id' => env('LARKE_ADMIN_PASSPORT_REFRESH_TOKEN_ID', 'larke-passport-refresh-token'),
     ],
+    
     'cache' => [
         'store' => env('LARKE_ADMIN_CACHE_STORE', 'default'),
     ],
+    
+    'response' => [
+        'json' => [
+            'is_allow_origin' => env('LARKE_ADMIN_RESPONSE_JSON_IS_ALLOW_ORIGIN', 0),
+            'allow_origin' => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_ORIGIN', '*'),
+            'allow_credentials' => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_CREDENTIALS', 0),
+            'max_age' => env('LARKE_ADMIN_RESPONSE_JSON_MAX_AGE', ''),
+            'allow_methods' => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_METHODS', 'GET,POST,PATCH,PUT,DELETE,OPTIONS'),
+            'allow_headers' => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_HEADERS', 'X-Requested-With,X_Requested_With,Content-Type'),
+        ],
+    ],
+    
     'auth' => [
         'excepts' => env('LARKE_ADMIN_AUTH_EXCEPTS') ? explode(',', env('LARKE_ADMIN_AUTH_EXCEPTS')) : [],
         'admin_id' => env('LARKE_ADMIN_AUTH_ADMIN_ID', '04f65b19e5a2513fe5a89100309da9b7'),
     ],
+    
     'upload' => [
         // Disk in `config/filesystem.php`.
         'disk' => env('LARKE_ADMIN_UPLOAD_DISK', 'public'),

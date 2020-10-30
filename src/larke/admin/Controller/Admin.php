@@ -189,7 +189,7 @@ class Admin extends Base
         
         // 用户组默认取当前用户的用户组的其中之一
         $groupIds = app('larke.admin')->getGroupids();
-        AuthGroupAccessModel::insert([
+        AuthGroupAccessModel::create([
             'admin_id' => $id,
             'group_id' => $groupIds[0],
         ]);
@@ -396,24 +396,31 @@ class Admin extends Base
             return $this->errorJson(__('信息不存在'));
         }
         
-        AuthGroupAccessModel::where(['admin_id' => $id])->delete();
+        AuthGroupAccessModel::where([
+            'admin_id' => $id,
+        ])->get()->each(function($data) {
+            AuthGroupAccessModel::find($data['id'])->delete();
+        });
         
         $access = $request->get('access');
         if (!empty($access)) {
             $groupIds = app('larke.admin')->getGroupChildrenIds();
-            $accessIds = explode(',', $data['access']);
+            $accessIds = explode(',', $access);
             
             // 取交集
-            $intersectAccess = array_intersect_assoc($groupIds, $accessIds);
+            if (!app('larke.admin')->isAdministrator()) {
+                $intersectAccess = array_intersect_assoc($groupIds, $accessIds);
+            } else {
+                $intersectAccess = $accessIds;
+            }
             
             $accessData = [];
-            foreach ($intersectAccess as $access) {
-                $accessData[] = [
+            foreach ($intersectAccess as $value) {
+                AuthGroupAccessModel::create([
                     'admin_id' => $id,
-                    'group_id' => $access,
-                ];
+                    'group_id' => $value,
+                ]);
             }
-            AuthGroupAccessModel::insert($accessData);
         }
         
         return $this->successJson(__('授权分组成功'));

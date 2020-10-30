@@ -3,25 +3,36 @@
 namespace Larke\Admin;
 
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
+use Illuminate\Support\Facades\Response;
 
 use Larke\Admin\Command\Install;
 use Larke\Admin\Command\ImportRoute;
+use Larke\Admin\Command\ResetPasword;
+use Larke\Admin\Command\PassportLogout;
+
 use Larke\Admin\Contracts\Response as ResponseContract;
 use Larke\Admin\Contracts\Jwt as JwtContract;
 use Larke\Admin\Jwt\Jwt;
 use Larke\Admin\Http\Response as ResponseHttp;
 use Larke\Admin\Service\Cache as CacheService;
 use Larke\Admin\Auth\Admin as AdminData;
+
 use Larke\Admin\Model\AdminLog as AdminLogModel;
 use Larke\Admin\Model\Attachment as AttachmentModel;
+use Larke\Admin\Model\AuthGroupAccess as AuthGroupAccessModel;
+use Larke\Admin\Model\AuthRuleAccess as AuthRuleAccessModel;
 use Larke\Admin\Observer\AdminLog as AdminLogObserver;
 use Larke\Admin\Observer\Attachment as AttachmentObserver;
+use Larke\Admin\Observer\AuthGroupAccess as AuthGroupAccessObserver;
+use Larke\Admin\Observer\AuthRuleAccess as AuthRuleAccessObserver;
 
 class ServiceProvider extends BaseServiceProvider
 {
     protected $commands = [
         Install::class,
         ImportRoute::class,
+        ResetPasword::class,
+        PassportLogout::class,
     ];
 
     /**
@@ -52,31 +63,31 @@ class ServiceProvider extends BaseServiceProvider
     /**
      * {@inheritdoc}
      */
-    public function boot()
+    public function register()
     {
-        $this->ensureHttps();
-        
         $this->registerConfig();
-        
-        $this->loadViewsFrom(__DIR__ . '/../resource/views', 'larke-admin');
-        
-        $this->loadRoutesFrom(__DIR__ . '/../resource/routes/admin.php');
 
         $this->registerBind();
         
         $this->registerPublishing();
-
-        $this->bootObserver();
+        
+        $this->registerRouteMiddleware();
+        
+        $this->commands($this->commands);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function register()
+    public function boot()
     {
-        $this->registerRouteMiddleware();
+        $this->ensureHttps();
         
-        $this->commands($this->commands);
+        $this->loadViewsFrom(__DIR__ . '/../resource/views', 'larke-admin');
+        
+        $this->loadRoutesFrom(__DIR__ . '/../resource/routes/admin.php');
+
+        $this->bootObserver();
     }
 
     /**
@@ -102,6 +113,10 @@ class ServiceProvider extends BaseServiceProvider
         AdminLogModel::observe(new AdminLogObserver());
         
         AttachmentModel::observe(new AttachmentObserver());
+        
+        AuthGroupAccessModel::observe(new AuthGroupAccessObserver());
+        
+        AuthRuleAccessModel::observe(new AuthRuleAccessObserver());
     }
     
     /**
@@ -123,7 +138,19 @@ class ServiceProvider extends BaseServiceProvider
     {
         // json响应
         $this->app->bind('larke.json', ResponseContract::class);
-        $this->app->bind(ResponseContract::class, ResponseHttp::class);
+        $this->app->bind(ResponseContract::class, function() {
+            $ResponseHttp = new ResponseHttp();
+            
+            $config = config('larke.response.json');
+            $ResponseHttp->withIsAllowOrigin($config['is_allow_origin'])
+                ->withAllowOrigin($config['allow_origin'])
+                ->withAllowCredentials($config['allow_credentials'])
+                ->withMaxAge($config['max_age'])
+                ->withAllowMethods($config['allow_methods'])
+                ->withAllowHeaders($config['allow_headers']);
+            
+            return $ResponseHttp;
+        });
         
         // 系统使用缓存
         $this->app->singleton('larke.cache', function() {
@@ -156,6 +183,19 @@ class ServiceProvider extends BaseServiceProvider
             
             return $Jwt;
         });
+        
+        // response()->success('success');
+        Response::macro('success', function($message = '获取成功', $data = null, $code = 0) {
+            return app('larke.json')->json(true, $code, $message, $data);
+        });
+        
+        // response()->error('error');
+        Response::macro('error', function($message = null, $code = 1, $data = []) {
+            return app('larke.json')->json(false, $code, $message, $data);
+        });
+        
+        // 扩展
+        $this->app->singleton('larke.extension', Extension::class);
     }
     
     /**

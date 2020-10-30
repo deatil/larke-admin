@@ -80,9 +80,10 @@ class ImportRoute extends Command
                     $data = [
                         'id' => md5(mt_rand(10000, 99999).time().mt_rand(10000, 99999)),
                         'parentid' => 0,
-                        'slug' => $route['name'],
+                        'title' => $route['name'],
                         'url' => $route['uri'],
                         'method' => $method,
+                        'slug' => $route['name'],
                         'description' => $route['name'],
                         'listorder' => 100,
                         'is_need_auth' => 1,

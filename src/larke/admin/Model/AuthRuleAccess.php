@@ -18,4 +18,12 @@ class AuthRuleAccess extends Base
     
     public $incrementing = false;
     public $timestamps = false;
+    
+    /**
+     * 规则
+     */
+    public function rule()
+    {
+        return $this->hasOne(AuthRule::class, 'id', 'rule_id');
+    }
 }
