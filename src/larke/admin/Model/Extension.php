@@ -2,6 +2,8 @@
 
 namespace Larke\Admin\Model;
 
+use Illuminate\Support\Facades\Cache;
+
 /*
  * Extension
  *
@@ -16,8 +18,27 @@ class Extension extends Base
     
     protected $guarded = [];
     
+    protected $appends = [
+        'config_arr',
+        'config_data_arr',
+    ];
+    
     public $incrementing = false;
     public $timestamps = false;
+    
+    public static function getExtensions()
+    {
+        return Cache::rememberForever(md5('larke.model.extensions'), function() {
+            return self::all()->mapWithKeys(function ($extension) {
+                return [$extension->name => $extension->toArray()];
+            })->toArray();
+        });
+    }
+    
+    public function clearCahce()
+    {
+        Cache::forget(md5('larke.model.extensions'));
+    }
     
     public function getConfigArrAttribute() 
     {

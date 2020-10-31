@@ -9,6 +9,17 @@ class AuthGroup
     public function creating(AuthGroupModel $model)
     {
         $model->id = md5(mt_rand(100000, 999999).microtime());
+        
+        $model->update_time = time();
+        $model->update_ip = request()->ip();
+        $model->create_time = time();
+        $model->create_ip = request()->ip();
+    }
+
+    public function updating(AuthGroupModel $model)
+    {
+        $model->update_time = time();
+        $model->update_ip = request()->ip();
     }
     
     public function updated(AuthGroupModel $model)

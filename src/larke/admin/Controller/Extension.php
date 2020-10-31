@@ -59,7 +59,18 @@ class Extension extends Base
      */
     public function local(Request $request)
     {
-        $extensions = AdminExtension::getExtensions();
+        $extensions = AdminExtension::loadExtension()->getExtensions();
+        
+        $installExtensions = ExtensionModel::getExtensions();
+        $extensions = collect($extensions)->map(function($data, $key) use($installExtensions) {
+            if (isset($installExtensions[$data['name']])) {
+                $data['install'] = $installExtensions[$data['name']];
+            } else {
+                $data['install'] = [];
+            }
+            
+            return $data;
+        });
         
         return $this->successJson(__('获取成功'), $extensions);
     }
@@ -83,9 +94,20 @@ class Extension extends Base
             return $this->errorJson(__('扩展已经安装'));
         }
         
+        AdminExtension::loadExtension();
+        
         $info = AdminExtension::getExtension($name);
         if (empty($info)) {
             return $this->errorJson(__('扩展信息不存在'));
+        }
+        
+        $checkInfo = AdminExtension::validateInfo($info);
+        if (!$checkInfo) {
+            return $this->errorJson(__('扩展信息不正确'));
+        }
+        
+        if (version_compare(config('larke.admin.version'), Arr::get($info, 'adaptation', 0), '>=') == false) {
+            return $this->errorJson(__('扩展适配 admin 版本错误'));
         }
         
         $createInfo = ExtensionModel::create([
@@ -107,8 +129,10 @@ class Extension extends Base
             return $this->errorJson(__('安装扩展失败'));
         }
         
+        AdminExtension::getNewClassMethod($createInfo->class_name, 'install');
+        
         return $this->successJson(__('安装扩展成功'), [
-            'id' => $createInfo->name
+            'name' => $createInfo->name
         ]);
     }
     
@@ -136,6 +160,8 @@ class Extension extends Base
             return $this->errorJson(__('扩展删除失败'));
         }
         
+        AdminExtension::getNewClassMethod($info->class_name, 'uninstall');
+        
         return $this->successJson(__('扩展删除成功'));
     }
     
@@ -158,9 +184,24 @@ class Extension extends Base
             return $this->errorJson(__('扩展还没有安装'));
         }
         
+        AdminExtension::loadExtension();
         $info = AdminExtension::getExtension($name);
         if (empty($info)) {
             return $this->errorJson(__('扩展信息不存在'));
+        }
+        
+        
+        $checkInfo = AdminExtension::validateInfo($info);
+        if (!$checkInfo) {
+            return $this->errorJson(__('扩展信息不正确'));
+        }
+        
+        if (version_compare(config('larke.admin.version'), Arr::get($info, 'adaptation', 0), '>=') == false) {
+            return $this->errorJson(__('扩展适配 admin 版本错误'));
+        }
+        
+        if (version_compare(Arr::get($installInfo, 'version', 0), Arr::get($info, 'version', 0), '>') == false) {
+            return $this->errorJson(__('扩展不需要更新'));
         }
         
         $updateInfo = $installInfo->update([
@@ -182,6 +223,8 @@ class Extension extends Base
         if ($updateInfo === false) {
             return $this->errorJson(__('更新扩展失败'));
         }
+        
+        AdminExtension::getNewClassMethod(Arr::get($info, 'class_name'), 'upgrade');
         
         return $this->successJson(__('更新扩展成功'));
     }
@@ -209,15 +252,12 @@ class Extension extends Base
             return $this->errorJson(__('扩展已启用'));
         }
         
-        $info = AdminExtension::getExtension($name);
-        if (empty($info)) {
-            return $this->errorJson(__('扩展信息不存在'));
-        }
-        
         $status = $installInfo->enable();
         if ($status === false) {
             return $this->errorJson(__('启用扩展失败'));
         }
+        
+        AdminExtension::getNewClassMethod($installInfo->class_name, 'enable');
         
         return $this->successJson(__('启用扩展成功'));
     }
@@ -245,15 +285,12 @@ class Extension extends Base
             return $this->errorJson(__('扩展已禁用'));
         }
         
-        $info = AdminExtension::getExtension($name);
-        if (empty($info)) {
-            return $this->errorJson(__('扩展信息不存在'));
-        }
-        
         $status = $installInfo->disable();
         if ($status === false) {
             return $this->errorJson(__('禁用扩展失败'));
         }
+        
+        AdminExtension::getNewClassMethod($installInfo->class_name, 'disable');
         
         return $this->successJson(__('禁用扩展成功'));
     }

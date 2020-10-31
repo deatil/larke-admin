@@ -182,22 +182,18 @@ class AuthGroup extends Base
             'listorder' => $data['listorder'] ? intval($data['listorder']) : 100,
             'is_system' => (isset($data['is_system']) && $data['is_system'] == 1) ? 1 : 0,
             'status' => ($data['status'] == 1) ? 1 : 0,
-            'update_time' => time(),
-            'update_ip' => $request->ip(),
-            'create_time' => time(),
-            'create_ip' => $request->ip(),
         ];
         if (!empty($data['avatar'])) {
             $insertData['avatar'] = $data['avatar'];
         }
         
-        $createInfo = AuthGroupModel::create($insertData);
-        if ($createInfo === false) {
+        $group = AuthGroupModel::create($insertData);
+        if ($group === false) {
             return $this->errorJson(__('信息添加失败'));
         }
         
         return $this->successJson(__('信息添加成功'), [
-            'id' => $createInfo->id,
+            'id' => $group->id,
         ]);
     }
     
@@ -242,8 +238,6 @@ class AuthGroup extends Base
             'listorder' => $data['listorder'] ? intval($data['listorder']) : 100,
             'is_system' => (isset($data['is_system']) && $data['is_system'] == 1) ? 1 : 0,
             'status' => ($data['status'] == 1) ? 1 : 0,
-            'update_time' => time(),
-            'update_ip' => $request->ip(),
         ];
         
         // 更新信息
@@ -255,6 +249,37 @@ class AuthGroup extends Base
         }
         
         return $this->successJson(__('信息修改成功'));
+    }
+    
+    /**
+     * 排序
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function listorder(Request $request)
+    {
+        $id = $request->get('id');
+        if (empty($id)) {
+            return $this->errorJson(__('ID不能为空'));
+        }
+        
+        $info = AuthGroupModel::where('id', '=', $id)
+            ->first();
+        if (empty($info)) {
+            return $this->errorJson(__('信息不存在'));
+        }
+        
+        $listorder = $request->get('listorder', 100);
+        
+        $status = $info->update([
+            'listorder' => intval($listorder),
+        ]);
+        if ($status === false) {
+            return $this->errorJson(__('更新排序失败'));
+        }
+        
+        return $this->successJson(__('更新排序成功'));
     }
     
     /**

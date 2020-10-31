@@ -2,29 +2,21 @@
 
 namespace Larke\Admin\Observer;
 
-use Larke\Admin\Model\Extension as ExtensionModel;
+use Larke\Admin\Model\Config as ConfigModel;
 
-class Extension
+class Config
 {
-    /**
-     * 插入到数据库
-     */
-    public function creating(ExtensionModel $model)
+    public function creating(ConfigModel $model)
     {
         $model->id = md5(mt_rand(100000, 999999).microtime());
-        $model->installtime = time();
-        $model->upgradetime = time();
         
         $model->update_time = time();
         $model->update_ip = request()->ip();
         $model->create_time = time();
         $model->create_ip = request()->ip();
     }
-    
-    /**
-     * 更新到数据库
-     */
-    public function updating(ExtensionModel $model)
+
+    public function updating(ConfigModel $model)
     {
         $model->update_time = time();
         $model->update_ip = request()->ip();
@@ -33,7 +25,7 @@ class Extension
     /**
      * 插入到数据库
      */
-    public function created(ExtensionModel $model)
+    public function created(ConfigModel $model)
     {
         $model->clearCahce();
     }
@@ -41,7 +33,7 @@ class Extension
     /**
      * 更新到数据库
      */
-    public function updated(ExtensionModel $model)
+    public function updated(ConfigModel $model)
     {
         $model->clearCahce();
     }
@@ -49,7 +41,7 @@ class Extension
     /**
      * 保存到数据库
      */
-    public function saved(ExtensionModel $model)
+    public function saved(ConfigModel $model)
     {
         $model->clearCahce();
     }
@@ -57,9 +49,8 @@ class Extension
     /**
      * 删除
      */
-    public function deleted(ExtensionModel $model)
+    public function deleted(ConfigModel $model)
     {
         $model->clearCahce();
     }
-    
 }

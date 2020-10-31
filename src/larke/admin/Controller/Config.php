@@ -151,9 +151,7 @@ class Config extends Base
             return $this->errorJson($validator->errors()->first());
         }
         
-        $id = md5(mt_rand(100000, 999999).microtime());
         $insertData = [
-            'id' => $id,
             'group' => $data['group'],
             'type' => $data['type'],
             'title' => $data['title'],
@@ -165,19 +163,15 @@ class Config extends Base
             'is_show' => ($request->get('is_show', 0) == 1) ? 1 : 0,
             'is_system' => ($request->get('is_system', 0) == 1) ? 1 : 0,
             'status' => ($data['status'] == 1) ? 1 : 0,
-            'update_time' => time(),
-            'update_ip' => $request->ip(),
-            'create_time' => time(),
-            'create_ip' => $request->ip(),
         ];
         
-        $status = ConfigModel::insert($insertData);
-        if ($status === false) {
+        $config = ConfigModel::create($insertData);
+        if ($config === false) {
             return $this->errorJson(__('信息添加失败'));
         }
         
         return $this->successJson(__('信息添加成功'), [
-            'id' => $id,
+            'id' => $config->id,
         ]);
     }
     
@@ -238,8 +232,6 @@ class Config extends Base
             'is_show' => (isset($data['is_show']) && $data['is_show'] == 1) ? 1 : 0,
             'is_system' => (isset($data['is_system']) && $data['is_system'] == 1) ? 1 : 0,
             'status' => ($data['status'] == 1) ? 1 : 0,
-            'update_time' => time(),
-            'update_ip' => $request->ip(),
         ];
         
         // 更新信息
@@ -270,6 +262,37 @@ class Config extends Base
         }
         
         return $this->successJson(__('设置更新成功'));
+    }
+    
+    /**
+     * 排序
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function listorder(Request $request)
+    {
+        $id = $request->get('id');
+        if (empty($id)) {
+            return $this->errorJson(__('ID不能为空'));
+        }
+        
+        $info = ConfigModel::where('id', '=', $id)
+            ->first();
+        if (empty($info)) {
+            return $this->errorJson(__('信息不存在'));
+        }
+        
+        $listorder = $request->get('listorder', 100);
+        
+        $status = $info->update([
+            'listorder' => intval($listorder),
+        ]);
+        if ($status === false) {
+            return $this->errorJson(__('更新排序失败'));
+        }
+        
+        return $this->successJson(__('更新排序成功'));
     }
     
 }

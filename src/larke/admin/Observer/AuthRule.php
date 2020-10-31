@@ -3,13 +3,23 @@
 namespace Larke\Admin\Observer;
 
 use Larke\Admin\Model\AuthRule as AuthRuleModel;
-use Larke\Admin\Model\AuthRuleAccess as AuthRuleAccessModel;
 
 class AuthRule
 {
     public function creating(AuthRuleModel $model)
     {
         $model->id = md5(mt_rand(100000, 999999).microtime());
+        
+        $model->update_time = time();
+        $model->update_ip = request()->ip();
+        $model->create_time = time();
+        $model->create_ip = request()->ip();
+    }
+
+    public function updating(AuthRuleModel $model)
+    {
+        $model->update_time = time();
+        $model->update_ip = request()->ip();
     }
     
     public function updated(AuthRuleModel $model)

@@ -20,7 +20,8 @@
     "require": {
         "php": "^7.3",
         "laravel/framework": "^8.0",
-        "lcobucci/jwt": "^3.3"
+        "lcobucci/jwt": "^3.3",
+        "lake/larke-auth":"^1.0"
     },
     "autoload": {
         "psr-4": {

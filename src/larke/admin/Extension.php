@@ -8,6 +8,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 
 use Larke\Admin\Extension\Service;
+use Larke\Admin\Model\AuthRule as AuthRuleModel;
 
 /*
  * 扩展
@@ -54,22 +55,11 @@ class Extension
     }
     
     /**
-     * Get extensions directory.
+     * Register extensions'namespace.
      *
      * @param array
      */
-    public function getExtensionDirectory($path = '')
-    {
-        $extensionDirectory =  config('larke.extension.directory');
-        return $extensionDirectory.($path ? DIRECTORY_SEPARATOR.$path : $path);
-    }
-    
-    /**
-     * Load extensions.
-     *
-     * @param array
-     */
-    public function loadExtension()
+    public function registerExtensionNamespace()
     {
         $dir = $this->getExtensionDirectory();
         
@@ -89,6 +79,16 @@ class Extension
             $loader->set('', $dir);
         }
         $loader->register(true);
+    }
+    
+    /**
+     * Load extensions.
+     *
+     * @param $this
+     */
+    public function loadExtension()
+    {
+        $dir = $this->getExtensionDirectory();
         
         // 注入在扩展目录的扩展
         $dirs = isset($dir) ? scandir($dir) : [];
@@ -102,6 +102,62 @@ class Extension
                 include_once $bootstrap;
             }
         }
+        
+        return $this;
+    }
+    
+    /**
+     * Get extensions directory.
+     *
+     * @param array
+     */
+    public function getExtensionDirectory($path = '')
+    {
+        $extensionDirectory =  config('larke.extension.directory');
+        return $extensionDirectory.($path ? DIRECTORY_SEPARATOR.$path : $path);
+    }
+    
+    /**
+     * Get new class.
+     *
+     * @param boolen|object
+     */
+    public function getNewClass($className = null)
+    {
+        if (!class_exists($className)) {
+            return false;
+        }
+        
+        $newClass = app($className);
+        if (!($newClass instanceof Service)) {
+            return false;
+        }
+        
+        return $newClass;
+    }
+    
+    /**
+     * Get new class.
+     *
+     * @param mixed
+     */
+    public function getNewClassMethod($className = null, $method = null, $param = [])
+    {
+        if (empty($className) || empty($method)) {
+            return false;
+        }
+        
+        $newClass = $this->getNewClass($className);
+        if (!$newClass) {
+            return false;
+        }
+        
+        if (!method_exists($newClass, $method)) {
+            return false;
+        }
+        
+        $res = call_user_func_array([$newClass, $method], $param);
+        return $res;
     }
     
     /**
@@ -116,16 +172,8 @@ class Extension
         }
         
         $className = Arr::get($this->extensions, $name);
-        if (!class_exists($className)) {
-            return false;
-        }
         
-        $newClass = app($className);
-        if (!($newClass instanceof Service)) {
-            return false;
-        }
-        
-        return $newClass;
+        return $this->getNewClass($className);
     }
     
     /**
@@ -201,5 +249,65 @@ class Extension
         })->toArray();
         
         return $list;
+    }
+    
+    /**
+     * validateInfo.
+     *
+     * @param boolen
+     */
+    public function validateInfo(array $info)
+    {
+        $mustInfo = [
+            'name',
+            'title',
+            'introduce',
+            'author',
+            'version',
+            'adaptation',
+        ];
+        if (empty($info)) {
+            return false;
+        }
+        
+        return !collect($mustInfo)
+            ->contains(function ($key) use ($info) {
+                return !isset($info[$key]);
+            });
+    }
+    
+    /**
+     * Create rule.
+     *
+     * @param array
+     */
+    public function createRule(
+        $data = [], 
+        $parentId = 0, 
+        array $children = []
+    ) {
+        if (empty($data)) {
+            return false;
+        }
+        
+        $lastOrder = AuthRuleModel::max('listorder');
+        
+        $rule = AuthRuleModel::create([
+            'parentid' => $parentId,
+            'listorder' => $lastOrder + 1,
+            'title' => Arr::get($data, 'title'),
+            'url' => Arr::get($data, 'url'),
+            'method' => Arr::get($data, 'method'),
+            'slug' => Arr::get($data, 'slug'),
+            'description' => Arr::get($data, 'description'),
+        ]);
+        if (!empty($children)) {
+            foreach ($children as $child) {
+                $subChildren = Arr::get($child, 'children', []);
+                $this->createRule($child, $rule->id, $subChildren);
+            }
+        }
+
+        return $rule;
     }
 }

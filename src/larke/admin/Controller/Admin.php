@@ -165,32 +165,26 @@ class Admin extends Base
             return $this->errorJson($validator->errors()->first());
         }
         
-        $id = md5(mt_rand(100000, 999999).microtime());
         $insertData = [
-            'id' => $id,
             'name' => $data['name'],
             'nickname' => $data['nickname'],
             'email' => $data['email'],
             'status' => ($data['status'] == 1) ? 1 : 0,
             'is_root' => (isset($data['is_root']) && $data['is_root'] == 1) ? 1 : 0,
-            'last_active' => time(),
-            'last_ip' => $request->ip(),
-            'create_time' => time(),
-            'create_ip' => $request->ip(),
         ];
         if (!empty($data['avatar'])) {
             $insertData['avatar'] = $data['avatar'];
         }
         
-        $status = AdminModel::create($insertData);
-        if ($status === false) {
+        $admin = AdminModel::create($insertData);
+        if ($admin === false) {
             return $this->errorJson(__('添加信息失败'));
         }
         
         // 用户组默认取当前用户的用户组的其中之一
         $groupIds = app('larke.admin')->getGroupids();
         AuthGroupAccessModel::create([
-            'admin_id' => $id,
+            'admin_id' => $admin->id,
             'group_id' => $groupIds[0],
         ]);
         

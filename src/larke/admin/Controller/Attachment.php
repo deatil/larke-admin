@@ -143,11 +143,13 @@ class Attachment extends Base
             return $this->errorJson(__('上传文件失败'));
         }
         
-        $fileInfo = AttachmentModel::where(['md5' => $md5])->first();
+        $fileInfo = AttachmentModel::where([
+            'md5' => $md5
+        ])->first();
         if (!empty($fileInfo)) {
             @unlink($pathname);
             
-            AttachmentModel::where('md5', $md5)->update([
+            $fileInfo->update([
                 'update_time' => time(), 
                 'update_ip' => $request->ip(),
             ]);
@@ -188,10 +190,6 @@ class Attachment extends Base
             'sha1' => $sha1,
             'driver' => $driver,
             'status' => 1,
-            'update_time' => time(),
-            'update_ip' => $request->ip(),
-            'create_time' => time(),
-            'create_ip' => $request->ip(),
         ];
         $Attachment = AttachmentModel::create($data);
         if ($Attachment === false) {
