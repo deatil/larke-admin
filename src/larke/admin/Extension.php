@@ -98,6 +98,10 @@ class Extension
         $list = ExtensionModel::getExtensions();
         
         $services = collect($list)->map(function($data) {
+            if ($data['status'] != 1) {
+                return null;
+            }
+
             if (empty($data['class_name'])) {
                 return null;
             }
