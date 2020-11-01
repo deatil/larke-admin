@@ -392,7 +392,7 @@ class Extension extends Base
             return $this->errorJson(__('扩展解压失败'));
         }
         
-        return $this->successJson(__('模块上传成功，可以进入模块管理进行安装！'));
+        return $this->successJson(__('扩展上传成功！'));
     }
     
 }
