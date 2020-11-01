@@ -295,4 +295,66 @@ class Config extends Base
         return $this->successJson(__('更新排序成功'));
     }
     
+    /**
+     * 启用
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function enable(Request $request)
+    {
+        $id = $request->get('id');
+        if (empty($id)) {
+            return $this->errorJson(__('ID不能为空'));
+        }
+        
+        $info = ConfigModel::where('id', '=', $id)
+            ->first();
+        if (empty($info)) {
+            return $this->errorJson(__('信息不存在'));
+        }
+        
+        if ($info->status == 1) {
+            return $this->errorJson(__('信息已启用'));
+        }
+        
+        $status = $info->enable();
+        if ($status === false) {
+            return $this->errorJson(__('启用失败'));
+        }
+        
+        return $this->successJson(__('启用成功'));
+    }
+    
+    /**
+     * 禁用
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function disable(Request $request)
+    {
+        $id = $request->get('id');
+        if (empty($id)) {
+            return $this->errorJson(__('ID不能为空'));
+        }
+        
+        $info = ConfigModel::where('id', '=', $id)
+            ->first();
+        if (empty($info)) {
+            return $this->errorJson(__('信息不存在'));
+        }
+        
+        if ($info->status == 0) {
+            return $this->errorJson(__('信息已禁用'));
+        }
+        
+        $status = $info->disable();
+        if ($status === false) {
+            return $this->errorJson(__('禁用失败'));
+        }
+        
+        return $this->successJson(__('禁用成功'));
+    }
+    
 }

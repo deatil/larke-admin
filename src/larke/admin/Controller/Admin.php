@@ -262,6 +262,78 @@ class Admin extends Base
     }
     
     /**
+     * 启用
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function enable(Request $request)
+    {
+        $id = $request->get('id');
+        if (empty($id)) {
+            return $this->errorJson(__('ID不能为空'));
+        }
+        
+        $adminid = app('larke.admin')->getId();
+        if ($id == $adminid) {
+            return $this->errorJson(__('你不能修改自己的账号'));
+        }
+        
+        $info = AdminModel::withAccess()->where('id', '=', $id)
+            ->first();
+        if (empty($info)) {
+            return $this->errorJson(__('账号不存在'));
+        }
+        
+        if ($info->status == 1) {
+            return $this->errorJson(__('账号已启用'));
+        }
+        
+        $status = $info->enable();
+        if ($status === false) {
+            return $this->errorJson(__('启用失败'));
+        }
+        
+        return $this->successJson(__('启用成功'));
+    }
+    
+    /**
+     * 禁用
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function disable(Request $request)
+    {
+        $id = $request->get('id');
+        if (empty($id)) {
+            return $this->errorJson(__('ID不能为空'));
+        }
+        
+        $adminid = app('larke.admin')->getId();
+        if ($id == $adminid) {
+            return $this->errorJson(__('你不能修改自己的账号'));
+        }
+        
+        $info = AdminModel::withAccess()->where('id', '=', $id)
+            ->first();
+        if (empty($info)) {
+            return $this->errorJson(__('账号不存在'));
+        }
+        
+        if ($info->status == 0) {
+            return $this->errorJson(__('账号已禁用'));
+        }
+        
+        $status = $info->disable();
+        if ($status === false) {
+            return $this->errorJson(__('禁用失败'));
+        }
+        
+        return $this->successJson(__('禁用成功'));
+    }
+    
+    /**
      * 修改密码
      *
      * @param  Request  $request

@@ -64,6 +64,7 @@ class AuthRule extends Base
     public function indexTree(Request $request)
     {
         $result = AuthRuleModel::orderBy('listorder', 'ASC')
+            ->orderBy('url', 'ASC')
             ->orderBy('create_time', 'ASC')
             ->get()
             ->toArray(); 
@@ -84,7 +85,7 @@ class AuthRule extends Base
      */
     public function indexChildren(Request $request)
     {
-        $id = $request->get('id');
+        $id = $request->get('id', 0);
         if (empty($id) || is_array($id)) {
             return $this->errorJson(__('ID不能为空'));
         }
@@ -321,6 +322,68 @@ class AuthRule extends Base
         }
         
         return $this->successJson(__('更新排序成功'));
+    }
+    
+    /**
+     * 启用
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function enable(Request $request)
+    {
+        $id = $request->get('id');
+        if (empty($id)) {
+            return $this->errorJson(__('ID不能为空'));
+        }
+        
+        $info = AuthRuleModel::where('id', '=', $id)
+            ->first();
+        if (empty($info)) {
+            return $this->errorJson(__('信息不存在'));
+        }
+        
+        if ($info->status == 1) {
+            return $this->errorJson(__('信息已启用'));
+        }
+        
+        $status = $info->enable();
+        if ($status === false) {
+            return $this->errorJson(__('启用失败'));
+        }
+        
+        return $this->successJson(__('启用成功'));
+    }
+    
+    /**
+     * 禁用
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function disable(Request $request)
+    {
+        $id = $request->get('id');
+        if (empty($id)) {
+            return $this->errorJson(__('ID不能为空'));
+        }
+        
+        $info = AuthRuleModel::where('id', '=', $id)
+            ->first();
+        if (empty($info)) {
+            return $this->errorJson(__('信息不存在'));
+        }
+        
+        if ($info->status == 0) {
+            return $this->errorJson(__('信息已禁用'));
+        }
+        
+        $status = $info->disable();
+        if ($status === false) {
+            return $this->errorJson(__('禁用失败'));
+        }
+        
+        return $this->successJson(__('禁用成功'));
     }
     
 }

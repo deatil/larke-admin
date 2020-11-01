@@ -5,6 +5,7 @@ namespace Larke\Admin\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 
 use Larke\Admin\Model\Attachment as AttachmentModel;
 use Larke\Admin\Service\Upload as UploadService;
@@ -107,6 +108,68 @@ class Attachment extends Base
     }
     
     /**
+     * 启用
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function enable(Request $request)
+    {
+        $id = $request->get('id');
+        if (empty($id)) {
+            return $this->errorJson(__('ID不能为空'));
+        }
+        
+        $info = AttachmentModel::where('id', '=', $id)
+            ->first();
+        if (empty($info)) {
+            return $this->errorJson(__('信息不存在'));
+        }
+        
+        if ($info->status == 1) {
+            return $this->errorJson(__('信息已启用'));
+        }
+        
+        $status = $info->enable();
+        if ($status === false) {
+            return $this->errorJson(__('启用失败'));
+        }
+        
+        return $this->successJson(__('启用成功'));
+    }
+    
+    /**
+     * 禁用
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function disable(Request $request)
+    {
+        $id = $request->get('id');
+        if (empty($id)) {
+            return $this->errorJson(__('ID不能为空'));
+        }
+        
+        $info = AttachmentModel::where('id', '=', $id)
+            ->first();
+        if (empty($info)) {
+            return $this->errorJson(__('信息不存在'));
+        }
+        
+        if ($info->status == 0) {
+            return $this->errorJson(__('信息已禁用'));
+        }
+        
+        $status = $info->disable();
+        if ($status === false) {
+            return $this->errorJson(__('禁用失败'));
+        }
+        
+        return $this->successJson(__('禁用成功'));
+    }
+    
+    /**
      * 上传文件
      *
      * @param  Request  $request
@@ -191,8 +254,8 @@ class Attachment extends Base
             'driver' => $driver,
             'status' => 1,
         ];
-        $Attachment = AttachmentModel::create($data);
-        if ($Attachment === false) {
+        $attachment = AttachmentModel::create($data);
+        if ($attachment === false) {
             $UploadService->destroy($path);
             return $this->errorJson(__('上传失败'));
         }
@@ -200,8 +263,35 @@ class Attachment extends Base
         $url = $UploadService->objectUrl($path);
         
         return $this->successJson(__('上传成功'), [
-            'id' => $Attachment->id,
+            'id' => $attachment->id,
             'url' => $url,
+        ]);
+    }
+    
+    /**
+     * 下载码
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function downloadCode(Request $request)
+    {
+        $fileId = $request->get('id');
+        if (empty($fileId)) {
+            return $this->errorJson(__('文件ID不能为空'));
+        }
+        
+        $fileInfo = AttachmentModel::where(['id' => $fileId])
+            ->first();
+        if (empty($fileInfo)) {
+            return $this->errorJson(__('文件不存在'));
+        }
+        
+        $code = md5(mt_rand(10000, 99999) . microtime());
+        Cache::put($code, $fileInfo->id, 300);
+        
+        return $this->successJson(__('获取成功'), [
+            'code' => $code,
         ]);
     }
     
@@ -213,9 +303,14 @@ class Attachment extends Base
      */
     public function download(Request $request)
     {
-        $fileId = $request->get('id');
+        $code = $request->get('code');
+        if (empty($code)) {
+            return $this->errorJson(__('code值不能为空'));
+        }
+        
+        $fileId = Cache::pull($code);
         if (empty($fileId)) {
-            return $this->errorJson(__('文件ID不能为空'));
+            return $this->errorJson(__('文件不存在'));
         }
         
         $fileInfo = AttachmentModel::where(['id' => $fileId])

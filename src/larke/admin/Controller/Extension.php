@@ -106,10 +106,6 @@ class Extension extends Base
             return $this->errorJson(__('扩展信息不正确'));
         }
         
-        if (version_compare(config('larke.admin.version'), Arr::get($info, 'adaptation', 0), '>=') == false) {
-            return $this->errorJson(__('扩展适配 admin 版本错误'));
-        }
-        
         $createInfo = ExtensionModel::create([
             'name' => Arr::get($info, 'name'),
             'title' => Arr::get($info, 'title'),
@@ -195,12 +191,8 @@ class Extension extends Base
         if (!$checkInfo) {
             return $this->errorJson(__('扩展信息不正确'));
         }
-        
-        if (version_compare(config('larke.admin.version'), Arr::get($info, 'adaptation', 0), '>=') == false) {
-            return $this->errorJson(__('扩展适配 admin 版本错误'));
-        }
-        
-        if (version_compare(Arr::get($installInfo, 'version', 0), Arr::get($info, 'version', 0), '>') == false) {
+
+        if (version_compare(Arr::get($installInfo, 'version', 0), Arr::get($info, 'version', 0), '<') == false) {
             return $this->errorJson(__('扩展不需要更新'));
         }
         
@@ -249,7 +241,7 @@ class Extension extends Base
         }
         
         if ($installInfo['status'] == 1) {
-            return $this->errorJson(__('扩展已启用'));
+            return $this->errorJson(__('扩展已启用中'));
         }
         
         $status = $installInfo->enable();
@@ -282,7 +274,7 @@ class Extension extends Base
         }
         
         if ($installInfo['status'] == 0) {
-            return $this->errorJson(__('扩展已禁用'));
+            return $this->errorJson(__('扩展已禁用中'));
         }
         
         $status = $installInfo->disable();

@@ -5,18 +5,12 @@ namespace Larke\Admin;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 use Illuminate\Support\Facades\Response;
 
-use Larke\Admin\Command\Install;
-use Larke\Admin\Command\ImportRoute;
-use Larke\Admin\Command\ResetPasword;
-use Larke\Admin\Command\PassportLogout;
-
 use Larke\Admin\Contracts\Response as ResponseContract;
 use Larke\Admin\Contracts\Jwt as JwtContract;
 use Larke\Admin\Jwt\Jwt;
 use Larke\Admin\Http\Response as ResponseHttp;
 use Larke\Admin\Service\Cache as CacheService;
 use Larke\Admin\Auth\Admin as AdminData;
-use Larke\Admin\Extension\Service as ExtensionService;
 
 use Larke\Admin\Model\Admin as AdminModel;
 use Larke\Admin\Model\AdminLog as AdminLogModel;
@@ -40,10 +34,12 @@ use Larke\Admin\Observer\Extension as ExtensionObserver;
 class ServiceProvider extends BaseServiceProvider
 {
     protected $commands = [
-        Install::class,
-        ImportRoute::class,
-        ResetPasword::class,
-        PassportLogout::class,
+        Command\Install::class,
+        Command\ImportRoute::class,
+        Command\ResetPasword::class,
+        Command\PassportLogout::class,
+        Command\ResetEnforcer::class,
+        Command\Extension::class,
     ];
 
     /**
@@ -262,21 +258,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function bootExtension()
     {
-        $list = ExtensionModel::where('status', 1)
-            ->orderBy('listorder', 'ASC')
-            ->orderBy('upgradetime', 'DESC')
-            ->select(['name', 'class_name'])
-            ->get()
-            ->toArray();
-            
-        collect($list)->each(function($data) {
-            $newClass = app($data['class_name']);
-            if ($newClass instanceof ExtensionService) {
-                if (method_exists($newClass, 'boot')) {
-                    $newClass->boot();
-                }
-            }
-        });
+        app('larke.extension')->bootExtension();
     }
     
 }

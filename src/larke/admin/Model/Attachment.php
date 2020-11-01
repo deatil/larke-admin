@@ -49,6 +49,20 @@ class Attachment extends Base
         
         return (new UploadService())->initStorage()->objectUrl($path);
     }
+    
+    public function enable() 
+    {
+        return $this->update([
+            'status' => 1,
+        ]);
+    }
+    
+    public function disable() 
+    {
+        return $this->update([
+            'status' => 0,
+        ]);
+    }
 
 }
 

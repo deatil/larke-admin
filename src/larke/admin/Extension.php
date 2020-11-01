@@ -6,9 +6,12 @@ use Composer\Autoload\ClassLoader;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Schema;
 
-use Larke\Admin\Extension\Service;
 use Larke\Admin\Model\AuthRule as AuthRuleModel;
+use Larke\Admin\Model\Extension as ExtensionModel;
+use Larke\Admin\Extension\Service as ExtensionService;
 
 /*
  * 扩展
@@ -80,6 +83,38 @@ class Extension
         }
         $loader->register(true);
     }
+
+    /**
+     * Boot Extension.
+     *
+     * @return void
+     */
+    public function bootExtension()
+    {
+        if (!Schema::hasTable((new ExtensionModel)->getTable())) {
+            return ;
+        }
+        
+        $list = Cache::get(md5('larke.extensions.boot'));
+        if (!$list) {
+            $list = ExtensionModel::where('status', 1)
+                ->orderBy('listorder', 'ASC')
+                ->orderBy('upgradetime', 'DESC')
+                ->select(['name', 'class_name'])
+                ->get()
+                ->toArray();
+            Cache::get(md5('larke.extensions.boot'), $list, 3600);
+        }
+        
+        collect($list)->each(function($data) {
+            $newClass = app($data['class_name']);
+            if ($newClass instanceof ExtensionService) {
+                if (method_exists($newClass, 'boot')) {
+                    $newClass->boot();
+                }
+            }
+        });
+    }
     
     /**
      * Load extensions.
@@ -129,7 +164,7 @@ class Extension
         }
         
         $newClass = app($className);
-        if (!($newClass instanceof Service)) {
+        if (!($newClass instanceof ExtensionService)) {
             return false;
         }
         

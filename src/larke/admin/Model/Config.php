@@ -63,4 +63,19 @@ class Config extends Base
         Cache::forget(md5('larke.model.config.settings'));
         return $deleted;
     }
+    
+    public function enable() 
+    {
+        return $this->update([
+            'status' => 1,
+        ]);
+    }
+    
+    public function disable() 
+    {
+        return $this->update([
+            'status' => 0,
+        ]);
+    }
+    
 }

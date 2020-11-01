@@ -3,11 +3,12 @@
 namespace Larke\Admin\Command;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 
 /**
  * 安装
  *
- * php artisan llarke-admin:install [--force]
+ * php artisan larke-admin:install [--force]
  *
  */
 class Install extends Command
@@ -38,7 +39,24 @@ class Install extends Command
         } else {
             $this->call('vendor:publish', ['--tag' => 'larke-admin-config']);
         }
-
+        
+        $this->runSql();
+        
         $this->info('Larke-admin install success.');
+    }
+    
+    /**
+     * Execute Sql.
+     *
+     * @return mixed
+     */
+    protected function runSql()
+    {
+        // 执行数据库
+        $installSqlFile = __DIR__.'/../../resource/sql/install.sql';
+        $dbPrefix = DB::getConfig('prefix');
+        $sqls = file_get_contents($installSqlFile);
+        $sqls = str_replace('pre__', $dbPrefix, $sqls);
+        DB::unprepared($sqls);
     }
 }

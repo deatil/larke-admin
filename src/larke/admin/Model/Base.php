@@ -18,4 +18,5 @@ class Base extends Model
             $query->select(array_merge(['id'], $columns));
         }]);
     }
+    
 }

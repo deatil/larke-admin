@@ -9,7 +9,7 @@ return [
         'version' => "1.0.0",
     ],
     
-    'https' => env('ADMIN_HTTPS', false),
+    'https' => env('LARKE_ADMIN_HTTPS', false),
     
     'route' => [
         'prefix' => env('LARKE_ADMIN_ROUTE_PREFIX', 'admin-api'),

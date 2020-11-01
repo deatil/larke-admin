@@ -64,23 +64,46 @@ class ImportRoute extends Command
                 continue;
             }
             
+            if (!empty($route['action']) 
+                && strpos($route['action'], '@') !== false
+            ) {
+                $parentRoute = explode('@', $route['action']);
+                
+                $oldParent = AuthRuleModel::where('title', $parentRoute[0])
+                    ->first();
+                if (!empty($oldParent)) {
+                    $parentid = $oldParent->id;
+                } else {
+                    $parent = AuthRuleModel::create([
+                        'parentid' => 0,
+                        'title' => $parentRoute[0],
+                        'url' => '',
+                        'method' => '',
+                        'slug' => '',
+                        'description' => $route['action'],
+                        'listorder' => 100,
+                        'is_need_auth' => 0,
+                        'is_system' => 0,
+                        'status' => 1,
+                    ]);
+                    
+                    $parentid = $parent->id;
+                }
+            } else {
+                $parentid = 0;
+            }
+            
             foreach ($route['method'] as $method) {
                 $ruleInfo = AuthRuleModel::where('slug', $route['name'])
                     ->where('method', $method)
                     ->first();
                 if (!empty($ruleInfo)) {
-                    $data = [
+                    $ruleInfo->update([
                         'url' => $route['uri'],
-                        'update_time' => time(),
-                        'update_ip' => request()->ip(),
-                    ];
-                    AuthRuleModel::where('id', $ruleInfo['id'])
-                        ->first()
-                        ->update($data);
+                    ]);
                 } else {
-                    $data = [
-                        'id' => md5(mt_rand(10000, 99999).time().mt_rand(10000, 99999)),
-                        'parentid' => 0,
+                    AuthRuleModel::create([
+                        'parentid' => $parentid,
                         'title' => $route['name'],
                         'url' => $route['uri'],
                         'method' => $method,
@@ -90,13 +113,7 @@ class ImportRoute extends Command
                         'is_need_auth' => 1,
                         'is_system' => 0,
                         'status' => 1,
-                        'update_time' => time(),
-                        'update_ip' => request()->ip(),
-                        'create_time' => time(),
-                        'create_ip' => request()->ip(),
-                    ];
-                    
-                    AuthRuleModel::create($data);
+                    ]);
                 }
             }
         }

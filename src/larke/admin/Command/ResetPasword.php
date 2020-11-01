@@ -10,7 +10,7 @@ use Larke\Admin\Model\Admin as AdminModel;
 /**
  * 重置密码
  *
- * php artisan larke-admin:reset-pasword [id]
+ * php artisan larke-admin:reset-pasword
  *
  */
 class ResetPasword extends Command
@@ -20,7 +20,7 @@ class ResetPasword extends Command
      *
      * @var string
      */
-    protected $signature = 'larke-admin:reset-pasword {id}';
+    protected $signature = 'larke-admin:reset-pasword';
 
     /**
      * The console command description.
@@ -36,14 +36,21 @@ class ResetPasword extends Command
      */
     public function handle()
     {
-        $id = $this->argument('id');
-        if (empty($id)) {
-            $this->line("<error>Admin'id is empty !</error> ");
-
-            return;
+        askForAdminName:
+        $name = $this->ask('Please enter a adminName who needs to reset his password');
+        
+        $admin = AdminModel::query()
+            ->where('name', $name)
+            ->first();
+        if (is_null($admin)) {
+            $this->error('The admin who you entered is not exists.');
+            goto askForAdminName;
         }
         
-        $newPassword = mt_rand(10000000, 99999999);
+        $newPassword = $this->secret('Please enter a password, not enter wiil rand make a new password');
+        if (empty($newPassword)) {
+            $newPassword = mt_rand(10000000, 99999999);
+        }
         
         // 新密码
         $newPasswordInfo = (new PasswordService())
@@ -51,14 +58,12 @@ class ResetPasword extends Command
             ->encrypt(md5($newPassword)); 
 
         // 更新信息
-        $status = AdminModel::where('id', $id)
-            ->update([
+        $status = $admin->update([
                 'password' => $newPasswordInfo['password'],
                 'passport_salt' => $newPasswordInfo['encrypt'],
             ]);
         if ($status === false) {
             $this->line("<error>Reset password is error !</error> ");
-
             return;
         }
         
