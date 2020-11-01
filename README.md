@@ -3,7 +3,7 @@
 
 ### 项目介绍
 
-*  `larke-admin` 基于 `Laravel 8` 框架版本，提供后台API相关接口
+*  `larke-admin` 是基于 `laravel8` 版本的后台快速开发框架，完全api接口化，适用于前后端分离的项目开发
 
 
 ### 安装步骤
