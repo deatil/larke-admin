@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Larke\Admin\Model\Admin as AdminModel;
 use Larke\Admin\Model\AuthGroupAccess as AuthGroupAccessModel;
 use Larke\Admin\Service\Password as PasswordService;
+use Larke\Admin\Repository\Admin as AdminRepository;
 
 /**
  * 账号
@@ -74,8 +75,10 @@ class Admin extends Base
             return $this->errorJson(__('账号ID不能为空'));
         }
         
-        $info = AdminModel::withAccess()->where(['id' => $id])
-            ->select(
+        $info = AdminModel::withAccess()
+            ->where(['id' => $id])
+            ->with(['groups'])
+            ->select([
                 'id', 
                 'name', 
                 'nickname', 
@@ -87,19 +90,56 @@ class Admin extends Base
                 'last_ip',
                 'create_time', 
                 'create_ip'
-            )
+            ])
             ->first();
         if (empty($info)) {
             return $this->errorJson(__('账号信息不存在'));
         }
         
-        $groupAccesses = collect($info['groupAccesses'])->map(function($data) {
-            return $data['group_id'];
+        $adminGroups = $info['groups'];
+        unset($info['groupAccesses'], $info['groups']);
+        $info['groups'] = collect($adminGroups)->map(function($data) {
+            return [
+                'id' => $data['id'],
+                'parentid' => $data['parentid'],
+                'title' => $data['title'],
+                'description' => $data['description'],
+            ];
         });
-        unset($info['groupAccesses']);
-        $info['group_accesses'] = $groupAccesses;
         
         return $this->successJson(__('获取成功'), $info);
+    }
+    
+    /**
+     * 权限
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function rules(Request $request)
+    {
+        $id = $request->get('id');
+        if (empty($id)) {
+            return $this->errorJson(__('账号ID不能为空'));
+        }
+        
+        $info = AdminModel::withAccess()
+            ->where(['id' => $id])
+            ->with(['groups'])
+            ->select([
+                'id', 
+                'name', 
+                'nickname',
+            ])
+            ->first();
+        if (empty($info)) {
+            return $this->errorJson(__('账号信息不存在'));
+        }
+        
+        $groupids = collect($info['groups'])->pluck('id')->toArray();
+        
+        $rules = AdminRepository::getRules($groupids);
+        return $this->successJson(__('获取成功'), $rules);
     }
     
     /**
@@ -470,6 +510,7 @@ class Admin extends Base
         if (!empty($access)) {
             $groupIds = app('larke.admin')->getGroupChildrenIds();
             $accessIds = explode(',', $access);
+            $accessIds = collect($accessIds)->unique();
             
             // 取交集
             if (!app('larke.admin')->isAdministrator()) {

@@ -371,6 +371,7 @@ class AuthGroup extends Base
         if (!empty($access)) {
             $accessData = [];
             $accessArr = explode(',', $access);
+            $accessArr = collect($accessArr)->unique();
             foreach ($accessArr as $value) {
                 AuthRuleAccessModel::create([
                     'group_id' => $id,

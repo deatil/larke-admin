@@ -11,25 +11,11 @@ use Larke\Admin\Jwt\Jwt;
 use Larke\Admin\Http\Response as ResponseHttp;
 use Larke\Admin\Service\Cache as CacheService;
 use Larke\Admin\Auth\Admin as AdminData;
+use Larke\Admin\Http\ResponseCode;
 
-use Larke\Admin\Model\Admin as AdminModel;
-use Larke\Admin\Model\AdminLog as AdminLogModel;
-use Larke\Admin\Model\Attachment as AttachmentModel;
-use Larke\Admin\Model\AuthGroup as AuthGroupModel;
-use Larke\Admin\Model\AuthGroupAccess as AuthGroupAccessModel;
-use Larke\Admin\Model\AuthRule as AuthRuleModel;
-use Larke\Admin\Model\AuthRuleAccess as AuthRuleAccessModel;
-use Larke\Admin\Model\Config as ConfigModel;
-use Larke\Admin\Model\Extension as ExtensionModel;
-use Larke\Admin\Observer\Admin as AdminObserver;
-use Larke\Admin\Observer\AdminLog as AdminLogObserver;
-use Larke\Admin\Observer\Attachment as AttachmentObserver;
-use Larke\Admin\Observer\AuthGroup as AuthGroupObserver;
-use Larke\Admin\Observer\AuthGroupAccess as AuthGroupAccessObserver;
-use Larke\Admin\Observer\AuthRule as AuthRuleObserver;
-use Larke\Admin\Observer\AuthRuleAccess as AuthRuleAccessObserver;
-use Larke\Admin\Observer\Config as ConfigObserver;
-use Larke\Admin\Observer\Extension as ExtensionObserver;
+use Larke\Admin\Model;
+use Larke\Admin\Observer;
+use Larke\Admin\Command;
 
 class ServiceProvider extends BaseServiceProvider
 {
@@ -72,8 +58,10 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function register()
     {
+        $this->registerResponseCode();
+        
         $this->registerConfig();
-
+        
         $this->registerBind();
         
         $this->registerPublishing();
@@ -84,7 +72,7 @@ class ServiceProvider extends BaseServiceProvider
         
         $this->registerExtensions();
     }
-
+    
     /**
      * {@inheritdoc}
      */
@@ -112,6 +100,22 @@ class ServiceProvider extends BaseServiceProvider
             url()->forceScheme('https');
             $this->app['request']->server->set('HTTPS', true);
         }
+    }
+    
+    /**
+     * Register the ResponseCode.
+     *
+     * @return void
+     */
+    protected function registerResponseCode()
+    {
+        $codes = ResponseCode::getConstants();
+        collect($codes)->each(function($code, $key) {
+            $newKey = strtoupper('LARKE_ADMIN_' . $key);
+            if (!defined($newKey)) {
+                define($newKey, $code);
+            }
+        });
     }
     
     /**
@@ -208,6 +212,14 @@ class ServiceProvider extends BaseServiceProvider
     }
     
     /**
+     * Register Extensions.
+     */
+    public function registerExtensions()
+    {
+        app('larke.extension')->registerExtensionNamespace();
+    }
+    
+    /**
      * Register the route middleware.
      *
      * @return void
@@ -232,23 +244,15 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function bootObserver()
     {
-        AdminModel::observe(new AdminObserver());
-        AdminLogModel::observe(new AdminLogObserver());
-        AttachmentModel::observe(new AttachmentObserver());
-        AuthGroupModel::observe(new AuthGroupObserver());
-        AuthGroupAccessModel::observe(new AuthGroupAccessObserver());
-        AuthRuleModel::observe(new AuthRuleObserver());
-        AuthRuleAccessModel::observe(new AuthRuleAccessObserver());
-        ConfigModel::observe(new ConfigObserver());
-        ExtensionModel::observe(new ExtensionObserver());
-    }
-    
-    /**
-     * Register Extensions.
-     */
-    public function registerExtensions()
-    {
-        app('larke.extension')->registerExtensionNamespace();
+        Model\Admin::observe(new Observer\Admin());
+        Model\AdminLog::observe(new Observer\AdminLog());
+        Model\Attachment::observe(new Observer\Attachment());
+        Model\AuthGroup::observe(new Observer\AuthGroup());
+        Model\AuthGroupAccess::observe(new Observer\AuthGroupAccess());
+        Model\AuthRule::observe(new Observer\AuthRule());
+        Model\AuthRuleAccess::observe(new Observer\AuthRuleAccess());
+        Model\Config::observe(new Observer\Config());
+        Model\Extension::observe(new Observer\Extension());
     }
 
     /**

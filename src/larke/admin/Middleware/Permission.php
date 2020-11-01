@@ -4,6 +4,7 @@ namespace Larke\Admin\Middleware;
 
 use Closure;
 
+use Larke\Admin\Http\ResponseCode;
 use Larke\Admin\Traits\Json as JsonTrait;
 
 /*
@@ -39,7 +40,7 @@ class Permission
         $requestMethod = request()->getMethod();
         
         if (!\Enforcer::enforce($adminId, $requestUrl, $requestMethod)) {
-            $this->errorJson(__('你没有访问权限'));
+            $this->errorJson(__('你没有访问权限'), ResponseCode::AUTH_ERROR);
         }
     }
 

@@ -91,29 +91,47 @@ class Extension
      */
     public function bootExtension()
     {
-        if (!Schema::hasTable((new ExtensionModel)->getTable())) {
+        if (! Schema::hasTable((new ExtensionModel)->getTable())) {
             return ;
         }
         
-        $list = Cache::get(md5('larke.extensions.boot'));
-        if (!$list) {
-            $list = ExtensionModel::where('status', 1)
-                ->orderBy('listorder', 'ASC')
-                ->orderBy('upgradetime', 'DESC')
-                ->select(['name', 'class_name'])
-                ->get()
-                ->toArray();
-            Cache::get(md5('larke.extensions.boot'), $list, 3600);
-        }
+        $list = ExtensionModel::getExtensions();
         
-        collect($list)->each(function($data) {
-            $newClass = app($data['class_name']);
-            if ($newClass instanceof ExtensionService) {
-                if (method_exists($newClass, 'boot')) {
-                    $newClass->boot();
-                }
+        $services = collect($list)->map(function($data) {
+            if (empty($data['class_name'])) {
+                return null;
             }
+            
+            $newClass = app($data['class_name']);
+            if (!$newClass) {
+                return null;
+            }
+            
+            if (! ($newClass instanceof ExtensionService)) {
+                return null;
+            }
+            
+            return $newClass;
+        })->filter(function($data) {
+            return !empty($data);
+        })->toArray();
+        
+        array_walk($services, function ($s) {
+            $this->bootService($s);
         });
+    }
+    /**
+     * Boot the given service.
+     */
+    protected function bootService(ExtensionService $service)
+    {
+        $service->callBootingCallbacks();
+
+        if (method_exists($service, 'boot')) {
+            app()->call([$service, 'boot']);
+        }
+
+        $service->callBootedCallbacks();
     }
     
     /**

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Artisan;
  * @create 2020-10-25
  * @author deatil
  */
-class Sys extends Base
+class System extends Base
 {
     /**
      * 系统详情

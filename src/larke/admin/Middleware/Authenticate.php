@@ -4,6 +4,7 @@ namespace Larke\Admin\Middleware;
 
 use Closure;
 
+use Larke\Admin\Http\ResponseCode;
 use Larke\Admin\Traits\Json as JsonTrait;
 use Larke\Admin\Model\Admin as AdminModel;
 
@@ -33,28 +34,28 @@ class Authenticate
     {
         $authorization = request()->header('Authorization');
         if (!$authorization) {
-            $this->errorJson(__('token不能为空'));
+            $this->errorJson(__('token不能为空'), ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
         $authorizationArr = explode(' ', $authorization);
         if (count($authorizationArr) != 2) {
-            $this->errorJson(__('token不能为空'));
+            $this->errorJson(__('token不能为空'), ResponseCode::ACCESS_TOKEN_ERROR);
         }
         if ($authorizationArr[0] != 'Bearer') {
-            $this->errorJson(__('token格式错误'));
+            $this->errorJson(__('token格式错误'), ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
         $token = $authorizationArr[1];
         if (!$token) {
-            $this->errorJson(__('token不能为空'));
+            $this->errorJson(__('token不能为空'), ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
         if (count(explode('.', $token)) <> 3) {
-            $this->errorJson(__('token格式错误'));
+            $this->errorJson(__('token格式错误'), ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
         if (app('larke.cache')->has(md5($token))) {
-            $this->errorJson(__('token已失效'));
+            $this->errorJson(__('token已失效'), ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
         $jwtAuth = app('larke.jwt')
@@ -63,24 +64,24 @@ class Authenticate
             ->decode();
         
         if (!($jwtAuth->validate() && $jwtAuth->verify())) {
-            $this->errorJson(__('token已过期'));
+            $this->errorJson(__('token已过期'), ResponseCode::ACCESS_TOKEN_TIMEOUT);
         }
         
         $adminid = $jwtAuth->getClaim('adminid');
         if ($adminid === false) {
-            $this->errorJson(__('token错误'));
+            $this->errorJson(__('token错误'), ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
         $adminInfo = AdminModel::where('id', $adminid)
             ->with(['groups'])
             ->first();
         if (empty($adminInfo)) {
-            $this->errorJson(__('帐号不存在或者已被锁定'));
+            $this->errorJson(__('帐号不存在或者已被锁定'), ResponseCode::AUTH_ERROR);
         }
         
         $adminInfo = $adminInfo->toArray();
         if ($adminInfo['status'] != 1) {
-            $this->errorJson(__('帐号不存在或者已被锁定'));
+            $this->errorJson(__('帐号不存在或者已被锁定'), ResponseCode::AUTH_ERROR);
         }
         
         app('larke.admin')->withId($adminid)

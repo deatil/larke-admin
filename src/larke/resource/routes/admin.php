@@ -16,10 +16,10 @@ Route::group([
             $router->get('/auth/rule/detail', 'AuthRule@detail')->name('larke-admin-auth-rule-detail');
             $router->post('/auth/rule/create', 'AuthRule@create')->name('larke-admin-auth-rule-create');
             $router->put('/auth/rule/update', 'AuthRule@update')->name('larke-admin-auth-rule-update');
-            $router->delete('/auth/rule/delete', 'AuthRule@delete')->name('larke-admin-auth-rule-delete');
             $router->patch('/auth/rule/listorder', 'AuthRule@listorder')->name('larke-admin-auth-rule-listorder');
             $router->patch('/auth/rule/enable', 'AuthRule@enable')->name('larke-admin-auth-rule-enable');
             $router->patch('/auth/rule/disable', 'AuthRule@disable')->name('larke-admin-auth-rule-disable');
+            $router->delete('/auth/rule/delete', 'AuthRule@delete')->name('larke-admin-auth-rule-delete');
             
             $router->get('/auth/group/index', 'AuthGroup@index')->name('larke-admin-auth-group-index');
             $router->get('/auth/group/index-tree', 'AuthGroup@indexTree')->name('larke-admin-auth-group-index-tree');
@@ -27,10 +27,10 @@ Route::group([
             $router->get('/auth/group/detail', 'AuthGroup@detail')->name('larke-admin-auth-group-detail');
             $router->post('/auth/group/create', 'AuthGroup@create')->name('larke-admin-auth-group-create');
             $router->put('/auth/group/update', 'AuthGroup@update')->name('larke-admin-auth-group-update');
-            $router->delete('/auth/group/delete', 'AuthGroup@delete')->name('larke-admin-auth-group-delete');
             $router->patch('/auth/group/listorder', 'AuthGroup@listorder')->name('larke-admin-auth-group-listorder');
             $router->patch('/auth/group/enable', 'AuthGroup@enable')->name('larke-admin-auth-group-enable');
             $router->patch('/auth/group/disable', 'AuthGroup@disable')->name('larke-admin-auth-group-disable');
+            $router->delete('/auth/group/delete', 'AuthGroup@delete')->name('larke-admin-auth-group-delete');
             $router->put('/auth/group/access', 'AuthGroup@access')->name('larke-admin-auth-group-access');
         });
         
@@ -46,33 +46,34 @@ Route::group([
         
         $router->get('/attachment/index', 'Attachment@index')->name('larke-admin-attachment-index');
         $router->get('/attachment/detail', 'Attachment@detail')->name('larke-admin-attachment-detail');
-        $router->delete('/attachment/delete', 'Attachment@delete')->name('larke-admin-attachment-delete');
-        $router->post('/attachment/upload', 'Attachment@upload')->name('larke-admin-attachment-upload');
         $router->patch('/attachment/enable', 'Attachment@enable')->name('larke-admin-attachment-enable');
         $router->patch('/attachment/disable', 'Attachment@disable')->name('larke-admin-attachment-disable');
+        $router->delete('/attachment/delete', 'Attachment@delete')->name('larke-admin-attachment-delete');
+        $router->post('/attachment/upload', 'Attachment@upload')->name('larke-admin-attachment-upload');
         $router->get('/attachment/download/code', 'Attachment@downloadCode')->name('larke-admin-attachment-download-code');
         $router->get('/attachment/download', 'Attachment@download')->name('larke-admin-attachment-download');
         
         $router->get('/admin/index', 'Admin@index')->name('larke-admin-admin-index');
         $router->get('/admin/detail', 'Admin@detail')->name('larke-admin-admin-detail');
+        $router->get('/admin/rules', 'Admin@rules')->name('larke-admin-admin-rules');
         $router->post('/admin/create', 'Admin@create')->name('larke-admin-admin-create');
         $router->put('/admin/update', 'Admin@update')->name('larke-admin-admin-update');
-        $router->delete('/admin/delete', 'Admin@delete')->name('larke-admin-admin-delete');
-        $router->put('/admin/access', 'Admin@access')->name('larke-admin-admin-access');
-        $router->put('/admin/password', 'Admin@changePasssword')->name('larke-admin-admin-password');
-        $router->post('/admin/logout', 'Admin@logout')->name('larke-admin-admin-logout');
         $router->patch('/admin/enable', 'Admin@enable')->name('larke-admin-admin-enable');
         $router->patch('/admin/disable', 'Admin@disable')->name('larke-admin-admin-disable');
+        $router->delete('/admin/delete', 'Admin@delete')->name('larke-admin-admin-delete');
+        $router->put('/admin/password', 'Admin@changePasssword')->name('larke-admin-admin-password');
+        $router->post('/admin/logout', 'Admin@logout')->name('larke-admin-admin-logout');
+        $router->put('/admin/access', 'Admin@access')->name('larke-admin-admin-access');
         
         $router->get('/config/index', 'Config@index')->name('larke-admin-config-index');
         $router->get('/config/detail', 'Config@detail')->name('larke-admin-config-detail');
         $router->post('/config/create', 'Config@create')->name('larke-admin-config-create');
         $router->put('/config/update', 'Config@update')->name('larke-admin-config-update');
-        $router->delete('/config/delete', 'Config@delete')->name('larke-admin-config-delete');
-        $router->put('/config/setting', 'Config@setting')->name('larke-admin-config-setting');
         $router->patch('/config/listorder', 'Config@listorder')->name('larke-admin-config-listorder');
         $router->patch('/config/enable', 'Config@enable')->name('larke-admin-config-enable');
         $router->patch('/config/disable', 'Config@disable')->name('larke-admin-config-disable');
+        $router->delete('/config/delete', 'Config@delete')->name('larke-admin-config-delete');
+        $router->put('/config/setting', 'Config@setting')->name('larke-admin-config-setting');
         
         $router->get('/log/index', 'Log@index')->name('larke-admin-log-index');
         $router->get('/log/detail', 'Log@detail')->name('larke-admin-log-detail');
@@ -89,8 +90,8 @@ Route::group([
         $router->patch('/extension/listorder', 'Extension@listorder')->name('larke-admin-extension-listorder');
         $router->post('/extension/upload', 'Extension@upload')->name('larke-admin-extension-upload');
         
-        $router->get('/sys/info', 'Sys@info')->name('larke-admin-sys-info');
-        $router->post('/sys/cache', 'Sys@cache')->name('larke-admin-sys-cache');
-        $router->post('/sys/clear-cache', 'Sys@clearCache')->name('larke-admin-sys-clear-cache');
+        $router->get('/system/info', 'System@info')->name('larke-admin-system-info');
+        $router->post('/system/cache', 'System@cache')->name('larke-admin-system-cache');
+        $router->post('/system/clear-cache', 'System@clearCache')->name('larke-admin-system-clear-cache');
     });
 });

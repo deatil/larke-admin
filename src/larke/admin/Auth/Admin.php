@@ -113,8 +113,8 @@ class Admin
      */
     public function getGroupids()
     {
-        $groupids = $this->getGroups();
-        return collect($groupids)->pluck('id')->toArray();
+        $groups = $this->getGroups();
+        return collect($groups)->pluck('id')->toArray();
     }
     
     /*
