@@ -202,7 +202,7 @@ class ServiceProvider extends BaseServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__.'/../resource/config/larke.php' => config_path('larke.php'),
+                __DIR__.'/../resource/config' => config_path(),
             ], 'larke-admin-config');
         }
     }
