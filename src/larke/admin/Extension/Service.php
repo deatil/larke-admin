@@ -2,7 +2,7 @@
 
 namespace Larke\Admin\Extension;
 
-use Larke\Admin\Traits\Service as ServiceTrait;
+use Larke\Admin\Traits\ExtensionService as ExtensionServiceTrait;
 
 /*
  * 扩展服务，类似于服务提供者
@@ -12,7 +12,7 @@ use Larke\Admin\Traits\Service as ServiceTrait;
  */
 abstract class Service
 {
-    use ServiceTrait;
+    use ExtensionServiceTrait;
     
     /**
      * 扩展信息
