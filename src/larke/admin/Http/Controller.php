@@ -2,7 +2,7 @@
 
 namespace Larke\Admin\Http;
 
-use Larke\Admin\Traits\Json as JsonTrait;
+use Larke\Admin\Traits\ResponseJson as ResponseJsonTrait;
 
 /*
  * 基础控制器
@@ -12,5 +12,5 @@ use Larke\Admin\Traits\Json as JsonTrait;
  */
 abstract class Controller
 {
-    use JsonTrait;
+    use ResponseJsonTrait;
 }
