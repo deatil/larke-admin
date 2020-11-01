@@ -3,12 +3,12 @@
 namespace Larke\Admin\Traits;
 
 /**
- * Json 返回
+ * 响应 Json 返回
  *
  * @create 2020-10-19
  * @author deatil
  */
-trait Json
+trait ResponseJson
 {
     /**
      * 返回成功json
