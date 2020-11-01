@@ -3,7 +3,7 @@
 
 ### 项目介绍
 
-*  `larke-admin` 基于 `Laravel` 框架，提供后台API相关接口
+*  `larke-admin` 基于 `Laravel 8` 框架版本，提供后台API相关接口
 
 
 ### 安装步骤
