@@ -9,7 +9,7 @@ use Illuminate\Contracts\Foundation\CachesRoutes;
 use Illuminate\Database\Eloquent\Factory as ModelFactory;
 use Illuminate\View\Compilers\BladeCompiler;
 
-trait Service
+trait ExtensionService
 {
     /**
      * The application instance.
