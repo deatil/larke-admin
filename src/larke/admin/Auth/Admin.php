@@ -175,7 +175,7 @@ class Admin
     public function getRuleids()
     {
         $ruleids = $this->getRules();
-        return collect($ruleids)->pluck('id');
+        return collect($ruleids)->pluck('id')->toArray();
     }
 
 }
