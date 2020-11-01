@@ -5,15 +5,15 @@ namespace Larke\Admin\Facade;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * Auth
+ * AuthAdmin
  *
  * @create 2020-10-26
  * @author deatil
  */
-class Auth extends Facade
+class AuthAdmin extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'larke.auth';
+        return 'larke.admin';
     }
 }
