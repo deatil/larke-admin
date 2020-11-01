@@ -82,7 +82,7 @@ class Admin
     }
 
     /**
-     * 是否为管理员
+     * 是否为超级管理员
      */
     public function isAdministrator()
     {
@@ -118,7 +118,7 @@ class Admin
     }
     
     /*
-     * 获取 ChildrenRules
+     * 获取 GroupChildren
      */
     public function getGroupChildren()
     {
@@ -142,7 +142,7 @@ class Admin
     }
     
     /*
-     * 获取 ChildrenRuleids
+     * 获取 GroupChildrenIds
      */
     public function getGroupChildrenIds()
     {
