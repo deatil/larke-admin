@@ -225,7 +225,7 @@ class Attachment extends Base
         
         $uploadDisk = config('larke.upload.disk');
         
-        $driver = config('filesystems.disks')[$uploadDisk]['driver'] ?? 'local';
+        $driver = config('larke.upload.disk') ?: 'local';
         
         $mimeType = $UploadService->getMimeType($requestFile);
         
