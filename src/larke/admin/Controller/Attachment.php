@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
 
+use Larke\Admin\Model\Admin as AdminModel;
 use Larke\Admin\Model\Attachment as AttachmentModel;
 use Larke\Admin\Service\Upload as UploadService;
 
@@ -206,6 +207,14 @@ class Attachment extends Base
             return $this->errorJson(__('上传文件失败'));
         }
         
+        $uploadDisk = config('larke.upload.disk');
+        
+        $driver = $uploadDisk ?: 'local';
+        
+        $mimeType = $UploadService->getMimeType($requestFile);
+        
+        $filetype = $UploadService->getFileType($requestFile);
+        
         $fileInfo = AttachmentModel::where([
             'md5' => $md5
         ])->first();
@@ -217,22 +226,20 @@ class Attachment extends Base
                 'update_ip' => $request->ip(),
             ]);
             
-            return $this->successJson(__('上传成功'), [
+            $res = [
                 'id' => $fileInfo['id'],
-                'url' => $UploadService->objectUrl($fileInfo['path']),
-            ]);
+            ];
+            if (in_array($filetype, ['image', 'video', 'audio'])) {
+                $res['url'] = $fileInfo['url'];
+            }
+            
+            return $this->successJson(__('上传成功'), $res);
         }
-        
-        $uploadDisk = config('larke.upload.disk');
-        
-        $driver = config('larke.upload.disk') ?: 'local';
-        
-        $mimeType = $UploadService->getMimeType($requestFile);
-        
-        $filetype = $UploadService->getFileType($requestFile);
         
         if ($filetype == 'image') {
             $uploadDir = config('larke.upload.directory.image');
+        } elseif ($filetype == 'video' || $filetype == 'audio') {
+            $uploadDir = config('larke.upload.directory.media');
         } else {
             $uploadDir = config('larke.upload.directory.file');
         }
@@ -242,8 +249,8 @@ class Attachment extends Base
             ->upload($requestFile);
         
         $data = [
-            'type' => 'admin',
-            'type_id' => app('larke.admin')->getId(),
+            'belong_type' => AdminModel::class,
+            'belong_id' => app('larke.admin')->getId(),
             'name' => $name,
             'path' => $path,
             'mime' => $mimeType,
@@ -262,10 +269,14 @@ class Attachment extends Base
         
         $url = $UploadService->objectUrl($path);
         
-        return $this->successJson(__('上传成功'), [
+        $res = [
             'id' => $attachment->id,
-            'url' => $url,
-        ]);
+        ];
+        if (in_array($filetype, ['image', 'video', 'audio'])) {
+            $res['url'] = $url;
+        }
+        
+        return $this->successJson(__('上传成功'), $res);
     }
     
     /**

@@ -19,35 +19,41 @@ class Attachment extends Base
     protected $guarded = [];
     
     protected $appends = [
-        'realpath',
+        'url',
     ];
     
     public $incrementing = false;
     public $timestamps = false;
     
-    public function getRealpathAttribute() 
+    public function getUrlAttribute() 
     {
         $value = $this->path;
         if (empty($value)) {
             return '';
         }
         
-        return (new UploadService())->disk($this->driver)->objectUrl($value);
+        return (new UploadService())
+            ->disk($this->driver)
+            ->objectUrl($value);
     }
     
     public function attachmentable()
     {
-        return $this->morphTo(__FUNCTION__, 'type', 'type_id');
+        return $this->morphTo(__FUNCTION__, 'belong_type', 'belong_id');
     }
     
     public static function path($id)
     {
-        $data = self::where('id', $id)->select('path', 'driver')->first();
+        $data = self::where('id', $id)
+            ->select('path', 'driver')
+            ->first();
         if (empty($data)) {
             return '';
         }
         
-        return (new UploadService())->disk($data->driver)->objectUrl($data->path);
+        return (new UploadService())
+            ->disk($data->driver)
+            ->objectUrl($data->path);
     }
     
     public function enable() 

@@ -276,6 +276,8 @@ class Upload
      */
     public function upload(UploadedFile $file)
     {
+        $this->name = $this->getStoreName($file);
+        
         $this->renameIfExists($file);
 
         if (!is_null($this->storagePermission)) {

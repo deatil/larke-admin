@@ -34,11 +34,11 @@ return [
     ],
     
     'passport' => [
-        'salt' => env('LARKE_ADMIN_PASSPORT_SALT', 'd,d7ja0db1a974;38cE84976abbac2cd'),
-        'expired_in' => env('LARKE_ADMIN_PASSPORT_EXPIRED_IN', 86400),
-        'refresh_expired_in' => env('LARKE_ADMIN_PASSPORT_REFRESH_EXPIRED_IN', 604800),
+        'password_salt' => env('LARKE_ADMIN_PASSPORT_PASSWORD_SALT', 'd,d7ja0db1a974;38cE84976abbac2cd'),
         'access_token_id' => env('LARKE_ADMIN_PASSPORT_ACCESS_TOKEN_ID', 'larke-passport-access-token'),
+        'access_expired_in' => env('LARKE_ADMIN_PASSPORT_ACCESS_EXPIRED_IN', 86400),
         'refresh_token_id' => env('LARKE_ADMIN_PASSPORT_REFRESH_TOKEN_ID', 'larke-passport-refresh-token'),
+        'refresh_expired_in' => env('LARKE_ADMIN_PASSPORT_REFRESH_EXPIRED_IN', 604800),
     ],
     
     'cache' => [
@@ -71,6 +71,7 @@ return [
         
         'directory' => [
             'image' => env('LARKE_ADMIN_UPLOAD_DIRECTORY_IMAGE', 'images'),
+            'media' => env('LARKE_ADMIN_UPLOAD_DIRECTORY_MEDIA', 'medias'),
             'file' => env('LARKE_ADMIN_UPLOAD_DIRECTORY_FILE', 'files'),
         ],
         

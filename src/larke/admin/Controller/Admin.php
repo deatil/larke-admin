@@ -406,14 +406,14 @@ class Admin extends Base
 
         // 新密码
         $newPasswordInfo = (new PasswordService())
-            ->withSalt(config('larke.passport.salt'))
+            ->withSalt(config('larke.passport.password_salt'))
             ->encrypt($password); 
 
         // 更新信息
         $status = AdminModel::where('id', $adminInfo['id'])
             ->update([
                 'password' => $newPasswordInfo['password'],
-                'passport_salt' => $newPasswordInfo['encrypt'],
+                'password_salt' => $newPasswordInfo['encrypt'],
             ]);
         if ($status === false) {
             return $this->errorJson(__('密码修改失败'));
@@ -467,10 +467,7 @@ class Admin extends Base
             $this->errorJson(__('token错误'));
         }
         
-        $refreshTokenExpiredIn = $refreshJwt->getClaim('expired_in');
-        if ($refreshTokenExpiredIn === false) {
-            $this->errorJson(__('token错误'));
-        }
+        $refreshTokenExpiredIn = $refreshJwt->getClaim('exp') - $refreshJwt->getClaim('iat');
         
         if ($id != $refreshAdminid) {
             return $this->errorJson(__('退出失败'));

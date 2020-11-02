@@ -101,22 +101,22 @@ class Profile extends Base
         }
         
         $password2 = (new PasswordService())
-            ->withSalt(config('larke.passport.salt'))
-            ->encrypt($oldPassword, $adminInfo['passport_salt']); 
+            ->withSalt(config('larke.passport.password_salt'))
+            ->encrypt($oldPassword, $adminInfo['password_salt']); 
         if ($password2 != $adminInfo['password']) {
             return $this->errorJson(__('用户密码错误'));
         }
 
         // 新密码
         $newPasswordInfo = (new PasswordService())
-            ->withSalt(config('larke.passport.salt'))
+            ->withSalt(config('larke.passport.password_salt'))
             ->encrypt($newPassword); 
 
         // 更新信息
         $status = AdminModel::where('id', $adminInfo['id'])
             ->update([
                 'password' => $newPasswordInfo['password'],
-                'passport_salt' => $newPasswordInfo['encrypt'],
+                'password_salt' => $newPasswordInfo['encrypt'],
             ]);
         if ($status === false) {
             return $this->errorJson(__('密码修改失败'));

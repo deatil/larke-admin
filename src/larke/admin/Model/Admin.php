@@ -36,7 +36,7 @@ class Admin extends Base
     
     public function attachments()
     {
-        return $this->morphMany(Attachment::class, 'attachmentable', 'type', 'type_id');
+        return $this->morphMany(Attachment::class, 'attachmentable', 'belong_type', 'belong_id');
     }
     
     public function getAvatarAttribute($value) 

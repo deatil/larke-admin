@@ -54,13 +54,13 @@ class ResetPasword extends Command
         
         // 新密码
         $newPasswordInfo = (new PasswordService())
-            ->withSalt(config('larke.passport.salt'))
+            ->withSalt(config('larke.passport.password_salt'))
             ->encrypt(md5($newPassword)); 
 
         // 更新信息
         $status = $admin->update([
                 'password' => $newPasswordInfo['password'],
-                'passport_salt' => $newPasswordInfo['encrypt'],
+                'password_salt' => $newPasswordInfo['encrypt'],
             ]);
         if ($status === false) {
             $this->line("<error>Reset password is error !</error> ");

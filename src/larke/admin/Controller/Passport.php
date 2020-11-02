@@ -91,8 +91,8 @@ class Passport extends Base
         $adminInfo = $adminInfo->toArray();
         
         $password2 = (new PasswordService())
-            ->withSalt(config('larke.passport.salt'))
-            ->encrypt($password, $adminInfo['passport_salt']); 
+            ->withSalt(config('larke.passport.password_salt'))
+            ->encrypt($password, $adminInfo['password_salt']); 
         if ($password2 != $adminInfo['password']) {
             return $this->errorJson(__('账号密码错误'));
         }
@@ -102,7 +102,7 @@ class Passport extends Base
         }
         
         // 获取jwt的句柄
-        $expiredIn = config('larke.passport.expired_in', 86400);
+        $expiredIn = config('larke.passport.access_expired_in', 86400);
         $accessToken = app('larke.jwt')->withClaim([
             'adminid' => $adminInfo['id'],
         ])->withExpTime($expiredIn)
@@ -117,7 +117,6 @@ class Passport extends Base
         $refreshExpiredIn = config('larke.passport.refresh_expired_in', 300);
         $refreshToken = app('larke.jwt')->withClaim([
             'adminid' => $adminInfo['id'],
-            'expired_in' => $refreshExpiredIn,
         ])->withExpTime($refreshExpiredIn)
             ->withJti(config('larke.passport.refresh_token_id'))
             ->encode()
@@ -194,16 +193,13 @@ class Passport extends Base
             $this->errorJson(__('token错误'));
         }
         
-        $refreshTokenExpiredIn = $refreshJwt->getClaim('expired_in');
-        if ($refreshTokenExpiredIn === false) {
-            $this->errorJson(__('token错误'));
-        }
-        
         if ($accessAdminid != $refreshAdminid) {
             return $this->errorJson(__('刷新Token失败'));
         }
         
-        $expiredIn = config('larke.passport.expired_in', 300);
+        $refreshTokenExpiredIn = $refreshJwt->getClaim('exp') - $refreshJwt->getClaim('iat');
+        
+        $expiredIn = config('larke.passport.access_expired_in', 86400);
         $newAccessToken = app('larke.jwt')->withClaim([
             'adminid' => $refreshAdminid,
         ])->withExpTime($expiredIn)
@@ -276,10 +272,7 @@ class Passport extends Base
             $this->errorJson(__('token错误'));
         }
         
-        $refreshTokenExpiredIn = $refreshJwt->getClaim('expired_in');
-        if ($refreshTokenExpiredIn === false) {
-            $this->errorJson(__('token错误'));
-        }
+        $refreshTokenExpiredIn = $refreshJwt->getClaim('exp') - $refreshJwt->getClaim('iat');
         
         if ($accessAdminid != $refreshAdminid) {
             return $this->errorJson(__('退出失败'));

@@ -74,12 +74,7 @@ class PassportLogout extends Command
             return;
         }
         
-        $refreshTokenExpiredIn = $refreshJwt->getClaim('expired_in');
-        if ($refreshTokenExpiredIn === false) {
-            $this->line("<error>Refresh_token'expired_in is error !</error> ");
-
-            return;
-        }
+        $refreshTokenExpiredIn = $refreshJwt->getClaim('exp') - $refreshJwt->getClaim('iat');
         
         // 添加缓存黑名单
         app('larke.cache')->add(md5($refreshToken), $refreshToken, $refreshTokenExpiredIn);
