@@ -32,7 +32,7 @@ class Attachment extends Base
             return '';
         }
         
-        return (new UploadService())->initStorage()->objectUrl($value);
+        return (new UploadService())->disk($this->driver)->objectUrl($value);
     }
     
     public function attachmentable()
@@ -47,7 +47,7 @@ class Attachment extends Base
             return '';
         }
         
-        return (new UploadService())->initStorage()->objectUrl($path);
+        return (new UploadService())->disk($this->driver)->objectUrl($path);
     }
     
     public function enable() 
