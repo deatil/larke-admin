@@ -42,12 +42,12 @@ class Attachment extends Base
     
     public static function path($id)
     {
-        $path = self::where('id', $id)->value('path');
-        if (empty($path)) {
+        $data = self::where('id', $id)->select('path', 'driver')->first();
+        if (empty($data)) {
             return '';
         }
         
-        return (new UploadService())->disk($this->driver)->objectUrl($path);
+        return (new UploadService())->disk($data->driver)->objectUrl($data->path);
     }
     
     public function enable() 
