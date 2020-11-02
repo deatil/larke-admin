@@ -106,8 +106,6 @@ class Tree
                 $childInfo[$this->buildChildKey] = $childList;
             }
             
-            unset($childInfo[$this->parentidKey]);
-            
             $data[] = $childInfo;
             $number++;
         }
