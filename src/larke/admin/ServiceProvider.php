@@ -83,10 +83,6 @@ class ServiceProvider extends BaseServiceProvider
     {
         $this->ensureHttps();
         
-        $this->loadViewsFrom(__DIR__ . '/../resource/views', 'larke-admin');
-        
-        $this->loadRoutesFrom(__DIR__ . '/../resource/routes/admin.php');
-        
         $this->bootObserver();
         
         $this->bootExtension();
@@ -129,6 +125,10 @@ class ServiceProvider extends BaseServiceProvider
     protected function registerConfig()
     {
         $this->mergeConfigFrom(__DIR__ . '/../resource/config/larke.php', 'larke');
+        
+        $this->loadViewsFrom(__DIR__ . '/../resource/views', 'larke-admin');
+        
+        $this->loadRoutesFrom(__DIR__ . '/../resource/routes/admin.php');
     }
     
     /**
