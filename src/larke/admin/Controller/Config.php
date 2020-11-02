@@ -7,6 +7,8 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 
 use Larke\Admin\Model\Config as ConfigModel;
+use Larke\Admin\Event\ConfigCreated as ConfigCreatedEvent;
+use Larke\Admin\Event\ConfigUpdated as ConfigUpdatedEvent;
 
 /**
  * Config
@@ -170,6 +172,9 @@ class Config extends Base
             return $this->errorJson(__('信息添加失败'));
         }
         
+        // 监听事件
+        event(new ConfigCreatedEvent($config));
+        
         return $this->successJson(__('信息添加成功'), [
             'id' => $config->id,
         ]);
@@ -235,11 +240,13 @@ class Config extends Base
         ];
         
         // 更新信息
-        $status = ConfigModel::where('id', $id)
-            ->update($updateData);
+        $status = $info->update($updateData);
         if ($status === false) {
             return $this->errorJson(__('信息修改失败'));
         }
+        
+        // 监听事件
+        event(new ConfigUpdatedEvent($info));
         
         return $this->successJson(__('信息修改成功'));
     }

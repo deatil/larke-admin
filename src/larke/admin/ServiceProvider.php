@@ -16,6 +16,7 @@ use Larke\Admin\Http\ResponseCode;
 use Larke\Admin\Model;
 use Larke\Admin\Observer;
 use Larke\Admin\Command;
+use Larke\Admin\Provider;
 
 class ServiceProvider extends BaseServiceProvider
 {
@@ -71,6 +72,8 @@ class ServiceProvider extends BaseServiceProvider
         $this->commands($this->commands);
         
         $this->registerExtensions();
+        
+        $this->registerEvents();
     }
     
     /**
@@ -212,14 +215,6 @@ class ServiceProvider extends BaseServiceProvider
     }
     
     /**
-     * Register Extensions.
-     */
-    public function registerExtensions()
-    {
-        app('larke.extension')->registerExtensionNamespace();
-    }
-    
-    /**
      * Register the route middleware.
      *
      * @return void
@@ -235,6 +230,22 @@ class ServiceProvider extends BaseServiceProvider
         foreach ($this->middlewareGroups as $key => $middleware) {
             app('router')->middlewareGroup($key, $middleware);
         }
+    }
+    
+    /**
+     * Register Extensions.
+     */
+    public function registerExtensions()
+    {
+        app('larke.extension')->registerExtensionNamespace();
+    }
+    
+    /**
+     * Register Events.
+     */
+    public function registerEvents()
+    {
+        $this->app->register(Provider\EventServiceProvider::class);
     }
 
     /**

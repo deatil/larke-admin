@@ -9,6 +9,9 @@ use Larke\Admin\Captcha\Captcha;
 use Larke\Admin\Service\Password as PasswordService;
 use Larke\Admin\Model\Admin as AdminModel;
 
+use Larke\Admin\Event\PassportLoginBefore as PassportLoginBeforeEvent;
+use Larke\Admin\Event\PassportLoginAfter as PassportLoginAfterEvent;
+
 /**
  * 登陆
  *
@@ -54,6 +57,9 @@ class Passport extends Base
      */
     public function login(Request $request)
     {
+        // 监听事件
+        event(new PassportLoginBeforeEvent($request));
+        
         $name = $request->get('name');
         if (empty($name)) {
             return $this->errorJson(__('账号不能为空'));
@@ -125,6 +131,9 @@ class Passport extends Base
             'last_active' => time(), 
             'last_ip' => $request->ip(),
         ]);
+        
+        // 监听事件
+        event(new PassportLoginAfterEvent($request));
         
         return $this->successJson(__('登录成功'), [
             'access_token' => $accessToken,

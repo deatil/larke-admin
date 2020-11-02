@@ -8,6 +8,7 @@ namespace Larke\Admin\Http;
  * 响应代码
  *
  * 默认0 没有错误
+ * 默认1 默认错误
  * 
  * 1开头 登陆退出等错误
  * 2开头 格式等错误
@@ -17,8 +18,6 @@ namespace Larke\Admin\Http;
  * 
  * 可使用：
  * ResponseCode::SUCCESS = LARKE_ADMIN_SUCCESS
- * ResponseCode::INVALID = LARKE_ADMIN_INVALID
- * ResponseCode::UNKNOWN = LARKE_ADMIN_UNKNOWN
  *
  * @create 2020-11-1
  * @author deatil
@@ -26,6 +25,7 @@ namespace Larke\Admin\Http;
 class ResponseCode
 {
     const SUCCESS = 0; // LARKE_ADMIN_SUCCESS
+    const ERROR = 1; // LARKE_ADMIN_ERROR
     const INVALID = 99999; // LARKE_ADMIN_INVALID
     const UNKNOWN = 99998; // LARKE_ADMIN_UNKNOWN
     const EXCEPTION = 99997; // LARKE_ADMIN_EXCEPTION

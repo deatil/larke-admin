@@ -260,7 +260,7 @@ class Extension
             'authoremail' => Arr::get($info, 'authoremail'),
             'version' => Arr::get($info, 'version'),
             'adaptation' => Arr::get($info, 'adaptation'),
-            'need_module' => Arr::get($info, 'need_module', []),
+            'require_extension' => Arr::get($info, 'require_extension', []),
             'config' => Arr::get($info, 'config', []),
             'class_name' => Arr::get($this->extensions, $name),
         ];

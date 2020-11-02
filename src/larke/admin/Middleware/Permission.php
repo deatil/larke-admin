@@ -5,7 +5,7 @@ namespace Larke\Admin\Middleware;
 use Closure;
 
 use Larke\Admin\Http\ResponseCode;
-use Larke\Admin\Traits\Json as JsonTrait;
+use Larke\Admin\Traits\ResponseJson as ResponseJsonTrait;
 
 /*
  * 权限检测
@@ -15,7 +15,7 @@ use Larke\Admin\Traits\Json as JsonTrait;
  */
 class Permission
 {
-    use JsonTrait;
+    use ResponseJsonTrait;
     
     public function handle($request, Closure $next)
     {
