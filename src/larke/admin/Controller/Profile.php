@@ -13,6 +13,11 @@ use Larke\Admin\Model\Admin as AdminModel;
 /**
  * 个人信息
  *
+ * @title 个人信息
+ * @desc 个人信息管理
+ * @order 102
+ * @auth true
+ *
  * @create 2020-10-20
  * @author deatil
  */

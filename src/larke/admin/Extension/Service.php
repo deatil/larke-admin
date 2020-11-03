@@ -25,7 +25,7 @@ abstract class Service
         'authorsite' => '', // 选填
         'authoremail' => '', // 选填
         'version' => '1.0.0',
-        'adaptation' => '1.0.0',
+        'adaptation' => '^1.0',
         'require_extension' => [
             // 'Extension2' => '1.2.*',
         ], // 依赖扩展[选填]

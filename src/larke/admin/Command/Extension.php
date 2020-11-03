@@ -2,6 +2,9 @@
 
 namespace Larke\Admin\Command;
 
+use Composer\Semver\Semver;
+use Composer\Semver\Comparator;
+
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 
@@ -109,6 +112,13 @@ class Extension extends Command
             return false;
         }
         
+        $adminVersion = config('larke.admin.version');
+        $versionCheck = Semver::satisfies($adminVersion, $info['adaptation']);
+        if (!$versionCheck) {
+            $this->line("<error>Extension adaptation'version is error ! Admin'version is {$adminVersion} !</error> ");
+            return false;
+        }
+        
         $createInfo = ExtensionModel::create([
             'name' => Arr::get($info, 'name'),
             'title' => Arr::get($info, 'title'),
@@ -184,8 +194,17 @@ class Extension extends Command
             $this->line("<error>Extension info is error !</error> ");
             return false;
         }
-
-        if (version_compare(Arr::get($installInfo, 'version', 0), Arr::get($info, 'version', 0), '<') == false) {
+        
+        $adminVersion = config('larke.admin.version');
+        $versionCheck = Semver::satisfies($adminVersion, $info['adaptation']);
+        if (!$versionCheck) {
+            $this->line("<error>Extension adaptation'version is error ! Admin'version is {$adminVersion} !</error> ");
+            return false;
+        }
+        
+        $infoVersion = Arr::get($info, 'version', 0);
+        $installVersion = Arr::get($installInfo, 'version', 0);
+        if (!Comparator::greaterThan($infoVersion, $installVersion)) {
             $this->line("<error>Extension is not need upgrade !</error> ");
             return false;
         }

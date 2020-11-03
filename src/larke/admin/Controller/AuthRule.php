@@ -11,7 +11,12 @@ use Larke\Admin\Model\AuthRule as AuthRuleModel;
 use Larke\Admin\Repository\AuthRule as AuthRuleRepository;
 
 /**
- * AuthRule
+ * 权限
+ *
+ * @title 权限
+ * @desc 系统权限管理
+ * @order 106
+ * @auth true
  *
  * @create 2020-10-24
  * @author deatil

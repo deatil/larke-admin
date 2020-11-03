@@ -43,7 +43,7 @@ class ResetPasword extends Command
             ->where('name', $name)
             ->first();
         if (is_null($admin)) {
-            $this->error('The admin who you entered is not exists.');
+            $this->line("<error>The admin who you entered is not exists !</error> ");
             goto askForAdminName;
         }
         

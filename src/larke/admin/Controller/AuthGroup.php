@@ -12,7 +12,12 @@ use Larke\Admin\Model\AuthRuleAccess as AuthRuleAccessModel;
 use Larke\Admin\Repository\AuthGroup as AuthGroupRepository;
 
 /**
- * AuthGroup
+ * 管理分组
+ *
+ * @title 管理分组
+ * @desc 系统管理分组管理
+ * @order 107
+ * @auth true
  *
  * @create 2020-10-25
  * @author deatil

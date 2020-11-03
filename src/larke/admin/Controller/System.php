@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Artisan;
 /**
  * 系统
  *
+ * @title 系统
+ * @desc 系统管理
+ * @order 103
+ * @auth true
+ *
  * @create 2020-10-25
  * @author deatil
  */

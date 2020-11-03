@@ -329,7 +329,7 @@ class Extension
         
         return !collect($mustInfo)
             ->contains(function ($key) use ($info) {
-                return !isset($info[$key]);
+                return (!isset($info[$key]) || empty($info[$key]));
             });
     }
     

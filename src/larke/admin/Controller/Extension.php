@@ -2,6 +2,9 @@
 
 namespace Larke\Admin\Controller;
 
+use Composer\Semver\Semver;
+use Composer\Semver\Comparator;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
@@ -13,6 +16,11 @@ use Larke\Admin\Service\PclZip as PclZipService;
 /**
  * 扩展
  *
+ * @title 扩展
+ * @desc 系统扩展管理
+ * @order 105
+ * @auth true
+ *
  * @create 2020-10-30
  * @author deatil
  */
@@ -20,6 +28,11 @@ class Extension extends Base
 {
     /**
      * 首页
+     *
+     * @title 扩展列表
+     * @desc 系统扩展列表管理
+     * @order 101
+     * @auth true
      *
      * @param  Request  $request
      * @return Response
@@ -53,6 +66,11 @@ class Extension extends Base
     
     /**
      * 本地全部扩展
+     *
+     * @title 本地扩展
+     * @desc 本地全部扩展
+     * @order 102
+     * @auth true
      *
      * @param  Request  $request
      * @return Response
@@ -104,6 +122,14 @@ class Extension extends Base
         $checkInfo = AdminExtension::validateInfo($info);
         if (!$checkInfo) {
             return $this->errorJson(__('扩展信息不正确'));
+        }
+        
+        $adminVersion = config('larke.admin.version');
+        $versionCheck = Semver::satisfies($adminVersion, $info['adaptation']);
+        if (!$versionCheck) {
+            return $this->errorJson(__('扩展适配系统版本错误，当前系统版本：:version', [
+                'version' => $adminVersion,
+            ]));
         }
         
         $createInfo = ExtensionModel::create([
@@ -186,13 +212,22 @@ class Extension extends Base
             return $this->errorJson(__('扩展信息不存在'));
         }
         
-        
         $checkInfo = AdminExtension::validateInfo($info);
         if (!$checkInfo) {
             return $this->errorJson(__('扩展信息不正确'));
         }
-
-        if (version_compare(Arr::get($installInfo, 'version', 0), Arr::get($info, 'version', 0), '<') == false) {
+        
+        $adminVersion = config('larke.admin.version');
+        $versionCheck = Semver::satisfies($adminVersion, $info['adaptation']);
+        if (!$versionCheck) {
+            return $this->errorJson(__('扩展适配系统版本错误，当前系统版本：:version', [
+                'version' => $adminVersion,
+            ]));
+        }
+        
+        $infoVersion = Arr::get($info, 'version', 0);
+        $installVersion = Arr::get($installInfo, 'version', 0);
+        if (!Comparator::greaterThan($infoVersion, $installVersion)) {
             return $this->errorJson(__('扩展不需要更新'));
         }
         

@@ -14,6 +14,11 @@ use Larke\Admin\Service\Upload as UploadService;
 /**
  * 附件
  *
+ * @title 附件
+ * @desc 系统附件管理
+ * @order 108
+ * @auth true
+ *
  * @create 2020-10-22
  * @author deatil
  */

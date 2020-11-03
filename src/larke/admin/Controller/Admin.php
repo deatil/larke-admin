@@ -13,6 +13,11 @@ use Larke\Admin\Repository\Admin as AdminRepository;
 /**
  * 账号
  *
+ * @title 账号
+ * @desc 系统账号管理
+ * @order 105
+ * @auth true
+ *
  * @create 2020-10-23
  * @author deatil
  */

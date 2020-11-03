@@ -15,6 +15,11 @@ use Larke\Admin\Event\PassportLoginAfter as PassportLoginAfterEvent;
 /**
  * 登陆
  *
+ * @title 登陆
+ * @desc 系统登陆管理
+ * @order 100
+ * @auth true
+ *
  * @create 2020-10-19
  * @author deatil
  */

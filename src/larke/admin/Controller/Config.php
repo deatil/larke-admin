@@ -11,7 +11,12 @@ use Larke\Admin\Event\ConfigCreated as ConfigCreatedEvent;
 use Larke\Admin\Event\ConfigUpdated as ConfigUpdatedEvent;
 
 /**
- * Config
+ * 配置
+ *
+ * @title 配置
+ * @desc 系统配置管理
+ * @order 104
+ * @auth true
  *
  * @create 2020-10-25
  * @author deatil
