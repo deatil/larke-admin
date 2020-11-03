@@ -47,11 +47,20 @@ class Extension extends Command
         }
         
         $this->line("<info>Extension action list: </info> ");
-        $this->line("<info>[1]</info> install");
-        $this->line("<info>[2]</info> uninstall");
-        $this->line("<info>[3]</info> upgrade");
-        $this->line("<info>[4]</info> enable");
-        $this->line("<info>[5]</info> disable");
+        
+        $actions = [
+            '[1]' => 'Install',
+            '[2]' => 'Uninstall',
+            '[3]' => 'Upgrade',
+            '[4]' => 'Enable',
+            '[5]' => 'Disable',
+        ];
+        $headers = ['No', 'Action'];
+        $rows = [];
+        foreach ($actions as $no => $action) {
+            $rows[] = [$no, $action];
+        }
+        $this->table($headers, $rows, 'default');
         
         $action = $this->ask('Please enter an action or action line');
         if (empty($action)) {
@@ -117,6 +126,31 @@ class Extension extends Command
         if (!$versionCheck) {
             $this->line("<error>Extension adaptation'version is error ! Admin'version is {$adminVersion} !</error> ");
             return false;
+        }
+        
+        $requireExtensions = ExtensionModel::checkRequireExtension($info['require_extension']);
+        if (!empty($requireExtensions)) {
+            $match = collect($requireExtensions)->contains(function ($data) {
+                return ($data['match'] == 0);
+            });
+            if ($match) {
+                $this->line("<error>Error ! </error>You need check require'extensions: ");
+                
+                $headers = ['Name', 'Version', 'InstallVersion', 'Match'];
+                $rows = [];
+                foreach ($requireExtensions as $requireExtension) {
+                    $rows[] = [
+                        $requireExtension['name'], 
+                        $requireExtension['version'], 
+                        $requireExtension['install_version'] ?: '-', 
+                        ($requireExtension['match'] == 1) ? 'Yes' : 'No', 
+                    ];
+                }
+                
+                $this->table($headers, $rows, 'default');
+                
+                return false;
+            }
         }
         
         $createInfo = ExtensionModel::create([
@@ -207,6 +241,31 @@ class Extension extends Command
         if (!Comparator::greaterThan($infoVersion, $installVersion)) {
             $this->line("<error>Extension is not need upgrade !</error> ");
             return false;
+        }
+        
+        $requireExtensions = ExtensionModel::checkRequireExtension($info['require_extension']);
+        if (!empty($requireExtensions)) {
+            $match = collect($requireExtensions)->contains(function ($data) {
+                return ($data['match'] == 0);
+            });
+            if ($match) {
+                $this->line("<error>Error ! </error>You need check require'extensions: ");
+                
+                $headers = ['Name', 'Version', 'InstallVersion', 'Match'];
+                $rows = [];
+                foreach ($requireExtensions as $requireExtension) {
+                    $rows[] = [
+                        $requireExtension['name'], 
+                        $requireExtension['version'], 
+                        $requireExtension['install_version'] ?: '-', 
+                        ($requireExtension['match'] == 1) ? 'Yes' : 'No', 
+                    ];
+                }
+                
+                $this->table($headers, $rows, 'default');
+                
+                return false;
+            }
         }
         
         $updateInfo = $installInfo->update([

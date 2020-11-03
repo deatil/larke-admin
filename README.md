@@ -48,6 +48,8 @@ lcobucci/jwt
 
 casbin/casbin
 
+composer/semver
+
 
 ### 开源协议
 

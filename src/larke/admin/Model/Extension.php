@@ -2,6 +2,8 @@
 
 namespace Larke\Admin\Model;
 
+use Composer\Semver\Semver;
+
 use Illuminate\Support\Facades\Cache;
 
 /*
@@ -19,12 +21,43 @@ class Extension extends Base
     protected $guarded = [];
     
     protected $appends = [
-        'config_arr',
-        'config_data_arr',
+        'configs',
+        'config_datas',
+        'require_extensions',
     ];
     
     public $incrementing = false;
     public $timestamps = false;
+    
+    public function getConfigsAttribute() 
+    {
+        $value = $this->config;
+        if (empty($value)) {
+            return [];
+        }
+        
+        return json_decode($value, true);
+    }
+    
+    public function getConfigDatasAttribute() 
+    {
+        $value = $this->config_data;
+        if (empty($value)) {
+            return [];
+        }
+        
+        return json_decode($value, true);
+    }
+    
+    public function getRequireExtensionsAttribute() 
+    {
+        $value = $this->require_extension;
+        if (empty($value)) {
+            return [];
+        }
+        
+        return json_decode($value, true);
+    }
     
     public static function getExtensions()
     {
@@ -40,24 +73,68 @@ class Extension extends Base
         Cache::forget(md5('larke.model.extensions'));
     }
     
-    public function getConfigArrAttribute() 
+    /**
+     * 检测扩展依赖
+     * 
+     * @param string $name
+     * @return array|null
+     */
+    public static function checkRequireExtension($requireExtensions = [])
     {
-        $config = $this->config;
-        if (empty($config)) {
+        if (empty($requireExtensions)) {
             return [];
         }
         
-        return json_decode($config);
-    }
-    
-    public function getConfigDataArrAttribute() 
-    {
-        $config_data = $this->config_data;
-        if (empty($config_data)) {
-            return [];
+        $requireExtensionNames = collect($requireExtensions)
+            ->filter(function($data) {
+                return !empty($data);
+            })
+            ->map(function($data, $key) {
+                return $key;
+            });
+        
+        $installExtensions = self::whereIn('name', $requireExtensionNames)
+            ->select(['name', 'version'])
+            ->get()
+            ->mapWithKeys(function ($extension) {
+                return [
+                    $extension->name => $extension->version,
+                ];
+            })
+            ->toArray();
+        
+        $data = [];
+        foreach ($requireExtensions as $name => $version) {
+            if (isset($installExtensions[$name])) {
+                $versionCheck = Semver::satisfies($installExtensions[$name], $version);
+                if ($versionCheck) {
+                    $requireExtensionData = [
+                        'name' => $name,
+                        'version' => $version,
+                        'install_version' => $installExtensions[$name],
+                        'match' => 1,
+                    ];
+                } else {
+                    $requireExtensionData = [
+                        'name' => $name,
+                        'version' => $version,
+                        'install_version' => $installExtensions[$name],
+                        'match' => 0,
+                    ];
+                }
+            } else {
+                $requireExtensionData = [
+                    'name' => $name,
+                    'version' => $version,
+                    'install_version' => '',
+                    'match' => 0,
+                ];
+            }
+            
+            $data[] = $requireExtensionData;
         }
         
-        return json_decode($config_data);
+        return $data;
     }
     
     public function enable() 

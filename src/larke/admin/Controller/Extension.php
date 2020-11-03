@@ -132,6 +132,18 @@ class Extension extends Base
             ]));
         }
         
+        $requireExtensions = ExtensionModel::checkRequireExtension($info['require_extension']);
+        if (!empty($requireExtensions)) {
+            $match = collect($requireExtensions)->contains(function ($data) {
+                return ($data['match'] == 0);
+            });
+            if ($match) {
+                return $this->successJson(__('扩展依赖出现错误'), [
+                    'require_extensions' => $requireExtensions
+                ]);
+            }
+        }
+        
         $createInfo = ExtensionModel::create([
             'name' => Arr::get($info, 'name'),
             'title' => Arr::get($info, 'title'),
@@ -229,6 +241,18 @@ class Extension extends Base
         $installVersion = Arr::get($installInfo, 'version', 0);
         if (!Comparator::greaterThan($infoVersion, $installVersion)) {
             return $this->errorJson(__('扩展不需要更新'));
+        }
+        
+        $requireExtensions = ExtensionModel::checkRequireExtension($info['require_extension']);
+        if (!empty($requireExtensions)) {
+            $match = collect($requireExtensions)->contains(function ($data) {
+                return ($data['match'] == 0);
+            });
+            if ($match) {
+                return $this->successJson(__('扩展依赖出现错误'), [
+                    'require_extensions' => $requireExtensions
+                ]);
+            }
         }
         
         $updateInfo = $installInfo->update([
