@@ -73,7 +73,7 @@ class Authenticate
         }
         
         $adminInfo = AdminModel::where('id', $adminid)
-            ->with(['groups', 'attachments'])
+            ->with(['groups'])
             ->first();
         if (empty($adminInfo)) {
             $this->errorJson(__('帐号不存在或者已被锁定'), ResponseCode::AUTH_ERROR);
