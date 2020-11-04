@@ -45,22 +45,22 @@ class Authenticate
             $this->errorJson(__('token格式错误'), ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
-        $token = $authorizationArr[1];
-        if (!$token) {
+        $accessToken = $authorizationArr[1];
+        if (!$accessToken) {
             $this->errorJson(__('token不能为空'), ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
-        if (count(explode('.', $token)) <> 3) {
+        if (count(explode('.', $accessToken)) <> 3) {
             $this->errorJson(__('token格式错误'), ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
-        if (app('larke.cache')->has(md5($token))) {
+        if (app('larke.cache')->has(md5($accessToken))) {
             $this->errorJson(__('token已失效'), ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
         $jwtAuth = app('larke.jwt')
             ->withJti(config('larke.passport.access_token_id'))
-            ->withToken($token)
+            ->withToken($accessToken)
             ->decode();
         
         if (!($jwtAuth->validate() && $jwtAuth->verify())) {
@@ -84,7 +84,8 @@ class Authenticate
             $this->errorJson(__('帐号不存在或者已被锁定'), ResponseCode::AUTH_ERROR);
         }
         
-        app('larke.admin')->withId($adminid)
+        app('larke.admin')->withAccessToken($accessToken)
+            ->withId($adminid)
             ->withData($adminInfo);
     }
 

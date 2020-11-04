@@ -14,6 +14,11 @@ use Larke\Admin\Repository\AuthGroup as AuthGroupRepository;
 class Admin
 {
     /*
+     * 鉴权Token
+     */
+    protected $accessToken = null;
+    
+    /*
      * id
      */
     protected $id = null;
@@ -22,6 +27,23 @@ class Admin
      * data
      */
     protected $data = [];
+    
+    /*
+     * 设置 accessToken
+     */
+    public function withAccessToken($accessToken)
+    {
+        $this->accessToken = $accessToken;
+        return $this;
+    }
+    
+    /*
+     * 获取 accessToken
+     */
+    public function getAccessToken()
+    {
+        return $this->accessToken;
+    }
     
     /*
      * 设置 id

@@ -27,6 +27,9 @@ Response: {
 > 刷新Token
 ~~~
 PUT: /admin-api/passport/refresh-token
+Header: {
+    'Authorization:Bearer ${accessToken}'
+}
 Request: {
     'access_token': accessToken,
     'refresh_token': refreshToken,
@@ -40,9 +43,11 @@ Response: {
 > 退出
 ~~~
 POST: /admin-api/passport/logout
+Header: {
+    'Authorization:Bearer ${accessToken}'
+}
 Request: {
-    'access_token': accessToken, // 未过期的鉴权Token
-    'refresh_token': refreshToken, // 未过期的刷新Token
+    'refresh_token': refreshToken, // 刷新Token
 }
 Response: {
 }
