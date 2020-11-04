@@ -78,23 +78,23 @@ class Profile extends Base
     public function changePasssword(Request $request)
     {
         // 密码长度错误
-        $oldPassword = $request->get('oldPassword');
+        $oldPassword = $request->get('oldpassword');
         if (strlen($oldPassword) != 32) {
             return $this->errorJson(__('旧密码错误'));
         }
 
         // 密码长度错误
-        $newPassword = $request->get('newPassword');
+        $newPassword = $request->get('newpassword');
         if (strlen($newPassword) != 32) {
             return $this->errorJson(__('新密码错误'));
         }
 
-        $newPassword2 = $request->get('newPassword2');
-        if (strlen($newPassword2) != 32) {
+        $newPasswordConfirm = $request->get('newpassword_confirm');
+        if (strlen($newPasswordConfirm) != 32) {
             return $this->errorJson(__('确认密码错误'));
         }
 
-        if ($newPassword != $newPassword2) {
+        if ($newPassword != $newPasswordConfirm) {
             return $this->errorJson(__('两次密码输入不一致'));
         }
 
@@ -105,10 +105,10 @@ class Profile extends Base
             return $this->errorJson(__('帐号错误'));
         }
         
-        $password2 = (new PasswordService())
+        $encryptPassword = (new PasswordService())
             ->withSalt(config('larke.passport.password_salt'))
             ->encrypt($oldPassword, $adminInfo['password_salt']); 
-        if ($password2 != $adminInfo['password']) {
+        if ($encryptPassword != $adminInfo['password']) {
             return $this->errorJson(__('用户密码错误'));
         }
 
@@ -118,8 +118,7 @@ class Profile extends Base
             ->encrypt($newPassword); 
 
         // 更新信息
-        $status = AdminModel::where('id', $adminInfo['id'])
-            ->update([
+        $status = $adminInfo->update([
                 'password' => $newPasswordInfo['password'],
                 'password_salt' => $newPasswordInfo['encrypt'],
             ]);
@@ -141,7 +140,9 @@ class Profile extends Base
         $list = $TreeService->withData($rules)
             ->build(0);
         
-        return $this->successJson(__('获取成功'), $list);
+        return $this->successJson(__('获取成功'), [
+            'list' => $list,
+        ]);
     }
 
 }

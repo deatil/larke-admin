@@ -90,7 +90,9 @@ class Extension extends Base
             return $data;
         });
         
-        return $this->successJson(__('获取成功'), $extensions);
+        return $this->successJson(__('获取成功'), [
+            'list' => $extensions,
+        ]);
     }
     
     /**

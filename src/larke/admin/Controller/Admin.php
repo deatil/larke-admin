@@ -144,7 +144,9 @@ class Admin extends Base
         $groupids = collect($info['groups'])->pluck('id')->toArray();
         
         $rules = AdminRepository::getRules($groupids);
-        return $this->successJson(__('获取成功'), $rules);
+        return $this->successJson(__('获取成功'), [
+            'list' => $rules,
+        ]);
     }
     
     /**

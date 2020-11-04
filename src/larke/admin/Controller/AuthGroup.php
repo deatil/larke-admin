@@ -97,7 +97,9 @@ class AuthGroup extends Base
             $data = AuthGroupRepository::getChildrenIds($id);
         }
         
-        return $this->successJson(__('获取成功'), $data);
+        return $this->successJson(__('获取成功'), [
+            'list' => $data,
+        ]);
     }
     
     /**
