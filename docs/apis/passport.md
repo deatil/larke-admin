@@ -27,9 +27,6 @@ Response: {
 > 刷新Token
 ~~~
 PUT: /admin-api/passport/refresh-token
-Header: {
-    'Authorization:Bearer ${accessToken}'
-}
 Request: {
     'access_token': accessToken,
     'refresh_token': refreshToken,
