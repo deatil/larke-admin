@@ -14,7 +14,7 @@ Response: {
 POST: /admin-api/passport/login
 Request: {
     'name': adminname,
-    'password': md5(name),
+    'password': md5(password),
     'captcha': captcha,
 }
 Response: {
