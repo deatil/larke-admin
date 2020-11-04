@@ -46,7 +46,7 @@ class AuthGroup
             $TreeService = new TreeService();
             $res = $TreeService
                 ->withData($data)
-                ->buildArray($groupid);
+                ->build($groupid);
             
             $list = $TreeService->buildFormatList($res, $groupid);
             return $list;

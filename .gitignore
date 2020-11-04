@@ -1,5 +1,6 @@
 build
 vendor
+.DS
 .idea
 .vscode
 .phpunit*

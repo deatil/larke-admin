@@ -33,6 +33,20 @@ class Tree
     public $buildChildKey = "child";
 
     /**
+     * 设置配置
+     * @param  array  $key 键值
+     * @param  string $value 内容
+     * @return array
+     */
+    public function withConfig($key, $value)
+    {
+        if (isset($this->{$key})) {
+            $this->{$key} = $value;
+        }
+        return $this;
+    }
+
+    /**
      * 构造函数，初始化类
      * @param array 2维数组，例如：
      * array(
@@ -52,27 +66,13 @@ class Tree
     }
 
     /**
-     * 设置配置
-     * @param  array  $key 键值
-     * @param  string $value 内容
-     * @return array
-     */
-    public function withConfig($key, $value)
-    {
-        if (isset($this->{$key})) {
-            $this->{$key} = $value;
-        }
-        return $this;
-    }
-
-    /**
      *
      * 构建数组
      * @param string    $id 要查询的ID
      * @param string    $itemprefix 前缀
      * @return string
      */
-    public function buildArray($id, $itemprefix = '')
+    public function build($id = 0, $itemprefix = '')
     {
         $child = $this->getListChild($this->data, $id);
         if (!is_array($child)) {
@@ -101,7 +101,7 @@ class Tree
             $spacer = $itemprefix ? $itemprefix . $j : '';
             $childInfo[$this->spacerKey] = $spacer;
             
-            $childList = $this->buildArray($value[$this->idKey], $itemprefix . $k . $this->blankspace);
+            $childList = $this->build($value[$this->idKey], $itemprefix . $k . $this->blankspace);
             if (!empty($childList)) {
                 $childInfo[$this->buildChildKey] = $childList;
             }
@@ -173,7 +173,7 @@ class Tree
      * @param string        $sort 排序
      * @return array
      */
-    public function getListChilds($list = [], $id = '', $sort = 'desc')
+    public function getListChildren($list = [], $id = '', $sort = 'desc')
     {
         if (empty($list) || !is_array($list)) {
             return [];
@@ -184,7 +184,7 @@ class Tree
             if ((string) $value[$this->parentidKey] == (string) $id) {
                 $result[] = $value;
                 
-                $child = $this->getListChilds($list, $value[$this->idKey], $sort);
+                $child = $this->getListChildren($list, $value[$this->idKey], $sort);
                 if (!empty($child)) {
                     if ($sort == 'asc') {
                         $result = array_merge($result, $child);
@@ -203,9 +203,9 @@ class Tree
      * @param string|int    $id 当前id
      * @return array
      */
-    public function getListChildsId($list = [], $id = '')
+    public function getListChildrenId($list = [], $id = '')
     {
-        $childs = $this->getListChilds($list, $id);
+        $childs = $this->getListChildren($list, $id);
         if (empty($childs)) {
             return [];
         }
@@ -266,7 +266,7 @@ class Tree
     }
 
     /**
-     * 将buildArray的结果返回为二维数组
+     * 将 build 的结果返回为二维数组
      * @param array     $data 数据
      * @return array
      */

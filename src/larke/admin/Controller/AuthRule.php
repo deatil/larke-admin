@@ -75,7 +75,7 @@ class AuthRule extends Base
             ->toArray(); 
         
         $Tree = new Tree();
-        $list = $Tree->withData($result)->buildArray(0);
+        $list = $Tree->withData($result)->build(0);
         
         return $this->successJson(__('获取成功'), [
             'list' => $list,

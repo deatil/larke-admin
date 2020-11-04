@@ -71,9 +71,9 @@ class ServiceProvider extends BaseServiceProvider
         
         $this->commands($this->commands);
         
-        $this->registerExtensions();
+        $this->registerExtension();
         
-        $this->registerEvents();
+        $this->registerEvent();
     }
     
     /**
@@ -235,7 +235,7 @@ class ServiceProvider extends BaseServiceProvider
     /**
      * Register Extensions.
      */
-    public function registerExtensions()
+    public function registerExtension()
     {
         app('larke.extension')->registerExtensionNamespace();
     }
@@ -243,7 +243,7 @@ class ServiceProvider extends BaseServiceProvider
     /**
      * Register Events.
      */
-    public function registerEvents()
+    public function registerEvent()
     {
         $this->app->register(Provider\EventServiceProvider::class);
     }

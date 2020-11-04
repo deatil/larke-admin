@@ -234,7 +234,7 @@ class ImportRoute extends Command
             'title' => Arr::get($docComment, 'title'),
             'description' => Arr::get($docComment, 'desc'),
             'listorder' => Arr::get($docComment, 'order', 100),
-            'is_need_auth' => Arr::get($docComment, 'auth', true),
+            'is_need_auth' => Arr::get($docComment, 'auth', 'true'),
         ];
         
         if ($commentInfo['is_need_auth'] === 'true') {
@@ -267,7 +267,7 @@ class ImportRoute extends Command
             'title' => Arr::get($docComment, 'title'),
             'description' => Arr::get($docComment, 'desc'),
             'listorder' => Arr::get($docComment, 'order', 100),
-            'is_need_auth' => Arr::get($docComment, 'auth', true),
+            'is_need_auth' => Arr::get($docComment, 'auth', 'true'),
         ];
         
         if ($commentInfo['is_need_auth'] === 'true') {

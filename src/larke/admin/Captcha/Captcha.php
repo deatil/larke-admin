@@ -22,6 +22,7 @@ class Captcha
     private $font = ''; // 指定的字体
     private $fontsize = 20; // 指定字体大小
     private $fontcolor = ''; // 指定字体颜色
+    private $cachetime = 300; // 验证码缓存时间
 
     /**
      * 构造方法初始化
@@ -49,7 +50,7 @@ class Captcha
         }
         
         // 缓存验证码字符串
-        Cache::put($this->uniqid, $this->code, 300);
+        Cache::put($this->uniqid, $this->code, $this->cachetime);
         
         // 设置字体文件路径
         $this->font = __DIR__ . '/font/icon.ttf';

@@ -18,18 +18,18 @@ abstract class Service
      * 扩展信息
      */
     public $info = [
-        'name' => '',
-        'title' => '',
-        'introduce' => '',
-        'author' => '', 
-        'authorsite' => '', // 选填
-        'authoremail' => '', // 选填
-        'version' => '1.0.0',
-        'adaptation' => '^1.0',
+        'name' => '', // 扩展ID
+        'title' => '', // 扩展名称
+        'introduce' => '', // 扩展描述
+        'author' => '', // 扩展作者
+        'authorsite' => '', // 作者网站[选填]
+        'authoremail' => '', // 作者邮箱[选填]
+        'version' => '1.0.0', // 扩展版本号
+        'adaptation' => '^1.0', // 扩展适配系统版本
         'require_extension' => [
             // 'Extension2' => '1.2.*',
         ], // 依赖扩展[选填]
-        'config' => [], // 配置，选填
+        'config' => [], // 扩展配置[选填]
     ];
     
     /**

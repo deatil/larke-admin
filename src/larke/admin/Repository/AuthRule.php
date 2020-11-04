@@ -45,7 +45,7 @@ class AuthRule
             $TreeService = new TreeService();
             $res = $TreeService
                 ->withData($data)
-                ->buildArray($ruleid);
+                ->build($ruleid);
             
             $list = $TreeService->buildFormatList($res, $ruleid);
             return $list;

@@ -139,7 +139,7 @@ class Profile extends Base
         
         $TreeService = new TreeService();
         $list = $TreeService->withData($rules)
-            ->buildArray(0);
+            ->build(0);
         
         return $this->successJson(__('获取成功'), $list);
     }
