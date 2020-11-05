@@ -35,7 +35,10 @@ Header: {
 ```
 
 `success` 字段有 `true` 和 `false` 两个结果
+
 `code` 字段为响应结果响应码，通常为0时返回结果正确
+
 `message` 字段为结果提示
+
 `data` 字段通常为输出结果，接口文档内的 `Response` 内容为该字段内容
 
