@@ -47,14 +47,11 @@ class ImportRoute extends Command
             return;
         }
         
-        $this->info('import route successfully!');
+        $this->info('Import route successfully!');
     }
     
     /**
      * 导入
-     * 
-     * @create 2020-9-14
-     * @author deatil
      */
     protected function import()
     {
@@ -199,15 +196,17 @@ class ImportRoute extends Command
     /**
      * 格式化
      */
-    protected function formatAction($action)
+    protected function formatAction($actions)
     {
-        if (empty($action)) {
+        if (empty($actions)) {
             return false;
         }
         
-        $actions = explode('@', $action);
-        if (count($actions) <= 1) {
-            return false;
+        if (!is_array($actions)) {
+            $actions = explode('@', $actions);
+            if (count($actions) < 2) {
+                return false;
+            }
         }
         
         list ($actionClass, $actionMethod) = $actions;

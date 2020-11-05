@@ -101,9 +101,8 @@ class Extension extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function install(Request $request)
+    public function install(string $name, Request $request)
     {
-        $name = $request->get('name');
         if (empty($name)) {
             return $this->errorJson(__('扩展名称不能为空'));
         }
@@ -178,9 +177,8 @@ class Extension extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function uninstall(Request $request)
+    public function uninstall(string $name, Request $request)
     {
-        $name = $request->get('name');
         if (empty($name)) {
             return $this->errorJson(__('扩展名称不能为空'));
         }
@@ -207,9 +205,8 @@ class Extension extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function upgrade(Request $request)
+    public function upgrade(string $name, Request $request)
     {
-        $name = $request->get('name');
         if (empty($name)) {
             return $this->errorJson(__('扩展名称不能为空'));
         }
@@ -288,9 +285,8 @@ class Extension extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function enable(Request $request)
+    public function enable(string $name, Request $request)
     {
-        $name = $request->get('name');
         if (empty($name)) {
             return $this->errorJson(__('扩展名称不能为空'));
         }
@@ -321,9 +317,8 @@ class Extension extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function disable(Request $request)
+    public function disable(string $name, Request $request)
     {
-        $name = $request->get('name');
         if (empty($name)) {
             return $this->errorJson(__('扩展名称不能为空'));
         }
@@ -354,9 +349,8 @@ class Extension extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function config(Request $request)
+    public function config(string $name, Request $request)
     {
-        $name = $request->get('name');
         if (empty($name)) {
             return $this->errorJson(__('扩展名称不能为空'));
         }
@@ -389,9 +383,8 @@ class Extension extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function listorder(Request $request)
+    public function listorder(string $name, Request $request)
     {
-        $name = $request->get('name');
         if (empty($name)) {
             return $this->errorJson(__('扩展名称不能为空'));
         }

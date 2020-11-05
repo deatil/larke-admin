@@ -6,6 +6,7 @@ use Closure;
 
 use Larke\Admin\Http\ResponseCode;
 use Larke\Admin\Traits\ResponseJson as ResponseJsonTrait;
+use Larke\Admin\Model\AuthRule as AuthRuleModel;
 
 /*
  * 权限检测
@@ -59,12 +60,36 @@ class Permission
             'larke-admin-passport-refresh-token',
             'larke-admin-attachment-download',
         ]);
+        
+        $excepts = array_merge($excepts, $this->shouldPassSlugs());
 
         return collect($excepts)
             ->contains(function ($except) {
                 $requestUrl = \Route::currentRouteName();
                 return ($except == $requestUrl);
             });
+    }
+    
+    /**
+     * 需要过滤的Slug列表
+     *
+     * @return array|null
+     */
+    protected function shouldPassSlugs()
+    {
+        $rules = AuthRuleModel::getAuthRules();
+        
+        $ruleSlugs = collect($rules)->map(function($data) {
+            if ($data['is_need_auth'] == 0) {
+                return $data['slug'];
+            }
+            
+            return null;
+        })->filter(function($data) {
+            return !empty($data);
+        })->toArray();
+        
+        return $ruleSlugs;
     }
 
 }

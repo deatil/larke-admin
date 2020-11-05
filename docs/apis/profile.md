@@ -10,6 +10,14 @@ Header: {
 Request: {
 }
 Response: {
+    "id",
+    "name",
+    "nickname",
+    "email",
+    "avatar",
+    "last_active",
+    "last_ip",
+    "groups": []
 }
 ~~~
 

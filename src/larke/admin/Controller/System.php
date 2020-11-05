@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Artisan;
 
+use Larke\Admin\Event\SystemInfo as SystemInfoEvent;
+use Larke\Admin\Event\SystemClearCache as SystemClearCacheEvent;
+use Larke\Admin\Event\SystemCache as SystemCacheEvent;
+
 /**
  * 系统
  *
@@ -22,6 +26,11 @@ class System extends Base
     /**
      * 系统详情
      *
+     * @title 系统详情
+     * @desc 系统详情管理
+     * @order 103
+     * @auth true
+     *
      * @param  Request  $request
      * @return Response
      */
@@ -31,6 +40,12 @@ class System extends Base
             'admin' => config('larke.admin'),
             'sys' => $this->getSysInfo(),
         ];
+        
+        $eventInfo = event(new SystemInfoEvent($info));
+        if (!empty($eventInfo) && is_array($eventInfo)) {
+            $info = array_merge($info, $eventInfo);
+        }
+        
         return $this->successJson(__('获取成功'), $info);
     }
     
@@ -47,6 +62,8 @@ class System extends Base
         Artisan::call('config:clear');
         Artisan::call('view:clear');
         
+        event(new SystemClearCacheEvent());
+        
         return $this->successJson(__('清除缓存成功'));
     }
     
@@ -60,6 +77,8 @@ class System extends Base
     {
         Artisan::call('route:cache');
         Artisan::call('config:cache');
+        
+        event(new SystemCacheEvent());
         
         return $this->successJson(__('路由及配置信息缓存成功'));
     }

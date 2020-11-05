@@ -53,9 +53,8 @@ class Log extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function detail(Request $request)
+    public function detail(string $id, Request $request)
     {
-        $id = $request->get('id');
         if (empty($id)) {
             return $this->errorJson(__('日志ID不能为空'));
         }
@@ -76,9 +75,8 @@ class Log extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function delete(Request $request)
+    public function delete(string $id, Request $request)
     {
-        $id = $request->get('id');
         if (empty($id)) {
             return $this->errorJson(__('日志ID不能为空'));
         }

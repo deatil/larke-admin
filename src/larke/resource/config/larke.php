@@ -43,6 +43,12 @@ return [
     
     'cache' => [
         'store' => env('LARKE_ADMIN_CACHE_STORE', 'default'),
+        
+        'auth_rule' => [
+            'store' => env('LARKE_ADMIN_CACHE_AUTH_RULE_STORE', 'default'),
+            'key' => env('LARKE_ADMIN_CACHE_AUTH_RULE_KEY', md5('larke_no_auth_rule')),
+            'ttl' => env('LARKE_ADMIN_CACHE_AUTH_RULE_TTL', 43200),
+        ],
     ],
     
     'response' => [

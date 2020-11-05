@@ -73,9 +73,8 @@ class Admin extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function detail(Request $request)
+    public function detail(string $id, Request $request)
     {
-        $id = $request->get('id');
         if (empty($id)) {
             return $this->errorJson(__('账号ID不能为空'));
         }
@@ -121,9 +120,8 @@ class Admin extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function rules(Request $request)
+    public function rules(string $id, Request $request)
     {
-        $id = $request->get('id');
         if (empty($id)) {
             return $this->errorJson(__('账号ID不能为空'));
         }
@@ -155,12 +153,12 @@ class Admin extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function delete(Request $request)
+    public function delete(string $id, Request $request)
     {
-        $id = $request->get('id');
         if (empty($id)) {
             return $this->errorJson(__('账号ID不能为空'));
         }
+        
         $adminid = app('larke.admin')->getId();
         if ($id == $adminid) {
             return $this->errorJson(__('你不能删除你自己'));
@@ -246,9 +244,8 @@ class Admin extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function update(Request $request)
+    public function update(string $id, Request $request)
     {
-        $id = $request->get('id');
         if (empty($id)) {
             return $this->errorJson(__('账号ID不能为空'));
         }
@@ -314,9 +311,8 @@ class Admin extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function enable(Request $request)
+    public function enable(string $id, Request $request)
     {
-        $id = $request->get('id');
         if (empty($id)) {
             return $this->errorJson(__('ID不能为空'));
         }
@@ -350,9 +346,8 @@ class Admin extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function disable(Request $request)
+    public function disable(string $id, Request $request)
     {
-        $id = $request->get('id');
         if (empty($id)) {
             return $this->errorJson(__('ID不能为空'));
         }
@@ -386,9 +381,8 @@ class Admin extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function changePasssword(Request $request)
+    public function changePasssword(string $id, Request $request)
     {
-        $id = $request->get('id');
         if (empty($id)) {
             return $this->errorJson(__('账号ID不能为空'));
         }
@@ -431,29 +425,13 @@ class Admin extends Base
     
     /**
      * 退出
+     * 
+     * 添加用户的 refreshToken 到黑名单
      */
-    public function logout(Request $request)
+    public function logout(string $refreshToken, Request $request)
     {
-        $id = $request->get('id');
-        if (empty($id)) {
-            return $this->errorJson(__('账号ID不能为空'));
-        }
-        
-        $adminid = app('larke.admin')->getId();
-        if ($id == $adminid) {
-            return $this->errorJson(__('你不能修改退出你的登陆'));
-        }
-        
-        $refreshToken = $request->get('refresh_token');
         if (empty($refreshToken)) {
             return $this->errorJson(__('refreshToken不能为空'));
-        }
-        
-        $adminInfo = AdminModel::withAccess()
-            ->where('id', '=', $id)
-            ->first();
-        if (empty($adminInfo)) {
-            return $this->errorJson(__('账号不存在'));
         }
         
         if (app('larke.cache')->has(md5($refreshToken))) {
@@ -474,14 +452,15 @@ class Admin extends Base
             $this->errorJson(__('token错误'));
         }
         
-        $refreshTokenExpiredIn = $refreshJwt->getClaim('exp') - $refreshJwt->getClaim('iat');
-        
-        if ($id != $refreshAdminid) {
-            return $this->errorJson(__('退出失败'));
+        $adminid = app('larke.admin')->getId();
+        if ($refreshAdminid == $adminid) {
+            return $this->errorJson(__('你不能退出你的 refreshToken ！'));
         }
         
+        $refreshTokenExpiredIn = $refreshJwt->getClaim('exp') - $refreshJwt->getClaim('iat');
+        
         // 添加缓存黑名单
-        app('larke.cache')->add(md5($refreshToken), $refreshToken, $refreshTokenExpiredIn);
+        app('larke.cache')->add(md5($refreshToken), 'out', $refreshTokenExpiredIn);
         
         return $this->successJson(__('退出成功'));
     }
@@ -492,9 +471,8 @@ class Admin extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function access(Request $request)
+    public function access(string $id, Request $request)
     {
-        $id = $request->get('id');
         if (empty($id)) {
             return $this->errorJson(__('ID不能为空'));
         }

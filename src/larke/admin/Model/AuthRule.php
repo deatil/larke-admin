@@ -2,6 +2,8 @@
 
 namespace Larke\Admin\Model;
 
+use Illuminate\Support\Facades\Cache;
+
 /*
  * AuthRule
  *
@@ -66,6 +68,31 @@ class AuthRule extends Base
         return $this->update([
             'status' => 0,
         ]);
+    }
+    
+    public static function getCacheStore()
+    {
+        $configStore = config('larke.cache.auth_rule.store');
+        
+        $cacheStore = Cache::store($configStore);
+        
+        return $cacheStore;
+    }
+    
+    public static function getAuthRules()
+    {
+        $cacheStore = static::getCacheStore();
+        
+        $configKey = config('larke.cache.auth_rule.key');
+        $rules = $cacheStore->get($configKey);
+        if (!$rules) {
+            $rules = self::all()->toArray();
+            
+            $configTtl = config('larke.cache.auth_rule.ttl');
+            $cacheStore->put($configKey, $rules, $configTtl);
+        }
+        
+        return $rules;
     }
     
 }

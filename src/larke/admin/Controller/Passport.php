@@ -216,7 +216,7 @@ class Passport extends Base
         }
         
         // 添加缓存黑名单
-        app('larke.cache')->add(md5($accessToken), $accessToken, $refreshTokenExpiredIn);
+        app('larke.cache')->add(md5($accessToken), 'out', $refreshTokenExpiredIn);
         
         return $this->successJson(__('刷新Token成功'), [
             'access_token' => $newAccessToken,
@@ -263,8 +263,8 @@ class Passport extends Base
         $accessToken = app('larke.admin')->getAccessToken();
         
         // 添加缓存黑名单
-        app('larke.cache')->add(md5($accessToken), $accessToken, $refreshTokenExpiredIn);
-        app('larke.cache')->add(md5($refreshToken), $refreshToken, $refreshTokenExpiredIn);
+        app('larke.cache')->add(md5($accessToken), 'out', $refreshTokenExpiredIn);
+        app('larke.cache')->add(md5($refreshToken), 'out', $refreshTokenExpiredIn);
         
         return $this->successJson(__('退出成功'));
     }

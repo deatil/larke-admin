@@ -62,20 +62,19 @@ class Attachment extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function detail(Request $request)
+    public function detail(string $id, Request $request)
     {
-        $fileId = $request->get('id');
-        if (empty($fileId)) {
+        if (empty($id)) {
             return $this->errorJson(__('文件ID不能为空'));
         }
         
-        $fileInfo = AttachmentModel::where(['id' => $fileId])
+        $fileInfo = AttachmentModel::where(['id' => $id])
             ->first();
         if (empty($fileInfo)) {
             return $this->errorJson(__('文件信息不存在'));
         }
         
-        return $this->successJson(__('获取成功'), $fileInfo);
+        return $this->successJson(__('获取成功'), $fileInfo->toArray());
     }
     
     /**
@@ -84,14 +83,13 @@ class Attachment extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function delete(Request $request)
+    public function delete(string $id, Request $request)
     {
-        $fileId = $request->get('id');
-        if (empty($fileId)) {
+        if (empty($id)) {
             return $this->errorJson(__('文件ID不能为空'));
         }
         
-        $fileInfo = AttachmentModel::where(['id' => $fileId])
+        $fileInfo = AttachmentModel::where(['id' => $id])
             ->first();
         if (empty($fileInfo)) {
             return $this->errorJson(__('文件信息不存在'));
@@ -102,8 +100,7 @@ class Attachment extends Base
             return $this->errorJson(__('文件删除失败'));
         }
         
-        $deleteStatus = AttachmentModel::where(['id' => $fileId])
-            ->delete();
+        $deleteStatus = $fileInfo->delete();
         if ($deleteStatus === false) {
             return $this->errorJson(__('文件删除失败'));
         }
@@ -119,9 +116,8 @@ class Attachment extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function enable(Request $request)
+    public function enable(string $id, Request $request)
     {
-        $id = $request->get('id');
         if (empty($id)) {
             return $this->errorJson(__('ID不能为空'));
         }
@@ -150,9 +146,8 @@ class Attachment extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function disable(Request $request)
+    public function disable(string $id, Request $request)
     {
-        $id = $request->get('id');
         if (empty($id)) {
             return $this->errorJson(__('ID不能为空'));
         }
@@ -290,14 +285,13 @@ class Attachment extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function downloadCode(Request $request)
+    public function downloadCode(string $id, Request $request)
     {
-        $fileId = $request->get('id');
-        if (empty($fileId)) {
+        if (empty($id)) {
             return $this->errorJson(__('文件ID不能为空'));
         }
         
-        $fileInfo = AttachmentModel::where(['id' => $fileId])
+        $fileInfo = AttachmentModel::where(['id' => $id])
             ->first();
         if (empty($fileInfo)) {
             return $this->errorJson(__('文件不存在'));
@@ -317,9 +311,8 @@ class Attachment extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function download(Request $request)
+    public function download(string $code, Request $request)
     {
-        $code = $request->get('code');
         if (empty($code)) {
             return $this->errorJson(__('code值不能为空'));
         }

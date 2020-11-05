@@ -85,9 +85,8 @@ class Config extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function detail(Request $request)
+    public function detail(string $id, Request $request)
     {
-        $id = $request->get('id');
         if (empty($id)) {
             return $this->errorJson(__('ID不能为空'));
         }
@@ -107,9 +106,8 @@ class Config extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function delete(Request $request)
+    public function delete(string $id, Request $request)
     {
-        $id = $request->get('id');
         if (empty($id)) {
             return $this->errorJson(__('ID不能为空'));
         }
@@ -191,9 +189,8 @@ class Config extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function update(Request $request)
+    public function update(string $id, Request $request)
     {
-        $id = $request->get('id');
         if (empty($id)) {
             return $this->errorJson(__('账号ID不能为空'));
         }
@@ -282,9 +279,8 @@ class Config extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function listorder(Request $request)
+    public function listorder(string $id, Request $request)
     {
-        $id = $request->get('id');
         if (empty($id)) {
             return $this->errorJson(__('ID不能为空'));
         }
@@ -313,9 +309,8 @@ class Config extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function enable(Request $request)
+    public function enable(string $id, Request $request)
     {
-        $id = $request->get('id');
         if (empty($id)) {
             return $this->errorJson(__('ID不能为空'));
         }
@@ -344,9 +339,8 @@ class Config extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function disable(Request $request)
+    public function disable(string $id, Request $request)
     {
-        $id = $request->get('id');
         if (empty($id)) {
             return $this->errorJson(__('ID不能为空'));
         }
