@@ -92,6 +92,7 @@ Route::group([
     $router->post('/extension/upload', 'Extension@upload')->name('extension-upload');
     
     $router->get('/system/info', 'System@info')->name('system-info');
+    $router->get('/system/lang', 'System@lang')->name('system-lang');
     $router->post('/system/cache', 'System@cache')->name('system-cache');
     $router->post('/system/clear-cache', 'System@clearCache')->name('system-clear-cache');
 });

@@ -151,37 +151,13 @@ class Passport extends Base
      */
     public function refreshToken(Request $request)
     {
-        $accessToken = $request->get('access_token');
-        if (empty($accessToken)) {
-            return $this->errorJson(__('accessToken不能为空'));
-        }
-        
         $refreshToken = $request->get('refresh_token');
         if (empty($refreshToken)) {
             return $this->errorJson(__('refreshToken不能为空'));
         }
         
-        if (app('larke.cache')->has(md5($accessToken))) {
-            return $this->errorJson(__('accessToken已失效'));
-        }
-        
         if (app('larke.cache')->has(md5($refreshToken))) {
             return $this->errorJson(__('refreshToken已失效'));
-        }
-        
-        // accessToken
-        $accessJwt = app('larke.jwt')
-            ->withJti(config('larke.passport.access_token_id'))
-            ->withToken($accessToken)
-            ->decode();
-        
-        if (!$accessJwt->verify()) {
-            return $this->errorJson(__('accessToken错误'));
-        }
-        
-        $accessAdminid = $accessJwt->getClaim('adminid');
-        if ($accessAdminid === false) {
-            $this->errorJson(__('token错误'));
         }
         
         $refreshJwt = app('larke.jwt')
@@ -198,10 +174,6 @@ class Passport extends Base
             $this->errorJson(__('token错误'));
         }
         
-        if ($accessAdminid != $refreshAdminid) {
-            return $this->errorJson(__('刷新Token失败'));
-        }
-        
         $refreshTokenExpiredIn = $refreshJwt->getClaim('exp') - $refreshJwt->getClaim('iat');
         
         $expiredIn = config('larke.passport.access_expired_in', 86400);
@@ -214,9 +186,6 @@ class Passport extends Base
         if (empty($newAccessToken)) {
             return $this->errorJson(__('刷新Token失败'));
         }
-        
-        // 添加缓存黑名单
-        app('larke.cache')->add(md5($accessToken), 'out', $refreshTokenExpiredIn);
         
         return $this->successJson(__('刷新Token成功'), [
             'access_token' => $newAccessToken,

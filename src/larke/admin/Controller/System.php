@@ -82,6 +82,35 @@ class System extends Base
         
         return $this->successJson(__('路由及配置信息缓存成功'));
     }
+    
+    /**
+     * 语言包
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function lang(Request $request)
+    {
+        $group = $request->get('group');
+        if (empty($group)) {
+            return $this->errorJson(__('请选择要查询的语言分组'));
+        }
+        
+        $translator = app('translator');
+        
+        $locale = $translator->getLocale();
+        
+        // for json
+        $langs = $translator->getLoader()->load($locale, $group, '*');
+        if (empty($langs)) {
+            // for file
+            $langs = $translator->getLoader()->load($locale, $group);
+        }
+        
+        return $this->successJson(__('查询成功'), [
+            'list' => $langs,
+        ]);
+    }
 
     /**
      * phpinfo信息
