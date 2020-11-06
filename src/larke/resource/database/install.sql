@@ -36,7 +36,7 @@ CREATE TABLE `pre__larke_admin_log` (
 DROP TABLE IF EXISTS `pre__larke_attachment`;
 CREATE TABLE `pre__larke_attachment` (
   `id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `belong_type` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '附件属于',
+  `belong_type` varchar(250) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '附件属于',
   `belong_id` varchar(32) CHARACTER SET utf8mb4 DEFAULT '0' COMMENT '附件属于ID',
   `name` char(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '文件名',
   `path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '文件路径',
