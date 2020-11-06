@@ -4,6 +4,7 @@ namespace Larke\Admin\Command;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 /**
  * 安装
@@ -42,7 +43,7 @@ class Install extends Command
         
         $this->runSql();
         
-        $this->info('Larke-admin install success.');
+        $this->info('Larke-admin install successfully.');
     }
     
     /**
@@ -55,8 +56,8 @@ class Install extends Command
         // 执行数据库
         $installSqlFile = __DIR__.'/../../resource/database/install.sql';
         $dbPrefix = DB::getConfig('prefix');
-        $sqls = file_get_contents($installSqlFile);
-        $sqls = str_replace('pre__', $dbPrefix, $sqls);
-        DB::unprepared($sqls);
+        $sqlData = File::get($installSqlFile);
+        $sqlContent = str_replace('pre__', $dbPrefix, $sqlData);
+        DB::unprepared($sqlContent);
     }
 }

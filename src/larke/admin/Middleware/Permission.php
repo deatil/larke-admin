@@ -62,7 +62,7 @@ class Permission
         ]);
         
         $excepts = array_merge($excepts, $this->shouldPassSlugs());
-
+        
         return collect($excepts)
             ->contains(function ($except) {
                 $requestUrl = \Route::currentRouteName();

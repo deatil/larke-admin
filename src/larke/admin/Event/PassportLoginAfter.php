@@ -2,7 +2,7 @@
 
 namespace Larke\Admin\Event;
 
-use Illuminate\Http\Request;
+use Larke\Admin\Model\Admin as AdminModel;
 
 /*
  * 登陆之后
@@ -14,18 +14,18 @@ class PassportLoginAfter
 {
     /**
      * Request 实例
-     * @var \Illuminate\Http\Request
+     * @var \Larke\Admin\Model\Admin
      */
-    public $request;
+    public $admin;
     
     /**
      * 构造方法
      * @access public
-     * @param  Illuminate\Http\Request  $data  请求数据
+     * @param  \Larke\Admin\Model\Admin  $admin
      */
-    public function __construct(Request $request)
+    public function __construct(AdminModel $admin)
     {
-        $this->request = $request;
+        $this->admin = $admin;
     }
     
 }

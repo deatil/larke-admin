@@ -65,40 +65,43 @@ class Passport extends Base
         // 监听事件
         event(new PassportLoginBeforeEvent($request));
         
-        $name = $request->get('name');
-        if (empty($name)) {
-            return $this->errorJson(__('账号不能为空'));
-        }
-
-        $password = $request->post('password');
-        if (empty($password)) {
-            return $this->errorJson(__('密码不能为空'));
-        }
-        if (strlen($password) != 32) {
-            return $this->errorJson(__('用户密码错误'));
+        $data = $request->all();
+        $validator = Validator::make($data, [
+            'name' => 'required',
+            'password' => 'required|size:32',
+            'captcha' => 'required|size:4',
+        ], [
+            'name.required' => __('账号不能为空'),
+            'password.required' => __('密码不能为空'),
+            'password.size' => __('密码错误'),
+            'captcha.required' => __('验证码不能为空'),
+            'captcha.size' => __('验证码位数错误'),
+        ]);
+        
+        if ($validator->fails()) {
+            return $this->errorJson($validator->errors()->first());
         }
         
+        $name = $request->get('name');
         $captcha = $request->get('captcha');
-        if (empty($captcha)) {
-            return $this->errorJson(__('验证码不能为空'));
-        }
         if (!Captcha::check($captcha, md5($name))) {
             return $this->errorJson(__('验证码错误'));
         }
         
         // 校验密码
-        $adminInfo = AdminModel::where('name', $name)
+        $admin = AdminModel::where('name', $name)
             ->first();
-        if (empty($adminInfo)) {
+        if (empty($admin)) {
             return $this->errorJson(__('帐号错误'));
         }
         
-        $adminInfo = $adminInfo->toArray();
+        $adminInfo = $admin->toArray();
+        $password = $request->post('password');
         
-        $password2 = (new PasswordService())
+        $encryptPassword = (new PasswordService())
             ->withSalt(config('larke.passport.password_salt'))
             ->encrypt($password, $adminInfo['password_salt']); 
-        if ($password2 != $adminInfo['password']) {
+        if ($encryptPassword != $adminInfo['password']) {
             return $this->errorJson(__('账号密码错误'));
         }
         
@@ -106,7 +109,7 @@ class Passport extends Base
             return $this->errorJson(__('用户已被禁用或者不存在'));
         }
         
-        // 获取jwt的句柄
+        // 生成 accessToken
         $expiredIn = config('larke.passport.access_expired_in', 86400);
         $accessToken = app('larke.jwt')->withClaim([
             'adminid' => $adminInfo['id'],
@@ -131,13 +134,13 @@ class Passport extends Base
         }
         
         // 更新信息
-        AdminModel::where('id', $adminInfo['id'])->update([
+        $admin->update([
             'last_active' => time(), 
             'last_ip' => $request->ip(),
         ]);
         
         // 监听事件
-        event(new PassportLoginAfterEvent($request));
+        event(new PassportLoginAfterEvent($admin));
         
         return $this->successJson(__('登录成功'), [
             'access_token' => $accessToken,
@@ -173,8 +176,6 @@ class Passport extends Base
         if ($refreshAdminid === false) {
             $this->errorJson(__('token错误'));
         }
-        
-        $refreshTokenExpiredIn = $refreshJwt->getClaim('exp') - $refreshJwt->getClaim('iat');
         
         $expiredIn = config('larke.passport.access_expired_in', 86400);
         $newAccessToken = app('larke.jwt')->withClaim([
@@ -222,14 +223,14 @@ class Passport extends Base
             $this->errorJson(__('token错误'));
         }
         
-        $refreshTokenExpiredIn = $refreshJwt->getClaim('exp') - $refreshJwt->getClaim('iat');
-        
         $accessAdminid = app('larke.admin')->getId();
         if ($accessAdminid != $refreshAdminid) {
             return $this->errorJson(__('退出失败'));
         }
         
         $accessToken = app('larke.admin')->getAccessToken();
+        
+        $refreshTokenExpiredIn = $refreshJwt->getClaim('exp') - $refreshJwt->getClaim('iat');
         
         // 添加缓存黑名单
         app('larke.cache')->add(md5($accessToken), 'out', $refreshTokenExpiredIn);

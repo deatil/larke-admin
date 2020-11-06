@@ -48,8 +48,6 @@ class AdminLog extends Base
             'url' => urldecode(request()->getUri()),
             'ip' => request()->ip(),
             'useragent' => request()->server('HTTP_USER_AGENT'),
-            'create_time' => time(),
-            'create_ip' => request()->ip(),
         ], $data);
         self::create($data);
     }

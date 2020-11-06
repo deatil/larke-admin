@@ -23,7 +23,7 @@ Header: {
 
 > 响应通用格式，返回格式为 `JSON` 
 
-```php
+```json
 {
     "success": false,
     "code": code,

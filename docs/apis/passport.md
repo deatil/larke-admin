@@ -9,11 +9,11 @@ Response: {
 }
 ~~~
 
-> 登陆
+> 登陆（默认账号及密码：admin / 123456）
 ~~~
 POST: /admin-api/passport/login
 Request: {
-    'name': adminname,
+    'name': name,
     'password': md5(password),
     'captcha': captcha,
 }
@@ -28,8 +28,7 @@ Response: {
 ~~~
 PUT: /admin-api/passport/refresh-token
 Request: {
-    'access_token': accessToken,
-    'refresh_token': refreshToken,
+    'refresh_token',
 }
 Response: {
     'access_token', // 鉴权Token
@@ -44,7 +43,7 @@ Header: {
     'Authorization:Bearer ${accessToken}'
 }
 Request: {
-    'refresh_token': refreshToken, // 刷新Token
+    'refresh_token', // 刷新Token
 }
 Response: {
 }

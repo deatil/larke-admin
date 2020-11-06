@@ -14,15 +14,18 @@ class AdminLog
     }
 
     /**
-     * 插入到数据库
+     * 插入到数据库前
      */
     public function creating(AdminLogModel $model)
     {
         $model->id = md5(mt_rand(100000, 999999).microtime());
+        
+        $model->create_time = time();
+        $model->create_ip = request()->ip();
     }
 
     /**
-     * 插入到数据库
+     * 插入到数据库后
      */
     public function created(AdminLogModel $model)
     {

@@ -20,7 +20,12 @@ class Log
         
         $response = $next($request);
         
-        $input = $request->except(['password', 'password2', 'password_salt']);
+        $input = $request->except([
+            'password', 
+            'oldpassword', 
+            'newpassword', 
+            'newpassword_confirm', 
+        ]);
         
         // 记录日志
         AdminLogModel::record([
