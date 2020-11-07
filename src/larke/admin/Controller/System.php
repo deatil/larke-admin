@@ -39,7 +39,7 @@ class System extends Base
     {
         $info = [
             'admin' => config('larke.admin'),
-            'sys' => $this->getSysInfo(),
+            'system' => $this->getSysInfo(),
         ];
         
         $eventInfo = event(new SystemInfoEvent($info));

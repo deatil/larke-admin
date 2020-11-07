@@ -6,7 +6,6 @@ use Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-use Larke\Admin\Service\Tree as TreeService;
 use Larke\Admin\Service\Password as PasswordService;
 use Larke\Admin\Model\Admin as AdminModel;
 
@@ -130,18 +129,14 @@ class Profile extends Base
     }
 
     /**
-     * 权限信息
+     * 权限列表
      */
     public function rules(Request $request)
     {
         $rules = app('larke.admin')->getRules();
         
-        $TreeService = new TreeService();
-        $list = $TreeService->withData($rules)
-            ->build(0);
-        
         return $this->successJson(__('获取成功'), [
-            'list' => $list,
+            'list' => $rules,
         ]);
     }
 
