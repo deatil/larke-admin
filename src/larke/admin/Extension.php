@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Schema;
 use Larke\Admin\Model\AuthRule as AuthRuleModel;
 use Larke\Admin\Model\Extension as ExtensionModel;
 use Larke\Admin\Extension\Service as ExtensionService;
-use Larke\Admin\Service\Loader as LoaderService;
 
 /*
  * 扩展
@@ -62,12 +61,12 @@ class Extension
     /**
      * Set namespaces.
      *
-     * @param $namespace
+     * @param $prefix
      * @param $path
      */
-    public function namespaces($namespace, $path)
+    public function namespaces($prefix, $paths = [])
     {
-        (new LoaderService())->setPsr4($namespace, $path)->register();
+        app('larke.loader')->setPsr4($prefix, $paths)->register();
     }
     
     /**

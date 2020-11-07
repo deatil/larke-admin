@@ -5,6 +5,7 @@ namespace Larke\Admin\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Validator;
 
 use Larke\Admin\Event\SystemInfo as SystemInfoEvent;
 use Larke\Admin\Event\SystemClearCache as SystemClearCacheEvent;
@@ -92,8 +93,18 @@ class System extends Base
     public function lang(Request $request)
     {
         $group = $request->get('group');
-        if (empty($group)) {
-            return $this->errorJson(__('请选择要查询的语言分组'));
+        
+        $validator = Validator::make([
+            'group' => $group,
+        ], [
+            'group' => 'required|alpha_num',
+        ], [
+            'group.required' => __('请选择要查询的语言分组'),
+            'group.alpha_num' => __('语言分组名称格式错误'),
+        ]);
+
+        if ($validator->fails()) {
+            return $this->errorJson($validator->errors()->first());
         }
         
         $translator = app('translator');

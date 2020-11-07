@@ -55,8 +55,14 @@ class Install extends Command
     {
         // 执行数据库
         $installSqlFile = __DIR__.'/../../resource/database/install.sql';
-        $dbPrefix = DB::getConfig('prefix');
+        
         $sqlData = File::get($installSqlFile);
+        if (empty($sqlData)) {
+            $this->line("<error>Sql file is empty !</error> ");
+            return;
+        }
+        
+        $dbPrefix = DB::getConfig('prefix');
         $sqlContent = str_replace('pre__', $dbPrefix, $sqlData);
         DB::unprepared($sqlContent);
     }

@@ -10,6 +10,7 @@ use Larke\Admin\Contracts\Jwt as JwtContract;
 use Larke\Admin\Jwt\Jwt;
 use Larke\Admin\Http\Response as ResponseHttp;
 use Larke\Admin\Service\Cache as CacheService;
+use Larke\Admin\Service\Loader as LoaderService;
 use Larke\Admin\Auth\Admin as AdminData;
 use Larke\Admin\Http\ResponseCode;
 
@@ -126,8 +127,6 @@ class ServiceProvider extends BaseServiceProvider
     {
         $this->mergeConfigFrom(__DIR__ . '/../resource/config/larke.php', 'larke');
         
-        $this->loadViewsFrom(__DIR__ . '/../resource/views', 'larke-admin');
-        
         $this->loadRoutesFrom(__DIR__ . '/../resource/routes/admin.php');
     }
     
@@ -138,6 +137,9 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function registerBind()
     {
+        // 导入器
+        $this->app->bind('larke.loader', LoaderService::class);
+        
         // json响应
         $this->app->bind('larke.json', ResponseContract::class);
         $this->app->bind(ResponseContract::class, function() {

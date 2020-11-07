@@ -18,7 +18,15 @@ class Loader
     {
         $this->loader = new ClassLoader();
     }
-
+    
+    /**
+     * getLoader
+     */
+    public function getLoader()
+    {
+        return $this->loader;
+    }
+    
     /**
      * class_map
      */
@@ -31,8 +39,16 @@ class Loader
     /**
      * psr-0
      */
-    public function add($prefix, $paths, $prepend = false)
+    public function add($prefix, $paths = [], $prepend = false)
     {
+        if (is_array($prefix)) {
+            foreach ($prefix as $key => $value) {
+                $this->add($key, $value, $prepend);
+            }
+            
+            return $this;
+        }
+        
         $this->loader->add($prefix, $paths, $prepend);
         return $this;
     }
@@ -40,8 +56,16 @@ class Loader
     /**
      * psr-4
      */
-    public function addPsr4($prefix, $paths, $prepend = false)
+    public function addPsr4($prefix, $paths = [], $prepend = false)
     {
+        if (is_array($prefix)) {
+            foreach ($prefix as $key => $value) {
+                $this->addPsr4($key, $value, $prepend);
+            }
+            
+            return $this;
+        }
+        
         $this->loader->addPsr4($prefix, $paths, $prepend);
         return $this;
     }
@@ -49,18 +73,34 @@ class Loader
     /**
      * psr-0
      */
-    public function set($namespace, $path)
+    public function set($prefix, $paths = [])
     {
-        $this->loader->set($namespace, $path);
+        if (is_array($prefix)) {
+            foreach ($prefix as $key => $value) {
+                $this->set($key, $value);
+            }
+            
+            return $this;
+        }
+        
+        $this->loader->set($prefix, $paths);
         return $this;
     }
     
     /**
      * psr-4
      */
-    public function setPsr4($namespace, $path)
+    public function setPsr4($prefix, $paths = [])
     {
-        $this->loader->setPsr4($namespace, $path);
+        if (is_array($prefix)) {
+            foreach ($prefix as $key => $value) {
+                $this->setPsr4($key, $value);
+            }
+            
+            return $this;
+        }
+        
+        $this->loader->setPsr4($prefix, $paths);
         return $this;
     }
     
