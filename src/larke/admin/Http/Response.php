@@ -14,6 +14,9 @@ use Larke\Admin\Contracts\Response as ResponseContract;
  */
 class Response implements ResponseContract
 {
+    // 输出头信息列表
+    protected $headers = [];
+    
     // 跨域
     protected $isAllowOrigin = false;
     
@@ -102,6 +105,9 @@ class Response implements ResponseContract
         return $this;
     }
     
+    /*
+     * 设置 js 允许获取的header字段
+     */
     public function withExposeHeaders($exposeHeaders = false)
     {
         $this->exposeHeaders = $exposeHeaders;
@@ -110,9 +116,35 @@ class Response implements ResponseContract
     }
     
     /*
+     * 设置 haders
+     */
+    public function withHeader($name, $content = null)
+    {
+        if (is_array($name)) {
+            foreach ($name as $key => $value) {
+                $this->withHeader($key, $value);
+            }
+        } else {
+            if (!empty($name)) {
+                $this->headers[$name] = $content;
+            }
+        }
+        
+        return $this;
+    }
+    
+    /*
      * 获取haders
      */
     public function getHeaders()
+    {
+        return $this->headers;
+    }
+    
+    /*
+     * 组合跨域 haders
+     */
+    public function mergeCorsHeaders()
     {
         $header = [];
         if ($this->isAllowOrigin == 1) {
@@ -129,9 +161,12 @@ class Response implements ResponseContract
                 $header['Access-Control-Max-Age'] = $this->maxAge;
             }
         }
-        $header['Content-Type']  = 'application/json; charset=utf-8';
         
-        return $header;
+        $header['Content-Type'] = 'application/json; charset=utf-8';
+        
+        $this->withHeader($header);
+        
+        return $this;
     }
     
     /**
@@ -155,11 +190,11 @@ class Response implements ResponseContract
         $message ? $result['message'] = $message : null;
         $data ? $result['data'] = $data : null;
         
-        $header = $this->getHeaders();
-        $header = array_merge($header, $userHeader);
+        $this->mergeCorsHeaders()->withHeader($userHeader);
         
         $result = json_encode($result, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
         
+        $header = $this->getHeaders();
         $response = response($result, 200, $header);
         throw new HttpResponseException($response);
     }

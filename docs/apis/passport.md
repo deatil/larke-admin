@@ -3,7 +3,10 @@
 
 > 验证码
 ~~~
-GET: /admin-api/passport/captcha?id=md5(name)
+GET: /admin-api/passport/captcha
+Response-Header: {
+    'Larke-Admin-Captcha-Id'
+}
 Response: {
     'captcha',
 }
@@ -12,6 +15,9 @@ Response: {
 > 登陆（默认账号及密码：admin / 123456）
 ~~~
 POST: /admin-api/passport/login
+Request-Header: {
+    'Larke-Admin-Captcha-Id'
+}
 Request: {
     'name': name,
     'password': md5(password),

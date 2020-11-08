@@ -249,7 +249,7 @@ class Jwt implements JwtContract
         
         $time = time();
         $Builder->issuedAt($time); // token创建时间
-        $Builder->canOnlyBeUsedAfter($time + 10); // 多少秒内无法使用
+        $Builder->canOnlyBeUsedAfter($time); // 多少秒内无法使用
         $Builder->expiresAt($time + $this->expTime); // 过期时间
         
         if ($this->signerType == 'RSA') {

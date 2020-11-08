@@ -32,28 +32,16 @@ class Passport extends Base
     {
         $data = $request->all();
         
-        $validator = Validator::make($data, [
-            'id' => 'required|alpha_num|size:32',
-        ], [
-            'id.required' => __('ID不能为空'),
-            'id.alpha_num' => __('ID格式错误'),
-            'id.size' => __('ID长度格式错误'),
-        ]);
-        
-        if ($validator->fails()) {
-            return $this->errorJson($validator->errors()->first());
-        }
-        
-        $id = $request->get('id');
-        
-        $Captcha = new Captcha([
-            'uniqid' => $id,
-        ]);
+        $Captcha = new Captcha();
         
         $captcha = $Captcha->getData();
+        $captchaUniq = $Captcha->getUniqid();
         
+        $captchaKey = config('larke.passport.header_captcha_key');
         return $this->successJson(__('获取成功'), [
             'captcha' => $captcha,
+        ], 0, [
+            $captchaKey => $captchaUniq,
         ]);
     }
     
@@ -83,8 +71,11 @@ class Passport extends Base
         }
         
         $name = $request->get('name');
+        
+        $captchaKey = config('larke.passport.header_captcha_key');
+        $captchaUniq = request()->header($captchaKey);
         $captcha = $request->get('captcha');
-        if (!Captcha::check($captcha, md5($name))) {
+        if (!Captcha::check($captcha, $captchaUniq)) {
             return $this->errorJson(__('验证码错误'));
         }
         

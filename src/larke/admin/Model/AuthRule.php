@@ -72,9 +72,9 @@ class AuthRule extends Base
     
     public static function getCacheStore()
     {
-        $configStore = config('larke.cache.auth_rule.store');
-        
-        $cacheStore = Cache::store($configStore);
+        $store = config('larke.cache.auth_rule.store');
+        $store = ('default' == $store) ? null : $store;
+        $cacheStore = Cache::store($store);
         
         return $cacheStore;
     }

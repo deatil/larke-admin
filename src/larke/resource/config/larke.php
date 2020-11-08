@@ -35,6 +35,7 @@ return [
     
     'passport' => [
         'password_salt' => env('LARKE_ADMIN_PASSPORT_PASSWORD_SALT', 'd,d7ja0db1a974;38cE84976abbac2cd'),
+        'header_captcha_key' => env('LARKE_ADMIN_PASSPORT_HEADER_CAPTCHA_KEY', 'Larke-Admin-Captcha-Id'),
         'access_token_id' => env('LARKE_ADMIN_PASSPORT_ACCESS_TOKEN_ID', 'larke-passport-access-token'),
         'access_expired_in' => env('LARKE_ADMIN_PASSPORT_ACCESS_EXPIRED_IN', 86400),
         'refresh_token_id' => env('LARKE_ADMIN_PASSPORT_REFRESH_TOKEN_ID', 'larke-passport-refresh-token'),
@@ -59,6 +60,7 @@ return [
             'max_age' => env('LARKE_ADMIN_RESPONSE_JSON_MAX_AGE', ''),
             'allow_methods' => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_METHODS', 'GET,POST,PATCH,PUT,DELETE,OPTIONS'),
             'allow_headers' => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_HEADERS', 'X-Requested-With,X_Requested_With,Content-Type'),
+            'expose_headers' => env('LARKE_ADMIN_RESPONSE_JSON_EXPOSE_HEADERS', 'Larke-Admin-Captcha-Id'),
         ],
     ],
     

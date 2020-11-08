@@ -191,13 +191,13 @@ class ServiceProvider extends BaseServiceProvider
         });
         
         // response()->success('success');
-        Response::macro('success', function($message = '获取成功', $data = null, $code = 0) {
-            return app('larke.json')->json(true, $code, $message, $data);
+        Response::macro('success', function($message = '获取成功', $data = null, $code = 0, $header = []) {
+            return app('larke.json')->json(true, $code, $message, $data, $header);
         });
         
         // response()->error('error');
-        Response::macro('error', function($message = null, $code = 1, $data = []) {
-            return app('larke.json')->json(false, $code, $message, $data);
+        Response::macro('error', function($message = '获取失败', $code = 1, $data = [], $header = []) {
+            return app('larke.json')->json(false, $code, $message, $data, $header);
         });
         
         // 扩展
