@@ -18,6 +18,7 @@ use Larke\Admin\Model;
 use Larke\Admin\Observer;
 use Larke\Admin\Command;
 use Larke\Admin\Provider;
+use Larke\Admin\Middleware;
 
 class ServiceProvider extends BaseServiceProvider
 {
@@ -151,7 +152,8 @@ class ServiceProvider extends BaseServiceProvider
                 ->withAllowCredentials($config['allow_credentials'])
                 ->withMaxAge($config['max_age'])
                 ->withAllowMethods($config['allow_methods'])
-                ->withAllowHeaders($config['allow_headers']);
+                ->withAllowHeaders($config['allow_headers'])
+                ->withExposeHeaders($config['expose_headers']);
             
             return $ResponseHttp;
         });

@@ -32,12 +32,14 @@ class Response implements ResponseContract
     // 该次请求的自定义请求头字段
     protected $allowHeaders = 'X-Requested-With,X_Requested_With,Content-Type';
     
+    protected $exposeHeaders = 'Authorization,authenticated';
+    
     /*
      * 是否允许跨域域名
      */
     public function withIsAllowOrigin($isAllowOrigin = false)
     {
-        if ($isAllowOrigin === true) {
+        if ($isAllowOrigin) {
             $this->isAllowOrigin = true;
         } else {
             $this->isAllowOrigin = false;
@@ -61,7 +63,7 @@ class Response implements ResponseContract
      */
     public function withAllowCredentials($allowCredentials = false)
     {
-        if ($allowCredentials === true) {
+        if ($allowCredentials) {
             $this->allowCredentials = true;
         } else {
             $this->allowCredentials = false;
@@ -100,6 +102,38 @@ class Response implements ResponseContract
         return $this;
     }
     
+    public function withExposeHeaders($exposeHeaders = false)
+    {
+        $this->exposeHeaders = $exposeHeaders;
+        
+        return $this;
+    }
+    
+    /*
+     * 获取haders
+     */
+    public function getHeaders()
+    {
+        $header = [];
+        if ($this->isAllowOrigin == 1) {
+            $header['Access-Control-Allow-Origin']  = $this->allowOrigin;
+            $header['Access-Control-Allow-Headers'] = $this->allowHeaders;
+            $header['Access-Control-Expose-Headers'] = $this->exposeHeaders;
+            $header['Access-Control-Allow-Methods'] = $this->allowMethods;
+            
+            if ($this->allowCredentials === true) {
+                $header['Access-Control-Allow-Credentials'] = $this->allowCredentials;
+            }
+            
+            if (!empty($this->maxAge)) {
+                $header['Access-Control-Max-Age'] = $this->maxAge;
+            }
+        }
+        $header['Content-Type']  = 'application/json; charset=utf-8';
+        
+        return $header;
+    }
+    
     /**
      * 输出响应
      * @param boolen $success
@@ -120,24 +154,8 @@ class Response implements ResponseContract
         $result['code'] = $code;
         $message ? $result['message'] = $message : null;
         $data ? $result['data'] = $data : null;
-
-        $type = 'json';
-
-        $header = [];
-        if ($this->isAllowOrigin == 1) {
-            $header['Access-Control-Allow-Origin']  = $this->allowOrigin;
-            $header['Access-Control-Allow-Headers'] = $this->allowHeaders;
-            $header['Access-Control-Allow-Methods'] = $this->allowMethods;
-            
-            if ($this->allowCredentials === true) {
-                $header['Access-Control-Allow-Credentials'] = $this->allowCredentials;
-            }
-            
-            if (!empty($this->maxAge)) {
-                $header['Access-Control-Max-Age'] = $this->maxAge;
-            }
-        }
-        $header['content-type']  = 'application/json';
+        
+        $header = $this->getHeaders();
         $header = array_merge($header, $userHeader);
         
         $result = json_encode($result, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);

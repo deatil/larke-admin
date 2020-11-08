@@ -37,6 +37,19 @@ php artisan vendor:publish --tag=larke-admin-config
 php artisan larke-admin:install
 ```
 
+你可能第一次安装需要运行以下命令导入路由规则
+
+```php
+php artisan larke-admin:import-route
+```
+
+如果遇到跨域问题，你可以修改官方的配置文件 `config/cors.php`，在 `paths` 列表增加系统接口前缀 `admin-api/*`
+
+如果官方没有配置，你也可以在 `App\Http\Kernel->middleware` 属性添加
+```php
+\Larke\Admin\Middleware\RequestOptions::class,
+```
+
 
 ### 特别鸣谢
 

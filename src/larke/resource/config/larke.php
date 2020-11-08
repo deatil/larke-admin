@@ -53,7 +53,7 @@ return [
     
     'response' => [
         'json' => [
-            'is_allow_origin' => env('LARKE_ADMIN_RESPONSE_JSON_IS_ALLOW_ORIGIN', 0),
+            'is_allow_origin' => env('LARKE_ADMIN_RESPONSE_JSON_IS_ALLOW_ORIGIN', 1),
             'allow_origin' => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_ORIGIN', '*'),
             'allow_credentials' => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_CREDENTIALS', 0),
             'max_age' => env('LARKE_ADMIN_RESPONSE_JSON_MAX_AGE', ''),
