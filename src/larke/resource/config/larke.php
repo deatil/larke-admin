@@ -24,8 +24,8 @@ return [
         'aud' => env('LARKE_ADMIN_JWT_AUD', 'larke_admin'),
         'sub' => env('LARKE_ADMIN_JWT_SUB', 'larke_admin'),
         'jti' => env('LARKE_ADMIN_JWT_JTI', 'larke_admin'),
-        'exptime' => env('LARKE_ADMIN_JWT_EXPTIME', 3600),
-        'notbeforetime' => env('LARKE_ADMIN_JWT_NOTBEFORETIME', 10),
+        'exp' => env('LARKE_ADMIN_JWT_EXP', 3600),
+        'nbf' => env('LARKE_ADMIN_JWT_NBF', 0),
         
         'signer_type' => env('LARKE_ADMIN_JWT_SIGNER_TYPE', 'SECRECT'),
         'secrect' => env('LARKE_ADMIN_JWT_SECRECT', 's1fegdR'),

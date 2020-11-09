@@ -46,7 +46,7 @@ class Jwt implements JwtContract
     /**
      * 时间内不能访问
      */
-    private $notBeforeTime = 10;
+    private $notBeforeTime = 0;
     
     /**
      * decode token
@@ -129,9 +129,9 @@ class Jwt implements JwtContract
     }
     
     /**
-     * 设置notBeforeTime
+     * 设置 nbf
      */
-    public function withNotBeforeTime($notBeforeTime)
+    public function withNbf($notBeforeTime)
     {
         if ($notBeforeTime < 0) {
             $notBeforeTime = 0;
@@ -142,9 +142,9 @@ class Jwt implements JwtContract
     }
     
     /**
-     * 设置expTime
+     * 设置 expTime
      */
-    public function withExpTime($expTime)
+    public function withExp($expTime)
     {
         $this->expTime = $expTime;
         return $this;
@@ -249,7 +249,7 @@ class Jwt implements JwtContract
         
         $time = time();
         $Builder->issuedAt($time); // token创建时间
-        $Builder->canOnlyBeUsedAfter($time); // 多少秒内无法使用
+        $Builder->canOnlyBeUsedAfter($time + $this->notBeforeTime); // 多少秒内无法使用
         $Builder->expiresAt($time + $this->expTime); // 过期时间
         
         if ($this->signerType == 'RSA') {
@@ -323,9 +323,35 @@ class Jwt implements JwtContract
     }
 
     /**
+     * 获取 decodeToken
+     */
+    public function getDecodeToken()
+    {
+        return $this->decodeToken;
+    }
+    
+    /**
+     * 获取 Header
+     */
+    public function getHeader($name)
+    {
+        if (!$this->decodeToken) {
+            return false;
+        }
+        
+        try {
+            $claim = $this->decodeToken->getHeader($name);
+        } catch(\Exception $e) {
+            return false;
+        }
+        
+        return $claim;
+    }
+
+    /**
      * 获取token存储数据
      */
-    public function getClaim($name = 'uid')
+    public function getClaim($name)
     {
         if (!$this->decodeToken) {
             return false;

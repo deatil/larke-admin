@@ -179,8 +179,8 @@ class ServiceProvider extends BaseServiceProvider
             $Jwt->withSub($config['sub']);
             
             $Jwt->withJti($config['jti']); // JWT ID
-            $Jwt->withExpTime(intval($config['exptime']));
-            $Jwt->withNotBeforeTime($config['notbeforetime']);
+            $Jwt->withExp($config['exp']);
+            $Jwt->withNbf($config['nbf']);
             
             $Jwt->withSignerType($config['signer_type']);
             $Jwt->withSecrect($config['secrect']);
