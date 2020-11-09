@@ -107,9 +107,9 @@ class Loader
     /**
      * 注册
      */
-    public function register()
+    public function register($prepend = true)
     {
-        $this->loader->register(true);
+        $this->loader->register($prepend);
     }
     
 }

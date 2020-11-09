@@ -44,6 +44,8 @@ class Extension
      *
      * @param $callback
      * @param $config
+     * 
+     * @return void
      */
     public function routes($callback, $config = [])
     {
@@ -63,6 +65,8 @@ class Extension
      *
      * @param $prefix
      * @param $path
+     * 
+     * @return void
      */
     public function namespaces($prefix, $paths = [])
     {
@@ -71,31 +75,17 @@ class Extension
     
     /**
      * Register extensions'namespace.
-     *
-     * @param array
+     * 
+     * @return void
      */
     public function registerExtensionNamespace()
     {
         $dir = $this->getExtensionDirectory();
         
         // 注入扩展命名空间
-        $loader = new ClassLoader();
-        $useStaticLoader = PHP_VERSION_ID >= 50600 && !defined('HHVM_VERSION') && (!function_exists('zend_loader_file_encoded') || !zend_loader_file_encoded());
-        if ($useStaticLoader) {
-            call_user_func(\Closure::bind(function () use ($loader, $dir) {
-                $loader->prefixLengthsPsr4 = [];
-                $loader->prefixDirsPsr4 = [];
-                $loader->fallbackDirsPsr0 = [
-                    0 => $dir,
-                ];
-                $loader->classMap = [];
-            }, null, ClassLoader::class));
-        } else {
-            $loader->set('', $dir);
-        }
-        $loader->register(true);
+        app('larke.loader')->set('', $dir)->register();
     }
-
+    
     /**
      * Boot Extension.
      *
@@ -136,6 +126,7 @@ class Extension
             $this->bootService($s);
         });
     }
+    
     /**
      * Boot the given service.
      */

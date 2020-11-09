@@ -73,7 +73,7 @@ class Passport extends Base
         $name = $request->get('name');
         
         $captchaKey = config('larke.passport.header_captcha_key');
-        $captchaUniq = request()->header($captchaKey);
+        $captchaUniq = $request->header($captchaKey);
         $captcha = $request->get('captcha');
         if (!Captcha::check($captcha, $captchaUniq)) {
             return $this->errorJson(__('验证码错误'));
@@ -104,7 +104,7 @@ class Passport extends Base
         $expiredIn = config('larke.passport.access_expired_in', 86400);
         $accessToken = app('larke.jwt')->withClaim([
             'adminid' => $adminInfo['id'],
-        ])->withExpTime($expiredIn)
+        ])->withExp($expiredIn)
             ->withJti(config('larke.passport.access_token_id'))
             ->encode()
             ->getToken();
@@ -116,7 +116,7 @@ class Passport extends Base
         $refreshExpiredIn = config('larke.passport.refresh_expired_in', 300);
         $refreshToken = app('larke.jwt')->withClaim([
             'adminid' => $adminInfo['id'],
-        ])->withExpTime($refreshExpiredIn)
+        ])->withExp($refreshExpiredIn)
             ->withJti(config('larke.passport.refresh_token_id'))
             ->encode()
             ->getToken();
@@ -171,7 +171,7 @@ class Passport extends Base
         $expiredIn = config('larke.passport.access_expired_in', 86400);
         $newAccessToken = app('larke.jwt')->withClaim([
             'adminid' => $refreshAdminid,
-        ])->withExpTime($expiredIn)
+        ])->withExp($expiredIn)
             ->withJti(config('larke.passport.access_token_id'))
             ->encode()
             ->getToken();
