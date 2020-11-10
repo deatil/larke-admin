@@ -19,4 +19,25 @@ class Base extends Model
         }]);
     }
     
+    public function enable() 
+    {
+        return $this->update([
+            'status' => 1,
+        ]);
+    }
+    
+    public function disable() 
+    {
+        return $this->update([
+            'status' => 0,
+        ]);
+    }
+    
+    public function updateListorder($listorder) 
+    {
+        return $this->update([
+            'listorder' => $listorder,
+        ]);
+    }
+    
 }

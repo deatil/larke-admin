@@ -72,18 +72,4 @@ class AuthGroup extends Base
         return $this->childrenModule()->with('children');
     }
     
-    public function enable() 
-    {
-        return $this->update([
-            'status' => 1,
-        ]);
-    }
-    
-    public function disable() 
-    {
-        return $this->update([
-            'status' => 0,
-        ]);
-    }
-    
 }

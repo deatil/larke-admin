@@ -4,6 +4,7 @@ namespace Larke\Admin\Command;
 
 use Composer\Semver\Semver;
 use Composer\Semver\Comparator;
+use Composer\Semver\VersionParser;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
@@ -55,7 +56,7 @@ class Extension extends Command
             '[4]' => 'Enable',
             '[5]' => 'Disable',
         ];
-        $headers = ['No', 'Action'];
+        $headers = ['No.', 'Action'];
         $rows = [];
         foreach ($actions as $no => $action) {
             $rows[] = [$no, $action];
@@ -121,6 +122,13 @@ class Extension extends Command
             return false;
         }
         
+        try {
+            $infoVersion = (new VersionParser())->normalize($info['version']);
+        } catch(\Exception $e) {
+            $this->line("<error>Extension'version ({$info['version']}) is error !</error> ");
+            return false;
+        }
+        
         $adminVersion = config('larke.admin.version');
         $versionCheck = Semver::satisfies($adminVersion, $info['adaptation']);
         if (!$versionCheck) {
@@ -134,7 +142,7 @@ class Extension extends Command
                 return ($data['match'] == 0);
             });
             if ($match) {
-                $this->line("<error>Error ! </error>You need check require'extensions: ");
+                $this->line("<error>Error ! </error>You need check {$name} require'extensions: ");
                 
                 $headers = ['Name', 'Version', 'InstallVersion', 'Match'];
                 $rows = [];
@@ -222,7 +230,6 @@ class Extension extends Command
             return false;
         }
         
-        
         $checkInfo = AdminExtension::validateInfo($info);
         if (!$checkInfo) {
             $this->line("<error>Extension info is error !</error> ");
@@ -233,6 +240,13 @@ class Extension extends Command
         $versionCheck = Semver::satisfies($adminVersion, $info['adaptation']);
         if (!$versionCheck) {
             $this->line("<error>Extension adaptation'version is error ! Admin'version is {$adminVersion} !</error> ");
+            return false;
+        }
+        
+        try {
+            $infoVersion = (new VersionParser())->normalize($info['version']);
+        } catch(\Exception $e) {
+            $this->line("<error>Extension'version ({$info['version']}) is error !</error> ");
             return false;
         }
         
@@ -249,7 +263,7 @@ class Extension extends Command
                 return ($data['match'] == 0);
             });
             if ($match) {
-                $this->line("<error>Error ! </error>You need check require'extensions: ");
+                $this->line("<error>Error ! </error>You need check {$name} require'extensions: ");
                 
                 $headers = ['Name', 'Version', 'InstallVersion', 'Match'];
                 $rows = [];

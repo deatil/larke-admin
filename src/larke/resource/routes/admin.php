@@ -11,22 +11,22 @@ Route::group([
     $router->group([
         'middleware' => config('larke.route.admin_middleware'),
     ], function ($router) {
-        $router->get('/auth/rule/index', 'AuthRule@index')->name('auth-rule-index');
-        $router->get('/auth/rule/index-tree', 'AuthRule@indexTree')->name('auth-rule-index-tree');
-        $router->get('/auth/rule/index-children', 'AuthRule@indexChildren')->name('auth-rule-index-children');
+        $router->get('/auth/rule', 'AuthRule@index')->name('auth-rule-index');
+        $router->get('/auth/rule/trees', 'AuthRule@indexTree')->name('auth-rule-index-tree');
+        $router->get('/auth/rule/children', 'AuthRule@indexChildren')->name('auth-rule-index-children');
         $router->get('/auth/rule/{id}', 'AuthRule@detail')->name('auth-rule-detail');
-        $router->post('/auth/rule/create', 'AuthRule@create')->name('auth-rule-create');
+        $router->post('/auth/rule', 'AuthRule@create')->name('auth-rule-create');
         $router->put('/auth/rule/{id}', 'AuthRule@update')->name('auth-rule-update');
         $router->patch('/auth/rule/{id}/sort', 'AuthRule@listorder')->name('auth-rule-listorder');
         $router->patch('/auth/rule/{id}/enable', 'AuthRule@enable')->name('auth-rule-enable');
         $router->patch('/auth/rule/{id}/disable', 'AuthRule@disable')->name('auth-rule-disable');
         $router->delete('/auth/rule/{id}', 'AuthRule@delete')->name('auth-rule-delete');
         
-        $router->get('/auth/group/index', 'AuthGroup@index')->name('auth-group-index');
-        $router->get('/auth/group/index-tree', 'AuthGroup@indexTree')->name('auth-group-index-tree');
-        $router->get('/auth/group/index-children', 'AuthGroup@indexChildren')->name('auth-group-index-children');
+        $router->get('/auth/group', 'AuthGroup@index')->name('auth-group-index');
+        $router->get('/auth/group/tree', 'AuthGroup@indexTree')->name('auth-group-index-tree');
+        $router->get('/auth/group/children', 'AuthGroup@indexChildren')->name('auth-group-index-children');
         $router->get('/auth/group/{id}', 'AuthGroup@detail')->name('auth-group-detail');
-        $router->post('/auth/group/create', 'AuthGroup@create')->name('auth-group-create');
+        $router->post('/auth/group', 'AuthGroup@create')->name('auth-group-create');
         $router->put('/auth/group/{id}', 'AuthGroup@update')->name('auth-group-update');
         $router->patch('/auth/group/{id}/sort', 'AuthGroup@listorder')->name('auth-group-listorder');
         $router->patch('/auth/group/{id}/enable', 'AuthGroup@enable')->name('auth-group-enable');
@@ -45,19 +45,19 @@ Route::group([
     $router->put('/profile/password', 'Profile@changePasssword')->name('profile-password');
     $router->get('/profile/rules', 'Profile@rules')->name('profile-rules');
     
-    $router->get('/attachment/index', 'Attachment@index')->name('attachment-index');
+    $router->get('/attachment', 'Attachment@index')->name('attachment-index');
     $router->get('/attachment/{id}', 'Attachment@detail')->name('attachment-detail');
     $router->patch('/attachment/{id}/enable', 'Attachment@enable')->name('attachment-enable');
     $router->patch('/attachment/{id}/disable', 'Attachment@disable')->name('attachment-disable');
     $router->delete('/attachment/{id}', 'Attachment@delete')->name('attachment-delete');
-    $router->post('/attachment/upload', 'Attachment@upload')->name('attachment-upload');
+    $router->post('/attachment', 'Attachment@upload')->name('attachment-upload');
     $router->get('/attachment/downcode/{id}', 'Attachment@downloadCode')->name('attachment-download-code');
     $router->get('/attachment/download/{code}', 'Attachment@download')->name('attachment-download');
     
-    $router->get('/admin/index', 'Admin@index')->name('admin-index');
+    $router->get('/admin', 'Admin@index')->name('admin-index');
     $router->get('/admin/{id}', 'Admin@detail')->name('admin-detail');
-    $router->get('/admin/rules/{id}', 'Admin@rules')->name('admin-rules');
-    $router->post('/admin/create', 'Admin@create')->name('admin-create');
+    $router->get('/admin/{id}/rules', 'Admin@rules')->name('admin-rules');
+    $router->post('/admin', 'Admin@create')->name('admin-create');
     $router->put('/admin/{id}', 'Admin@update')->name('admin-update');
     $router->patch('/admin/{id}/enable', 'Admin@enable')->name('admin-enable');
     $router->patch('/admin/{id}/disable', 'Admin@disable')->name('admin-disable');
@@ -66,9 +66,9 @@ Route::group([
     $router->put('/admin/{id}/access', 'Admin@access')->name('admin-access');
     $router->post('/admin/logout/{refreshToken}', 'Admin@logout')->name('admin-logout');
     
-    $router->get('/config/index', 'Config@index')->name('config-index');
+    $router->get('/config', 'Config@index')->name('config-index');
     $router->get('/config/{id}', 'Config@detail')->name('config-detail');
-    $router->post('/config/create', 'Config@create')->name('config-create');
+    $router->post('/config', 'Config@create')->name('config-create');
     $router->put('/config/{id}', 'Config@update')->name('config-update');
     $router->patch('/config/{id}/sort', 'Config@listorder')->name('config-listorder');
     $router->patch('/config/{id}/enable', 'Config@enable')->name('config-enable');
@@ -76,7 +76,7 @@ Route::group([
     $router->delete('/config/{id}', 'Config@delete')->name('config-delete');
     $router->put('/config/setting', 'Config@setting')->name('config-setting');
     
-    $router->get('/log/index', 'Log@index')->name('log-index');
+    $router->get('/log', 'Log@index')->name('log-index');
     $router->get('/log/{id}', 'Log@detail')->name('log-detail');
     $router->delete('/log/{id}', 'Log@delete')->name('log-delete');
     
@@ -88,7 +88,6 @@ Route::group([
     $router->put('/extension/{name}/config', 'Extension@config')->name('extension-config');
     $router->patch('/extension/{name}/enable', 'Extension@enable')->name('extension-enable');
     $router->patch('/extension/{name}/disable', 'Extension@disable')->name('extension-disable');
-    $router->patch('/extension/{name}/sort', 'Extension@listorder')->name('extension-listorder');
     $router->post('/extension/upload', 'Extension@upload')->name('extension-upload');
     
     $router->get('/system/info', 'System@info')->name('system-info');

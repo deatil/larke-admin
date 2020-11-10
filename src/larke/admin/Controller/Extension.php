@@ -4,6 +4,7 @@ namespace Larke\Admin\Controller;
 
 use Composer\Semver\Semver;
 use Composer\Semver\Comparator;
+use Composer\Semver\VersionParser;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -82,7 +83,15 @@ class Extension extends Base
         $installExtensions = ExtensionModel::getExtensions();
         $extensions = collect($extensions)->map(function($data, $key) use($installExtensions) {
             if (isset($installExtensions[$data['name']])) {
-                $data['install'] = $installExtensions[$data['name']];
+                $data['install'] = $installInfo = $installExtensions[$data['name']];
+                
+                $infoVersion = Arr::get($data, 'version', 0);
+                $installVersion = Arr::get($installInfo, 'version', 0);
+                if (Comparator::greaterThan($infoVersion, $installVersion)) {
+                    $data['upgrade'] = 1;
+                } else {
+                    $data['upgrade'] = 0;
+                }
             } else {
                 $data['install'] = [];
             }
@@ -123,6 +132,12 @@ class Extension extends Base
         $checkInfo = AdminExtension::validateInfo($info);
         if (!$checkInfo) {
             return $this->errorJson(__('扩展信息不正确'));
+        }
+        
+        try {
+            $infoVersion = (new VersionParser())->normalize($info['version']);
+        } catch(\Exception $e) {
+            return $this->errorJson(__('扩展版本信息不正确'));
         }
         
         $adminVersion = config('larke.admin.version');
@@ -236,6 +251,12 @@ class Extension extends Base
             ]));
         }
         
+        try {
+            $infoVersion = (new VersionParser())->normalize($info['version']);
+        } catch(\Exception $e) {
+            return $this->errorJson(__('扩展版本信息不正确'));
+        }
+        
         $infoVersion = Arr::get($info, 'version', 0);
         $installVersion = Arr::get($installInfo, 'version', 0);
         if (!Comparator::greaterThan($infoVersion, $installVersion)) {
@@ -277,6 +298,34 @@ class Extension extends Base
         AdminExtension::getNewClassMethod(Arr::get($info, 'class_name'), 'upgrade');
         
         return $this->successJson(__('更新扩展成功'));
+    }
+    
+    /**
+     * 排序
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function listorder(string $name, Request $request)
+    {
+        if (empty($name)) {
+            return $this->errorJson(__('扩展名称不能为空'));
+        }
+        
+        $info = ExtensionModel::where(['name' => $name])
+            ->first();
+        if (empty($info)) {
+            return $this->errorJson(__('扩展还没有安装'));
+        }
+        
+        $listorder = $request->get('listorder', 100);
+        
+        $status = $info->updateListorder($listorder);
+        if ($status === false) {
+            return $this->errorJson(__('更新扩展排序失败'));
+        }
+        
+        return $this->successJson(__('更新扩展排序成功'));
     }
     
     /**
@@ -375,36 +424,6 @@ class Extension extends Base
         }
         
         return $this->successJson(__('更新扩展配置成功'));
-    }
-    
-    /**
-     * 排序
-     *
-     * @param  Request  $request
-     * @return Response
-     */
-    public function listorder(string $name, Request $request)
-    {
-        if (empty($name)) {
-            return $this->errorJson(__('扩展名称不能为空'));
-        }
-        
-        $listorder = $request->get('listorder', 100);
-        
-        $info = ExtensionModel::where(['name' => $name])
-            ->first();
-        if (empty($info)) {
-            return $this->errorJson(__('扩展还没有安装'));
-        }
-        
-        $status = $info->update([
-            'listorder' => intval($listorder),
-        ]);
-        if ($status === false) {
-            return $this->errorJson(__('更新扩展排序失败'));
-        }
-        
-        return $this->successJson(__('更新扩展排序成功'));
     }
     
     /**

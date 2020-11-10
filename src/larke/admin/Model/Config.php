@@ -64,18 +64,4 @@ class Config extends Base
         return $deleted;
     }
     
-    public function enable() 
-    {
-        return $this->update([
-            'status' => 1,
-        ]);
-    }
-    
-    public function disable() 
-    {
-        return $this->update([
-            'status' => 0,
-        ]);
-    }
-    
 }

@@ -62,9 +62,13 @@ class Extension extends Base
     public static function getExtensions()
     {
         return Cache::rememberForever(md5('larke.model.extensions'), function() {
-            return self::all()->mapWithKeys(function ($extension) {
-                return [$extension->name => $extension->toArray()];
-            })->toArray();
+            return self::orderBy('listorder', 'ASC')
+                ->orderBy('installtime', 'ASC')
+                ->get()
+                ->mapWithKeys(function ($extension) {
+                    return [$extension->name => $extension->toArray()];
+                })
+                ->toArray();
         });
     }
     
@@ -135,20 +139,6 @@ class Extension extends Base
         }
         
         return $data;
-    }
-    
-    public function enable() 
-    {
-        return $this->update([
-            'status' => 1,
-        ]);
-    }
-    
-    public function disable() 
-    {
-        return $this->update([
-            'status' => 0,
-        ]);
     }
     
 }

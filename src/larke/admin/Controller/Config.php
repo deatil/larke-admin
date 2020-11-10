@@ -261,13 +261,7 @@ class Config extends Base
         $fields = $request->get('fields');
         
         if (!empty($fields)) {
-            foreach ($fields as $name => $item) {
-                ConfigModel::where([
-                    'name' => $name,
-                ])->update([
-                    'value' => $item,
-                ]);
-            }
+            ConfigModel::setMany($fields);
         }
         
         return $this->successJson(__('设置更新成功'));
@@ -293,9 +287,7 @@ class Config extends Base
         
         $listorder = $request->get('listorder', 100);
         
-        $status = $info->update([
-            'listorder' => intval($listorder),
-        ]);
+        $status = $info->updateListorder($listorder);
         if ($status === false) {
             return $this->errorJson(__('更新排序失败'));
         }

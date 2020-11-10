@@ -320,9 +320,7 @@ class AuthRule extends Base
         
         $listorder = $request->get('listorder', 100);
         
-        $status = $info->update([
-            'listorder' => intval($listorder),
-        ]);
+        $status = $info->updateListorder($listorder);
         if ($status === false) {
             return $this->errorJson(__('更新排序失败'));
         }
