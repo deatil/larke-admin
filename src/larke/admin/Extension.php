@@ -5,6 +5,7 @@ namespace Larke\Admin;
 use Composer\Autoload\ClassLoader;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
@@ -64,7 +65,7 @@ class Extension
      * Set namespaces.
      *
      * @param $prefix
-     * @param $path
+     * @param $paths
      * 
      * @return void
      */
@@ -129,6 +130,8 @@ class Extension
     
     /**
      * Boot the given service.
+     *
+     * @return void
      */
     protected function bootService(ExtensionService $service)
     {
@@ -144,24 +147,19 @@ class Extension
     /**
      * Load extensions.
      *
-     * @param $this
+     * @return $this
      */
     public function loadExtension()
     {
         $dir = $this->getExtensionDirectory();
         
-        // 注入在扩展目录的扩展
-        $dirs = isset($dir) ? scandir($dir) : [];
-        foreach ($dirs as $value) {
-            $bootstrapDir = $dir . DIRECTORY_SEPARATOR . $value;
-            $bootstrap = $bootstrapDir . DIRECTORY_SEPARATOR . 'bootstrap.php';
-            if ($bootstrapDir != '.' 
-                && $bootstrapDir != '..'
-                && file_exists($bootstrap)
-            ) {
-                include_once $bootstrap;
+        $dirs = File::directories($dir);
+        collect($dirs)->each(function($dir) {
+            $bootstrap = $dir . DIRECTORY_SEPARATOR . 'bootstrap.php';
+            if (File::exists($bootstrap)) {
+                File::requireOnce($bootstrap);
             }
-        }
+        });
         
         return $this;
     }
@@ -169,7 +167,9 @@ class Extension
     /**
      * Get extensions directory.
      *
-     * @param array
+     * @param string
+     *
+     * @return string
      */
     public function getExtensionDirectory($path = '')
     {
@@ -180,7 +180,7 @@ class Extension
     /**
      * Get new class.
      *
-     * @param boolen|object
+     * @param string
      */
     public function getNewClass($className = null)
     {
@@ -199,7 +199,11 @@ class Extension
     /**
      * Get new class.
      *
-     * @param mixed
+     * @param $className string
+     * @param $method string
+     * @param $param array
+     *
+     * @return mixed
      */
     public function getNewClassMethod($className = null, $method = null, $param = [])
     {
@@ -223,7 +227,9 @@ class Extension
     /**
      * Get extension new class.
      *
-     * @param boolen|object
+     * @param string
+     *
+     * @return mixed|object
      */
     public function getExtensionNewClass($name = null)
     {
@@ -239,7 +245,9 @@ class Extension
     /**
      * Get extension info.
      *
-     * @param array
+     * @param $name string
+     *
+     * @return array
      */
     public function getExtension($name = null)
     {
@@ -272,7 +280,9 @@ class Extension
     /**
      * Get extension config.
      *
-     * @param array
+     * @param $name string
+     *
+     * @return array
      */
     public function getExtensionConfig($name = null)
     {
@@ -291,7 +301,7 @@ class Extension
     /**
      * Get extensions.
      *
-     * @param array
+     * @return array
      */
     public function getExtensions()
     {
@@ -314,7 +324,9 @@ class Extension
     /**
      * validateInfo.
      *
-     * @param boolen
+     * @param array
+     *
+     * @return boolen
      */
     public function validateInfo(array $info)
     {
@@ -339,7 +351,11 @@ class Extension
     /**
      * Create rule.
      *
-     * @param array
+     * @return $data array
+     * @return $parentId int
+     * @return $children array
+     *
+     * @return array
      */
     public function createRule(
         $data = [], 

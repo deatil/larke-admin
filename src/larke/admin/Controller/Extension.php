@@ -94,6 +94,7 @@ class Extension extends Base
                 }
             } else {
                 $data['install'] = [];
+                $data['upgrade'] = 0;
             }
             
             return $data;

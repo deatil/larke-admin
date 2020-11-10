@@ -12,7 +12,7 @@ Route::group([
         'middleware' => config('larke.route.admin_middleware'),
     ], function ($router) {
         $router->get('/auth/rule', 'AuthRule@index')->name('auth-rule-index');
-        $router->get('/auth/rule/trees', 'AuthRule@indexTree')->name('auth-rule-index-tree');
+        $router->get('/auth/rule/tree', 'AuthRule@indexTree')->name('auth-rule-index-tree');
         $router->get('/auth/rule/children', 'AuthRule@indexChildren')->name('auth-rule-index-children');
         $router->get('/auth/rule/{id}', 'AuthRule@detail')->name('auth-rule-detail');
         $router->post('/auth/rule', 'AuthRule@create')->name('auth-rule-create');
