@@ -9,8 +9,8 @@ use Larke\Admin\Captcha\Captcha;
 use Larke\Admin\Service\Password as PasswordService;
 use Larke\Admin\Model\Admin as AdminModel;
 
-use Larke\Admin\Event\PassportLoginBefore as PassportLoginBeforeEvent;
-use Larke\Admin\Event\PassportLoginAfter as PassportLoginAfterEvent;
+// for dir
+use Larke\Admin\Event;
 
 /**
  * 登陆
@@ -51,7 +51,7 @@ class Passport extends Base
     public function login(Request $request)
     {
         // 监听事件
-        event(new PassportLoginBeforeEvent($request));
+        event(new Event\PassportLoginBefore($request));
         
         $data = $request->all();
         $validator = Validator::make($data, [
@@ -124,14 +124,8 @@ class Passport extends Base
             return $this->errorJson(__('登陆失败'));
         }
         
-        // 更新信息
-        $admin->update([
-            'last_active' => time(), 
-            'last_ip' => $request->ip(),
-        ]);
-        
         // 监听事件
-        event(new PassportLoginAfterEvent($admin));
+        event(new Event\PassportLoginAfter($admin));
         
         return $this->successJson(__('登录成功'), [
             'access_token' => $accessToken,
@@ -178,6 +172,9 @@ class Passport extends Base
         if (empty($newAccessToken)) {
             return $this->errorJson(__('刷新Token失败'));
         }
+        
+        // 监听事件
+        event(new Event\PassportRefreshTokenAfter());
         
         return $this->successJson(__('刷新Token成功'), [
             'access_token' => $newAccessToken,
@@ -226,6 +223,9 @@ class Passport extends Base
         // 添加缓存黑名单
         app('larke.cache')->add(md5($accessToken), 'out', $refreshTokenExpiredIn);
         app('larke.cache')->add(md5($refreshToken), 'out', $refreshTokenExpiredIn);
+        
+        // 监听事件
+        event(new Event\PassportLogoutAfter());
         
         return $this->successJson(__('退出成功'));
     }

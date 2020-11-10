@@ -40,4 +40,9 @@ class Base extends Model
         ]);
     }
     
+    public function isActive() 
+    {
+        return ($this->status == 1);
+    }
+    
 }

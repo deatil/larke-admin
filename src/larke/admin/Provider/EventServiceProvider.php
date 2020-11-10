@@ -2,10 +2,11 @@
 
 namespace Larke\Admin\Provider;
 
-use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
-use Larke\Admin\Listener\Config as ConfigListener;
+// for directory
+use Larke\Admin\Event;
+use Larke\Admin\Listener;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -14,7 +15,11 @@ class EventServiceProvider extends ServiceProvider
      *
      * @var array
      */
-    protected $listen = [];
+    protected $listen = [
+        Event\PassportLoginAfter::class => [
+            Listener\PassportLoginAfter::class
+        ],
+    ];
     
     /**
      * The event subscribe mappings for the application.
@@ -22,7 +27,7 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $subscribe = [
-        ConfigListener::class,
+        Listener\Config::class,
     ];
 
     /**
