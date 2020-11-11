@@ -2,8 +2,6 @@
 
 namespace Larke\Admin;
 
-use Composer\Autoload\ClassLoader;
-
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
