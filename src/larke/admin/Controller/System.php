@@ -109,7 +109,23 @@ class System extends Base
         
         $translator = app('translator');
         
-        $locale = $translator->getLocale();
+        $locale = $request->get('locale');
+        if (!empty($locale)) {
+            $validator = Validator::make([
+                'locale' => $locale,
+            ], [
+                'locale' => 'required|alpha_dash',
+            ], [
+                'locale.required' => __('请选择要查询的语言'),
+                'locale.alpha_dash' => __('语言名称格式错误'),
+            ]);
+
+            if ($validator->fails()) {
+                return $this->errorJson($validator->errors()->first());
+            }
+        } else {
+            $locale = $translator->getLocale();
+        }
         
         // for json
         $langs = $translator->getLoader()->load($locale, $group, '*');

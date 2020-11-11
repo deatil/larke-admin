@@ -8,11 +8,11 @@ use Illuminate\Support\Facades\Response;
 use Larke\Admin\Contracts\Response as ResponseContract;
 use Larke\Admin\Contracts\Jwt as JwtContract;
 use Larke\Admin\Jwt\Jwt;
-use Larke\Admin\Http\Response as ResponseHttp;
-use Larke\Admin\Service\Cache as CacheService;
-use Larke\Admin\Service\Loader as LoaderService;
-use Larke\Admin\Auth\Admin as AdminData;
+use Larke\Admin\Http\Response as HttpResponse;
 use Larke\Admin\Http\ResponseCode;
+use Larke\Admin\Service\Cache;
+use Larke\Admin\Service\Loader;
+use Larke\Admin\Auth\Admin;
 
 // for directory
 use Larke\Admin\Model;
@@ -23,6 +23,20 @@ use Larke\Admin\Middleware;
 
 class ServiceProvider extends BaseServiceProvider
 {
+    /**
+     * The application's alias.
+     *
+     * @var array
+     */
+    protected $alias = [
+        'ResponseCode' => ResponseCode::class,
+    ];
+    
+    /**
+     * The application's commands.
+     *
+     * @var array
+     */
     protected $commands = [
         Command\Install::class,
         Command\ImportRoute::class,
@@ -62,9 +76,9 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function register()
     {
-        $this->registerResponseCode();
-        
         $this->registerConfig();
+        
+        $this->registerAlias();
         
         $this->registerBind();
         
@@ -74,9 +88,9 @@ class ServiceProvider extends BaseServiceProvider
         
         $this->commands($this->commands);
         
-        $this->registerExtension();
-        
         $this->registerEvent();
+        
+        $this->registerExtension();
     }
     
     /**
@@ -109,15 +123,11 @@ class ServiceProvider extends BaseServiceProvider
      *
      * @return void
      */
-    protected function registerResponseCode()
+    protected function registerAlias()
     {
-        $codes = ResponseCode::getConstants();
-        collect($codes)->each(function($code, $key) {
-            $newKey = strtoupper('LARKE_ADMIN_' . $key);
-            if (!defined($newKey)) {
-                define($newKey, $code);
-            }
-        });
+        foreach ($this->alias as $alias => $class) {
+            class_alias($class, $alias);
+        }
     }
     
     /**
@@ -140,15 +150,15 @@ class ServiceProvider extends BaseServiceProvider
     protected function registerBind()
     {
         // 导入器
-        $this->app->bind('larke.loader', LoaderService::class);
+        $this->app->bind('larke.loader', Loader::class);
         
         // json响应
         $this->app->bind('larke.json', ResponseContract::class);
         $this->app->bind(ResponseContract::class, function() {
-            $ResponseHttp = new ResponseHttp();
+            $HttpResponse = new HttpResponse();
             
             $config = config('larke.response.json');
-            $ResponseHttp->withIsAllowOrigin($config['is_allow_origin'])
+            $HttpResponse->withIsAllowOrigin($config['is_allow_origin'])
                 ->withAllowOrigin($config['allow_origin'])
                 ->withAllowCredentials($config['allow_credentials'])
                 ->withMaxAge($config['max_age'])
@@ -156,17 +166,17 @@ class ServiceProvider extends BaseServiceProvider
                 ->withAllowHeaders($config['allow_headers'])
                 ->withExposeHeaders($config['expose_headers']);
             
-            return $ResponseHttp;
+            return $HttpResponse;
         });
         
         // 系统使用缓存
         $this->app->singleton('larke.cache', function() {
-            $CacheService = new CacheService();
-            return $CacheService->store();
+            $Cache = new Cache();
+            return $Cache->store();
         });
         
         // 管理员登陆信息
-        $this->app->singleton('larke.admin', AdminData::class);
+        $this->app->singleton('larke.admin', Admin::class);
         
         // jwt
         $this->app->bind('larke.jwt', JwtContract::class);

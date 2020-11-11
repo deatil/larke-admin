@@ -127,7 +127,7 @@ class Admin
     public function getGroups()
     {
         $data = $this->getData();
-        return $data['groups'] ?? [];
+        return $data['groups'] ?: [];
     }
     
     /*
@@ -136,7 +136,10 @@ class Admin
     public function getGroupids()
     {
         $groups = $this->getGroups();
-        return collect($groups)->pluck('id')->toArray();
+        return collect($groups)
+            ->pluck('id')
+            ->unique()
+            ->toArray();
     }
     
     /*
@@ -169,7 +172,10 @@ class Admin
     public function getGroupChildrenIds()
     {
         $list = $this->getGroupChildren();
-        return collect($list)->pluck('id')->toArray();
+        return collect($list)
+            ->pluck('id')
+            ->unique()
+            ->toArray();
     }
     
     /*
@@ -197,7 +203,10 @@ class Admin
     public function getRuleids()
     {
         $ruleids = $this->getRules();
-        return collect($ruleids)->pluck('id')->unique()->toArray();
+        return collect($ruleids)
+            ->pluck('id')
+            ->unique()
+            ->toArray();
     }
 
 }
