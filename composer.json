@@ -1,6 +1,6 @@
 {
     "name": "lake/larke-admin",
-    "description": "The larke-admin is admin package",
+    "description": "The larke-admin is admin library",
     "license": "Apache-2.0",
     "type": "library",
     "keywords": [

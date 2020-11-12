@@ -102,9 +102,11 @@ class Passport extends Base
         
         // 生成 accessToken
         $expiredIn = config('larke.passport.access_expired_in', 86400);
-        $accessToken = app('larke.jwt')->withClaim([
-            'adminid' => $adminInfo['id'],
-        ])->withExp($expiredIn)
+        $accessToken = app('larke.jwt')
+            ->withClaim([
+                'adminid' => $adminInfo['id'],
+            ])
+            ->withExp($expiredIn)
             ->withJti(config('larke.passport.access_token_id'))
             ->encode()
             ->getToken();
@@ -114,9 +116,11 @@ class Passport extends Base
         
         // 刷新token
         $refreshExpiredIn = config('larke.passport.refresh_expired_in', 300);
-        $refreshToken = app('larke.jwt')->withClaim([
-            'adminid' => $adminInfo['id'],
-        ])->withExp($refreshExpiredIn)
+        $refreshToken = app('larke.jwt')
+            ->withClaim([
+                'adminid' => $adminInfo['id'],
+            ])
+            ->withExp($refreshExpiredIn)
             ->withJti(config('larke.passport.refresh_token_id'))
             ->encode()
             ->getToken();
@@ -154,18 +158,20 @@ class Passport extends Base
             ->decode();
         
         if (!($refreshJwt->validate() && $refreshJwt->verify())) {
-            return $this->errorJson(__('token已过期'));
+            return $this->errorJson(__('refreshToken已过期'));
         }
         
         $refreshAdminid = $refreshJwt->getClaim('adminid');
         if ($refreshAdminid === false) {
-            $this->errorJson(__('token错误'));
+            $this->errorJson(__('refreshToken错误'));
         }
         
         $expiredIn = config('larke.passport.access_expired_in', 86400);
-        $newAccessToken = app('larke.jwt')->withClaim([
-            'adminid' => $refreshAdminid,
-        ])->withExp($expiredIn)
+        $newAccessToken = app('larke.jwt')
+            ->withClaim([
+                'adminid' => $refreshAdminid,
+            ])
+            ->withExp($expiredIn)
             ->withJti(config('larke.passport.access_token_id'))
             ->encode()
             ->getToken();
@@ -208,7 +214,7 @@ class Passport extends Base
         
         $refreshAdminid = $refreshJwt->getClaim('adminid');
         if ($refreshAdminid === false) {
-            $this->errorJson(__('token错误'));
+            $this->errorJson(__('refreshToken错误'));
         }
         
         $accessAdminid = app('larke.admin')->getId();

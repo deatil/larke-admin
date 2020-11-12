@@ -107,12 +107,8 @@ class Extension
                 return null;
             }
             
-            $newClass = app($data['class_name']);
+            $newClass = $this->getNewClass($data['class_name']);
             if (!$newClass) {
-                return null;
-            }
-            
-            if (! ($newClass instanceof ExtensionService)) {
                 return null;
             }
             

@@ -17,10 +17,10 @@ Route::group([
         $router->get('/auth/rule/{id}', 'AuthRule@detail')->name('auth-rule-detail');
         $router->post('/auth/rule', 'AuthRule@create')->name('auth-rule-create');
         $router->put('/auth/rule/{id}', 'AuthRule@update')->name('auth-rule-update');
+        $router->delete('/auth/rule/{id}', 'AuthRule@delete')->name('auth-rule-delete');
         $router->patch('/auth/rule/{id}/sort', 'AuthRule@listorder')->name('auth-rule-listorder');
         $router->patch('/auth/rule/{id}/enable', 'AuthRule@enable')->name('auth-rule-enable');
         $router->patch('/auth/rule/{id}/disable', 'AuthRule@disable')->name('auth-rule-disable');
-        $router->delete('/auth/rule/{id}', 'AuthRule@delete')->name('auth-rule-delete');
         
         $router->get('/auth/group', 'AuthGroup@index')->name('auth-group-index');
         $router->get('/auth/group/tree', 'AuthGroup@indexTree')->name('auth-group-index-tree');
@@ -28,16 +28,16 @@ Route::group([
         $router->get('/auth/group/{id}', 'AuthGroup@detail')->name('auth-group-detail');
         $router->post('/auth/group', 'AuthGroup@create')->name('auth-group-create');
         $router->put('/auth/group/{id}', 'AuthGroup@update')->name('auth-group-update');
+        $router->delete('/auth/group/{id}', 'AuthGroup@delete')->name('auth-group-delete');
         $router->patch('/auth/group/{id}/sort', 'AuthGroup@listorder')->name('auth-group-listorder');
         $router->patch('/auth/group/{id}/enable', 'AuthGroup@enable')->name('auth-group-enable');
         $router->patch('/auth/group/{id}/disable', 'AuthGroup@disable')->name('auth-group-disable');
-        $router->delete('/auth/group/{id}', 'AuthGroup@delete')->name('auth-group-delete');
         $router->put('/auth/group/{id}/access', 'AuthGroup@access')->name('auth-group-access');
     });
     
     $router->get('/passport/captcha', 'Passport@captcha')->name('passport-captcha');
     $router->post('/passport/login', 'Passport@login')->name('passport-login');
-    $router->post('/passport/logout', 'Passport@logout')->name('passport-logout');
+    $router->delete('/passport/logout', 'Passport@logout')->name('passport-logout');
     $router->put('/passport/refresh-token', 'Passport@refreshToken')->name('passport-refresh-token');
     
     $router->get('/profile', 'Profile@index')->name('profile');
@@ -59,21 +59,21 @@ Route::group([
     $router->get('/admin/{id}/rules', 'Admin@rules')->name('admin-rules');
     $router->post('/admin', 'Admin@create')->name('admin-create');
     $router->put('/admin/{id}', 'Admin@update')->name('admin-update');
+    $router->delete('/admin/{id}', 'Admin@delete')->name('admin-delete');
     $router->patch('/admin/{id}/enable', 'Admin@enable')->name('admin-enable');
     $router->patch('/admin/{id}/disable', 'Admin@disable')->name('admin-disable');
-    $router->delete('/admin/{id}', 'Admin@delete')->name('admin-delete');
     $router->put('/admin/{id}/password', 'Admin@changePasssword')->name('admin-password');
     $router->put('/admin/{id}/access', 'Admin@access')->name('admin-access');
-    $router->post('/admin/logout/{refreshToken}', 'Admin@logout')->name('admin-logout');
+    $router->delete('/admin/logout/{refreshToken}', 'Admin@logout')->name('admin-logout');
     
     $router->get('/config', 'Config@index')->name('config-index');
     $router->get('/config/{id}', 'Config@detail')->name('config-detail');
     $router->post('/config', 'Config@create')->name('config-create');
     $router->put('/config/{id}', 'Config@update')->name('config-update');
+    $router->delete('/config/{id}', 'Config@delete')->name('config-delete');
     $router->patch('/config/{id}/sort', 'Config@listorder')->name('config-listorder');
     $router->patch('/config/{id}/enable', 'Config@enable')->name('config-enable');
     $router->patch('/config/{id}/disable', 'Config@disable')->name('config-disable');
-    $router->delete('/config/{id}', 'Config@delete')->name('config-delete');
     $router->put('/config/setting', 'Config@setting')->name('config-setting');
     
     $router->get('/log', 'Log@index')->name('log-index');
