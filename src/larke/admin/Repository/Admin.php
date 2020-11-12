@@ -68,6 +68,7 @@ class Admin
                 'title', 
                 'url',
                 'method',
+                'slug',
                 'description',
             ])
             ->whereHas('ruleAccess', function($query) use($groupids) {
@@ -106,6 +107,7 @@ class Admin
             'title', 
             'url',
             'method',
+            'slug',
             'description',
         ])->where('status', 1)
             ->orderBy('listorder', 'ASC')

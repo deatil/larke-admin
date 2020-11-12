@@ -203,10 +203,22 @@ class Admin
      */
     public function getRuleids()
     {
-        $ruleids = $this->getRules();
-        return collect($ruleids)
+        $rules = $this->getRules();
+        return collect($rules)
             ->pluck('id')
             ->unique()
+            ->toArray();
+    }
+    
+    /*
+     * 获取 slugs
+     */
+    public function getRuleSlugs()
+    {
+        $rules = $this->getRules();
+        return collect($rules)
+            ->sortBy('slug')
+            ->pluck('slug')
             ->toArray();
     }
 
