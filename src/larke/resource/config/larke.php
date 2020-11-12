@@ -34,7 +34,7 @@ return [
     ],
     
     'passport' => [
-        'password_salt' => env('LARKE_ADMIN_PASSPORT_PASSWORD_SALT', 'd,d7ja0db1a974;38cE84976abbac2cd'),
+        'password_salt' => env('LARKE_ADMIN_PASSPORT_PASSWORD_SALT', 'e6c2ea864004a461e744b28a394df50c'),
         'header_captcha_key' => env('LARKE_ADMIN_PASSPORT_HEADER_CAPTCHA_KEY', 'Larke-Admin-Captcha-Id'),
         'access_token_id' => env('LARKE_ADMIN_PASSPORT_ACCESS_TOKEN_ID', 'larke-passport-access-token'),
         'access_expired_in' => env('LARKE_ADMIN_PASSPORT_ACCESS_EXPIRED_IN', 86400),

@@ -163,7 +163,7 @@ class Passport extends Base
         
         $refreshAdminid = $refreshJwt->getClaim('adminid');
         if ($refreshAdminid === false) {
-            $this->errorJson(__('refreshToken错误'));
+            return $this->errorJson(__('refreshToken错误'));
         }
         
         $expiredIn = config('larke.passport.access_expired_in', 86400);
@@ -214,7 +214,7 @@ class Passport extends Base
         
         $refreshAdminid = $refreshJwt->getClaim('adminid');
         if ($refreshAdminid === false) {
-            $this->errorJson(__('refreshToken错误'));
+            return $this->errorJson(__('refreshToken错误'));
         }
         
         $accessAdminid = app('larke.admin')->getId();

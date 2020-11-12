@@ -37,15 +37,20 @@ class Profile extends Base
      */
     public function update(Request $request)
     {
-        $data = $request->only(['nickname', 'email', 'avatar']);
+        $data = $request->only(['nickname', 'email', 'avatar', 'introduce']);
         
         $validator = Validator::make($data, [
             'nickname' => 'required|max:150',
             'email' => 'required|email|max:100',
+            'introduce' => 'required|max:500',
         ], [
             'nickname.required' => __('昵称不能为空'),
+            'nickname.max' => __('昵称字数超过了限制'),
             'email.required' => __('邮箱不能为空'),
             'email.email' => __('邮箱格式错误'),
+            'email.max' => __('邮箱字数超过了限制'),
+            'introduce.required' => __('简介不能为空'),
+            'introduce.max' => __('简介字数超过了限制'),
         ]);
 
         if ($validator->fails()) {
@@ -55,6 +60,7 @@ class Profile extends Base
         $updateData = [
             'nickname' => $data['nickname'],
             'email' => $data['email'],
+            'introduce' => $data['introduce'],
         ];
         if (!empty($data['avatar'])) {
             $updateData['avatar'] = $data['avatar'];

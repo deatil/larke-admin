@@ -161,7 +161,7 @@ class Extension extends Base
             }
         }
         
-        $createInfo = ExtensionModel::create([
+        $extension = ExtensionModel::create([
             'name' => Arr::get($info, 'name'),
             'title' => Arr::get($info, 'title'),
             'introduce' => Arr::get($info, 'introduce'),
@@ -176,14 +176,14 @@ class Extension extends Base
             'listorder' => 100,
             'status' => 1,
         ]);
-        if ($createInfo === false) {
+        if ($extension === false) {
             return $this->errorJson(__('安装扩展失败'));
         }
         
-        AdminExtension::getNewClassMethod($createInfo->class_name, 'install');
+        AdminExtension::getNewClassMethod($extension->class_name, 'install');
         
         return $this->successJson(__('安装扩展成功'), [
-            'name' => $createInfo->name
+            'name' => $extension->name
         ]);
     }
     

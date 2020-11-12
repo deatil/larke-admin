@@ -83,12 +83,13 @@ class Admin
         $data = collect($this->data)->only([
             "id",
             "name",
+            "email",
             "nickname",
             "avatar",
-            "email",
+            "introduce",
+            "groups",
             "last_active",
             "last_ip",
-            "groups",
         ]);
         
         $data['groups'] = collect($data['groups'])->map(function($data) {

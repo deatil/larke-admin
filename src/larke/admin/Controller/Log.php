@@ -87,8 +87,7 @@ class Log extends Base
             return $this->errorJson(__('日志信息不存在'));
         }
         
-        $deleteStatus = AdminLogModel::where(['id' => $id])
-            ->delete();
+        $deleteStatus = $info->delete();
         if ($deleteStatus === false) {
             return $this->errorJson(__('日志删除失败'));
         }

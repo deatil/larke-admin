@@ -64,6 +64,7 @@ class Install extends Command
         
         $dbPrefix = DB::getConfig('prefix');
         $sqlContent = str_replace('pre__', $dbPrefix, $sqlData);
+        
         DB::unprepared($sqlContent);
     }
 }

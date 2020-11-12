@@ -118,8 +118,7 @@ class Config extends Base
             return $this->errorJson(__('信息不存在'));
         }
         
-        $deleteStatus = ConfigModel::where(['id' => $id])
-            ->delete();
+        $deleteStatus = $info->delete();
         if ($deleteStatus === false) {
             return $this->errorJson(__('信息删除失败'));
         }

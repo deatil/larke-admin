@@ -174,8 +174,7 @@ class Admin extends Base
             return $this->errorJson(__('当前账号不能被删除'));
         }
         
-        $deleteStatus = AdminModel::where(['id' => $id])
-            ->delete();
+        $deleteStatus = $info->delete();
         if ($deleteStatus === false) {
             return $this->errorJson(__('账号删除失败'));
         }
@@ -228,13 +227,15 @@ class Admin extends Base
         
         // 用户组默认取当前用户的用户组的其中之一
         $groupIds = app('larke.admin')->getGroupids();
-        AuthGroupAccessModel::create([
-            'admin_id' => $admin->id,
-            'group_id' => $groupIds[0],
-        ]);
+        if (count($groupIds) > 0) {
+            AuthGroupAccessModel::create([
+                'admin_id' => $admin->id,
+                'group_id' => $groupIds[0],
+            ]);
+        }
         
         return $this->successJson(__('添加信息成功'), [
-            'id' => $id,
+            'id' => $admin->id,
         ]);
     }
     
@@ -449,7 +450,7 @@ class Admin extends Base
         
         $refreshAdminid = $refreshJwt->getClaim('adminid');
         if ($refreshAdminid === false) {
-            $this->errorJson(__('token错误'));
+            return $this->errorJson(__('token错误'));
         }
         
         $adminid = app('larke.admin')->getId();

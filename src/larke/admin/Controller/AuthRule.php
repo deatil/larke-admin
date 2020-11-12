@@ -215,13 +215,13 @@ class AuthRule extends Base
             $insertData['avatar'] = $data['avatar'];
         }
         
-        $createInfo = AuthRuleModel::create($insertData);
-        if ($createInfo === false) {
+        $rule = AuthRuleModel::create($insertData);
+        if ($rule === false) {
             return $this->errorJson(__('信息添加失败'));
         }
         
         return $this->successJson(__('信息添加成功'), [
-            'id' => $createInfo->id,
+            'id' => $rule->id,
         ]);
     }
     
