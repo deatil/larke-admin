@@ -205,6 +205,7 @@ class Admin
     {
         $rules = $this->getRules();
         return collect($rules)
+            ->sortBy('id')
             ->pluck('id')
             ->unique()
             ->toArray();
