@@ -39,8 +39,10 @@ class Admin extends Base
             $order = 'DESC';
         }
         
-        $total = AdminModel::withAccess()->count(); 
-        $list = AdminModel::withAccess()->offset($start)
+        $total = AdminModel::withAccess()
+            ->count(); 
+        $list = AdminModel::withAccess()
+            ->offset($start)
             ->limit($limit)
             ->select(
                 'id', 
@@ -164,7 +166,8 @@ class Admin extends Base
             return $this->errorJson(__('你不能删除你自己'));
         }
         
-        $info = AdminModel::withAccess()->where(['id' => $id])
+        $info = AdminModel::withAccess()
+            ->where(['id' => $id])
             ->first();
         if (empty($info)) {
             return $this->errorJson(__('账号信息不存在'));
@@ -256,7 +259,8 @@ class Admin extends Base
             return $this->errorJson(__('你不能修改自己的信息'));
         }
         
-        $adminInfo = AdminModel::withAccess()->where('id', '=', $id)
+        $adminInfo = AdminModel::withAccess()
+            ->where('id', '=', $id)
             ->first();
         if (empty($adminInfo)) {
             return $this->errorJson(__('要修改的账号不存在'));
@@ -410,7 +414,8 @@ class Admin extends Base
             return $this->errorJson(__('你不能修改自己的账号'));
         }
         
-        $info = AdminModel::withAccess()->where('id', '=', $id)
+        $info = AdminModel::withAccess()
+            ->where('id', '=', $id)
             ->first();
         if (empty($info)) {
             return $this->errorJson(__('账号不存在'));
@@ -445,7 +450,8 @@ class Admin extends Base
             return $this->errorJson(__('你不能修改自己的账号'));
         }
         
-        $info = AdminModel::withAccess()->where('id', '=', $id)
+        $info = AdminModel::withAccess()
+            ->where('id', '=', $id)
             ->first();
         if (empty($info)) {
             return $this->errorJson(__('账号不存在'));
@@ -525,8 +531,11 @@ class Admin extends Base
         }
         
         AuthGroupAccessModel::where([
-            'admin_id' => $id,
-        ])->get()->each->delete();
+                'admin_id' => $id,
+            ])
+            ->get()
+            ->each
+            ->delete();
         
         $access = $request->get('access');
         if (!empty($access)) {
