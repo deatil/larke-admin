@@ -80,13 +80,19 @@ class Authenticate
         }
         
         $adminInfo = $adminInfo->toArray();
-        if ($adminInfo['status'] != 1) {
+        
+        app('larke.admin')
+            ->withAccessToken($accessToken)
+            ->withId($adminid)
+            ->withData($adminInfo);
+        
+        if (! app('larke.admin')->isActive()) {
             $this->errorJson(__('帐号不存在或者已被锁定'), ResponseCode::AUTH_ERROR);
         }
         
-        app('larke.admin')->withAccessToken($accessToken)
-            ->withId($adminid)
-            ->withData($adminInfo);
+        if (! app('larke.admin')->isGroupActive()) {
+            $this->errorJson(__('帐号用户组不存在或者已被锁定'), ResponseCode::AUTH_ERROR);
+        }
     }
 
     /**

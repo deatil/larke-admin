@@ -56,7 +56,7 @@ class Jwt implements JwtContract
     /**
      * jwt token
      */
-    private $token;
+    private $token = '';
     
     /**
      * jwt claims
@@ -170,7 +170,7 @@ class Jwt implements JwtContract
     /**
      * 设置claim
      */
-    public function withClaim($claim)
+    public function withClaim(array $claim)
     {
         $this->claims = array_merge($this->claims, $claim);
         return $this;
@@ -179,7 +179,7 @@ class Jwt implements JwtContract
     /**
      * 设置claims
      */
-    public function withClaims($claims)
+    public function withClaims(array $claims)
     {
         $this->claims = $claims;
         return $this;
@@ -234,17 +234,11 @@ class Jwt implements JwtContract
         $Builder->withHeader('alg', $this->alg);
         $Builder->issuedBy($this->issuer); // 发布者
         $Builder->permittedFor($this->audience); // 接收者
-        
-        if (!empty($this->subject)) {
-            $Builder->relatedTo($this->subject); // 主题
-        }
-        
+        $Builder->relatedTo($this->subject); // 主题
         $Builder->identifiedBy($this->jti); // 对当前token设置的标识
         
-        if (!empty($this->claims)) {
-            foreach ($this->claims as $claimKey => $claim) {
-                $Builder->withClaim($claimKey, $claim);
-            }
+        foreach ($this->claims as $claimKey => $claim) {
+            $Builder->withClaim($claimKey, $claim);
         }
         
         $time = time();

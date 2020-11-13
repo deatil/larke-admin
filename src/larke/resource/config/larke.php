@@ -20,10 +20,10 @@ return [
     
     'jwt' => [
         'alg' => env('LARKE_ADMIN_JWT_ALG', 'HS256'),
-        'iss' => env('LARKE_ADMIN_JWT_ISS', 'api.larke_admin.com'),
-        'aud' => env('LARKE_ADMIN_JWT_AUD', 'larke_admin'),
-        'sub' => env('LARKE_ADMIN_JWT_SUB', 'larke_admin'),
-        'jti' => env('LARKE_ADMIN_JWT_JTI', 'larke_admin'),
+        'iss' => env('LARKE_ADMIN_JWT_ISS', 'admin-api.domain.com'),
+        'aud' => env('LARKE_ADMIN_JWT_AUD', md5(request()->ip().request()->server('HTTP_USER_AGENT'))),
+        'sub' => env('LARKE_ADMIN_JWT_SUB', 'larke-admin-passport'),
+        'jti' => env('LARKE_ADMIN_JWT_JTI', 'larke-admin-jid'),
         'exp' => env('LARKE_ADMIN_JWT_EXP', 3600),
         'nbf' => env('LARKE_ADMIN_JWT_NBF', 0),
         

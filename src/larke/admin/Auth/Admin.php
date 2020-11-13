@@ -121,6 +121,34 @@ class Admin
         
         return ($this->id == config('larke.auth.admin_id'));
     }
+
+    /**
+     * 是否启用
+     */
+    public function isActive()
+    {
+        if ($this->isAdministrator()) {
+            return true;
+        }
+        
+        return ($this->data['status'] == 1);
+    }
+
+    /**
+     * 是否用户分组启用
+     */
+    public function isGroupActive()
+    {
+        if ($this->isAdministrator()) {
+            return true;
+        }
+        
+        $groups = $this->data['groups'] ?: [];
+        return collect($groups)
+            ->contains(function ($group) {
+                return ($group['status'] == 1);
+            });
+    }
     
     /*
      * 获取 groups
