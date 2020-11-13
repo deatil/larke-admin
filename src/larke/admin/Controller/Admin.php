@@ -292,9 +292,6 @@ class Admin extends Base
             'status' => ($data['status'] == 1) ? 1 : 0,
             'is_root' => (isset($data['is_root']) && $data['is_root'] == 1) ? 1 : 0,
         ];
-        if (!empty($data['avatar'])) {
-            $updateData['avatar'] = $data['avatar'];
-        }
         
         // 更新信息
         $status = AdminModel::where('id', $id)
@@ -304,6 +301,96 @@ class Admin extends Base
         }
         
         return $this->successJson(__('信息修改成功'));
+    }
+
+    /**
+     * 修改头像
+     */
+    public function updateAvatar(string $id, Request $request)
+    {
+        if (empty($id)) {
+            return $this->errorJson(__('账号ID不能为空'));
+        }
+        
+        $adminid = app('larke.admin')->getId();
+        if ($id == $adminid) {
+            return $this->errorJson(__('你不能修改自己的头像'));
+        }
+        
+        $adminInfo = AdminModel::withAccess()
+            ->where('id', '=', $id)
+            ->first();
+        if (empty($adminInfo)) {
+            return $this->errorJson(__('要修改的账号不存在'));
+        }
+        
+        $data = $request->only(['avatar']);
+        
+        $validator = Validator::make($data, [
+            'avatar' => 'required|size:32',
+        ], [
+            'avatar.required' => __('头像数据不能为空'),
+            'avatar.size' => __('头像数据错误'),
+        ]);
+
+        if ($validator->fails()) {
+            return $this->errorJson($validator->errors()->first());
+        }
+        
+        $status = $adminInfo->updateAvatar($data['avatar']);
+        if ($status === false) {
+            return $this->errorJson(__('修改信息失败'));
+        }
+        
+        return $this->successJson(__('修改头像成功'));
+    }
+    
+    /**
+     * 修改密码
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function updatePasssword(string $id, Request $request)
+    {
+        if (empty($id)) {
+            return $this->errorJson(__('账号ID不能为空'));
+        }
+        
+        $adminid = app('larke.admin')->getId();
+        if ($id == $adminid) {
+            return $this->errorJson(__('你不能修改自己的密码'));
+        }
+        
+        $adminInfo = AdminModel::withAccess()
+            ->where('id', '=', $id)
+            ->first();
+        if (empty($adminInfo)) {
+            return $this->errorJson(__('要修改的账号不存在'));
+        }
+
+        // 密码长度错误
+        $password = $request->get('password');
+        if (strlen($password) != 32) {
+            return $this->errorJson(__('密码格式错误'));
+        }
+
+        // 新密码
+        $newPasswordInfo = (new PasswordService())
+            ->withSalt(config('larke.passport.password_salt'))
+            ->encrypt($password); 
+
+        // 更新信息
+        $status = AdminModel::where('id', $adminInfo['id'])
+            ->update([
+                'password' => $newPasswordInfo['password'],
+                'password_salt' => $newPasswordInfo['encrypt'],
+            ]);
+        if ($status === false) {
+            return $this->errorJson(__('密码修改失败'));
+        }
+        
+        return $this->successJson(__('密码修改成功'));
     }
     
     /**
@@ -374,54 +461,6 @@ class Admin extends Base
         }
         
         return $this->successJson(__('禁用成功'));
-    }
-    
-    /**
-     * 修改密码
-     *
-     * @param  Request  $request
-     * @return Response
-     */
-    public function changePasssword(string $id, Request $request)
-    {
-        if (empty($id)) {
-            return $this->errorJson(__('账号ID不能为空'));
-        }
-        
-        $adminid = app('larke.admin')->getId();
-        if ($id == $adminid) {
-            return $this->errorJson(__('你不能修改自己的密码'));
-        }
-        
-        $adminInfo = AdminModel::withAccess()
-            ->where('id', '=', $id)
-            ->first();
-        if (empty($adminInfo)) {
-            return $this->errorJson(__('要修改的账号不存在'));
-        }
-
-        // 密码长度错误
-        $password = $request->get('password');
-        if (strlen($password) != 32) {
-            return $this->errorJson(__('密码格式错误'));
-        }
-
-        // 新密码
-        $newPasswordInfo = (new PasswordService())
-            ->withSalt(config('larke.passport.password_salt'))
-            ->encrypt($password); 
-
-        // 更新信息
-        $status = AdminModel::where('id', $adminInfo['id'])
-            ->update([
-                'password' => $newPasswordInfo['password'],
-                'password_salt' => $newPasswordInfo['encrypt'],
-            ]);
-        if ($status === false) {
-            return $this->errorJson(__('密码修改失败'));
-        }
-        
-        return $this->successJson(__('密码修改成功'));
     }
     
     /**

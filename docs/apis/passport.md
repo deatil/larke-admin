@@ -44,7 +44,7 @@ Response: {
 
 > 退出
 ~~~
-POST: /admin-api/passport/logout
+DELETE: /admin-api/passport/logout
 Header: {
     'Authorization:Bearer ${accessToken}'
 }

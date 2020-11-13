@@ -37,7 +37,7 @@ class Profile extends Base
      */
     public function update(Request $request)
     {
-        $data = $request->only(['nickname', 'email', 'avatar', 'introduce']);
+        $data = $request->only(['nickname', 'email', 'introduce']);
         
         $validator = Validator::make($data, [
             'nickname' => 'required|max:150',
@@ -62,25 +62,51 @@ class Profile extends Base
             'email' => $data['email'],
             'introduce' => $data['introduce'],
         ];
-        if (!empty($data['avatar'])) {
-            $updateData['avatar'] = $data['avatar'];
-        }
         
         // 更新信息
         $adminid = app('larke.admin')->getId();
         $status = AdminModel::where('id', $adminid)
             ->update($updateData);
         if ($status === false) {
-            return $this->errorJson(__('修改失败'));
+            return $this->errorJson(__('修改信息失败'));
         }
         
-        return $this->successJson(__('修改成功'));
+        return $this->successJson(__('修改信息成功'));
+    }
+
+    /**
+     * 修改头像
+     */
+    public function updateAvatar(Request $request)
+    {
+        $data = $request->only(['avatar']);
+        
+        $validator = Validator::make($data, [
+            'avatar' => 'required|size:32',
+        ], [
+            'avatar.required' => __('头像数据不能为空'),
+            'avatar.size' => __('头像数据错误'),
+        ]);
+
+        if ($validator->fails()) {
+            return $this->errorJson($validator->errors()->first());
+        }
+        
+        $adminid = app('larke.admin')->getId();
+        $status = AdminModel::where('id', $adminid)
+            ->first()
+            ->updateAvatar($data['avatar']);
+        if ($status === false) {
+            return $this->errorJson(__('修改信息失败'));
+        }
+        
+        return $this->successJson(__('修改头像成功'));
     }
 
     /**
      * 修改密码
      */
-    public function changePasssword(Request $request)
+    public function updatePasssword(Request $request)
     {
         // 密码长度错误
         $oldPassword = $request->get('oldpassword');

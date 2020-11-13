@@ -60,4 +60,14 @@ class Admin extends Base
         }]);
     }
     
+    /**
+     * 更新头像
+     */
+    public function updateAvatar($data) 
+    {
+        return $this->update([
+            'avatar' => $data,
+        ]);
+    }
+    
 }
