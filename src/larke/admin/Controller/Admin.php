@@ -2,8 +2,6 @@
 
 namespace Larke\Admin\Controller;
 
-use Carbon\Carbon;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -42,6 +40,16 @@ class Admin extends Base
         }
         
         $wheres = [];
+        
+        $startTime = $this->formatDate($request->get('start_time'));
+        if ($startTime !== false) {
+            $wheres[] = ['create_time', '>=', $startTime];
+        }
+        
+        $endTime = $this->formatDate($request->get('end_time'));
+        if ($endTime !== false) {
+            $wheres[] = ['create_time', '<=', $endTime];
+        }
         
         $status = $this->switchStatus($request->get('status'));
         if ($status !== false) {

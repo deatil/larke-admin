@@ -2,8 +2,6 @@
 
 namespace Larke\Admin\Controller;
 
-use Carbon\Carbon;
-
 use Composer\Semver\Semver;
 use Composer\Semver\Comparator;
 use Composer\Semver\VersionParser;
@@ -63,14 +61,14 @@ class Extension extends Base
 
         $wheres = [];
         
-        $startTime = $request->get('start_time');
-        if (! empty($startTime)) {
-            $wheres[] = ['installtime', '>=', Carbon::parse($startTime)->timestamp];
+        $startTime = $this->formatDate($request->get('start_time'));
+        if ($startTime !== false) {
+            $wheres[] = ['create_time', '>=', $startTime];
         }
         
-        $endTime = $request->get('end_time');
-        if (! empty($endTime)) {
-            $wheres[] = ['installtime', '<=', Carbon::parse($endTime)->timestamp];
+        $endTime = $this->formatDate($request->get('end_time'));
+        if ($endTime !== false) {
+            $wheres[] = ['create_time', '<=', $endTime];
         }
         
         $status = $this->switchStatus($request->get('status'));

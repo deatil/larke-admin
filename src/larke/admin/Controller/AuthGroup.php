@@ -2,8 +2,6 @@
 
 namespace Larke\Admin\Controller;
 
-use Carbon\Carbon;
-
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
@@ -53,14 +51,14 @@ class AuthGroup extends Base
 
         $wheres = [];
         
-        $startTime = $request->get('start_time');
-        if (! empty($startTime)) {
-            $wheres[] = ['create_time', '>=', Carbon::parse($startTime)->timestamp];
+        $startTime = $this->formatDate($request->get('start_time'));
+        if ($startTime !== false) {
+            $wheres[] = ['create_time', '>=', $startTime];
         }
         
-        $endTime = $request->get('end_time');
-        if (! empty($endTime)) {
-            $wheres[] = ['create_time', '<=', Carbon::parse($endTime)->timestamp];
+        $endTime = $this->formatDate($request->get('end_time'));
+        if ($endTime !== false) {
+            $wheres[] = ['create_time', '<=', $endTime];
         }
         
         $status = $this->switchStatus($request->get('status'));
