@@ -2,6 +2,8 @@
 
 namespace Larke\Admin\Controller;
 
+use Carbon\Carbon;
+
 use Illuminate\Http\Request;
 
 use Larke\Admin\Model\AdminLog as AdminLogModel;
@@ -31,10 +33,34 @@ class Log extends Base
             $order = 'DESC';
         }
         
+        $searchword = $request->get('searchword', '');
+        $orWheres = [];
+        if (! empty($searchword)) {
+            $orWheres = [
+                ['admin_name', 'like', '%'.$searchword.'%'],
+                ['url', 'like', '%'.$searchword.'%'],
+                ['method', 'like', '%'.$searchword.'%'],
+            ];
+        }
+
+        $wheres = [];
+        
+        $startTime = $request->get('start_time');
+        if (! empty($startTime)) {
+            $wheres[] = ['create_time', '>=', Carbon::parse($startTime)->timestamp];
+        }
+        
+        $endTime = $request->get('end_time');
+        if (! empty($endTime)) {
+            $wheres[] = ['create_time', '<=', Carbon::parse($endTime)->timestamp];
+        }
+        
         $total = AdminLogModel::count(); 
         $list = AdminLogModel::offset($start)
             ->limit($limit)
             ->withCertain('admin', ['name', 'nickname', 'email', 'avatar', 'last_active', 'last_ip'])
+            ->orWheres($orWheres)
+            ->wheres($wheres)
             ->orderBy('create_time', $order)
             ->get()
             ->toArray(); 

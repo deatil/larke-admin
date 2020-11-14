@@ -2,6 +2,8 @@
 
 namespace Larke\Admin\Controller;
 
+use Carbon\Carbon;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -41,9 +43,33 @@ class Attachment extends Base
             $order = 'DESC';
         }
         
+        $searchword = $request->get('searchword', '');
+        $orWheres = [];
+        if (! empty($searchword)) {
+            $orWheres = [
+                ['name', 'like', '%'.$searchword.'%'],
+                ['extension', 'like', '%'.$searchword.'%'],
+                ['driver', 'like', '%'.$searchword.'%'],
+            ];
+        }
+
+        $wheres = [];
+        
+        $startTime = $request->get('start_time');
+        if (! empty($startTime)) {
+            $wheres[] = ['create_time', '>=', Carbon::parse($startTime)->timestamp];
+        }
+        
+        $endTime = $request->get('end_time');
+        if (! empty($endTime)) {
+            $wheres[] = ['create_time', '<=', Carbon::parse($endTime)->timestamp];
+        }
+        
         $total = AttachmentModel::count(); 
         $list = AttachmentModel::offset($start)
             ->limit($limit)
+            ->orWheres($orWheres)
+            ->wheres($wheres)
             ->orderBy('create_time', $order)
             ->get()
             ->toArray(); 

@@ -2,6 +2,8 @@
 
 namespace Larke\Admin\Controller;
 
+use Carbon\Carbon;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -39,11 +41,22 @@ class Admin extends Base
             $order = 'DESC';
         }
         
+        $searchword = $request->get('searchword', '');
+        $where = [];
+        if (! empty($searchword)) {
+            $where = [
+                ['name', 'like', '%'.$searchword.'%'],
+                ['nickname', 'like', '%'.$searchword.'%'],
+                ['email', 'like', '%'.$searchword.'%'],
+            ];
+        }
+        
         $total = AdminModel::withAccess()
             ->count(); 
         $list = AdminModel::withAccess()
             ->offset($start)
             ->limit($limit)
+            ->orWheres($where)
             ->select(
                 'id', 
                 'name', 

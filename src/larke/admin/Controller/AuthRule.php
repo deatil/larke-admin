@@ -2,6 +2,8 @@
 
 namespace Larke\Admin\Controller;
 
+use Carbon\Carbon;
+
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
@@ -40,13 +42,34 @@ class AuthRule extends Base
             $order = 'DESC';
         }
         
-        $keywords = $request->get('keywords');
+        $searchword = $request->get('searchword', '');
+        $orWheres = [];
+        if (! empty($searchword)) {
+            $orWheres = [
+                ['title', 'like', '%'.$searchword.'%'],
+                ['url', 'like', '%'.$searchword.'%'],
+                ['method', 'like', '%'.$searchword.'%'],
+                ['slug', 'like', '%'.$searchword.'%'],
+            ];
+        }
+
+        $wheres = [];
+        
+        $startTime = $request->get('start_time');
+        if (! empty($startTime)) {
+            $wheres[] = ['create_time', '>=', Carbon::parse($startTime)->timestamp];
+        }
+        
+        $endTime = $request->get('end_time');
+        if (! empty($endTime)) {
+            $wheres[] = ['create_time', '<=', Carbon::parse($endTime)->timestamp];
+        }
         
         $total = AuthRuleModel::count(); 
         $list = AuthRuleModel::offset($start)
             ->limit($limit)
-            ->where('slug', 'like', '%'.$keywords.'%')
-            ->orWhere('url', 'like', '%'.$keywords.'%')
+            ->orWheres($orWheres)
+            ->wheres($wheres)
             ->orderBy('slug', $order)
             ->orderBy('create_time', 'ASC')
             ->get()

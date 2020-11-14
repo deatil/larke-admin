@@ -175,4 +175,4 @@ CREATE TABLE `pre__larke_rules` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
-INSERT INTO `pre__larke_admin` (`id`,`name`,`password`,`password_salt`,`nickname`,`email`,`avatar`,`introduce`,`is_root`,`status`,`last_active`,`last_ip`,`create_time`,`create_ip`) VALUES ('04f65b19e5a2513fe5a89100309da9b7','admin','7105beba161478cc991acd223d226a1a','y5kB4X','管理员','larke-admin@larke-admin.com','3166c0bdb87f6865dce2aba75de987cd','admin的简介',1,1,1605191369,'127.0.0.1',1564667925,'2130706433');
+INSERT INTO `pre__larke_admin` (`id`,`name`,`password`,`password_salt`,`nickname`,`email`,`avatar`,`introduce`,`is_root`,`status`,`last_active`,`last_ip`,`create_time`,`create_ip`) VALUES ('04f65b19e5a2513fe5a89100309da9b7','admin','7105beba161478cc991acd223d226a1a','y5kB4X','管理员','larke-admin@larke-admin.com','3166c0bdb87f6865dce2aba75de987cd','admin的简介',1,1,1605191369,'127.0.0.1',1564667925,'127.0.0.1');

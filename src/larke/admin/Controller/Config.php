@@ -2,6 +2,8 @@
 
 namespace Larke\Admin\Controller;
 
+use Carbon\Carbon;
+
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
@@ -40,7 +42,27 @@ class Config extends Base
             $order = 'DESC';
         }
         
-        $keywords = $request->get('keywords');
+        $searchword = $request->get('searchword', '');
+        $orWheres = [];
+        if (! empty($searchword)) {
+            $orWheres = [
+                ['type', 'like', '%'.$searchword.'%'],
+                ['title', 'like', '%'.$searchword.'%'],
+                ['name', 'like', '%'.$searchword.'%'],
+            ];
+        }
+
+        $wheres = [];
+        
+        $startTime = $request->get('start_time');
+        if (! empty($startTime)) {
+            $wheres[] = ['create_time', '>=', Carbon::parse($startTime)->timestamp];
+        }
+        
+        $endTime = $request->get('end_time');
+        if (! empty($endTime)) {
+            $wheres[] = ['create_time', '<=', Carbon::parse($endTime)->timestamp];
+        }
        
         $group = $request->get('group');
         if (!empty($group)) {
@@ -55,8 +77,8 @@ class Config extends Base
             $list = ConfigModel::where('group', $group)
                 ->offset($start)
                 ->limit($limit)
-                ->where('title', 'like', '%'.$keywords.'%')
-                ->orWhere('name', 'like', '%'.$keywords.'%')
+                ->orWheres($orWheres)
+                ->wheres($wheres)
                 ->orderBy('listorder', $order)
                 ->get()
                 ->toArray(); 
@@ -64,8 +86,8 @@ class Config extends Base
             $total = ConfigModel::count(); 
             $list = ConfigModel::offset($start)
                 ->limit($limit)
-                ->where('title', 'like', '%'.$keywords.'%')
-                ->orWhere('name', 'like', '%'.$keywords.'%')
+                ->orWheres($orWheres)
+                ->wheres($wheres)
                 ->orderBy('listorder', $order)
                 ->get()
                 ->toArray(); 

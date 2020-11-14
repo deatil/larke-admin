@@ -2,6 +2,8 @@
 
 namespace Larke\Admin\Controller;
 
+use Carbon\Carbon;
+
 use Composer\Semver\Semver;
 use Composer\Semver\Comparator;
 use Composer\Semver\VersionParser;
@@ -49,9 +51,33 @@ class Extension extends Base
             $order = 'DESC';
         }
         
+        $searchword = $request->get('searchword', '');
+        $orWheres = [];
+        if (! empty($searchword)) {
+            $orWheres = [
+                ['name', 'like', '%'.$searchword.'%'],
+                ['title', 'like', '%'.$searchword.'%'],
+                ['author', 'like', '%'.$searchword.'%'],
+            ];
+        }
+
+        $wheres = [];
+        
+        $startTime = $request->get('start_time');
+        if (! empty($startTime)) {
+            $wheres[] = ['installtime', '>=', Carbon::parse($startTime)->timestamp];
+        }
+        
+        $endTime = $request->get('end_time');
+        if (! empty($endTime)) {
+            $wheres[] = ['installtime', '<=', Carbon::parse($endTime)->timestamp];
+        }
+        
         $total = ExtensionModel::count(); 
         $list = ExtensionModel::offset($start)
             ->limit($limit)
+            ->orWheres($orWheres)
+            ->wheres($wheres)
             ->orderBy('installtime', $order)
             ->orderBy('upgradetime', $order)
             ->get()
