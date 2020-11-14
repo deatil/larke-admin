@@ -120,6 +120,7 @@ class Admin extends Base
                 'nickname', 
                 'email', 
                 'avatar', 
+                'introduce', 
                 'is_root', 
                 'status', 
                 'last_active', 
@@ -227,14 +228,18 @@ class Admin extends Base
         $validator = Validator::make($data, [
             'name' => 'required|max:20|unique:'.AdminModel::class,
             'nickname' => 'required|max:150',
-            'email' => 'required|email|max:100',
+            'email' => 'required|email|max:100|unique:'.AdminModel::class,
+            'introduce' => 'required|max:500',
             'status' => 'required',
         ], [
             'name.required' => __('账号不能为空'),
-            'name.unique' => __('name 已经存在'),
+            'name.unique' => __('账号已经存在'),
             'nickname.required' => __('昵称不能为空'),
             'email.required' => __('邮箱不能为空'),
             'email.email' => __('邮箱格式错误'),
+            'email.unique' => __('邮箱已经存在'),
+            'introduce.required' => __('简介不能为空'),
+            'introduce.max' => __('简介字数超过了限制'),
             'status.required' => __('状态选项不能为空'),
         ]);
 
@@ -246,8 +251,8 @@ class Admin extends Base
             'name' => $data['name'],
             'nickname' => $data['nickname'],
             'email' => $data['email'],
+            'introduce' => $data['introduce'],
             'status' => ($data['status'] == 1) ? 1 : 0,
-            'is_root' => (isset($data['is_root']) && $data['is_root'] == 1) ? 1 : 0,
         ];
         if (!empty($data['avatar'])) {
             $insertData['avatar'] = $data['avatar'];
@@ -301,30 +306,36 @@ class Admin extends Base
             'name' => 'required|max:20',
             'nickname' => 'required|max:150',
             'email' => 'required|email|max:100',
+            'introduce' => 'required|max:500',
+            'status' => 'required',
         ], [
             'name.required' => __('账号不能为空'),
             'nickname.required' => __('昵称不能为空'),
             'email.required' => __('邮箱不能为空'),
             'email.email' => __('邮箱格式错误'),
+            'introduce.required' => __('简介不能为空'),
+            'introduce.max' => __('简介字数超过了限制'),
+            'status.required' => __('状态选项不能为空'),
         ]);
 
         if ($validator->fails()) {
             return $this->errorJson($validator->errors()->first());
         }
         
-        $nameInfo = AdminModel::where('name', $data['name'])
-            ->where('id', '!=', $id)
+        $nameInfo = AdminModel::where('id', '!=', $id)
+            ->where('name', $data['name'])
+            ->orWhere('email', $data['email'])
             ->first();
         if (!empty($nameInfo)) {
-            return $this->errorJson(__('要修改成的管理账号已经存在'));
+            return $this->errorJson(__('要修改成的管理账号或者邮箱已经存在'));
         }
         
         $updateData = [
             'name' => $data['name'],
             'nickname' => $data['nickname'],
             'email' => $data['email'],
+            'introduce' => $data['introduce'],
             'status' => ($data['status'] == 1) ? 1 : 0,
-            'is_root' => (isset($data['is_root']) && $data['is_root'] == 1) ? 1 : 0,
         ];
         
         // 更新信息

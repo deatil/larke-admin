@@ -4,7 +4,6 @@ namespace Larke\Admin\Middleware;
 
 use Closure;
 
-use Larke\Admin\Http\ResponseCode;
 use Larke\Admin\Traits\ResponseJson as ResponseJsonTrait;
 
 /*
@@ -21,7 +20,7 @@ class AdminCheck
     {
         $isAdministrator = app('larke.admin')->isAdministrator();
         if (!$isAdministrator) {
-            $this->errorJson(__('你没有权限进行该操作'), ResponseCode::AUTH_ERROR);
+            $this->errorJson(__('你没有权限进行该操作'), \ResponseCode::AUTH_ERROR);
         }
         
         return $next($request);
