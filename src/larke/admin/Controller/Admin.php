@@ -41,10 +41,18 @@ class Admin extends Base
             $order = 'DESC';
         }
         
+        $wheres = [];
+        
+        $status = $this->switchStatus($request->get('status'));
+        if ($status !== false) {
+            $wheres[] = ['status', $status];
+        }
+        
+        $orWheres = [];
+        
         $searchword = $request->get('searchword', '');
-        $where = [];
         if (! empty($searchword)) {
-            $where = [
+            $orWheres = [
                 ['name', 'like', '%'.$searchword.'%'],
                 ['nickname', 'like', '%'.$searchword.'%'],
                 ['email', 'like', '%'.$searchword.'%'],
@@ -56,7 +64,8 @@ class Admin extends Base
         $list = AdminModel::withAccess()
             ->offset($start)
             ->limit($limit)
-            ->orWheres($where)
+            ->orWheres($orWheres)
+            ->wheres($wheres)
             ->select(
                 'id', 
                 'name', 

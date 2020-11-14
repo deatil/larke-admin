@@ -73,6 +73,11 @@ class Extension extends Base
             $wheres[] = ['installtime', '<=', Carbon::parse($endTime)->timestamp];
         }
         
+        $status = $this->switchStatus($request->get('status'));
+        if ($status !== false) {
+            $wheres[] = ['status', $status];
+        }
+        
         $total = ExtensionModel::count(); 
         $list = ExtensionModel::offset($start)
             ->limit($limit)

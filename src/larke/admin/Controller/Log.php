@@ -55,6 +55,11 @@ class Log extends Base
             $wheres[] = ['create_time', '<=', Carbon::parse($endTime)->timestamp];
         }
         
+        $status = $this->switchStatus($request->get('status'));
+        if ($status !== false) {
+            $wheres[] = ['status', $status];
+        }
+        
         $total = AdminLogModel::count(); 
         $list = AdminLogModel::offset($start)
             ->limit($limit)

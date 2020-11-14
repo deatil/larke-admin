@@ -63,6 +63,11 @@ class Config extends Base
         if (! empty($endTime)) {
             $wheres[] = ['create_time', '<=', Carbon::parse($endTime)->timestamp];
         }
+        
+        $status = $this->switchStatus($request->get('status'));
+        if ($status !== false) {
+            $wheres[] = ['status', $status];
+        }
        
         $group = $request->get('group');
         if (!empty($group)) {

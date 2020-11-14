@@ -65,6 +65,11 @@ class Attachment extends Base
             $wheres[] = ['create_time', '<=', Carbon::parse($endTime)->timestamp];
         }
         
+        $status = $this->switchStatus($request->get('status'));
+        if ($status !== false) {
+            $wheres[] = ['status', $status];
+        }
+        
         $total = AttachmentModel::count(); 
         $list = AttachmentModel::offset($start)
             ->limit($limit)

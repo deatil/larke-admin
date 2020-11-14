@@ -63,6 +63,11 @@ class AuthGroup extends Base
             $wheres[] = ['create_time', '<=', Carbon::parse($endTime)->timestamp];
         }
         
+        $status = $this->switchStatus($request->get('status'));
+        if ($status !== false) {
+            $wheres[] = ['status', $status];
+        }
+        
         $total = AuthGroupModel::count(); 
         $list = AuthGroupModel::offset($start)
             ->limit($limit)
