@@ -68,11 +68,13 @@ class Attachment extends Base
             $wheres[] = ['status', $status];
         }
         
-        $total = AttachmentModel::count(); 
-        $list = AttachmentModel::offset($start)
+        $query = AttachmentModel::orWheres($orWheres)
+            ->wheres($wheres);
+        
+        $total = $query->count(); 
+        $list = $query
+            ->offset($start)
             ->limit($limit)
-            ->orWheres($orWheres)
-            ->wheres($wheres)
             ->orderBy('create_time', $order)
             ->get()
             ->toArray(); 

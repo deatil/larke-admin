@@ -66,11 +66,13 @@ class AuthGroup extends Base
             $wheres[] = ['status', $status];
         }
         
-        $total = AuthGroupModel::count(); 
-        $list = AuthGroupModel::offset($start)
+        $query = AuthGroupModel::orWheres($orWheres)
+            ->wheres($wheres);
+        
+        $total = $query->count(); 
+        $list = $query
+            ->offset($start)
             ->limit($limit)
-            ->orWheres($orWheres)
-            ->wheres($wheres)
             ->orderBy('create_time', $order)
             ->get()
             ->toArray(); 

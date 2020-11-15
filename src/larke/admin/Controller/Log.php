@@ -58,12 +58,14 @@ class Log extends Base
             $wheres[] = ['status', $status];
         }
         
-        $total = AdminLogModel::count(); 
-        $list = AdminLogModel::offset($start)
+        $query = AdminLogModel::orWheres($orWheres)
+            ->wheres($wheres);
+        
+        $total = $query->count(); 
+        $list = $query
+            ->offset($start)
             ->limit($limit)
             ->withCertain('admin', ['name', 'nickname', 'email', 'avatar', 'last_active', 'last_ip'])
-            ->orWheres($orWheres)
-            ->wheres($wheres)
             ->orderBy('create_time', $order)
             ->get()
             ->toArray(); 
@@ -122,6 +124,23 @@ class Log extends Base
         }
         
         return $this->successJson(__('日志删除成功'));
+    }
+    
+    /**
+     * 清空一个月前的操作日志
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function clear()
+    {
+        $status = AdminLogModel::where('create_time', '<=', time() - (86400 * 30))
+            ->delete();
+        if ($status === false) {
+            return $this->errorJson(__('日志清空失败'));
+        }
+        
+        return $this->successJson(__('日志清空成功'));
     }
     
 }

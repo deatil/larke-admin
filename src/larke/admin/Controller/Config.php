@@ -69,32 +69,32 @@ class Config extends Base
        
         $group = $request->get('group');
         if (!empty($group)) {
-            $validator = Validator::make($request->only(['group']), [
+            $validator = Validator::make([
+                'group' => $group,
+            ], [
                 'group' => 'required|alpha_num',
             ], [
                 'group.required' => __('分组不能为空'),
                 'group.alpha_num' => __('分组格式错误'),
             ]);
             
-            $total = ConfigModel::where('group', $group)->count(); 
-            $list = ConfigModel::where('group', $group)
-                ->offset($start)
-                ->limit($limit)
-                ->orWheres($orWheres)
-                ->wheres($wheres)
-                ->orderBy('listorder', $order)
-                ->get()
-                ->toArray(); 
-        } else {
-            $total = ConfigModel::count(); 
-            $list = ConfigModel::offset($start)
-                ->limit($limit)
-                ->orWheres($orWheres)
-                ->wheres($wheres)
-                ->orderBy('listorder', $order)
-                ->get()
-                ->toArray(); 
+            if ($validator->fails()) {
+                return $this->errorJson($validator->errors()->first());
+            }
+            
+            $wheres[] = ['group', $group];
         }
+        
+        $query = ConfigModel::orWheres($orWheres)
+            ->wheres($wheres);
+        
+        $total = $query->count(); 
+        $list = $query
+            ->offset($start)
+            ->limit($limit)
+            ->orderBy('listorder', $order)
+            ->get()
+            ->toArray(); 
         
         return $this->successJson(__('获取成功'), [
             'start' => $start,

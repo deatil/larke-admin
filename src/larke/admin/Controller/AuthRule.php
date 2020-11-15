@@ -68,11 +68,13 @@ class AuthRule extends Base
             $wheres[] = ['status', $status];
         }
         
-        $total = AuthRuleModel::count(); 
-        $list = AuthRuleModel::offset($start)
+        $query = AuthRuleModel::orWheres($orWheres)
+            ->wheres($wheres);
+        
+        $total = $query->count(); 
+        $list = $query
+            ->offset($start)
             ->limit($limit)
-            ->orWheres($orWheres)
-            ->wheres($wheres)
             ->orderBy('slug', $order)
             ->orderBy('create_time', 'ASC')
             ->get()

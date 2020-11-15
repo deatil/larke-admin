@@ -80,6 +80,7 @@ Route::group([
     
     $router->get('/log', 'Log@index')->name('log-index');
     $router->get('/log/{id}', 'Log@detail')->name('log-detail');
+    $router->delete('/log/clear', 'Log@clear')->name('log-clear');
     $router->delete('/log/{id}', 'Log@delete')->name('log-delete');
     
     $router->get('/extension/index', 'Extension@index')->name('extension-index');

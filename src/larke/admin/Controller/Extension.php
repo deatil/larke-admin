@@ -76,11 +76,13 @@ class Extension extends Base
             $wheres[] = ['status', $status];
         }
         
-        $total = ExtensionModel::count(); 
-        $list = ExtensionModel::offset($start)
+        $query = ExtensionModel::orWheres($orWheres)
+            ->wheres($wheres);
+        
+        $total = $query->count(); 
+        $list = $query
+            ->offset($start)
             ->limit($limit)
-            ->orWheres($orWheres)
-            ->wheres($wheres)
             ->orderBy('installtime', $order)
             ->orderBy('upgradetime', $order)
             ->get()
