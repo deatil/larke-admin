@@ -255,6 +255,19 @@ class Admin extends Base
             'status' => ($data['status'] == 1) ? 1 : 0,
         ];
         if (!empty($data['avatar'])) {
+            $validatorAvatar = Validator::make([
+                'avatar' => $data['avatar'],
+            ], [
+                'avatar' => 'required|size:32',
+            ], [
+                'avatar.required' => __('头像数据不能为空'),
+                'avatar.size' => __('头像数据错误'),
+            ]);
+
+            if ($validatorAvatar->fails()) {
+                return $this->errorJson($validatorAvatar->errors()->first());
+            }
+            
             $insertData['avatar'] = $data['avatar'];
         }
         
@@ -322,9 +335,14 @@ class Admin extends Base
             return $this->errorJson($validator->errors()->first());
         }
         
-        $nameInfo = AdminModel::where('id', '!=', $id)
-            ->where('name', $data['name'])
-            ->orWhere('email', $data['email'])
+        $nameInfo = AdminModel::orWhere(function($query) use($id, $data) {
+                $query->where('id', '!=', $id);
+                $query->where('name', $data['name']);
+            })
+            ->orWhere(function($query) use($id, $data) {
+                $query->where('id', '!=', $id);
+                $query->where('email', $data['email']);
+            })
             ->first();
         if (!empty($nameInfo)) {
             return $this->errorJson(__('要修改成的管理账号或者邮箱已经存在'));
@@ -337,6 +355,22 @@ class Admin extends Base
             'introduce' => $data['introduce'],
             'status' => ($data['status'] == 1) ? 1 : 0,
         ];
+        if (!empty($data['avatar'])) {
+            $validatorAvatar = Validator::make([
+                'avatar' => $data['avatar'],
+            ], [
+                'avatar' => 'required|size:32',
+            ], [
+                'avatar.required' => __('头像数据不能为空'),
+                'avatar.size' => __('头像数据错误'),
+            ]);
+
+            if ($validatorAvatar->fails()) {
+                return $this->errorJson($validatorAvatar->errors()->first());
+            }
+            
+            $updateData['avatar'] = $data['avatar'];
+        }
         
         // 更新信息
         $status = AdminModel::where('id', $id)
@@ -426,8 +460,7 @@ class Admin extends Base
             ->encrypt($password); 
 
         // 更新信息
-        $status = AdminModel::where('id', $adminInfo['id'])
-            ->update([
+        $status = $adminInfo->update([
                 'password' => $newPasswordInfo['password'],
                 'password_salt' => $newPasswordInfo['encrypt'],
             ]);
@@ -541,7 +574,7 @@ class Admin extends Base
         
         $adminid = app('larke.admin')->getId();
         if ($refreshAdminid == $adminid) {
-            return $this->errorJson(__('你不能退出你的 refreshToken ！'));
+            return $this->errorJson(__('你不能退出你的账号'));
         }
         
         $refreshTokenExpiredIn = $refreshJwt->getClaim('exp') - $refreshJwt->getClaim('iat');

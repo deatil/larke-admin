@@ -318,8 +318,6 @@ class Extension extends Base
             'config' => json_encode(Arr::get($info, 'config', [])),
             'class_name' => Arr::get($info, 'class_name'),
             'upgradetime' => time(),
-            'listorder' => 100,
-            'status' => 1,
         ]);
         if ($updateInfo === false) {
             return $this->errorJson(__('更新扩展失败'));
