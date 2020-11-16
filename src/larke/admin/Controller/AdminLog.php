@@ -113,9 +113,7 @@ class AdminLog extends Base
             return $this->errorJson(__('日志ID不能为空'));
         }
         
-        $ids = explode(',', $id);
-        
-        $info = AdminLogModel::whereIn('id', $ids)
+        $info = AdminLogModel::where('id', $id)
             ->first();
         if (empty($info)) {
             return $this->errorJson(__('日志信息不存在'));
@@ -130,14 +128,22 @@ class AdminLog extends Base
     }
     
     /**
-     * 清空一个月前的操作日志
+     * 清空一个月前的操作日志|清空特定ID日志
      *
+     * @param  Request  $request
      * @return Response
      */
-    public function clear()
+    public function clear(Request $request)
     {
-        $status = AdminLogModel::where('create_time', '<=', time() - (86400 * 30))
-            ->delete();
+        $ids = $request->get('ids');
+        if (! empty($ids)) {
+            $ids = explode(',', $ids);
+            $status = AdminLogModel::whereIn('id', $ids)->delete();
+        } else {
+            $status = AdminLogModel::where('create_time', '<=', time() - (86400 * 30))
+                ->delete();
+        }
+        
         if ($status === false) {
             return $this->errorJson(__('日志清空失败'));
         }

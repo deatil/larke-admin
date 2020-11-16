@@ -63,9 +63,9 @@ Route::group([
     $router->delete('/admin/{id}', 'Admin@delete')->name('admin-delete');
     $router->patch('/admin/{id}/enable', 'Admin@enable')->name('admin-enable');
     $router->patch('/admin/{id}/disable', 'Admin@disable')->name('admin-disable');
-    $router->put('/admin/{id}/avatar', 'Admin@updateAvatar')->name('admin-avatar');
-    $router->put('/admin/{id}/password', 'Admin@updatePasssword')->name('admin-password');
-    $router->put('/admin/{id}/access', 'Admin@access')->name('admin-access');
+    $router->patch('/admin/{id}/avatar', 'Admin@updateAvatar')->name('admin-avatar');
+    $router->patch('/admin/{id}/password', 'Admin@updatePasssword')->name('admin-password');
+    $router->patch('/admin/{id}/access', 'Admin@access')->name('admin-access');
     $router->delete('/admin/logout/{refreshToken}', 'Admin@logout')->name('admin-logout');
     
     $router->get('/config', 'Config@index')->name('config-index');
