@@ -78,10 +78,10 @@ Route::group([
     $router->patch('/config/{id}/disable', 'Config@disable')->name('config-disable');
     $router->put('/config/setting', 'Config@setting')->name('config-setting');
     
-    $router->get('/log', 'Log@index')->name('log-index');
-    $router->get('/log/{id}', 'Log@detail')->name('log-detail');
-    $router->delete('/log/clear', 'Log@clear')->name('log-clear');
-    $router->delete('/log/{id}', 'Log@delete')->name('log-delete');
+    $router->get('/log', 'AdminLog@index')->name('log-index');
+    $router->get('/log/{id}', 'AdminLog@detail')->name('log-detail');
+    $router->delete('/log/clear', 'AdminLog@clear')->name('log-clear');
+    $router->delete('/log/{id}', 'AdminLog@delete')->name('log-delete');
     
     $router->get('/extension/index', 'Extension@index')->name('extension-index');
     $router->get('/extension/local', 'Extension@local')->name('extension-local');

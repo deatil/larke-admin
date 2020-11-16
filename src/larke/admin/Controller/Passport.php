@@ -27,6 +27,9 @@ class Passport extends Base
 {
     /**
      * 验证码
+     *
+     * @param  Request  $request
+     * @return Response
      */
     public function captcha(Request $request)
     {
@@ -47,6 +50,9 @@ class Passport extends Base
     
     /**
      * 登陆
+     *
+     * @param  Request  $request
+     * @return Response
      */
     public function login(Request $request)
     {
@@ -140,6 +146,9 @@ class Passport extends Base
     
     /**
      * 刷新token
+     *
+     * @param  Request  $request
+     * @return Response
      */
     public function refreshToken(Request $request)
     {
@@ -190,6 +199,9 @@ class Passport extends Base
     
     /**
      * 退出
+     *
+     * @param  Request  $request
+     * @return Response
      */
     public function logout(Request $request)
     {

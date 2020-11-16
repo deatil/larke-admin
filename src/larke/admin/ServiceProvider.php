@@ -14,7 +14,7 @@ use Larke\Admin\Service\Cache;
 use Larke\Admin\Service\Loader;
 use Larke\Admin\Auth\Admin;
 
-// for directory
+// use directory
 use Larke\Admin\Model;
 use Larke\Admin\Observer;
 use Larke\Admin\Command;
@@ -202,12 +202,12 @@ class ServiceProvider extends BaseServiceProvider
             return $Jwt;
         });
         
-        // response()->success('success');
+        // response()->success('获取成功');
         Response::macro('success', function($message = '获取成功', $data = null, $code = 0, $header = []) {
             return app('larke.json')->json(true, $code, $message, $data, $header);
         });
         
-        // response()->error('error');
+        // response()->error('获取失败');
         Response::macro('error', function($message = '获取失败', $code = 1, $data = [], $header = []) {
             return app('larke.json')->json(false, $code, $message, $data, $header);
         });

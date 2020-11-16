@@ -32,10 +32,9 @@ class System extends Base
      * @order 103
      * @auth true
      *
-     * @param  Request  $request
      * @return Response
      */
-    public function info(Request $request)
+    public function info()
     {
         $info = [
             'admin' => config('larke.admin'),
@@ -53,10 +52,9 @@ class System extends Base
     /**
      * 清除缓存
      *
-     * @param  Request  $request
      * @return Response
      */
-    public function clearCache(Request $request)
+    public function clearCache()
     {
         Artisan::call('cache:clear');
         Artisan::call('route:clear');
@@ -71,10 +69,9 @@ class System extends Base
     /**
      * 设置缓存
      *
-     * @param  Request  $request
      * @return Response
      */
-    public function cache(Request $request)
+    public function cache()
     {
         Artisan::call('route:cache');
         Artisan::call('config:cache');

@@ -7,12 +7,12 @@ use Illuminate\Http\Request;
 use Larke\Admin\Model\AdminLog as AdminLogModel;
 
 /**
- * 后台日志
+ * 操作日志
  *
  * @create 2020-10-23
  * @author deatil
  */
-class Log extends Base
+class AdminLog extends Base
 {
     /**
      * 列表
@@ -25,11 +25,7 @@ class Log extends Base
         $start = $request->get('start', 0);
         $limit = $request->get('limit', 10);
         
-        $order = $request->get('order', 'desc');
-        $order = strtoupper($order);
-        if (!in_array($order, ['ASC', 'DESC'])) {
-            $order = 'DESC';
-        }
+        $order = $this->formatOrderBy($request->get('order', 'ASC'));
         
         $searchword = $request->get('searchword', '');
         $orWheres = [];
@@ -58,6 +54,11 @@ class Log extends Base
             $wheres[] = ['status', $status];
         }
         
+        $method = $request->get('method');
+        if (!empty($method)) {
+            $wheres[] = ['method', $method];
+        }
+        
         $query = AdminLogModel::orWheres($orWheres)
             ->wheres($wheres);
         
@@ -81,10 +82,10 @@ class Log extends Base
     /**
      * 详情
      *
-     * @param  Request  $request
+     * @param string $id
      * @return Response
      */
-    public function detail(string $id, Request $request)
+    public function detail(string $id)
     {
         if (empty($id)) {
             return $this->errorJson(__('日志ID不能为空'));
@@ -103,16 +104,18 @@ class Log extends Base
     /**
      * 删除
      *
-     * @param  Request  $request
+     * @param string $id
      * @return Response
      */
-    public function delete(string $id, Request $request)
+    public function delete(string $id)
     {
         if (empty($id)) {
             return $this->errorJson(__('日志ID不能为空'));
         }
         
-        $info = AdminLogModel::where(['id' => $id])
+        $ids = explode(',', $id);
+        
+        $info = AdminLogModel::whereIn('id', $ids)
             ->first();
         if (empty($info)) {
             return $this->errorJson(__('日志信息不存在'));
@@ -129,7 +132,6 @@ class Log extends Base
     /**
      * 清空一个月前的操作日志
      *
-     * @param  Request  $request
      * @return Response
      */
     public function clear()

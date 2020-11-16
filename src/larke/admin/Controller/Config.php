@@ -34,11 +34,7 @@ class Config extends Base
         $start = $request->get('start', 0);
         $limit = $request->get('limit', 10);
         
-        $order = $request->get('order', 'desc');
-        $order = strtoupper($order);
-        if (!in_array($order, ['ASC', 'DESC'])) {
-            $order = 'DESC';
-        }
+        $order = $this->formatOrderBy($request->get('order', 'ASC'));
         
         $searchword = $request->get('searchword', '');
         $orWheres = [];
@@ -107,10 +103,10 @@ class Config extends Base
     /**
      * 详情
      *
-     * @param  Request  $request
+     * @param string $id
      * @return Response
      */
-    public function detail(string $id, Request $request)
+    public function detail(string $id)
     {
         if (empty($id)) {
             return $this->errorJson(__('ID不能为空'));
@@ -128,10 +124,10 @@ class Config extends Base
     /**
      * 删除
      *
-     * @param  Request  $request
+     * @param string $id
      * @return Response
      */
-    public function delete(string $id, Request $request)
+    public function delete(string $id)
     {
         if (empty($id)) {
             return $this->errorJson(__('ID不能为空'));
@@ -153,7 +149,7 @@ class Config extends Base
     
     /**
      * 添加
-     * type: text,textarea,number,radio,select,checkbox,array,switch,image
+     * type: text,textarea,number,radio,select,checkbox,array,switch,image,images
      *
      * @param  Request  $request
      * @return Response
@@ -210,7 +206,8 @@ class Config extends Base
     /**
      * 更新
      *
-     * @param  Request  $request
+     * @param string $id
+     * @param Request $request
      * @return Response
      */
     public function update(string $id, Request $request)
@@ -294,6 +291,7 @@ class Config extends Base
     /**
      * 排序
      *
+     * @param string $id
      * @param  Request  $request
      * @return Response
      */
@@ -322,10 +320,10 @@ class Config extends Base
     /**
      * 启用
      *
-     * @param  Request  $request
+     * @param string $id
      * @return Response
      */
-    public function enable(string $id, Request $request)
+    public function enable(string $id)
     {
         if (empty($id)) {
             return $this->errorJson(__('ID不能为空'));
@@ -352,10 +350,10 @@ class Config extends Base
     /**
      * 禁用
      *
-     * @param  Request  $request
+     * @param string $id
      * @return Response
      */
-    public function disable(string $id, Request $request)
+    public function disable(string $id)
     {
         if (empty($id)) {
             return $this->errorJson(__('ID不能为空'));

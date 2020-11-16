@@ -43,11 +43,7 @@ class Extension extends Base
         $start = $request->get('start', 0);
         $limit = $request->get('limit', 10);
         
-        $order = $request->get('order', 'desc');
-        $order = strtoupper($order);
-        if (!in_array($order, ['ASC', 'DESC'])) {
-            $order = 'DESC';
-        }
+        $order = $this->formatOrderBy($request->get('order', 'ASC'));
         
         $searchword = $request->get('searchword', '');
         $orWheres = [];
@@ -137,12 +133,12 @@ class Extension extends Base
     }
     
     /**
-     * install
+     * 安装
      *
-     * @param  Request  $request
+     * @param string $name
      * @return Response
      */
-    public function install(string $name, Request $request)
+    public function install(string $name)
     {
         if (empty($name)) {
             return $this->errorJson(__('扩展名称不能为空'));
@@ -219,12 +215,12 @@ class Extension extends Base
     }
     
     /**
-     * uninstall
+     * 卸载
      *
-     * @param  Request  $request
+     * @param string $name
      * @return Response
      */
-    public function uninstall(string $name, Request $request)
+    public function uninstall(string $name)
     {
         if (empty($name)) {
             return $this->errorJson(__('扩展名称不能为空'));
@@ -247,12 +243,12 @@ class Extension extends Base
     }
     
     /**
-     * Upgrade
+     * 更新
      *
-     * @param  Request  $request
+     * @param string $name
      * @return Response
      */
-    public function upgrade(string $name, Request $request)
+    public function upgrade(string $name)
     {
         if (empty($name)) {
             return $this->errorJson(__('扩展名称不能为空'));
@@ -333,7 +329,8 @@ class Extension extends Base
     /**
      * 排序
      *
-     * @param  Request  $request
+     * @param string $name
+     * @param Request $request
      * @return Response
      */
     public function listorder(string $name, Request $request)
@@ -361,10 +358,10 @@ class Extension extends Base
     /**
      * 启用
      *
-     * @param  Request  $request
+     * @param string $name
      * @return Response
      */
-    public function enable(string $name, Request $request)
+    public function enable(string $name)
     {
         if (empty($name)) {
             return $this->errorJson(__('扩展名称不能为空'));
@@ -393,10 +390,10 @@ class Extension extends Base
     /**
      * 禁用
      *
-     * @param  Request  $request
+     * @param string $name
      * @return Response
      */
-    public function disable(string $name, Request $request)
+    public function disable(string $name)
     {
         if (empty($name)) {
             return $this->errorJson(__('扩展名称不能为空'));
@@ -425,7 +422,8 @@ class Extension extends Base
     /**
      * 配置
      *
-     * @param  Request  $request
+     * @param string $name
+     * @param Request $request
      * @return Response
      */
     public function config(string $name, Request $request)

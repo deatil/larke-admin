@@ -34,11 +34,7 @@ class AuthRule extends Base
         $start = $request->get('start', 0);
         $limit = $request->get('limit', 10);
         
-        $order = $request->get('order', 'desc');
-        $order = strtoupper($order);
-        if (!in_array($order, ['ASC', 'DESC'])) {
-            $order = 'DESC';
-        }
+        $order = $this->formatOrderBy($request->get('order', 'ASC'));
         
         $searchword = $request->get('searchword', '');
         $orWheres = [];
@@ -138,10 +134,10 @@ class AuthRule extends Base
     /**
      * 详情
      *
-     * @param  Request  $request
+     * @param string $id
      * @return Response
      */
-    public function detail(string $id, Request $request)
+    public function detail(string $id)
     {
         if (empty($id)) {
             return $this->errorJson(__('ID不能为空'));
@@ -159,10 +155,10 @@ class AuthRule extends Base
     /**
      * 删除
      *
-     * @param  Request  $request
+     * @param string $id
      * @return Response
      */
-    public function delete(string $id, Request $request)
+    public function delete(string $id)
     {
         if (empty($id)) {
             return $this->errorJson(__('ID不能为空'));
@@ -256,7 +252,8 @@ class AuthRule extends Base
     /**
      * 更新
      *
-     * @param  Request  $request
+     * @param string $id
+     * @param Request $request
      * @return Response
      */
     public function update(string $id, Request $request)
@@ -331,7 +328,8 @@ class AuthRule extends Base
     /**
      * 排序
      *
-     * @param  Request  $request
+     * @param string $id
+     * @param Request $request
      * @return Response
      */
     public function listorder(string $id, Request $request)
@@ -359,10 +357,10 @@ class AuthRule extends Base
     /**
      * 启用
      *
-     * @param  Request  $request
+     * @param string $id
      * @return Response
      */
-    public function enable(string $id, Request $request)
+    public function enable(string $id)
     {
         if (empty($id)) {
             return $this->errorJson(__('ID不能为空'));
@@ -389,10 +387,10 @@ class AuthRule extends Base
     /**
      * 禁用
      *
-     * @param  Request  $request
+     * @param string $id
      * @return Response
      */
-    public function disable(string $id, Request $request)
+    public function disable(string $id)
     {
         if (empty($id)) {
             return $this->errorJson(__('ID不能为空'));

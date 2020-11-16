@@ -35,11 +35,7 @@ class Attachment extends Base
         $start = $request->get('start', 0);
         $limit = $request->get('limit', 10);
         
-        $order = $request->get('order', 'DESC');
-        $order = strtoupper($order);
-        if (!in_array($order, ['ASC', 'DESC'])) {
-            $order = 'DESC';
-        }
+        $order = $this->formatOrderBy($request->get('order', 'ASC'));
         
         $searchword = $request->get('searchword', '');
         $orWheres = [];
@@ -90,10 +86,10 @@ class Attachment extends Base
     /**
      * 详情
      *
-     * @param  Request  $request
+     * @param string $id
      * @return Response
      */
-    public function detail(string $id, Request $request)
+    public function detail(string $id)
     {
         if (empty($id)) {
             return $this->errorJson(__('文件ID不能为空'));
@@ -111,10 +107,10 @@ class Attachment extends Base
     /**
      * 删除
      *
-     * @param  Request  $request
+     * @param string $id
      * @return Response
      */
-    public function delete(string $id, Request $request)
+    public function delete(string $id)
     {
         if (empty($id)) {
             return $this->errorJson(__('文件ID不能为空'));
@@ -144,10 +140,10 @@ class Attachment extends Base
     /**
      * 启用
      *
-     * @param  Request  $request
+     * @param string $id
      * @return Response
      */
-    public function enable(string $id, Request $request)
+    public function enable(string $id)
     {
         if (empty($id)) {
             return $this->errorJson(__('ID不能为空'));
@@ -174,10 +170,10 @@ class Attachment extends Base
     /**
      * 禁用
      *
-     * @param  Request  $request
+     * @param string $id
      * @return Response
      */
-    public function disable(string $id, Request $request)
+    public function disable(string $id)
     {
         if (empty($id)) {
             return $this->errorJson(__('ID不能为空'));
@@ -313,10 +309,10 @@ class Attachment extends Base
     /**
      * 下载码
      *
-     * @param  Request  $request
+     * @param string $id
      * @return Response
      */
-    public function downloadCode(string $id, Request $request)
+    public function downloadCode(string $id)
     {
         if (empty($id)) {
             return $this->errorJson(__('文件ID不能为空'));
@@ -339,10 +335,10 @@ class Attachment extends Base
     /**
      * 下载
      *
-     * @param  Request  $request
+     * @param string $code
      * @return Response
      */
-    public function download(string $code, Request $request)
+    public function download(string $code)
     {
         if (empty($code)) {
             return $this->errorJson(__('code值不能为空'));

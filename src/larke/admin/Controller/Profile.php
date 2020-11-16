@@ -24,8 +24,10 @@ class Profile extends Base
 {
     /**
      * 我的信息
+     *
+     * @return Response
      */
-    public function index(Request $request)
+    public function index()
     {
         $data = app('larke.admin')->getData();
         
@@ -34,6 +36,9 @@ class Profile extends Base
     
     /**
      * 修改我的信息
+     *
+     * @param  Request  $request
+     * @return Response
      */
     public function update(Request $request)
     {
@@ -76,6 +81,9 @@ class Profile extends Base
 
     /**
      * 修改头像
+     *
+     * @param  Request  $request
+     * @return Response
      */
     public function updateAvatar(Request $request)
     {
@@ -105,6 +113,9 @@ class Profile extends Base
 
     /**
      * 修改密码
+     *
+     * @param  Request  $request
+     * @return Response
      */
     public function updatePasssword(Request $request)
     {
@@ -162,8 +173,10 @@ class Profile extends Base
 
     /**
      * 权限列表
+     *
+     * @return Response
      */
-    public function rules(Request $request)
+    public function rules()
     {
         $rules = app('larke.admin')->getRules();
         

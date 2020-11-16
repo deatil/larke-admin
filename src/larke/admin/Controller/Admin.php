@@ -34,10 +34,7 @@ class Admin extends Base
         $start = $request->get('start', 0);
         $limit = $request->get('limit', 10);
         
-        $order = $request->get('order', 'DESC');
-        if (!in_array(strtoupper($order), ['ASC', 'DESC'])) {
-            $order = 'DESC';
-        }
+        $order = $this->formatOrderBy($request->get('order', 'ASC'));
         
         $wheres = [];
         
@@ -102,10 +99,10 @@ class Admin extends Base
     /**
      * 详情
      *
-     * @param  Request  $request
+     * @param string $id
      * @return Response
      */
-    public function detail(string $id, Request $request)
+    public function detail(string $id)
     {
         if (empty($id)) {
             return $this->errorJson(__('账号ID不能为空'));
@@ -150,10 +147,10 @@ class Admin extends Base
     /**
      * 权限
      *
-     * @param  Request  $request
+     * @param string $id
      * @return Response
      */
-    public function rules(string $id, Request $request)
+    public function rules(string $id)
     {
         if (empty($id)) {
             return $this->errorJson(__('账号ID不能为空'));
@@ -183,10 +180,10 @@ class Admin extends Base
     /**
      * 删除
      *
-     * @param  Request  $request
+     * @param string $id
      * @return Response
      */
-    public function delete(string $id, Request $request)
+    public function delete(string $id)
     {
         if (empty($id)) {
             return $this->errorJson(__('账号ID不能为空'));
@@ -293,7 +290,8 @@ class Admin extends Base
     /**
      * 更新
      *
-     * @param  Request  $request
+     * @param string $id
+     * @param Request $request
      * @return Response
      */
     public function update(string $id, Request $request)
@@ -384,6 +382,10 @@ class Admin extends Base
 
     /**
      * 修改头像
+     *
+     * @param string $id
+     * @param Request $request
+     * @return Response
      */
     public function updateAvatar(string $id, Request $request)
     {
@@ -427,7 +429,8 @@ class Admin extends Base
     /**
      * 修改密码
      *
-     * @param  Request  $request
+     * @param string $id
+     * @param Request $request
      * @return Response
      */
     public function updatePasssword(string $id, Request $request)
@@ -474,10 +477,10 @@ class Admin extends Base
     /**
      * 启用
      *
-     * @param  Request  $request
+     * @param string $id
      * @return Response
      */
-    public function enable(string $id, Request $request)
+    public function enable(string $id)
     {
         if (empty($id)) {
             return $this->errorJson(__('ID不能为空'));
@@ -510,10 +513,10 @@ class Admin extends Base
     /**
      * 禁用
      *
-     * @param  Request  $request
+     * @param string $id
      * @return Response
      */
-    public function disable(string $id, Request $request)
+    public function disable(string $id)
     {
         if (empty($id)) {
             return $this->errorJson(__('ID不能为空'));
@@ -547,8 +550,11 @@ class Admin extends Base
      * 退出
      * 
      * 添加用户的 refreshToken 到黑名单
+     *
+     * @param string $refreshToken
+     * @return Response
      */
-    public function logout(string $refreshToken, Request $request)
+    public function logout(string $refreshToken)
     {
         if (empty($refreshToken)) {
             return $this->errorJson(__('refreshToken不能为空'));
@@ -588,7 +594,8 @@ class Admin extends Base
     /**
      * 授权
      *
-     * @param  Request  $request
+     * @param string $id
+     * @param Request $request
      * @return Response
      */
     public function access(string $id, Request $request)
