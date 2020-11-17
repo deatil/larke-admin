@@ -40,8 +40,8 @@ class Extension extends Base
      */
     public function index(Request $request)
     {
-        $start = $request->get('start', 0);
-        $limit = $request->get('limit', 10);
+        $start = (int) $request->get('start', 0);
+        $limit = (int) $request->get('limit', 10);
         
         $order = $this->formatOrderBy($request->get('order', 'ASC'));
         

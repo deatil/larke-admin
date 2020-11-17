@@ -32,7 +32,7 @@ Route::group([
         $router->patch('/auth/group/{id}/sort', 'AuthGroup@listorder')->name('auth-group-listorder');
         $router->patch('/auth/group/{id}/enable', 'AuthGroup@enable')->name('auth-group-enable');
         $router->patch('/auth/group/{id}/disable', 'AuthGroup@disable')->name('auth-group-disable');
-        $router->put('/auth/group/{id}/access', 'AuthGroup@access')->name('auth-group-access');
+        $router->patch('/auth/group/{id}/access', 'AuthGroup@access')->name('auth-group-access');
     });
     
     $router->get('/passport/captcha', 'Passport@captcha')->name('passport-captcha');
@@ -42,8 +42,8 @@ Route::group([
     
     $router->get('/profile', 'Profile@index')->name('profile');
     $router->put('/profile/update', 'Profile@update')->name('profile-update');
-    $router->put('/profile/avatar', 'Profile@updateAvatar')->name('profile-avatar');
-    $router->put('/profile/password', 'Profile@updatePasssword')->name('profile-password');
+    $router->patch('/profile/avatar', 'Profile@updateAvatar')->name('profile-avatar');
+    $router->patch('/profile/password', 'Profile@updatePasssword')->name('profile-password');
     $router->get('/profile/rules', 'Profile@rules')->name('profile-rules');
     
     $router->get('/attachment', 'Attachment@index')->name('attachment-index');
