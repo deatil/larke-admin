@@ -17,6 +17,7 @@ Route::group([
         $router->get('/auth/rule/{id}', 'AuthRule@detail')->name('auth-rule-detail');
         $router->post('/auth/rule', 'AuthRule@create')->name('auth-rule-create');
         $router->put('/auth/rule/{id}', 'AuthRule@update')->name('auth-rule-update');
+        $router->delete('/auth/rule/clear', 'AuthRule@clear')->name('auth-rule-clear');
         $router->delete('/auth/rule/{id}', 'AuthRule@delete')->name('auth-rule-delete');
         $router->patch('/auth/rule/{id}/sort', 'AuthRule@listorder')->name('auth-rule-listorder');
         $router->patch('/auth/rule/{id}/enable', 'AuthRule@enable')->name('auth-rule-enable');

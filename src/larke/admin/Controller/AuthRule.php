@@ -64,6 +64,11 @@ class AuthRule extends Base
             $wheres[] = ['status', $status];
         }
         
+        $method = $request->get('method');
+        if (!empty($method)) {
+            $wheres[] = ['method', $method];
+        }
+        
         $query = AuthRuleModel::orWheres($orWheres)
             ->wheres($wheres);
         
@@ -186,6 +191,43 @@ class AuthRule extends Base
         }
         
         return $this->successJson(__('信息删除成功'));
+    }
+    
+    /**
+     * 清空特定ID权限
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function clear(Request $request)
+    {
+        $ids = $request->get('ids');
+        if (empty($ids)) {
+            return $this->errorJson(__('权限ID列表不能为空'));
+        }
+        
+        $ids = explode(',', $ids);
+        foreach ($ids as $id) {
+            $info = AuthRuleModel::where(['id' => $id])
+                ->first();
+            if (empty($info)) {
+                continue;
+            }
+            
+            $childInfo = AuthRuleModel::where(['parentid' => $id])
+                ->first();
+            if (!empty($childInfo)) {
+                continue;
+            }
+            
+            if ($info->is_system == 1) {
+                continue;
+            }
+            
+            $info->delete();
+        }
+        
+        return $this->successJson(__('特定日志删除成功'));
     }
     
     /**

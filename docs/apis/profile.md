@@ -36,9 +36,22 @@ Response: {
 }
 ~~~
 
+> 更新头像
+~~~
+PATCH: /admin-api/profile/avatar
+Header: {
+    'Authorization:Bearer ${accessToken}'
+}
+Request: {
+    'avatar',
+}
+Response: {
+}
+~~~
+
 > 修改密码
 ~~~
-PUT: /admin-api/profile/password
+PATCH: /admin-api/profile/password
 Header: {
     'Authorization:Bearer ${accessToken}'
 }
