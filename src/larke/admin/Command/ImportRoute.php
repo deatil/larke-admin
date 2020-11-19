@@ -142,7 +142,7 @@ class ImportRoute extends Command
             $parentData = array_merge($classDocInfo, [
                 'parentid' => 0,
                 'url' => '',
-                'method' => 'Error',
+                'method' => 'ERROR',
                 'slug' => md5($actionClass),
                 'is_system' => 0,
                 'status' => 1,

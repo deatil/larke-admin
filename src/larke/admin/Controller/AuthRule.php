@@ -104,7 +104,10 @@ class AuthRule extends Base
             ->toArray(); 
         
         $Tree = new Tree();
-        $list = $Tree->withData($result)->build(0);
+        $list = $Tree
+            ->withConfig('buildChildKey', 'children')
+            ->withData($result)
+            ->build(0);
         
         return $this->successJson(__('获取成功'), [
             'list' => $list,
@@ -119,9 +122,9 @@ class AuthRule extends Base
      */
     public function indexChildren(Request $request)
     {
-        $id = $request->get('id');
-        if (empty($id) || is_array($id)) {
-            return $this->errorJson(__('ID不能为空'));
+        $id = $request->get('id', 0);
+        if (is_array($id)) {
+            return $this->errorJson(__('ID错误'));
         }
         
         $type = $request->get('type');
@@ -247,9 +250,9 @@ class AuthRule extends Base
             'method' => [
                 'required',
                 'max:10',
-                Rule::in(['GET', 'POST', 'PUT', 'DELETE', 'PATCH']),
+                Rule::in(['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'PATCH']),
             ],
-            'slug' => 'required|unique:'.AuthRuleModel::class,
+            'slug' => 'required',
             'status' => 'required',
         ], [
             'parentid.required' => __('父级分类不能为空'),
@@ -257,12 +260,18 @@ class AuthRule extends Base
             'url.required' => __('权限链接不能为空'),
             'method.required' => __('请求类型不能为空'),
             'slug.required' => __('链接标识不能为空'),
-            'slug.unique' => __('链接标识已经存在'),
             'status.required' => __('状态选项不能为空'),
         ]);
 
         if ($validator->fails()) {
             return $this->errorJson($validator->errors()->first());
+        }
+        
+        $slugInfo = AuthRuleModel::where('slug', $data['slug'])
+            ->where('method', $data['method'])
+            ->first();
+        if (!empty($slugInfo)) {
+            return $this->errorJson(__('链接标识已经存在'));
         }
         
         $insertData = [
@@ -277,9 +286,6 @@ class AuthRule extends Base
             'is_system' => (isset($data['is_system']) && $data['is_system'] == 1) ? 1 : 0,
             'status' => ($data['status'] == 1) ? 1 : 0,
         ];
-        if (!empty($data['avatar'])) {
-            $insertData['avatar'] = $data['avatar'];
-        }
         
         $rule = AuthRuleModel::create($insertData);
         if ($rule === false) {
@@ -319,7 +325,7 @@ class AuthRule extends Base
             'method' => [
                 'required',
                 'max:10',
-                Rule::in(['GET', 'POST', 'PUT', 'DELETE', 'PATCH']),
+                Rule::in(['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'PATCH']),
             ],
             'slug' => 'required',
             'status' => 'required',
@@ -337,13 +343,14 @@ class AuthRule extends Base
         }
         
         $slugInfo = AuthRuleModel::where('slug', $requestData['slug'])
+            ->where('method', '=', $requestData['method'])
             ->where('id', '!=', $id)
             ->first();
         if (!empty($slugInfo)) {
             return $this->errorJson(__('链接标识已经存在'));
         }
         
-        $childrenIds = AuthRuleRepository::getChildrenIdsFromData($info['children']);
+        $childrenIds = AuthRuleRepository::getChildrenIdsFromData($info['children'], $id);
         $childrenIds[] = $id;
         if (in_array($requestData['parentid'], $childrenIds)) {
             return $this->errorJson(__('父级ID设置错误'));

@@ -110,9 +110,9 @@ class AuthGroup extends Base
      */
     public function indexChildren(Request $request)
     {
-        $id = $request->get('id');
-        if (empty($id) || is_array($id)) {
-            return $this->errorJson(__('ID不能为空'));
+        $id = $request->get('id', 0);
+        if (is_array($id)) {
+            return $this->errorJson(__('ID错误'));
         }
         
         $type = $request->get('type');

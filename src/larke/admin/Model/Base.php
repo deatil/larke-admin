@@ -2,6 +2,7 @@
 
 namespace Larke\Admin\Model;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 
 /*
@@ -26,7 +27,9 @@ class Base extends Model
         }
         
         foreach ($columns as $column) {
-            if (count($column) == 2) {
+            if (count($column) == 1) {
+                $query->where(DB::raw($column[0]));
+            } elseif (count($column) == 2) {
                 $query->where($column[0], $column[1]);
             } elseif (count($column) == 3) {
                 $query->where($column[0], $column[1], $column[2]);
@@ -43,7 +46,9 @@ class Base extends Model
         }
         
         foreach ($columns as $column) {
-            if (count($column) == 2) {
+            if (count($column) == 1) {
+                $query->orWhere(DB::raw($column[0]));
+            } elseif (count($column) == 2) {
                 $query->orWhere($column[0], $column[1]);
             } elseif (count($column) == 3) {
                 $query->orWhere($column[0], $column[1], $column[2]);

@@ -27,6 +27,7 @@ class Tree
     public $idKey = "id";
     public $parentidKey = "parentid";
     public $spacerKey = "spacer";
+    public $depthKey = "depth";
     public $haschildKey = "haschild";
     
     // 返回子级key
@@ -72,7 +73,7 @@ class Tree
      * @param string    $itemprefix 前缀
      * @return string
      */
-    public function build($id = 0, $itemprefix = '')
+    public function build($id = 0, $itemprefix = '', $depth = 0)
     {
         $child = $this->getListChild($this->data, $id);
         if (!is_array($child)) {
@@ -84,7 +85,7 @@ class Tree
         
         $total = count($child);
         foreach ($child as $id => $value) {
-            $childInfo = $value;
+            $info = $value;
             
             $j = $k = '';
             if ($number == $total) {
@@ -99,14 +100,17 @@ class Tree
                 $k = $itemprefix ? (isset($this->icon[0]) ? $this->icon[0] : '') : '';
             }
             $spacer = $itemprefix ? $itemprefix . $j : '';
-            $childInfo[$this->spacerKey] = $spacer;
+            $info[$this->spacerKey] = $spacer;
             
-            $childList = $this->build($value[$this->idKey], $itemprefix . $k . $this->blankspace);
+            // 深度
+            $info[$this->depthKey] = $depth;
+            
+            $childList = $this->build($value[$this->idKey], $itemprefix . $k . $this->blankspace, $depth+1);
             if (!empty($childList)) {
-                $childInfo[$this->buildChildKey] = $childList;
+                $info[$this->buildChildKey] = $childList;
             }
             
-            $data[] = $childInfo;
+            $data[] = $info;
             $number++;
         }
         
