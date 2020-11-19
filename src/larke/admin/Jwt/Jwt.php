@@ -264,7 +264,7 @@ class Jwt implements JwtContract
      */
     public function decode()
     {
-        if (!$this->decodeToken) {
+        if (! $this->decodeToken) {
             $Parser = (new Parser());
             
             try {
@@ -282,7 +282,7 @@ class Jwt implements JwtContract
      */
     public function validate()
     {
-        if (!$this->decodeToken) {
+        if (! $this->decodeToken) {
             return false;
         }
         
@@ -301,7 +301,7 @@ class Jwt implements JwtContract
      */
     public function verify()
     {
-        if (!$this->decodeToken) {
+        if (! $this->decodeToken) {
             return false;
         }
         
@@ -329,17 +329,17 @@ class Jwt implements JwtContract
      */
     public function getHeader($name)
     {
-        if (!$this->decodeToken) {
+        if (! $this->decodeToken) {
             return false;
         }
         
         try {
-            $claim = $this->decodeToken->getHeader($name);
+            $header = $this->decodeToken->getHeader($name);
         } catch(\Exception $e) {
             return false;
         }
         
-        return $claim;
+        return $header;
     }
 
     /**
@@ -347,7 +347,7 @@ class Jwt implements JwtContract
      */
     public function getClaim($name)
     {
-        if (!$this->decodeToken) {
+        if (! $this->decodeToken) {
             return false;
         }
         
@@ -358,6 +358,37 @@ class Jwt implements JwtContract
         }
         
         return $claim;
+    }
+    
+    /**
+     * 获取 Headers
+     */
+    public function getHeaders()
+    {
+        if (! $this->decodeToken) {
+            return false;
+        }
+        
+        return $this->decodeToken->getHeaders();
+    }
+    
+    /**
+     * 获取 Claims
+     */
+    public function getClaims()
+    {
+        if (! $this->decodeToken) {
+            return false;
+        }
+        
+        $claims = $this->decodeToken->getClaims();
+        
+        $data = [];
+        foreach ($claims as $claim) {
+            $data[$claim->getName()] = $claim->getValue();
+        }
+        
+        return $data;
     }
 
 }

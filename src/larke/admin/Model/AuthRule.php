@@ -18,6 +18,11 @@ class AuthRule extends Base
     
     protected $guarded = [];
     
+    protected $casts = [
+        'id' => 'string',
+        'parentid' => 'string',
+    ];
+    
     public $incrementing = false;
     public $timestamps = false;
     

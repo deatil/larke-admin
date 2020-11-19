@@ -25,7 +25,7 @@ Request: {
 }
 Response: {
     'access_token', // 鉴权Token
-    'expired_in', // access_token过期时间
+    'expires_in', // access_token过期时间
     'refresh_token', // 刷新Token
 }
 ~~~
@@ -38,7 +38,7 @@ Request: {
 }
 Response: {
     'access_token', // 鉴权Token
-    'expired_in', // access_token过期时间
+    'expires_in', // access_token过期时间
 }
 ~~~
 

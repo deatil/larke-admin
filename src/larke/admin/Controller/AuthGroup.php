@@ -244,7 +244,8 @@ class AuthGroup extends Base
             return $this->errorJson(__('ID不能为空'));
         }
         
-        $info = AuthGroupModel::where('id', '=', $id)
+        $info = AuthGroupModel::with('children')
+            ->where('id', '=', $id)
             ->first();
         if (empty($info)) {
             return $this->errorJson(__('信息不存在'));
@@ -265,6 +266,12 @@ class AuthGroup extends Base
             return $this->errorJson($validator->errors()->first());
         }
         
+        $childrenIds = AuthGroupRepository::getChildrenIdsFromData($info['children']);
+        $childrenIds[] = $id;
+        if (in_array($data['parentid'], $childrenIds)) {
+            return $this->errorJson(__('父级ID设置错误'));
+        }
+        
         $updateData = [
             'parentid' => $data['parentid'],
             'title' => $data['title'],
@@ -275,9 +282,7 @@ class AuthGroup extends Base
         ];
         
         // 更新信息
-        $status = AuthGroupModel::where('id', $id)
-            ->first()
-            ->update($updateData);
+        $status = $info->update($updateData);
         if ($status === false) {
             return $this->errorJson(__('信息修改失败'));
         }

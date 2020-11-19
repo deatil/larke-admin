@@ -304,7 +304,8 @@ class AuthRule extends Base
             return $this->errorJson(__('账号ID不能为空'));
         }
         
-        $info = AuthRuleModel::where('id', '=', $id)
+        $info = AuthRuleModel::with('children')
+            ->where('id', '=', $id)
             ->first();
         if (empty($info)) {
             return $this->errorJson(__('信息不存在'));
@@ -342,6 +343,12 @@ class AuthRule extends Base
             return $this->errorJson(__('链接标识已经存在'));
         }
         
+        $childrenIds = AuthRuleRepository::getChildrenIdsFromData($info['children']);
+        $childrenIds[] = $id;
+        if (in_array($requestData['parentid'], $childrenIds)) {
+            return $this->errorJson(__('父级ID设置错误'));
+        }
+        
         $updateData = [
             'parentid' => $requestData['parentid'],
             'title' => $requestData['title'],
@@ -356,9 +363,7 @@ class AuthRule extends Base
         ];
         
         // 更新信息
-        $status = AuthRuleModel::where('id', $id)
-            ->first()
-            ->update($updateData);
+        $status = $info->update($updateData);
         if ($status === false) {
             return $this->errorJson(__('信息修改失败'));
         }

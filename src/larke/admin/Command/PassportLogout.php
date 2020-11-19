@@ -74,10 +74,10 @@ class PassportLogout extends Command
             return;
         }
         
-        $refreshTokenExpiredIn = $refreshJwt->getClaim('exp') - $refreshJwt->getClaim('iat');
+        $refreshTokenExpiresIn = $refreshJwt->getClaim('exp') - $refreshJwt->getClaim('iat');
         
         // 添加缓存黑名单
-        app('larke.cache')->add(md5($refreshToken), $refreshToken, $refreshTokenExpiredIn);
+        app('larke.cache')->add(md5($refreshToken), $refreshToken, $refreshTokenExpiresIn);
         
         $this->line('<info>Logout success and adminid is:</info> '.$refreshAdminid);
     }

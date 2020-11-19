@@ -60,5 +60,30 @@ class AuthRule
         $list = self::getChildren($ruleid);
         return collect($list)->pluck('id')->toArray();
     }
+    
+    /*
+     * 获取 Children
+     */
+    public static function getChildrenFromData($data = [])
+    {
+        $TreeService = new TreeService();
+        $res = $TreeService
+            ->withData($data)
+            ->build($ruleid);
+        
+        $list = $TreeService->buildFormatList($res, $ruleid);
+        
+        return $list;
+    }
+    
+    /*
+     * 获取 ChildrenIds
+     */
+    public static function getChildrenIdsFromData($data = [])
+    {
+        $list = self::getChildrenFromData($data);
+        
+        return collect($list)->pluck('id')->toArray();
+    }
 
 }

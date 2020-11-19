@@ -583,10 +583,10 @@ class Admin extends Base
             return $this->errorJson(__('你不能退出你的账号'));
         }
         
-        $refreshTokenExpiredIn = $refreshJwt->getClaim('exp') - $refreshJwt->getClaim('iat');
+        $refreshTokenExpiresIn = $refreshJwt->getClaim('exp') - $refreshJwt->getClaim('iat');
         
         // 添加缓存黑名单
-        app('larke.cache')->add(md5($refreshToken), 'out', $refreshTokenExpiredIn);
+        app('larke.cache')->add(md5($refreshToken), 'out', $refreshTokenExpiresIn);
         
         return $this->successJson(__('退出成功'));
     }
