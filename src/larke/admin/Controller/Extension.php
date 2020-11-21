@@ -51,7 +51,6 @@ class Extension extends Base
             $orWheres = [
                 ['name', 'like', '%'.$searchword.'%'],
                 ['title', 'like', '%'.$searchword.'%'],
-                ['author', 'like', '%'.$searchword.'%'],
             ];
         }
 
