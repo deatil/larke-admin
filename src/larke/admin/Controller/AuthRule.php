@@ -76,8 +76,8 @@ class AuthRule extends Base
         $list = $query
             ->offset($start)
             ->limit($limit)
+            ->orderBy('create_time', $order)
             ->orderBy('slug', $order)
-            ->orderBy('create_time', 'ASC')
             ->get()
             ->toArray(); 
         
@@ -98,7 +98,7 @@ class AuthRule extends Base
     public function indexTree(Request $request)
     {
         $result = AuthRuleModel::orderBy('listorder', 'ASC')
-            ->orderBy('url', 'ASC')
+            ->orderBy('slug', 'ASC')
             ->orderBy('create_time', 'ASC')
             ->get()
             ->toArray(); 
@@ -250,7 +250,7 @@ class AuthRule extends Base
             'method' => [
                 'required',
                 'max:10',
-                Rule::in(['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'PATCH']),
+                Rule::in(['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS']),
             ],
             'slug' => 'required',
             'status' => 'required',
@@ -325,7 +325,7 @@ class AuthRule extends Base
             'method' => [
                 'required',
                 'max:10',
-                Rule::in(['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'PATCH']),
+                Rule::in(['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS']),
             ],
             'slug' => 'required',
             'status' => 'required',
@@ -343,7 +343,7 @@ class AuthRule extends Base
         }
         
         $slugInfo = AuthRuleModel::where('slug', $requestData['slug'])
-            ->where('method', '=', $requestData['method'])
+            ->where('method', $requestData['method'])
             ->where('id', '!=', $id)
             ->first();
         if (!empty($slugInfo)) {
