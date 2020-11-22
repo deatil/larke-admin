@@ -64,14 +64,14 @@ class Admin extends Base
             ];
         }
         
-        $total = AdminModel::withAccess()
-            ->count(); 
-        $list = AdminModel::withAccess()
-            ->offset($start)
-            ->limit($limit)
+        $query = AdminModel::withAccess()
             ->orWheres($orWheres)
-            ->wheres($wheres)
-            ->select(
+            ->wheres($wheres);
+        
+        $total = $query->count(); 
+        $list = $query->offset($start)
+            ->limit($limit)
+            ->select([
                 'id', 
                 'name', 
                 'nickname', 
@@ -83,7 +83,7 @@ class Admin extends Base
                 'last_ip',
                 'create_time', 
                 'create_ip'
-            )
+            ])
             ->orderBy('create_time', $order)
             ->get()
             ->toArray(); 
@@ -109,7 +109,7 @@ class Admin extends Base
         }
         
         $info = AdminModel::withAccess()
-            ->where(['id' => $id])
+            ->where('id', '=', $id)
             ->with(['groups'])
             ->select([
                 'id', 
@@ -157,7 +157,7 @@ class Admin extends Base
         }
         
         $info = AdminModel::withAccess()
-            ->where(['id' => $id])
+            ->where('id', '=', $id)
             ->with(['groups'])
             ->select([
                 'id', 
@@ -195,7 +195,7 @@ class Admin extends Base
         }
         
         $info = AdminModel::withAccess()
-            ->where(['id' => $id])
+            ->where('id', '=', $id)
             ->first();
         if (empty($info)) {
             return $this->errorJson(__('账号信息不存在'));
@@ -335,11 +335,11 @@ class Admin extends Base
         
         $nameInfo = AdminModel::orWhere(function($query) use($id, $data) {
                 $query->where('id', '!=', $id);
-                $query->where('name', $data['name']);
+                $query->where('name', '=', $data['name']);
             })
             ->orWhere(function($query) use($id, $data) {
                 $query->where('id', '!=', $id);
-                $query->where('email', $data['email']);
+                $query->where('email', '=', $data['email']);
             })
             ->first();
         if (!empty($nameInfo)) {
@@ -371,8 +371,7 @@ class Admin extends Base
         }
         
         // 更新信息
-        $status = AdminModel::where('id', $id)
-            ->update($updateData);
+        $status = $adminInfo->update($updateData);
         if ($status === false) {
             return $this->errorJson(__('信息修改失败'));
         }
@@ -611,9 +610,7 @@ class Admin extends Base
             return $this->errorJson(__('信息不存在'));
         }
         
-        AuthGroupAccessModel::where([
-                'admin_id' => $id,
-            ])
+        AuthGroupAccessModel::where('admin_id', '=', $id)
             ->get()
             ->each
             ->delete();

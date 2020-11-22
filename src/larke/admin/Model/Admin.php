@@ -49,11 +49,11 @@ class Admin extends Base
     public function scopeWithAccess($query, Array $ids = [])
     {
         return $query->with(['groupAccesses' => function ($query) use ($ids) {
-            if (!app('larke.admin')->isAdministrator()) {
+            if (! app('larke.admin')->isAdministrator()) {
                 $groupids = app('larke.admin')->getGroupChildrenIds();
                 $query->whereIn('group_id', $groupids);
                 
-                if (!empty($ids)) {
+                if (! empty($ids)) {
                     $query->whereIn('group_id', $ids);
                 }
             }

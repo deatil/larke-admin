@@ -76,6 +76,7 @@ class AuthRule extends Base
         $list = $query
             ->offset($start)
             ->limit($limit)
+            ->orderBy('listorder', $order)
             ->orderBy('create_time', $order)
             ->orderBy('slug', $order)
             ->get()

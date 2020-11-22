@@ -69,6 +69,7 @@ class AuthGroup extends Base
         $list = $query
             ->offset($start)
             ->limit($limit)
+            ->orderBy('listorder', $order)
             ->orderBy('create_time', $order)
             ->get()
             ->toArray(); 
