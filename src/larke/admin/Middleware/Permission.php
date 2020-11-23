@@ -31,11 +31,11 @@ class Permission
      */
     public function permissionCheck()
     {
-        if (app('larke.admin')->isAdministrator()) {
+        if (app('larke.admin.admin')->isAdministrator()) {
             return;
         }
         
-        $adminId = app('larke.admin')->getId();
+        $adminId = app('larke.admin.admin')->getId();
         $requestUrl = \Route::currentRouteName();
         $requestMethod = request()->getMethod();
         
@@ -53,7 +53,7 @@ class Permission
      */
     protected function shouldPassThrough($request)
     {
-        $excepts = array_merge(config('larke.auth.excepts', []), [
+        $excepts = array_merge(config('larkeadmin.auth.excepts', []), [
             'larke-admin-passport-captcha',
             'larke-admin-passport-login',
             'larke-admin-passport-refresh-token',

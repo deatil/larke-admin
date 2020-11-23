@@ -37,7 +37,7 @@ class System extends Base
     public function info()
     {
         $info = [
-            'admin' => config('larke.admin'),
+            'admin' => config('larkeadmin.admin'),
             'system' => $this->getSysInfo(),
         ];
         

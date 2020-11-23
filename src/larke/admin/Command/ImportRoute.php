@@ -65,7 +65,7 @@ class ImportRoute extends Command
             if (!isset($route['prefix']) 
                 || empty($route['method'])
                 || empty($route['name'])
-                || $route['prefix'] != config('larke.route.prefix')
+                || $route['prefix'] != config('larkeadmin.route.prefix')
             ) {
                 continue;
             }

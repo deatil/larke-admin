@@ -89,6 +89,7 @@ class Config extends Base
             ->offset($start)
             ->limit($limit)
             ->orderBy('listorder', $order)
+            ->orderBy('create_time', $order)
             ->get()
             ->toArray(); 
         
@@ -112,7 +113,8 @@ class Config extends Base
             return $this->errorJson(__('ID不能为空'));
         }
         
-        $info = ConfigModel::where(['id' => $id])
+        $info = ConfigModel::where('id', '=', $id)
+            ->orWhere('name', '=', $id)
             ->first();
         if (empty($info)) {
             return $this->errorJson(__('信息不存在'));
@@ -251,8 +253,9 @@ class Config extends Base
         
         $updateData = [
             'group' => $data['group'],
+            'type' => $data['type'],
             'title' => $data['title'],
-            'title' => $data['title'],
+            'name' => $data['name'],
             'options' => $data['options'] ?? '',
             'value' => $data['value'] ?? '',
             'description' => $data['description'],

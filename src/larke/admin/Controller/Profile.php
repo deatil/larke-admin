@@ -29,7 +29,7 @@ class Profile extends Base
      */
     public function index()
     {
-        $data = app('larke.admin')->getData();
+        $data = app('larke.admin.admin')->getData();
         
         return $this->successJson(__('获取成功'), $data);
     }
@@ -69,7 +69,7 @@ class Profile extends Base
         ];
         
         // 更新信息
-        $adminid = app('larke.admin')->getId();
+        $adminid = app('larke.admin.admin')->getId();
         $status = AdminModel::where('id', $adminid)
             ->update($updateData);
         if ($status === false) {
@@ -100,7 +100,7 @@ class Profile extends Base
             return $this->errorJson($validator->errors()->first());
         }
         
-        $adminid = app('larke.admin')->getId();
+        $adminid = app('larke.admin.admin')->getId();
         $status = AdminModel::where('id', $adminid)
             ->first()
             ->updateAvatar($data['avatar']);
@@ -140,7 +140,7 @@ class Profile extends Base
             return $this->errorJson(__('两次密码输入不一致'));
         }
 
-        $adminid = app('larke.admin')->getId();
+        $adminid = app('larke.admin.admin')->getId();
         $adminInfo = AdminModel::where('id', $adminid)
             ->first();
         if (empty($adminInfo)) {
@@ -148,7 +148,7 @@ class Profile extends Base
         }
         
         $encryptPassword = (new PasswordService())
-            ->withSalt(config('larke.passport.password_salt'))
+            ->withSalt(config('larkeadmin.passport.password_salt'))
             ->encrypt($oldPassword, $adminInfo['password_salt']); 
         if ($encryptPassword != $adminInfo['password']) {
             return $this->errorJson(__('用户密码错误'));
@@ -156,7 +156,7 @@ class Profile extends Base
 
         // 新密码
         $newPasswordInfo = (new PasswordService())
-            ->withSalt(config('larke.passport.password_salt'))
+            ->withSalt(config('larkeadmin.passport.password_salt'))
             ->encrypt($newPassword); 
 
         // 更新信息
@@ -178,7 +178,7 @@ class Profile extends Base
      */
     public function rules()
     {
-        $rules = app('larke.admin')->getRules();
+        $rules = app('larke.admin.admin')->getRules();
         
         return $this->successJson(__('获取成功'), [
             'list' => $rules,

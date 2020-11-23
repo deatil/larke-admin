@@ -53,12 +53,12 @@ class Authenticate
             $this->errorJson(__('token格式错误'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
-        if (app('larke.cache')->has(md5($accessToken))) {
+        if (app('larke.admin.cache')->has(md5($accessToken))) {
             $this->errorJson(__('token已失效'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
-        $jwtAuth = app('larke.jwt')
-            ->withJti(config('larke.passport.access_token_id'))
+        $jwtAuth = app('larke.admin.jwt')
+            ->withJti(config('larkeadmin.passport.access_token_id'))
             ->withToken($accessToken)
             ->decode();
         
@@ -80,16 +80,16 @@ class Authenticate
         
         $adminInfo = $adminInfo->toArray();
         
-        app('larke.admin')
+        app('larke.admin.admin')
             ->withAccessToken($accessToken)
             ->withId($adminid)
             ->withData($adminInfo);
         
-        if (! app('larke.admin')->isActive()) {
+        if (! app('larke.admin.admin')->isActive()) {
             $this->errorJson(__('帐号不存在或者已被锁定'), \ResponseCode::AUTH_ERROR);
         }
         
-        if (! app('larke.admin')->isGroupActive()) {
+        if (! app('larke.admin.admin')->isGroupActive()) {
             $this->errorJson(__('帐号用户组不存在或者已被锁定'), \ResponseCode::AUTH_ERROR);
         }
     }
@@ -103,7 +103,7 @@ class Authenticate
      */
     protected function shouldPassThrough($request)
     {
-        $excepts = array_merge(config('larke.auth.excepts', []), [
+        $excepts = array_merge(config('larkeadmin.auth.excepts', []), [
             'larke-admin-passport-captcha',
             'larke-admin-passport-login',
             'larke-admin-passport-refresh-token',

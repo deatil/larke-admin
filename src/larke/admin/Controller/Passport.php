@@ -40,7 +40,7 @@ class Passport extends Base
         $captcha = $Captcha->getData();
         $captchaUniq = $Captcha->getUniqid();
         
-        $captchaKey = config('larke.passport.header_captcha_key');
+        $captchaKey = config('larkeadmin.passport.header_captcha_key');
         return $this->successJson(__('获取成功'), [
             'captcha' => $captcha,
         ], 0, [
@@ -78,7 +78,7 @@ class Passport extends Base
         
         $name = $request->get('name');
         
-        $captchaKey = config('larke.passport.header_captcha_key');
+        $captchaKey = config('larkeadmin.passport.header_captcha_key');
         $captchaUniq = $request->header($captchaKey);
         $captcha = $request->get('captcha');
         if (!Captcha::check($captcha, $captchaUniq)) {
@@ -96,7 +96,7 @@ class Passport extends Base
         $password = $request->post('password');
         
         $encryptPassword = (new PasswordService())
-            ->withSalt(config('larke.passport.password_salt'))
+            ->withSalt(config('larkeadmin.passport.password_salt'))
             ->encrypt($password, $adminInfo['password_salt']); 
         if ($encryptPassword != $adminInfo['password']) {
             return $this->errorJson(__('账号密码错误'), \ResponseCode::LOGIN_ERROR);
@@ -107,13 +107,13 @@ class Passport extends Base
         }
         
         // 生成 accessToken
-        $expiresIn = config('larke.passport.access_expires_in', 86400);
-        $accessToken = app('larke.jwt')
+        $expiresIn = config('larkeadmin.passport.access_expires_in', 86400);
+        $accessToken = app('larke.admin.jwt')
             ->withClaim([
                 'adminid' => $adminInfo['id'],
             ])
             ->withExp($expiresIn)
-            ->withJti(config('larke.passport.access_token_id'))
+            ->withJti(config('larkeadmin.passport.access_token_id'))
             ->encode()
             ->getToken();
         if (empty($accessToken)) {
@@ -121,13 +121,13 @@ class Passport extends Base
         }
         
         // 刷新token
-        $refreshExpiresIn = config('larke.passport.refresh_expires_in', 300);
-        $refreshToken = app('larke.jwt')
+        $refreshExpiresIn = config('larkeadmin.passport.refresh_expires_in', 300);
+        $refreshToken = app('larke.admin.jwt')
             ->withClaim([
                 'adminid' => $adminInfo['id'],
             ])
             ->withExp($refreshExpiresIn)
-            ->withJti(config('larke.passport.refresh_token_id'))
+            ->withJti(config('larkeadmin.passport.refresh_token_id'))
             ->encode()
             ->getToken();
         if (empty($refreshToken)) {
@@ -157,12 +157,12 @@ class Passport extends Base
             return $this->errorJson(__('refreshToken不能为空'), \ResponseCode::REFRESH_TOKEN_ERROR);
         }
         
-        if (app('larke.cache')->has(md5($refreshToken))) {
+        if (app('larke.admin.cache')->has(md5($refreshToken))) {
             return $this->errorJson(__('refreshToken已失效'), \ResponseCode::REFRESH_TOKEN_ERROR);
         }
         
-        $refreshJwt = app('larke.jwt')
-            ->withJti(config('larke.passport.refresh_token_id'))
+        $refreshJwt = app('larke.admin.jwt')
+            ->withJti(config('larkeadmin.passport.refresh_token_id'))
             ->withToken($refreshToken)
             ->decode();
         
@@ -175,13 +175,13 @@ class Passport extends Base
             return $this->errorJson(__('refreshToken错误'), \ResponseCode::REFRESH_TOKEN_ERROR);
         }
         
-        $expiresIn = config('larke.passport.access_expires_in', 86400);
-        $newAccessToken = app('larke.jwt')
+        $expiresIn = config('larkeadmin.passport.access_expires_in', 86400);
+        $newAccessToken = app('larke.admin.jwt')
             ->withClaim([
                 'adminid' => $refreshAdminid,
             ])
             ->withExp($expiresIn)
-            ->withJti(config('larke.passport.access_token_id'))
+            ->withJti(config('larkeadmin.passport.access_token_id'))
             ->encode()
             ->getToken();
         if (empty($newAccessToken)) {
@@ -210,13 +210,13 @@ class Passport extends Base
             return $this->errorJson(__('refreshToken不能为空'), \ResponseCode::LOGOUT_ERROR);
         }
         
-        if (app('larke.cache')->has(md5($refreshToken))) {
+        if (app('larke.admin.cache')->has(md5($refreshToken))) {
             return $this->errorJson(__('refreshToken已失效'), \ResponseCode::LOGOUT_ERROR);
         }
         
         // 刷新Token
-        $refreshJwt = app('larke.jwt')
-            ->withJti(config('larke.passport.refresh_token_id'))
+        $refreshJwt = app('larke.admin.jwt')
+            ->withJti(config('larkeadmin.passport.refresh_token_id'))
             ->withToken($refreshToken)
             ->decode();
         
@@ -229,18 +229,18 @@ class Passport extends Base
             return $this->errorJson(__('refreshToken错误'), \ResponseCode::LOGOUT_ERROR);
         }
         
-        $accessAdminid = app('larke.admin')->getId();
+        $accessAdminid = app('larke.admin.admin')->getId();
         if ($accessAdminid != $refreshAdminid) {
             return $this->errorJson(__('退出失败'), \ResponseCode::LOGOUT_ERROR);
         }
         
-        $accessToken = app('larke.admin')->getAccessToken();
+        $accessToken = app('larke.admin.admin')->getAccessToken();
         
         $refreshTokenExpiresIn = $refreshJwt->getClaim('exp') - $refreshJwt->getClaim('iat');
         
         // 添加缓存黑名单
-        app('larke.cache')->add(md5($accessToken), 'out', $refreshTokenExpiresIn);
-        app('larke.cache')->add(md5($refreshToken), 'out', $refreshTokenExpiresIn);
+        app('larke.admin.cache')->add(md5($accessToken), 'out', $refreshTokenExpiresIn);
+        app('larke.admin.cache')->add(md5($refreshToken), 'out', $refreshTokenExpiresIn);
         
         // 监听事件
         event(new Event\PassportLogoutAfter());

@@ -54,7 +54,7 @@ class ResetPasword extends Command
         
         // 新密码
         $newPasswordInfo = (new PasswordService())
-            ->withSalt(config('larke.passport.password_salt'))
+            ->withSalt(config('larkeadmin.passport.password_salt'))
             ->encrypt(md5($newPassword)); 
 
         // 更新信息

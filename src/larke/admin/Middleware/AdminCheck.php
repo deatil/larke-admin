@@ -18,7 +18,7 @@ class AdminCheck
     
     public function handle($request, Closure $next)
     {
-        $isAdministrator = app('larke.admin')->isAdministrator();
+        $isAdministrator = app('larke.admin.admin')->isAdministrator();
         if (!$isAdministrator) {
             $this->errorJson(__('你没有权限进行该操作'), \ResponseCode::AUTH_ERROR);
         }

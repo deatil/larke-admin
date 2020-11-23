@@ -69,7 +69,7 @@ class Upload
      */
     public function initStorage()
     {
-        return $this->disk(config('larke.upload.disk'));
+        return $this->disk(config('larkeadmin.upload.disk'));
     }
 
     /**
@@ -79,7 +79,7 @@ class Upload
      */
     public function defaultDirectory()
     {
-        return config('larke.upload.directory.file');
+        return config('larkeadmin.upload.directory.file');
     }
 
     /**
@@ -221,7 +221,7 @@ class Upload
         $extension = $file->extension();
         
         $filetype = 'other';
-        foreach (config('larke.upload.file_types') as $type => $pattern) {
+        foreach (config('larkeadmin.upload.file_types') as $type => $pattern) {
             if (preg_match($pattern, $extension) === 1) {
                 $filetype = $type;
                 break;
@@ -322,7 +322,7 @@ class Upload
             return $this->storage->url($path);
         }
 
-        return Storage::disk(config('larke.upload.disk'))->url($path);
+        return Storage::disk(config('larkeadmin.upload.disk'))->url($path);
     }
 
     /**

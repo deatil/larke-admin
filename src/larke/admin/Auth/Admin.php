@@ -119,7 +119,7 @@ class Admin
             return false;
         }
         
-        return ($this->id == config('larke.auth.admin_id'));
+        return ($this->id == config('larkeadmin.auth.admin_id'));
     }
 
     /**

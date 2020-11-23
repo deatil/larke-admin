@@ -16,7 +16,7 @@ class Log
 {
     public function handle($request, Closure $next)
     {
-        $adminInfo = app('larke.admin')->getData();
+        $adminInfo = app('larke.admin.admin')->getData();
         
         $response = $next($request);
         

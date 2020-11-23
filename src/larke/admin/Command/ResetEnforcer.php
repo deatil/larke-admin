@@ -45,7 +45,7 @@ class ResetEnforcer extends Command
     protected function runReset()
     {
         // 清空原始数据
-        $table = config('larkeauth.basic.database.rules_table');
+        $table = config('larkeadminauth.basic.database.rules_table');
         DB::table($table)->truncate();
         
         // 规则权限

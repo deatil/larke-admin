@@ -39,6 +39,59 @@ class Extension
     }
     
     /**
+     * Get a extension.
+     *
+     * @param string|array $name
+     *
+     * @return string|array
+     */
+    public function getExtend($names = null)
+    {
+        if (is_array($names)) {
+            $extensions = [];
+            foreach ($names as $name) {
+                $extensions[$name] = $this->getExtend($name);
+            }
+            
+            return $extensions;
+        }
+        
+        if (isset($this->extensions[$names])) {
+            $extension = $this->extensions[$names];
+            return $extension;
+        }
+        
+        return $this->extensions;
+    }
+    
+    /**
+     * Forget a extension or extensions.
+     *
+     * @param string|array $name
+     *
+     * @return string|array
+     */
+    public function forget($names)
+    {
+        if (is_array($names)) {
+            $forgetExtensions = [];
+            foreach ($names as $name) {
+                $forgetExtensions[$name] = $this->forget($name);
+            }
+            
+            return $forgetExtensions;
+        }
+        
+        if (isset($this->extensions[$names])) {
+            $extension = $this->extensions[$names];
+            unset($this->extensions[$names]);
+            return $extension;
+        }
+        
+        return null;
+    }
+    
+    /**
      * Set routes for this Route.
      *
      * @param $callback
@@ -50,8 +103,8 @@ class Extension
     {
         $attributes = array_merge(
             [
-                'prefix' => config('larke.route.prefix'),
-                'middleware' => config('larke.route.middleware'),
+                'prefix' => config('larkeadmin.route.prefix'),
+                'middleware' => config('larkeadmin.route.middleware'),
             ],
             $config
         );
@@ -69,7 +122,7 @@ class Extension
      */
     public function namespaces($prefix, $paths = [])
     {
-        app('larke.loader')->setPsr4($prefix, $paths)->register();
+        app('larke.admin.loader')->setPsr4($prefix, $paths)->register();
     }
     
     /**
@@ -82,7 +135,7 @@ class Extension
         $dir = $this->getExtensionDirectory();
         
         // 注入扩展命名空间
-        app('larke.loader')->set('', $dir)->register();
+        app('larke.admin.loader')->set('', $dir)->register();
     }
     
     /**
@@ -167,7 +220,7 @@ class Extension
      */
     public function getExtensionDirectory($path = '')
     {
-        $extensionDirectory =  config('larke.extension.directory');
+        $extensionDirectory =  config('larkeadmin.extension.directory');
         return $extensionDirectory.($path ? DIRECTORY_SEPARATOR.$path : $path);
     }
     

@@ -23,7 +23,7 @@ class Config extends Base
     
     public static function getSettings()
     {
-        return Cache::rememberForever(md5('larke.model.config.settings'), function() {
+        return Cache::rememberForever(md5('larkeadmin.model.config.settings'), function() {
             return self::all()->mapWithKeys(function ($setting) {
                 return [$setting->key => $setting->value];
             });
@@ -32,7 +32,7 @@ class Config extends Base
     
     public static function clearCahce()
     {
-        Cache::forget(md5('larke.model.config.settings'));
+        Cache::forget(md5('larkeadmin.model.config.settings'));
     }
     
     public static function has($key)
@@ -60,7 +60,7 @@ class Config extends Base
     public static function remove($key)
     {
         $deleted = static::where('name', $key)->first()->delete();
-        Cache::forget(md5('larke.model.config.settings'));
+        Cache::forget(md5('larkeadmin.model.config.settings'));
         return $deleted;
     }
     

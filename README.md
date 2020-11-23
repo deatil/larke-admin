@@ -17,7 +17,7 @@
 
 ### 安装步骤
 
-首先安装 `laravel 8.*`，并确认连接数据库的配置没有问题，并开始执行以下命令
+首先安装 `laravel 8.*`，并确认连接数据库的配置没有问题，开始执行以下命令
 
 ```php
 composer require lake/larke-admin
@@ -29,7 +29,7 @@ composer require lake/larke-admin
 php artisan vendor:publish --tag=larke-admin-config
 ```
 
-运行完命令后，你可以找到 `config/larke.php`、`config/larkeauth.php` 及 `config/larkeauth-rbac-model.conf` 三个配置文件
+运行完命令后，你可以找到 `config/larkeadmin.php`、`config/larkeauth.php` 及 `config/larkeauth-rbac-model.conf` 三个配置文件
 
 最后运行下面的命令安装完成系统
 

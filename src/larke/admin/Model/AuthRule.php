@@ -63,7 +63,7 @@ class AuthRule extends Base
     
     public static function getCacheStore()
     {
-        $store = config('larke.cache.auth_rule.store');
+        $store = config('larkeadmin.cache.auth_rule.store');
         $store = ('default' == $store) ? null : $store;
         $cacheStore = Cache::store($store);
         
@@ -74,12 +74,12 @@ class AuthRule extends Base
     {
         $cacheStore = static::getCacheStore();
         
-        $configKey = config('larke.cache.auth_rule.key');
+        $configKey = config('larkeadmin.cache.auth_rule.key');
         $rules = $cacheStore->get($configKey);
         if (!$rules) {
             $rules = self::all()->toArray();
             
-            $configTtl = config('larke.cache.auth_rule.ttl');
+            $configTtl = config('larkeadmin.cache.auth_rule.ttl');
             $cacheStore->put($configKey, $rules, $configTtl);
         }
         

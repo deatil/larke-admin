@@ -14,6 +14,6 @@ class Extension extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'larke.extension';
+        return 'larke.admin.extension';
     }
 }

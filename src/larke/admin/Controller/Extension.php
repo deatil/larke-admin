@@ -167,7 +167,7 @@ class Extension extends Base
             return $this->errorJson(__('扩展版本信息不正确'));
         }
         
-        $adminVersion = config('larke.admin.version');
+        $adminVersion = config('larkeadmin.admin.version');
         $versionCheck = Semver::satisfies($adminVersion, $info['adaptation']);
         if (!$versionCheck) {
             return $this->errorJson(__('扩展适配系统版本错误，当前系统版本：:version', [
@@ -270,7 +270,7 @@ class Extension extends Base
             return $this->errorJson(__('扩展信息不正确'));
         }
         
-        $adminVersion = config('larke.admin.version');
+        $adminVersion = config('larkeadmin.admin.version');
         $versionCheck = Semver::satisfies($adminVersion, $info['adaptation']);
         if (!$versionCheck) {
             return $this->errorJson(__('扩展适配系统版本错误，当前系统版本：:version', [

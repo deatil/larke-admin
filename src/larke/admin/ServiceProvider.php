@@ -113,7 +113,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function ensureHttps()
     {
-        if (config('larke.https') || config('larke.secure')) {
+        if (config('larkeadmin.https') || config('larkeadmin.secure')) {
             url()->forceScheme('https');
             $this->app['request']->server->set('HTTPS', true);
         }
@@ -138,7 +138,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function registerConfig()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../resource/config/larke.php', 'larke');
+        $this->mergeConfigFrom(__DIR__ . '/../resource/config/larkeadmin.php', 'larkeadmin');
         
         $this->loadRoutesFrom(__DIR__ . '/../resource/routes/admin.php');
     }
@@ -151,14 +151,14 @@ class ServiceProvider extends BaseServiceProvider
     protected function registerBind()
     {
         // 导入器
-        $this->app->bind('larke.loader', Loader::class);
+        $this->app->bind('larke.admin.loader', Loader::class);
         
         // json响应
-        $this->app->bind('larke.json', ResponseContract::class);
+        $this->app->bind('larke.admin.json', ResponseContract::class);
         $this->app->bind(ResponseContract::class, function() {
             $HttpResponse = new HttpResponse();
             
-            $config = config('larke.response.json');
+            $config = config('larkeadmin.response.json');
             $HttpResponse->withIsAllowOrigin($config['is_allow_origin'])
                 ->withAllowOrigin($config['allow_origin'])
                 ->withAllowCredentials($config['allow_credentials'])
@@ -171,19 +171,19 @@ class ServiceProvider extends BaseServiceProvider
         });
         
         // 系统使用缓存
-        $this->app->singleton('larke.cache', function() {
+        $this->app->singleton('larke.admin.cache', function() {
             $Cache = new Cache();
             return $Cache->store();
         });
         
         // 管理员登陆信息
-        $this->app->singleton('larke.admin', Admin::class);
+        $this->app->singleton('larke.admin.admin', Admin::class);
         
         // jwt
-        $this->app->bind('larke.jwt', JwtContract::class);
+        $this->app->bind('larke.admin.jwt', JwtContract::class);
         $this->app->bind(JwtContract::class, function() {
             $Jwt = new Jwt();
-            $config = config('larke.jwt');
+            $config = config('larkeadmin.jwt');
 
             $Jwt->withAlg($config['alg']);
             $Jwt->withIss($config['iss']);
@@ -202,18 +202,18 @@ class ServiceProvider extends BaseServiceProvider
             return $Jwt;
         });
         
+        // 扩展
+        $this->app->singleton('larke.admin.extension', Extension::class);
+        
         // response()->success('获取成功');
         Response::macro('success', function($message = '获取成功', $data = null, $code = 0, $header = []) {
-            return app('larke.json')->json(true, $code, $message, $data, $header);
+            return app('larke.admin.json')->json(true, $code, $message, $data, $header);
         });
         
         // response()->error('获取失败');
         Response::macro('error', function($message = '获取失败', $code = 1, $data = [], $header = []) {
-            return app('larke.json')->json(false, $code, $message, $data, $header);
+            return app('larke.admin.json')->json(false, $code, $message, $data, $header);
         });
-        
-        // 扩展
-        $this->app->singleton('larke.extension', Extension::class);
     }
     
     /**
@@ -253,7 +253,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function registerExtension()
     {
-        app('larke.extension')->registerExtensionNamespace();
+        app('larke.admin.extension')->registerExtensionNamespace();
     }
     
     /**
@@ -289,7 +289,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function bootExtension()
     {
-        app('larke.extension')->bootExtension();
+        app('larke.admin.extension')->bootExtension();
     }
     
 }

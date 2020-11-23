@@ -234,7 +234,7 @@ class Attachment extends Base
             return $this->errorJson(__('上传文件失败'));
         }
         
-        $uploadDisk = config('larke.upload.disk');
+        $uploadDisk = config('larkeadmin.upload.disk');
         
         $driver = $uploadDisk ?: 'local';
         
@@ -264,11 +264,11 @@ class Attachment extends Base
         }
         
         if ($filetype == 'image') {
-            $uploadDir = config('larke.upload.directory.image');
+            $uploadDir = config('larkeadmin.upload.directory.image');
         } elseif ($filetype == 'video' || $filetype == 'audio') {
-            $uploadDir = config('larke.upload.directory.media');
+            $uploadDir = config('larkeadmin.upload.directory.media');
         } else {
-            $uploadDir = config('larke.upload.directory.file');
+            $uploadDir = config('larkeadmin.upload.directory.file');
         }
         
         $path = $UploadService->dir($uploadDir)
@@ -277,7 +277,7 @@ class Attachment extends Base
         
         $data = [
             'belong_type' => AdminModel::class,
-            'belong_id' => app('larke.admin')->getId(),
+            'belong_id' => app('larke.admin.admin')->getId(),
             'name' => $name,
             'path' => $path,
             'mime' => $mimeType,

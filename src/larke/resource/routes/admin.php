@@ -3,13 +3,13 @@
 use Illuminate\Support\Facades\Route;
 
 Route::group([
-    'prefix' => config('larke.route.prefix'),
-    'middleware' => config('larke.route.middleware'),
-    'namespace' => config('larke.route.namespace'),
-    'as' => 'larke-admin-',
+    'prefix' => config('larkeadmin.route.prefix'),
+    'middleware' => config('larkeadmin.route.middleware'),
+    'namespace' => config('larkeadmin.route.namespace'),
+    'as' => config('larkeadmin.route.as'),
 ], function ($router) {
     $router->group([
-        'middleware' => config('larke.route.admin_middleware'),
+        'middleware' => config('larkeadmin.route.admin_middleware'),
     ], function ($router) {
         $router->get('/auth/rule', 'AuthRule@index')->name('auth-rule-index');
         $router->get('/auth/rule/tree', 'AuthRule@indexTree')->name('auth-rule-index-tree');

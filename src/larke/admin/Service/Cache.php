@@ -25,7 +25,7 @@ class Cache
     public function store($store = null)
     {
         if (!$store) {
-            $store = config('larke.cache.store', 'default');
+            $store = config('larkeadmin.cache.store', 'default');
             $store = ('default' == $store) ? null : $store;
         }
         $this->store = LaravelCache::store($store);

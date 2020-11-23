@@ -14,6 +14,6 @@ class AuthAdmin extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'larke.admin';
+        return 'larke.admin.admin';
     }
 }

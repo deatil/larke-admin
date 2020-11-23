@@ -129,7 +129,7 @@ class Extension extends Command
             return false;
         }
         
-        $adminVersion = config('larke.admin.version');
+        $adminVersion = config('larkeadmin.admin.version');
         $versionCheck = Semver::satisfies($adminVersion, $info['adaptation']);
         if (!$versionCheck) {
             $this->line("<error>Extension adaptation'version is error ! Admin'version is {$adminVersion} !</error> ");
@@ -236,7 +236,7 @@ class Extension extends Command
             return false;
         }
         
-        $adminVersion = config('larke.admin.version');
+        $adminVersion = config('larkeadmin.admin.version');
         $versionCheck = Semver::satisfies($adminVersion, $info['adaptation']);
         if (!$versionCheck) {
             $this->line("<error>Extension adaptation'version is error ! Admin'version is {$adminVersion} !</error> ");

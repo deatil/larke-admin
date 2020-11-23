@@ -61,7 +61,7 @@ class Extension extends Base
     
     public static function getExtensions()
     {
-        return Cache::rememberForever(md5('larke.model.extensions'), function() {
+        return Cache::rememberForever(md5('larkeadmin.model.extensions'), function() {
             return self::orderBy('listorder', 'ASC')
                 ->orderBy('installtime', 'ASC')
                 ->get()
@@ -74,7 +74,7 @@ class Extension extends Base
     
     public function clearCahce()
     {
-        Cache::forget(md5('larke.model.extensions'));
+        Cache::forget(md5('larkeadmin.model.extensions'));
     }
     
     /**

@@ -189,7 +189,7 @@ class Admin extends Base
             return $this->errorJson(__('账号ID不能为空'));
         }
         
-        $adminid = app('larke.admin')->getId();
+        $adminid = app('larke.admin.admin')->getId();
         if ($id == $adminid) {
             return $this->errorJson(__('你不能删除你自己'));
         }
@@ -201,7 +201,7 @@ class Admin extends Base
             return $this->errorJson(__('账号信息不存在'));
         }
         
-        if ($info['id'] == config('larke.auth.admin_id')) {
+        if ($info['id'] == config('larkeadmin.auth.admin_id')) {
             return $this->errorJson(__('当前账号不能被删除'));
         }
         
@@ -274,7 +274,7 @@ class Admin extends Base
         }
         
         // 用户组默认取当前用户的用户组的其中之一
-        $groupIds = app('larke.admin')->getGroupids();
+        $groupIds = app('larke.admin.admin')->getGroupids();
         if (count($groupIds) > 0) {
             AuthGroupAccessModel::create([
                 'admin_id' => $admin->id,
@@ -300,7 +300,7 @@ class Admin extends Base
             return $this->errorJson(__('账号ID不能为空'));
         }
         
-        $adminid = app('larke.admin')->getId();
+        $adminid = app('larke.admin.admin')->getId();
         if ($id == $adminid) {
             return $this->errorJson(__('你不能修改自己的信息'));
         }
@@ -392,7 +392,7 @@ class Admin extends Base
             return $this->errorJson(__('账号ID不能为空'));
         }
         
-        $adminid = app('larke.admin')->getId();
+        $adminid = app('larke.admin.admin')->getId();
         if ($id == $adminid) {
             return $this->errorJson(__('你不能修改自己的头像'));
         }
@@ -438,7 +438,7 @@ class Admin extends Base
             return $this->errorJson(__('账号ID不能为空'));
         }
         
-        $adminid = app('larke.admin')->getId();
+        $adminid = app('larke.admin.admin')->getId();
         if ($id == $adminid) {
             return $this->errorJson(__('你不能修改自己的密码'));
         }
@@ -458,7 +458,7 @@ class Admin extends Base
 
         // 新密码
         $newPasswordInfo = (new PasswordService())
-            ->withSalt(config('larke.passport.password_salt'))
+            ->withSalt(config('larkeadmin.passport.password_salt'))
             ->encrypt($password); 
 
         // 更新信息
@@ -485,7 +485,7 @@ class Admin extends Base
             return $this->errorJson(__('ID不能为空'));
         }
         
-        $adminid = app('larke.admin')->getId();
+        $adminid = app('larke.admin.admin')->getId();
         if ($id == $adminid) {
             return $this->errorJson(__('你不能修改自己的账号'));
         }
@@ -521,7 +521,7 @@ class Admin extends Base
             return $this->errorJson(__('ID不能为空'));
         }
         
-        $adminid = app('larke.admin')->getId();
+        $adminid = app('larke.admin.admin')->getId();
         if ($id == $adminid) {
             return $this->errorJson(__('你不能修改自己的账号'));
         }
@@ -559,12 +559,12 @@ class Admin extends Base
             return $this->errorJson(__('refreshToken不能为空'));
         }
         
-        if (app('larke.cache')->has(md5($refreshToken))) {
+        if (app('larke.admin.cache')->has(md5($refreshToken))) {
             return $this->errorJson(__('refreshToken已失效'));
         }
         
-        $refreshJwt = app('larke.jwt')
-            ->withJti(config('larke.passport.refresh_token_id'))
+        $refreshJwt = app('larke.admin.jwt')
+            ->withJti(config('larkeadmin.passport.refresh_token_id'))
             ->withToken($refreshToken)
             ->decode();
         
@@ -577,7 +577,7 @@ class Admin extends Base
             return $this->errorJson(__('token错误'));
         }
         
-        $adminid = app('larke.admin')->getId();
+        $adminid = app('larke.admin.admin')->getId();
         if ($refreshAdminid == $adminid) {
             return $this->errorJson(__('你不能退出你的账号'));
         }
@@ -585,7 +585,7 @@ class Admin extends Base
         $refreshTokenExpiresIn = $refreshJwt->getClaim('exp') - $refreshJwt->getClaim('iat');
         
         // 添加缓存黑名单
-        app('larke.cache')->add(md5($refreshToken), 'out', $refreshTokenExpiresIn);
+        app('larke.admin.cache')->add(md5($refreshToken), 'out', $refreshTokenExpiresIn);
         
         return $this->successJson(__('退出成功'));
     }
@@ -617,12 +617,12 @@ class Admin extends Base
         
         $access = $request->get('access');
         if (!empty($access)) {
-            $groupIds = app('larke.admin')->getGroupChildrenIds();
+            $groupIds = app('larke.admin.admin')->getGroupChildrenIds();
             $accessIds = explode(',', $access);
             $accessIds = collect($accessIds)->unique();
             
             // 取交集
-            if (!app('larke.admin')->isAdministrator()) {
+            if (!app('larke.admin.admin')->isAdministrator()) {
                 $intersectAccess = array_intersect_assoc($groupIds, $accessIds);
             } else {
                 $intersectAccess = $accessIds;
