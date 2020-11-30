@@ -254,7 +254,7 @@ class Upload
     }
 
     /**
-     * Set path column in has-many related model.
+     * Set path column.
      *
      * @param string $column
      *
@@ -334,7 +334,7 @@ class Upload
      */
     public function generateUniqueName(UploadedFile $file)
     {
-        return md5(uniqid()).'.'.$file->getClientOriginalExtension();
+        return md5(uniqid().microtime()).'.'.$file->getClientOriginalExtension();
     }
 
     /**

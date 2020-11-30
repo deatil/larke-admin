@@ -104,10 +104,10 @@ class Authenticate
     protected function shouldPassThrough($request)
     {
         $excepts = array_merge(config('larkeadmin.auth.excepts', []), [
-            'larke-admin-passport-captcha',
-            'larke-admin-passport-login',
-            'larke-admin-passport-refresh-token',
-            'larke-admin-attachment-download',
+            'larke-admin.passport.captcha',
+            'larke-admin.passport.login',
+            'larke-admin.passport.refresh-token',
+            'larke-admin.attachment.download',
         ]);
 
         return collect($excepts)
