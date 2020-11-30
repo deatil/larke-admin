@@ -20,8 +20,8 @@
     "require": {
         "php": "^7.3",
         "laravel/framework": "^8.0",
-        "lcobucci/jwt": "^3.3",
         "composer/semver": "^3.2",
+        "lake/larke-jwt": "^1.0",
         "lake/larke-auth":"^1.0"
     },
     "autoload": {
