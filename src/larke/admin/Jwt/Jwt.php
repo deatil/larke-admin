@@ -2,11 +2,12 @@
 
 namespace Larke\Admin\Jwt;
 
-use Lcobucci\JWT\Builder;
-use Lcobucci\JWT\Parser;
-use Lcobucci\JWT\Signer\Hmac\Sha256;
-use Lcobucci\JWT\Signer\Key;
-use Lcobucci\JWT\ValidationData;
+use Illuminate\Support\Arr;
+
+use Larke\JWT\Builder;
+use Larke\JWT\Parser;
+use Larke\JWT\Signer\Key;
+use Larke\JWT\ValidationData;
 
 use Larke\Admin\Contracts\Jwt as JwtContract;
 
@@ -19,9 +20,9 @@ use Larke\Admin\Contracts\Jwt as JwtContract;
 class Jwt implements JwtContract
 {
     /**
-     * alg
+     * headers
      */
-    private $alg = 'HS256';
+    private $headers = [];
     
     /**
      * claim issuer
@@ -64,31 +65,24 @@ class Jwt implements JwtContract
     private $claims = [];
     
     /**
-     * 密钥
+     * 配置
      */
-    private $secrect = '';
+    private $signerConfig = [];
     
     /**
-     * 私钥地址
+     * 设置 header
      */
-    private $privateKey = '';
-    
-    /**
-     * 公钥地址
-     */
-    private $publicKey = '';
-    
-    /**
-     * 填写 RSA(RSA and ECDSA) 或者 SECRECT
-     */
-    private $signerType = 'SECRECT';
-    
-    /**
-     * 设置alg
-     */
-    public function withAlg($alg)
+    public function withHeader($name, $value = null)
     {
-        $this->alg = $alg;
+        if (is_array($name)) {
+            foreach ($name as $k => $v) {
+                $this->withHeader($k, $v);
+            }
+            
+            return $this;
+        }
+        
+        $this->headers[(string) $name] = $value;
         return $this;
     }
     
@@ -170,58 +164,82 @@ class Jwt implements JwtContract
     /**
      * 设置claim
      */
-    public function withClaim(array $claim)
+    public function withClaim($claim, $value = null)
     {
-        $this->claims = array_merge($this->claims, $claim);
-        return $this;
-    }
-    
-    /**
-     * 设置claims
-     */
-    public function withClaims(array $claims)
-    {
-        $this->claims = $claims;
-        return $this;
-    }
-    
-    /**
-     * 设置secrect
-     */
-    public function withSecrect($secrect)
-    {
-        $this->secrect = $secrect;
-        return $this;
-    }
-    
-    /**
-     * 设置 privateKey
-     */
-    public function withPrivateKey($privateKey)
-    {
-        $this->privateKey = $privateKey;
-        return $this;
-    }
-    
-    /**
-     * 设置 publicKey
-     */
-    public function withPublicKey($publicKey)
-    {
-        $this->publicKey = $publicKey;
-        return $this;
-    }
-    
-    /**
-     * 设置 signerType
-     */
-    public function withSignerType($signerType)
-    {
-        if ($signerType != 'RSA') {
-            $signerType = 'SECRECT';
+        if (is_array($claim)) {
+            foreach ($claim as $k => $v) {
+                $this->withClaim($k, $v);
+            }
+            
+            return $this;
         }
-        $this->signerType = $signerType;
+        
+        $this->claims[(string) $claim] = $value;
         return $this;
+    }
+    
+    /**
+     * 设置配置
+     */
+    public function withSignerConfig($config)
+    {
+        $this->signerConfig = array_merge($this->signerConfig, $config);
+        return $this;
+    }
+    
+    /**
+     * 获取签名
+     */
+    public function getSigner($isPrivate = true)
+    {
+        $algorithm = Arr::get($this->signerConfig, 'algorithm', []);
+        if (empty($algorithm)) {
+            return false;
+        }
+        
+        $type = Arr::get($algorithm, 'type', '');
+        $sha = Arr::get($algorithm, 'sha', '');
+        if (empty($type) || empty($sha)) {
+            return false;
+        }
+        
+        $signer = '';
+        $secrect = '';
+        $signerNamespace = '\\Larke\\JWT\\Signer\\';
+        switch ($type) {
+            case 'hmac':
+                $class = $signerNamespace . 'Hmac\\' . $sha;
+                $signer = new $class;
+                $key = Arr::get($algorithm, 'hmac.secrect', '');
+                $secrect = new Key($key);
+                break;
+            case 'rsa':
+                $class = $signerNamespace . 'Rsa\\' . $sha;
+                $signer = new $class;
+                if ($isPrivate) {
+                    $privateKey = Arr::get($algorithm, 'rsa.private_key', '');
+                    $key = 'file://'.$privateKey;
+                } else {
+                    $publicKey = Arr::get($algorithm, 'rsa.public_key', '');
+                    $key = 'file://'.$publicKey;
+                }
+                $secrect = new Key($key);
+                break;
+            case 'ecdsa':
+                $class = $signerNamespace . 'Ecdsa\\' . $sha;
+                $signer = new $class;
+                if ($isPrivate) {
+                    $privateKey = Arr::get($algorithm, 'ecdsa.private_key', '');
+                    $key = 'file://'.$privateKey;
+                } else {
+                    $publicKey = Arr::get($algorithm, 'ecdsa.public_key', '');
+                    $key = 'file://'.$publicKey;
+                }
+                $secrect = new Key($key);
+                break;
+        }
+        
+        return [$signer, $secrect];
     }
     
     /**
@@ -231,29 +249,26 @@ class Jwt implements JwtContract
     {
         $Builder = new Builder();
         
-        $Builder->withHeader('alg', $this->alg);
         $Builder->issuedBy($this->issuer); // 发布者
         $Builder->permittedFor($this->audience); // 接收者
         $Builder->relatedTo($this->subject); // 主题
         $Builder->identifiedBy($this->jti); // 对当前token设置的标识
-        
-        foreach ($this->claims as $claimKey => $claim) {
-            $Builder->withClaim($claimKey, $claim);
-        }
         
         $time = time();
         $Builder->issuedAt($time); // token创建时间
         $Builder->canOnlyBeUsedAfter($time + $this->notBeforeTime); // 多少秒内无法使用
         $Builder->expiresAt($time + $this->expTime); // 过期时间
         
-        if ($this->signerType == 'RSA') {
-            $key = 'file://'.$this->privateKey;
-        } else {
-            $key = $this->secrect;
+        foreach ($this->headers as $headerKey => $header) {
+            $Builder->withHeader($headerKey, $header);
         }
         
-        $signer = new Sha256();
-        $secrect = new Key($key);
+        foreach ($this->claims as $claimKey => $claim) {
+            $Builder->withClaim($claimKey, $claim);
+        }
+        
+        list($signer, $secrect) = $this->getSigner(true);
+        
         $this->token = $Builder->getToken($signer, $secrect);
         
         return $this;
@@ -287,11 +302,11 @@ class Jwt implements JwtContract
         }
         
         $data = new ValidationData(); 
-        $data->setIssuer($this->issuer);
-        $data->setAudience($this->audience);
-        $data->setId($this->jti);
-        $data->setSubject($this->subject);
-        $data->setCurrentTime(time());
+        $data->issuedBy($this->issuer);
+        $data->permittedFor($this->audience);
+        $data->identifiedBy($this->jti);
+        $data->relatedTo($this->subject);
+        $data->currentTime(time());
 
         return $this->decodeToken->validate($data);
     }
@@ -305,14 +320,8 @@ class Jwt implements JwtContract
             return false;
         }
         
-        if ($this->signerType == 'RSA') {
-            $key = 'file://'.$this->publicKey;
-        } else {
-            $key = $this->secrect;
-        }
+        list($signer, $secrect) = $this->getSigner(false);
         
-        $signer = new Sha256();
-        $secrect = new Key($key);
         return $this->decodeToken->verify($signer, $secrect);
     }
 

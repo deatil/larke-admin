@@ -185,7 +185,6 @@ class ServiceProvider extends BaseServiceProvider
             $Jwt = new Jwt();
             $config = config('larkeadmin.jwt');
 
-            $Jwt->withAlg($config['alg']);
             $Jwt->withIss($config['iss']);
             $Jwt->withAud($config['aud']);
             $Jwt->withSub($config['sub']);
@@ -194,10 +193,7 @@ class ServiceProvider extends BaseServiceProvider
             $Jwt->withExp($config['exp']);
             $Jwt->withNbf($config['nbf']);
             
-            $Jwt->withSignerType($config['signer_type']);
-            $Jwt->withSecrect($config['secrect']);
-            $Jwt->withPrivateKey($config['private_key']);
-            $Jwt->withPublicKey($config['public_key']);
+            $Jwt->withSignerConfig($config['signer']);
             
             return $Jwt;
         });

@@ -20,7 +20,6 @@ return [
     ],
     
     'jwt' => [
-        'alg' => env('LARKE_ADMIN_JWT_ALG', 'HS256'),
         'iss' => env('LARKE_ADMIN_JWT_ISS', 'admin-api.domain.com'),
         'aud' => env('LARKE_ADMIN_JWT_AUD', md5(request()->ip().request()->server('HTTP_USER_AGENT'))),
         'sub' => env('LARKE_ADMIN_JWT_SUB', 'larke-admin-passport'),
@@ -28,10 +27,23 @@ return [
         'exp' => env('LARKE_ADMIN_JWT_EXP', 3600),
         'nbf' => env('LARKE_ADMIN_JWT_NBF', 0),
         
-        'signer_type' => env('LARKE_ADMIN_JWT_SIGNER_TYPE', 'SECRECT'),
-        'secrect' => env('LARKE_ADMIN_JWT_SECRECT', 's1fegdR'),
-        'private_key' => env('LARKE_ADMIN_JWT_PRIVATE_KEY', ''),
-        'public_key' => env('LARKE_ADMIN_JWT_PUBLIC_KEY', ''),
+        'signer' => [
+            'algorithm' => [
+                'type' => env('LARKE_ADMIN_JWT_SIGNER_ALGORITHM_TYPE', 'hmac'),
+                'sha' => env('LARKE_ADMIN_JWT_SIGNER_ALGORITHM_SHA', 'Sha256'),
+            ],
+            'hmac' => [
+                'secrect' => env('LARKE_ADMIN_JWT_SIGNER_HMAC_SECRECT', 's1fegdR'),
+            ],
+            'rsa' => [
+                'private_key' => env('LARKE_ADMIN_JWT_SIGNER_RSA_PRIVATE_KEY', ''),
+                'public_key' => env('LARKE_ADMIN_JWT_SIGNER_RSA_PUBLIC_KEY', ''),
+            ],
+            'ecdsa' => [
+                'private_key' => env('LARKE_ADMIN_JWT_SIGNER_ECDSA_PRIVATE_KEY', ''),
+                'public_key' => env('LARKE_ADMIN_JWT_SIGNER_ECDSA_PUBLIC_KEY', ''),
+            ],
+        ],
     ],
     
     'passport' => [
