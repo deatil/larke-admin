@@ -24,9 +24,13 @@ class Config extends Base
     public static function getSettings()
     {
         return Cache::rememberForever(md5('larkeadmin.model.config.settings'), function() {
-            return self::all()->mapWithKeys(function ($setting) {
-                return [$setting->key => $setting->value];
-            });
+            return self::where('status', '=', 1)
+                ->all()
+                ->mapWithKeys(function ($setting) {
+                    return [$setting->name => $setting->value];
+                })
+                ->sort()
+                ->toArray();
         });
     }
     

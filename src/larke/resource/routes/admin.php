@@ -69,6 +69,8 @@ Route::group([
     $router->patch('/admin/{id}/access', 'Admin@access')->name('admin.access')->where('id', '[A-Za-z0-9]+');
     $router->delete('/admin/logout/{refreshToken}', 'Admin@logout')->name('admin.logout');
     
+    $router->get('/config/settings', 'Config@settings')->name('config.settings');
+    $router->get('/config/list', 'Config@lists')->name('config.lists');
     $router->get('/config', 'Config@index')->name('config.index');
     $router->get('/config/{id}', 'Config@detail')->name('config.detail')->where('id', '[A-Za-z0-9]+');
     $router->post('/config', 'Config@create')->name('config.create');

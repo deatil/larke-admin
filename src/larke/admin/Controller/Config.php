@@ -278,6 +278,36 @@ class Config extends Base
     }
     
     /**
+     * 列表
+     *
+     * @return Response
+     */
+    public function lists()
+    {
+        $list = ConfigModel::where('status', '=', 1)
+            ->orderBy('listorder', 'ASC')
+            ->orderBy('create_time', 'ASC')
+            ->select([
+                'group', 
+                'type',
+                'title',
+                'name',
+                'options',
+                'value',
+                'description',
+                'is_show',
+                'listorder as sort',
+            ])
+            ->get()
+            ->toArray(); 
+        
+        return $this->successJson(__('获取成功'), [
+            'list' => $list,
+        ]);
+        
+    }
+    
+    /**
      * 配置设置
      */
     public function setting(Request $request)
@@ -289,6 +319,18 @@ class Config extends Base
         }
         
         return $this->successJson(__('设置更新成功'));
+    }
+    
+    /**
+     * 配置数组
+     */
+    public function settings()
+    {
+        $settings = ConfigModel::getSettings();
+        
+        return $this->successJson(__('获取成功'), [
+            'settings' => $settings,
+        ]);
     }
     
     /**
