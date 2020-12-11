@@ -74,12 +74,12 @@ Route::group([
     $router->get('/config', 'Config@index')->name('config.index');
     $router->get('/config/{id}', 'Config@detail')->name('config.detail')->where('id', '[A-Za-z0-9]+');
     $router->post('/config', 'Config@create')->name('config.create');
+    $router->put('/config/setting', 'Config@setting')->name('config.setting');
     $router->put('/config/{id}', 'Config@update')->name('config.update')->where('id', '[A-Za-z0-9]+');
     $router->delete('/config/{id}', 'Config@delete')->name('config.delete')->where('id', '[A-Za-z0-9]+');
     $router->patch('/config/{id}/sort', 'Config@listorder')->name('config.listorder')->where('id', '[A-Za-z0-9]+');
     $router->patch('/config/{id}/enable', 'Config@enable')->name('config.enable')->where('id', '[A-Za-z0-9]+');
     $router->patch('/config/{id}/disable', 'Config@disable')->name('config.disable')->where('id', '[A-Za-z0-9]+');
-    $router->put('/config/setting', 'Config@setting')->name('config.setting');
     
     $router->get('/log', 'AdminLog@index')->name('log.index');
     $router->get('/log/{id}', 'AdminLog@detail')->name('log.detail')->where('id', '[A-Za-z0-9]+');

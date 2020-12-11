@@ -21,7 +21,7 @@ class Config extends Base
     public $incrementing = false;
     public $timestamps = false;
     
-    public static function getSettings()
+    public static function getSettings(): array
     {
         return Cache::rememberForever(md5('larkeadmin.model.config.settings'), function() {
             return self::where('status', '=', 1)
@@ -34,34 +34,41 @@ class Config extends Base
         });
     }
     
-    public static function clearCahce()
+    public static function clearCahce(): void
     {
         Cache::forget(md5('larkeadmin.model.config.settings'));
     }
     
-    public static function has($key)
+    public static function has(string $key): bool
     {
-        return static::where('name', $key)->exists();
+        return static::where('name', $key)
+            ->exists();
     }
     
-    public static function get($key, $default = null)
+    public static function get(string $key, ?string $default = null): string
     {
-        return static::where('name', $key)->first()->value ?? $default;
+        return static::where('name', $key)
+            ->first()
+            ->value ?? $default;
     }
     
-    public static function set($key, $value)
+    public static function set(string $key, ?string $value): bool
     {
-        return static::updataOrCreate(['name' => $key], ['value' => $value]);
+        return static::where('name', '=', $key)
+            ->first()
+            ->update([
+                'value' => $value
+            ]);
     }
     
-    public static function setMany($settings)
+    public static function setMany(array $settings = []): void
     {
         foreach ($settings as $key => $value) {
-            return static::set($key, $value);
+            static::set($key, $value);
         }
     }
     
-    public static function remove($key)
+    public static function remove(string $key): bool
     {
         $deleted = static::where('name', $key)->first()->delete();
         Cache::forget(md5('larkeadmin.model.config.settings'));

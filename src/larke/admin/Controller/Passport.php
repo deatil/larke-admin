@@ -9,7 +9,7 @@ use Larke\Admin\Captcha\Captcha;
 use Larke\Admin\Service\Password as PasswordService;
 use Larke\Admin\Model\Admin as AdminModel;
 
-// for dir
+// use dir
 use Larke\Admin\Event;
 
 /**
