@@ -18,7 +18,7 @@ use Larke\Admin\Event;
  * @title 登陆
  * @desc 系统登陆管理
  * @order 100
- * @auth true
+ * @auth false
  *
  * @create 2020-10-19
  * @author deatil
@@ -27,6 +27,11 @@ class Passport extends Base
 {
     /**
      * 验证码
+     *
+     * @title 验证码
+     * @desc 登陆验证码
+     * @order 1001
+     * @auth false
      *
      * @param  Request  $request
      * @return Response
@@ -50,6 +55,11 @@ class Passport extends Base
     
     /**
      * 登陆
+     *
+     * @title 登陆
+     * @desc 登陆登陆
+     * @order 1002
+     * @auth false
      *
      * @param  Request  $request
      * @return Response
@@ -147,6 +157,11 @@ class Passport extends Base
     /**
      * 刷新token
      *
+     * @title 刷新token
+     * @desc 刷新token
+     * @order 1003
+     * @auth false
+     *
      * @param  Request  $request
      * @return Response
      */
@@ -199,6 +214,11 @@ class Passport extends Base
     
     /**
      * 退出
+     *
+     * @title 退出
+     * @desc 退出
+     * @order 1004
+     * @auth true
      *
      * @param  Request  $request
      * @return Response

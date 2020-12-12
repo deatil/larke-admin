@@ -29,7 +29,7 @@ class System extends Base
      *
      * @title 系统详情
      * @desc 系统详情管理
-     * @order 103
+     * @order 1031
      * @auth true
      *
      * @return Response
@@ -52,6 +52,11 @@ class System extends Base
     /**
      * 清除缓存
      *
+     * @title 清除缓存
+     * @desc 清除缓存管理
+     * @order 1032
+     * @auth true
+     *
      * @return Response
      */
     public function clearCache()
@@ -69,6 +74,11 @@ class System extends Base
     /**
      * 设置缓存
      *
+     * @title 设置缓存
+     * @desc 设置缓存管理
+     * @order 1033
+     * @auth true
+     *
      * @return Response
      */
     public function cache()
@@ -83,6 +93,11 @@ class System extends Base
     
     /**
      * 语言包
+     *
+     * @title 语言包
+     * @desc 语言包管理
+     * @order 1034
+     * @auth true
      *
      * @param  Request  $request
      * @return Response

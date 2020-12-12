@@ -6,9 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 
+use Larke\Admin\Event;
 use Larke\Admin\Model\Config as ConfigModel;
-use Larke\Admin\Event\ConfigCreated as ConfigCreatedEvent;
-use Larke\Admin\Event\ConfigUpdated as ConfigUpdatedEvent;
 
 /**
  * 配置
@@ -25,6 +24,11 @@ class Config extends Base
 {
     /**
      * 列表
+     *
+     * @title 配置列表
+     * @desc 系统配置列表
+     * @order 1041
+     * @auth true
      *
      * @param  Request  $request
      * @return Response
@@ -104,6 +108,11 @@ class Config extends Base
     /**
      * 详情
      *
+     * @title 配置详情
+     * @desc 系统配置详情
+     * @order 1042
+     * @auth true
+     *
      * @param string $id
      * @return Response
      */
@@ -125,6 +134,11 @@ class Config extends Base
     
     /**
      * 删除
+     *
+     * @title 配置删除
+     * @desc 系统配置删除
+     * @order 1043
+     * @auth true
      *
      * @param string $id
      * @return Response
@@ -152,6 +166,11 @@ class Config extends Base
     /**
      * 添加
      * type: text,textarea,number,radio,select,checkbox,array,switch,image,images
+     *
+     * @title 配置添加
+     * @desc 系统配置添加
+     * @order 1044
+     * @auth true
      *
      * @param  Request  $request
      * @return Response
@@ -198,7 +217,7 @@ class Config extends Base
         }
         
         // 监听事件
-        event(new ConfigCreatedEvent($config));
+        event(new Event\ConfigCreated($config));
         
         return $this->successJson(__('信息添加成功'), [
             'id' => $config->id,
@@ -207,6 +226,11 @@ class Config extends Base
     
     /**
      * 更新
+     *
+     * @title 配置更新
+     * @desc 系统配置更新
+     * @order 1045
+     * @auth true
      *
      * @param string $id
      * @param Request $request
@@ -272,13 +296,18 @@ class Config extends Base
         }
         
         // 监听事件
-        event(new ConfigUpdatedEvent($info));
+        event(new Event\ConfigUpdated($info));
         
         return $this->successJson(__('信息修改成功'));
     }
     
     /**
-     * 列表
+     * 配置全部列表
+     *
+     * @title 配置全部列表
+     * @desc 配置全部列表，没有分页
+     * @order 1045
+     * @auth true
      *
      * @return Response
      */
@@ -308,25 +337,45 @@ class Config extends Base
     }
     
     /**
-     * 配置设置
+     * 更新配置
+     *
+     * @title 更新配置
+     * @desc 更新配置
+     * @order 1046
+     * @auth true
+     *
+     * @return Response
      */
     public function setting(Request $request)
     {
         $fields = $request->get('fields');
         
+        event(new Event\ConfigSettingBefore($fields));
+        
         if (!empty($fields)) {
             ConfigModel::setMany($fields);
         }
+        
+        event(new Event\ConfigSettingAfter($fields));
         
         return $this->successJson(__('设置更新成功'));
     }
     
     /**
-     * 配置数组
+     * 获取配置数组
+     *
+     * @title 获取配置数组
+     * @desc 获取配置全部数组
+     * @order 1047
+     * @auth true
+     *
+     * @return Response
      */
     public function settings()
     {
         $settings = ConfigModel::getSettings();
+        
+        event(new Event\ConfigSettingsAfter($settings));
         
         return $this->successJson(__('获取成功'), [
             'settings' => $settings,
@@ -335,6 +384,11 @@ class Config extends Base
     
     /**
      * 排序
+     *
+     * @title 配置排序
+     * @desc 配置排序
+     * @order 1048
+     * @auth true
      *
      * @param string $id
      * @param  Request  $request
@@ -365,6 +419,11 @@ class Config extends Base
     /**
      * 启用
      *
+     * @title 配置启用
+     * @desc 配置启用
+     * @order 1049
+     * @auth true
+     *
      * @param string $id
      * @return Response
      */
@@ -394,6 +453,11 @@ class Config extends Base
     
     /**
      * 禁用
+     *
+     * @title 配置禁用
+     * @desc 配置禁用
+     * @order 10410
+     * @auth true
      *
      * @param string $id
      * @return Response

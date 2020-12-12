@@ -27,6 +27,11 @@ class AuthGroup extends Base
     /**
      * 列表
      *
+     * @title 分组列表
+     * @desc 系统管理分组列表
+     * @order 1071
+     * @auth true
+     *
      * @param  Request  $request
      * @return Response
      */
@@ -83,7 +88,12 @@ class AuthGroup extends Base
     }
     
     /**
-     * 分组列表
+     * 分组树结构
+     *
+     * @title 分组树结构
+     * @desc 管理分组树结构
+     * @order 1072
+     * @auth true
      *
      * @param  Request  $request
      * @return Response
@@ -109,6 +119,11 @@ class AuthGroup extends Base
     /**
      * 分组子列表
      *
+     * @title 分组子列表
+     * @desc 管理分组子列表
+     * @order 1073
+     * @auth true
+     *
      * @param  Request  $request
      * @return Response
      */
@@ -133,6 +148,11 @@ class AuthGroup extends Base
     
     /**
      * 详情
+     *
+     * @title 分组详情
+     * @desc 管理分组详情
+     * @order 1074
+     * @auth true
      *
      * @param string $id
      * @return Response
@@ -161,6 +181,11 @@ class AuthGroup extends Base
     
     /**
      * 删除
+     *
+     * @title 分组删除
+     * @desc 管理分组删除
+     * @order 1075
+     * @auth true
      *
      * @param string $id
      * @return Response
@@ -191,6 +216,11 @@ class AuthGroup extends Base
     
     /**
      * 添加
+     *
+     * @title 分组添加
+     * @desc 管理分组添加
+     * @order 1076
+     * @auth true
      *
      * @param  Request  $request
      * @return Response
@@ -237,6 +267,11 @@ class AuthGroup extends Base
     
     /**
      * 更新
+     *
+     * @title 分组更新
+     * @desc 管理分组更新
+     * @order 1077
+     * @auth true
      *
      * @param string $id
      * @param Request $request
@@ -297,6 +332,11 @@ class AuthGroup extends Base
     /**
      * 排序
      *
+     * @title 分组排序
+     * @desc 管理分组排序
+     * @order 1078
+     * @auth true
+     *
      * @param string $id
      * @param Request $request
      * @return Response
@@ -325,6 +365,11 @@ class AuthGroup extends Base
     
     /**
      * 启用
+     *
+     * @title 分组启用
+     * @desc 管理分组启用
+     * @order 1079
+     * @auth true
      *
      * @param string $id
      * @return Response
@@ -356,6 +401,11 @@ class AuthGroup extends Base
     /**
      * 禁用
      *
+     * @title 分组禁用
+     * @desc 管理分组禁用
+     * @order 10710
+     * @auth true
+     *
      * @param string $id
      * @return Response
      */
@@ -385,6 +435,11 @@ class AuthGroup extends Base
     
     /**
      * 授权
+     *
+     * @title 分组授权
+     * @desc 管理分组授权
+     * @order 10711
+     * @auth true
      *
      * @param string $id
      * @param Request $request

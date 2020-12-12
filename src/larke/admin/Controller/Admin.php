@@ -26,6 +26,11 @@ class Admin extends Base
     /**
      * 列表
      *
+     * @title 账号列表
+     * @desc 系统账号列表
+     * @order 1051
+     * @auth true
+     *
      * @param  Request  $request
      * @return Response
      */
@@ -99,6 +104,11 @@ class Admin extends Base
     /**
      * 详情
      *
+     * @title 账号详情
+     * @desc 系统账号详情
+     * @order 1052
+     * @auth true
+     *
      * @param string $id
      * @return Response
      */
@@ -147,6 +157,11 @@ class Admin extends Base
     /**
      * 权限
      *
+     * @title 账号权限
+     * @desc 系统账号权限
+     * @order 1053
+     * @auth true
+     *
      * @param string $id
      * @return Response
      */
@@ -179,6 +194,11 @@ class Admin extends Base
     
     /**
      * 删除
+     *
+     * @title 账号删除
+     * @desc 系统账号删除
+     * @order 1054
+     * @auth true
      *
      * @param string $id
      * @return Response
@@ -215,6 +235,11 @@ class Admin extends Base
     
     /**
      * 添加
+     *
+     * @title 账号添加
+     * @desc 系统账号添加
+     * @order 1055
+     * @auth true
      *
      * @param  Request  $request
      * @return Response
@@ -289,6 +314,11 @@ class Admin extends Base
     
     /**
      * 更新
+     *
+     * @title 账号更新
+     * @desc 系统账号更新
+     * @order 1056
+     * @auth true
      *
      * @param string $id
      * @param Request $request
@@ -382,6 +412,11 @@ class Admin extends Base
     /**
      * 修改头像
      *
+     * @title 修改头像
+     * @desc 系统账号修改头像
+     * @order 1057
+     * @auth true
+     *
      * @param string $id
      * @param Request $request
      * @return Response
@@ -427,6 +462,11 @@ class Admin extends Base
     
     /**
      * 修改密码
+     *
+     * @title 修改密码
+     * @desc 系统账号修改密码
+     * @order 1058
+     * @auth true
      *
      * @param string $id
      * @param Request $request
@@ -476,6 +516,11 @@ class Admin extends Base
     /**
      * 启用
      *
+     * @title 账号启用
+     * @desc 系统账号启用
+     * @order 1059
+     * @auth true
+     *
      * @param string $id
      * @return Response
      */
@@ -512,6 +557,11 @@ class Admin extends Base
     /**
      * 禁用
      *
+     * @title 账号禁用
+     * @desc 系统账号禁用
+     * @order 10510
+     * @auth true
+     *
      * @param string $id
      * @return Response
      */
@@ -547,6 +597,11 @@ class Admin extends Base
     
     /**
      * 退出
+     *
+     * @title 账号退出
+     * @desc 系统账号退出
+     * @order 10511
+     * @auth true
      * 
      * 添加用户的 refreshToken 到黑名单
      *
@@ -592,6 +647,11 @@ class Admin extends Base
     
     /**
      * 授权
+     *
+     * @title 账号授权
+     * @desc 系统账号授权
+     * @order 10512
+     * @auth true
      *
      * @param string $id
      * @param Request $request

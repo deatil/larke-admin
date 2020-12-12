@@ -25,6 +25,11 @@ class Profile extends Base
     /**
      * 我的信息
      *
+     * @title 我的信息
+     * @desc 我的信息管理
+     * @order 1021
+     * @auth true
+     *
      * @return Response
      */
     public function index()
@@ -36,6 +41,11 @@ class Profile extends Base
     
     /**
      * 修改我的信息
+     *
+     * @title 修改我的信息
+     * @desc 修改我的信息管理
+     * @order 1022
+     * @auth true
      *
      * @param  Request  $request
      * @return Response
@@ -82,6 +92,11 @@ class Profile extends Base
     /**
      * 修改头像
      *
+     * @title 修改头像
+     * @desc 修改头像管理
+     * @order 1023
+     * @auth true
+     *
      * @param  Request  $request
      * @return Response
      */
@@ -113,6 +128,11 @@ class Profile extends Base
 
     /**
      * 修改密码
+     *
+     * @title 修改密码
+     * @desc 修改密码管理
+     * @order 1024
+     * @auth true
      *
      * @param  Request  $request
      * @return Response
@@ -173,6 +193,11 @@ class Profile extends Base
 
     /**
      * 权限列表
+     *
+     * @title 权限列表
+     * @desc 权限列表管理
+     * @order 1025
+     * @auth true
      *
      * @return Response
      */

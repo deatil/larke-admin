@@ -27,6 +27,11 @@ class Attachment extends Base
     /**
      * 列表
      *
+     * @title 附件列表
+     * @desc 附件列表
+     * @order 1081
+     * @auth true
+     *
      * @param  Request  $request
      * @return Response
      */
@@ -86,6 +91,11 @@ class Attachment extends Base
     /**
      * 详情
      *
+     * @title 附件详情
+     * @desc 附件详情
+     * @order 1082
+     * @auth true
+     *
      * @param string $id
      * @return Response
      */
@@ -106,6 +116,11 @@ class Attachment extends Base
     
     /**
      * 删除
+     *
+     * @title 附件删除
+     * @desc 附件删除
+     * @order 1083
+     * @auth true
      *
      * @param string $id
      * @return Response
@@ -140,6 +155,11 @@ class Attachment extends Base
     /**
      * 启用
      *
+     * @title 附件启用
+     * @desc 附件启用
+     * @order 1084
+     * @auth true
+     *
      * @param string $id
      * @return Response
      */
@@ -170,6 +190,11 @@ class Attachment extends Base
     /**
      * 禁用
      *
+     * @title 附件禁用
+     * @desc 附件禁用
+     * @order 1085
+     * @auth true
+     *
      * @param string $id
      * @return Response
      */
@@ -199,6 +224,11 @@ class Attachment extends Base
     
     /**
      * 上传文件
+     *
+     * @title 上传文件
+     * @desc 上传文件附件
+     * @order 1086
+     * @auth true
      *
      * @param  Request  $request
      * @return Response
@@ -309,6 +339,11 @@ class Attachment extends Base
     /**
      * 下载码
      *
+     * @title 附件下载码
+     * @desc 附件下载码
+     * @order 1087
+     * @auth true
+     *
      * @param string $id
      * @return Response
      */
@@ -334,6 +369,11 @@ class Attachment extends Base
     
     /**
      * 下载
+     *
+     * @title 附件下载
+     * @desc 附件下载
+     * @order 1088
+     * @auth true
      *
      * @param string $code
      * @return Response

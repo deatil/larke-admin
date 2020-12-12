@@ -9,6 +9,7 @@ use Composer\Semver\VersionParser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
+use Larke\Admin\Event;
 use Larke\Admin\Facade\Extension as AdminExtension;
 use Larke\Admin\Model\Extension as ExtensionModel;
 use Larke\Admin\Service\Upload as UploadService;
@@ -28,11 +29,11 @@ use Larke\Admin\Service\PclZip as PclZipService;
 class Extension extends Base
 {
     /**
-     * 首页
+     * 扩展列表
      *
      * @title 扩展列表
      * @desc 系统扩展列表管理
-     * @order 101
+     * @order 1051
      * @auth true
      *
      * @param  Request  $request
@@ -96,7 +97,7 @@ class Extension extends Base
      *
      * @title 本地扩展
      * @desc 本地全部扩展
-     * @order 102
+     * @order 1052
      * @auth true
      *
      * @param  Request  $request
@@ -133,6 +134,11 @@ class Extension extends Base
     
     /**
      * 安装
+     *
+     * @title 扩展安装
+     * @desc 系统扩展安装
+     * @order 1053
+     * @auth true
      *
      * @param string $name
      * @return Response
@@ -216,6 +222,11 @@ class Extension extends Base
     /**
      * 卸载
      *
+     * @title 扩展卸载
+     * @desc 系统扩展卸载
+     * @order 1054
+     * @auth true
+     *
      * @param string $name
      * @return Response
      */
@@ -243,6 +254,11 @@ class Extension extends Base
     
     /**
      * 更新
+     *
+     * @title 扩展更新
+     * @desc 系统扩展更新
+     * @order 1055
+     * @auth true
      *
      * @param string $name
      * @return Response
@@ -328,6 +344,11 @@ class Extension extends Base
     /**
      * 排序
      *
+     * @title 扩展排序
+     * @desc 系统扩展排序
+     * @order 1056
+     * @auth true
+     *
      * @param string $name
      * @param Request $request
      * @return Response
@@ -356,6 +377,11 @@ class Extension extends Base
     
     /**
      * 启用
+     *
+     * @title 扩展启用
+     * @desc 系统扩展启用
+     * @order 1057
+     * @auth true
      *
      * @param string $name
      * @return Response
@@ -389,6 +415,11 @@ class Extension extends Base
     /**
      * 禁用
      *
+     * @title 扩展禁用
+     * @desc 系统扩展禁用
+     * @order 1058
+     * @auth true
+     *
      * @param string $name
      * @return Response
      */
@@ -421,6 +452,11 @@ class Extension extends Base
     /**
      * 配置
      *
+     * @title 扩展配置
+     * @desc 系统扩展配置
+     * @order 1058
+     * @auth true
+     *
      * @param string $name
      * @param Request $request
      * @return Response
@@ -430,6 +466,8 @@ class Extension extends Base
         if (empty($name)) {
             return $this->errorJson(__('扩展名称不能为空'));
         }
+        
+        event(new Event\ExtensionConfigBefore($request));
         
         $config = $request->get('config');
         
@@ -450,11 +488,18 @@ class Extension extends Base
             return $this->errorJson(__('更新扩展配置失败'));
         }
         
+        event(new Event\ExtensionConfigAfter($info));
+        
         return $this->successJson(__('更新扩展配置成功'));
     }
     
     /**
      * 上传
+     *
+     * @title 扩展上传
+     * @desc 系统扩展上传
+     * @order 1059
+     * @auth true
      *
      * @param  Request  $request
      * @return Response

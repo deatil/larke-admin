@@ -9,6 +9,11 @@ use Larke\Admin\Model\AdminLog as AdminLogModel;
 /**
  * 操作日志
  *
+ * @title 操作日志
+ * @desc 操作日志管理
+ * @order 109
+ * @auth true
+ *
  * @create 2020-10-23
  * @author deatil
  */
@@ -16,6 +21,11 @@ class AdminLog extends Base
 {
     /**
      * 列表
+     *
+     * @title 日志列表
+     * @desc 操作日志全部列表
+     * @order 1091
+     * @auth true
      *
      * @param  Request  $request
      * @return Response
@@ -82,6 +92,11 @@ class AdminLog extends Base
     /**
      * 详情
      *
+     * @title 日志详情
+     * @desc 操作日志详情
+     * @order 1092
+     * @auth true
+     *
      * @param string $id
      * @return Response
      */
@@ -103,6 +118,11 @@ class AdminLog extends Base
     
     /**
      * 删除
+     *
+     * @title 日志删除
+     * @desc 操作日志删除
+     * @order 1093
+     * @auth true
      *
      * @param string $id
      * @return Response
@@ -129,6 +149,11 @@ class AdminLog extends Base
     
     /**
      * 清空一个月前的操作日志|清空特定ID日志
+     *
+     * @title 清空日志
+     * @desc 清空操作日志
+     * @order 1094
+     * @auth true
      *
      * @param  Request  $request
      * @return Response
