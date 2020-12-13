@@ -75,6 +75,11 @@ php artisan larke-admin:import-route
 ```
 
 
+### 扩展开发
+
+*  扩展开发可查看 `docs/extension/Test` 示例
+
+
 ### 特别鸣谢
 
 感谢以下的项目,排名不分先后
