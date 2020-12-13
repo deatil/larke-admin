@@ -79,7 +79,7 @@ class Config extends Base
             ]);
             
             if ($validator->fails()) {
-                return $this->errorJson($validator->errors()->first());
+                return $this->error($validator->errors()->first());
             }
             
             $wheres[] = ['group', $group];
@@ -97,7 +97,7 @@ class Config extends Base
             ->get()
             ->toArray(); 
         
-        return $this->successJson(__('获取成功'), [
+        return $this->success(__('获取成功'), [
             'start' => $start,
             'limit' => $limit,
             'total' => $total,
@@ -119,17 +119,17 @@ class Config extends Base
     public function detail(string $id)
     {
         if (empty($id)) {
-            return $this->errorJson(__('ID不能为空'));
+            return $this->error(__('ID不能为空'));
         }
         
         $info = ConfigModel::where('id', '=', $id)
             ->orWhere('name', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->errorJson(__('信息不存在'));
+            return $this->error(__('信息不存在'));
         }
         
-        return $this->successJson(__('获取成功'), $info);
+        return $this->success(__('获取成功'), $info);
     }
     
     /**
@@ -146,21 +146,21 @@ class Config extends Base
     public function delete(string $id)
     {
         if (empty($id)) {
-            return $this->errorJson(__('ID不能为空'));
+            return $this->error(__('ID不能为空'));
         }
         
         $info = ConfigModel::where(['id' => $id])
             ->first();
         if (empty($info)) {
-            return $this->errorJson(__('信息不存在'));
+            return $this->error(__('信息不存在'));
         }
         
         $deleteStatus = $info->delete();
         if ($deleteStatus === false) {
-            return $this->errorJson(__('信息删除失败'));
+            return $this->error(__('信息删除失败'));
         }
         
-        return $this->successJson(__('信息删除成功'));
+        return $this->success(__('信息删除成功'));
     }
     
     /**
@@ -194,7 +194,7 @@ class Config extends Base
         ]);
 
         if ($validator->fails()) {
-            return $this->errorJson($validator->errors()->first());
+            return $this->error($validator->errors()->first());
         }
         
         $insertData = [
@@ -213,13 +213,13 @@ class Config extends Base
         
         $config = ConfigModel::create($insertData);
         if ($config === false) {
-            return $this->errorJson(__('信息添加失败'));
+            return $this->error(__('信息添加失败'));
         }
         
         // 监听事件
         event(new Event\ConfigCreated($config));
         
-        return $this->successJson(__('信息添加成功'), [
+        return $this->success(__('信息添加成功'), [
             'id' => $config->id,
         ]);
     }
@@ -239,13 +239,13 @@ class Config extends Base
     public function update(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->errorJson(__('账号ID不能为空'));
+            return $this->error(__('账号ID不能为空'));
         }
         
         $info = ConfigModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->errorJson(__('信息不存在'));
+            return $this->error(__('信息不存在'));
         }
         
         $data = $request->all();
@@ -265,14 +265,14 @@ class Config extends Base
         ]);
 
         if ($validator->fails()) {
-            return $this->errorJson($validator->errors()->first());
+            return $this->error($validator->errors()->first());
         }
         
         $nameInfo = ConfigModel::where('name', $data['name'])
             ->where('id', '!=', $id)
             ->first();
         if (!empty($nameInfo)) {
-            return $this->errorJson(__('要修改成的名称已经存在'));
+            return $this->error(__('要修改成的名称已经存在'));
         }
         
         $updateData = [
@@ -292,13 +292,13 @@ class Config extends Base
         // 更新信息
         $status = $info->update($updateData);
         if ($status === false) {
-            return $this->errorJson(__('信息修改失败'));
+            return $this->error(__('信息修改失败'));
         }
         
         // 监听事件
         event(new Event\ConfigUpdated($info));
         
-        return $this->successJson(__('信息修改成功'));
+        return $this->success(__('信息修改成功'));
     }
     
     /**
@@ -330,7 +330,7 @@ class Config extends Base
             ->get()
             ->toArray(); 
         
-        return $this->successJson(__('获取成功'), [
+        return $this->success(__('获取成功'), [
             'list' => $list,
         ]);
         
@@ -358,7 +358,7 @@ class Config extends Base
         
         event(new Event\ConfigSettingAfter($fields));
         
-        return $this->successJson(__('设置更新成功'));
+        return $this->success(__('设置更新成功'));
     }
     
     /**
@@ -377,7 +377,7 @@ class Config extends Base
         
         event(new Event\ConfigSettingsAfter($settings));
         
-        return $this->successJson(__('获取成功'), [
+        return $this->success(__('获取成功'), [
             'settings' => $settings,
         ]);
     }
@@ -397,23 +397,23 @@ class Config extends Base
     public function listorder(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->errorJson(__('ID不能为空'));
+            return $this->error(__('ID不能为空'));
         }
         
         $info = ConfigModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->errorJson(__('信息不存在'));
+            return $this->error(__('信息不存在'));
         }
         
         $listorder = $request->get('listorder', 100);
         
         $status = $info->updateListorder($listorder);
         if ($status === false) {
-            return $this->errorJson(__('更新排序失败'));
+            return $this->error(__('更新排序失败'));
         }
         
-        return $this->successJson(__('更新排序成功'));
+        return $this->success(__('更新排序成功'));
     }
     
     /**
@@ -430,25 +430,25 @@ class Config extends Base
     public function enable(string $id)
     {
         if (empty($id)) {
-            return $this->errorJson(__('ID不能为空'));
+            return $this->error(__('ID不能为空'));
         }
         
         $info = ConfigModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->errorJson(__('信息不存在'));
+            return $this->error(__('信息不存在'));
         }
         
         if ($info->status == 1) {
-            return $this->errorJson(__('信息已启用'));
+            return $this->error(__('信息已启用'));
         }
         
         $status = $info->enable();
         if ($status === false) {
-            return $this->errorJson(__('启用失败'));
+            return $this->error(__('启用失败'));
         }
         
-        return $this->successJson(__('启用成功'));
+        return $this->success(__('启用成功'));
     }
     
     /**
@@ -465,25 +465,25 @@ class Config extends Base
     public function disable(string $id)
     {
         if (empty($id)) {
-            return $this->errorJson(__('ID不能为空'));
+            return $this->error(__('ID不能为空'));
         }
         
         $info = ConfigModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->errorJson(__('信息不存在'));
+            return $this->error(__('信息不存在'));
         }
         
         if ($info->status == 0) {
-            return $this->errorJson(__('信息已禁用'));
+            return $this->error(__('信息已禁用'));
         }
         
         $status = $info->disable();
         if ($status === false) {
-            return $this->errorJson(__('禁用失败'));
+            return $this->error(__('禁用失败'));
         }
         
-        return $this->successJson(__('禁用成功'));
+        return $this->success(__('禁用成功'));
     }
     
 }

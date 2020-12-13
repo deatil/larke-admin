@@ -40,7 +40,7 @@ class Permission
         $requestMethod = request()->getMethod();
         
         if (!\Enforcer::enforce($adminId, $requestUrl, $requestMethod)) {
-            $this->errorJson(__('你没有访问权限'), \ResponseCode::AUTH_ERROR);
+            $this->error(__('你没有访问权限'), \ResponseCode::AUTH_ERROR);
         }
     }
 

@@ -24,7 +24,7 @@ class RequestOptions
     public function handle($request, Closure $next)
     {
         if ($request->isMethod('OPTIONS')) {
-            $this->successJson('');
+            $this->success('');
         }
         
         return $next($request);

@@ -80,7 +80,7 @@ class Attachment extends Base
             ->get()
             ->toArray(); 
         
-        return $this->successJson(__('获取成功'), [
+        return $this->success(__('获取成功'), [
             'start' => $start,
             'limit' => $limit,
             'total' => $total,
@@ -102,16 +102,16 @@ class Attachment extends Base
     public function detail(string $id)
     {
         if (empty($id)) {
-            return $this->errorJson(__('文件ID不能为空'));
+            return $this->error(__('文件ID不能为空'));
         }
         
         $fileInfo = AttachmentModel::where(['id' => $id])
             ->first();
         if (empty($fileInfo)) {
-            return $this->errorJson(__('文件信息不存在'));
+            return $this->error(__('文件信息不存在'));
         }
         
-        return $this->successJson(__('获取成功'), $fileInfo->toArray());
+        return $this->success(__('获取成功'), $fileInfo->toArray());
     }
     
     /**
@@ -128,28 +128,28 @@ class Attachment extends Base
     public function delete(string $id)
     {
         if (empty($id)) {
-            return $this->errorJson(__('文件ID不能为空'));
+            return $this->error(__('文件ID不能为空'));
         }
         
         $fileInfo = AttachmentModel::where(['id' => $id])
             ->first();
         if (empty($fileInfo)) {
-            return $this->errorJson(__('文件信息不存在'));
+            return $this->error(__('文件信息不存在'));
         }
         
         $UploadService = (new UploadService())->initStorage();
         if ($UploadService === false) {
-            return $this->errorJson(__('文件删除失败'));
+            return $this->error(__('文件删除失败'));
         }
         
         $deleteStatus = $fileInfo->delete();
         if ($deleteStatus === false) {
-            return $this->errorJson(__('文件删除失败'));
+            return $this->error(__('文件删除失败'));
         }
         
         $UploadService->destroy($fileInfo['path']);
         
-        return $this->successJson(__('文件删除成功'));
+        return $this->success(__('文件删除成功'));
     }
     
     /**
@@ -166,25 +166,25 @@ class Attachment extends Base
     public function enable(string $id)
     {
         if (empty($id)) {
-            return $this->errorJson(__('ID不能为空'));
+            return $this->error(__('ID不能为空'));
         }
         
         $info = AttachmentModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->errorJson(__('信息不存在'));
+            return $this->error(__('信息不存在'));
         }
         
         if ($info->status == 1) {
-            return $this->errorJson(__('信息已启用'));
+            return $this->error(__('信息已启用'));
         }
         
         $status = $info->enable();
         if ($status === false) {
-            return $this->errorJson(__('启用失败'));
+            return $this->error(__('启用失败'));
         }
         
-        return $this->successJson(__('启用成功'));
+        return $this->success(__('启用成功'));
     }
     
     /**
@@ -201,25 +201,25 @@ class Attachment extends Base
     public function disable(string $id)
     {
         if (empty($id)) {
-            return $this->errorJson(__('ID不能为空'));
+            return $this->error(__('ID不能为空'));
         }
         
         $info = AttachmentModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->errorJson(__('信息不存在'));
+            return $this->error(__('信息不存在'));
         }
         
         if ($info->status == 0) {
-            return $this->errorJson(__('信息已禁用'));
+            return $this->error(__('信息已禁用'));
         }
         
         $status = $info->disable();
         if ($status === false) {
-            return $this->errorJson(__('禁用失败'));
+            return $this->error(__('禁用失败'));
         }
         
-        return $this->successJson(__('禁用成功'));
+        return $this->success(__('禁用成功'));
     }
     
     /**
@@ -237,7 +237,7 @@ class Attachment extends Base
     {
         $requestFile = $request->file('file');
         if (empty($requestFile)) {
-            return $this->errorJson(__('上传文件不能为空'));
+            return $this->error(__('上传文件不能为空'));
         }
         
         // Pathname
@@ -261,7 +261,7 @@ class Attachment extends Base
         
         $UploadService = (new UploadService())->initStorage();
         if ($UploadService === false) {
-            return $this->errorJson(__('上传文件失败'));
+            return $this->error(__('上传文件失败'));
         }
         
         $uploadDisk = config('larkeadmin.upload.disk');
@@ -290,7 +290,7 @@ class Attachment extends Base
                 $res['url'] = $fileInfo['url'];
             }
             
-            return $this->successJson(__('上传成功'), $res);
+            return $this->success(__('上传成功'), $res);
         }
         
         if ($filetype == 'image') {
@@ -321,7 +321,7 @@ class Attachment extends Base
         $attachment = AttachmentModel::create($data);
         if ($attachment === false) {
             $UploadService->destroy($path);
-            return $this->errorJson(__('上传失败'));
+            return $this->error(__('上传失败'));
         }
         
         $url = $UploadService->objectUrl($path);
@@ -333,7 +333,7 @@ class Attachment extends Base
             $res['url'] = $url;
         }
         
-        return $this->successJson(__('上传成功'), $res);
+        return $this->success(__('上传成功'), $res);
     }
     
     /**
@@ -350,19 +350,19 @@ class Attachment extends Base
     public function downloadCode(string $id)
     {
         if (empty($id)) {
-            return $this->errorJson(__('文件ID不能为空'));
+            return $this->error(__('文件ID不能为空'));
         }
         
         $fileInfo = AttachmentModel::where(['id' => $id])
             ->first();
         if (empty($fileInfo)) {
-            return $this->errorJson(__('文件不存在'));
+            return $this->error(__('文件不存在'));
         }
         
         $code = md5(mt_rand(10000, 99999) . microtime());
         Cache::put($code, $fileInfo->id, 300);
         
-        return $this->successJson(__('获取成功'), [
+        return $this->success(__('获取成功'), [
             'code' => $code,
         ]);
     }
@@ -381,23 +381,23 @@ class Attachment extends Base
     public function download(string $code)
     {
         if (empty($code)) {
-            return $this->errorJson(__('code值不能为空'));
+            return $this->error(__('code值不能为空'));
         }
         
         $fileId = Cache::pull($code);
         if (empty($fileId)) {
-            return $this->errorJson(__('文件不存在'));
+            return $this->error(__('文件不存在'));
         }
         
         $fileInfo = AttachmentModel::where(['id' => $fileId])
             ->first();
         if (empty($fileInfo)) {
-            return $this->errorJson(__('文件不存在'));
+            return $this->error(__('文件不存在'));
         }
         
         $UploadService = (new UploadService())->initStorage();
         if ($UploadService === false) {
-            return $this->errorJson(__('下载文件失败'));
+            return $this->error(__('下载文件失败'));
         }
         
         return $UploadService->getStorage()->download($fileInfo['path'], $fileInfo['name']);

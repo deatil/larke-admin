@@ -79,7 +79,7 @@ class AuthGroup extends Base
             ->get()
             ->toArray(); 
         
-        return $this->successJson(__('获取成功'), [
+        return $this->success(__('获取成功'), [
             'start' => $start,
             'limit' => $limit,
             'total' => $total,
@@ -111,7 +111,7 @@ class AuthGroup extends Base
             ->withData($result)
             ->build(0);
         
-        return $this->successJson(__('获取成功'), [
+        return $this->success(__('获取成功'), [
             'list' => $list,
         ]);
     }
@@ -131,7 +131,7 @@ class AuthGroup extends Base
     {
         $id = $request->get('id', 0);
         if (is_array($id)) {
-            return $this->errorJson(__('ID错误'));
+            return $this->error(__('ID错误'));
         }
         
         $type = $request->get('type');
@@ -141,7 +141,7 @@ class AuthGroup extends Base
             $data = AuthGroupRepository::getChildrenIds($id);
         }
         
-        return $this->successJson(__('获取成功'), [
+        return $this->success(__('获取成功'), [
             'list' => $data,
         ]);
     }
@@ -160,14 +160,14 @@ class AuthGroup extends Base
     public function detail(string $id)
     {
         if (empty($id)) {
-            return $this->errorJson(__('ID不能为空'));
+            return $this->error(__('ID不能为空'));
         }
         
         $info = AuthGroupModel::where(['id' => $id])
             ->with('ruleAccesses')
             ->first();
         if (empty($info)) {
-            return $this->errorJson(__('信息不存在'));
+            return $this->error(__('信息不存在'));
         }
         
         $ruleAccesses = collect($info['ruleAccesses'])->map(function($data) {
@@ -176,7 +176,7 @@ class AuthGroup extends Base
         unset($info['ruleAccesses']);
         $info['rule_accesses'] = $ruleAccesses;
         
-        return $this->successJson(__('获取成功'), $info);
+        return $this->success(__('获取成功'), $info);
     }
     
     /**
@@ -193,25 +193,25 @@ class AuthGroup extends Base
     public function delete(string $id)
     {
         if (empty($id)) {
-            return $this->errorJson(__('ID不能为空'));
+            return $this->error(__('ID不能为空'));
         }
         
         $info = AuthGroupModel::where(['id' => $id])
             ->first();
         if (empty($info)) {
-            return $this->errorJson(__('信息不存在'));
+            return $this->error(__('信息不存在'));
         }
         
         if ($info->is_system == 1) {
-            return $this->errorJson(__('系统信息不能删除'));
+            return $this->error(__('系统信息不能删除'));
         }
         
         $deleteStatus = $info->delete();
         if ($deleteStatus === false) {
-            return $this->errorJson(__('信息删除失败'));
+            return $this->error(__('信息删除失败'));
         }
         
-        return $this->successJson(__('信息删除成功'));
+        return $this->success(__('信息删除成功'));
     }
     
     /**
@@ -240,7 +240,7 @@ class AuthGroup extends Base
         ]);
         
         if ($validator->fails()) {
-            return $this->errorJson($validator->errors()->first());
+            return $this->error($validator->errors()->first());
         }
         
         $insertData = [
@@ -257,10 +257,10 @@ class AuthGroup extends Base
         
         $group = AuthGroupModel::create($insertData);
         if ($group === false) {
-            return $this->errorJson(__('信息添加失败'));
+            return $this->error(__('信息添加失败'));
         }
         
-        return $this->successJson(__('信息添加成功'), [
+        return $this->success(__('信息添加成功'), [
             'id' => $group->id,
         ]);
     }
@@ -280,14 +280,14 @@ class AuthGroup extends Base
     public function update(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->errorJson(__('ID不能为空'));
+            return $this->error(__('ID不能为空'));
         }
         
         $info = AuthGroupModel::with('children')
             ->where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->errorJson(__('信息不存在'));
+            return $this->error(__('信息不存在'));
         }
         
         $data = $request->all();
@@ -302,13 +302,13 @@ class AuthGroup extends Base
         ]);
 
         if ($validator->fails()) {
-            return $this->errorJson($validator->errors()->first());
+            return $this->error($validator->errors()->first());
         }
         
         $childrenIds = AuthGroupRepository::getChildrenIdsFromData($info['children']);
         $childrenIds[] = $id;
         if (in_array($data['parentid'], $childrenIds)) {
-            return $this->errorJson(__('父级ID设置错误'));
+            return $this->error(__('父级ID设置错误'));
         }
         
         $updateData = [
@@ -323,10 +323,10 @@ class AuthGroup extends Base
         // 更新信息
         $status = $info->update($updateData);
         if ($status === false) {
-            return $this->errorJson(__('信息修改失败'));
+            return $this->error(__('信息修改失败'));
         }
         
-        return $this->successJson(__('信息修改成功'));
+        return $this->success(__('信息修改成功'));
     }
     
     /**
@@ -344,23 +344,23 @@ class AuthGroup extends Base
     public function listorder(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->errorJson(__('ID不能为空'));
+            return $this->error(__('ID不能为空'));
         }
         
         $info = AuthGroupModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->errorJson(__('信息不存在'));
+            return $this->error(__('信息不存在'));
         }
         
         $listorder = $request->get('listorder', 100);
         
         $status = $info->updateListorder($listorder);
         if ($status === false) {
-            return $this->errorJson(__('更新排序失败'));
+            return $this->error(__('更新排序失败'));
         }
         
-        return $this->successJson(__('更新排序成功'));
+        return $this->success(__('更新排序成功'));
     }
     
     /**
@@ -377,25 +377,25 @@ class AuthGroup extends Base
     public function enable(string $id)
     {
         if (empty($id)) {
-            return $this->errorJson(__('ID不能为空'));
+            return $this->error(__('ID不能为空'));
         }
         
         $info = AuthGroupModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->errorJson(__('信息不存在'));
+            return $this->error(__('信息不存在'));
         }
         
         if ($info->status == 1) {
-            return $this->errorJson(__('信息已启用'));
+            return $this->error(__('信息已启用'));
         }
         
         $status = $info->enable();
         if ($status === false) {
-            return $this->errorJson(__('启用失败'));
+            return $this->error(__('启用失败'));
         }
         
-        return $this->successJson(__('启用成功'));
+        return $this->success(__('启用成功'));
     }
     
     /**
@@ -412,25 +412,25 @@ class AuthGroup extends Base
     public function disable(string $id)
     {
         if (empty($id)) {
-            return $this->errorJson(__('ID不能为空'));
+            return $this->error(__('ID不能为空'));
         }
         
         $info = AuthGroupModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->errorJson(__('信息不存在'));
+            return $this->error(__('信息不存在'));
         }
         
         if ($info->status == 0) {
-            return $this->errorJson(__('信息已禁用'));
+            return $this->error(__('信息已禁用'));
         }
         
         $status = $info->disable();
         if ($status === false) {
-            return $this->errorJson(__('禁用失败'));
+            return $this->error(__('禁用失败'));
         }
         
-        return $this->successJson(__('禁用成功'));
+        return $this->success(__('禁用成功'));
     }
     
     /**
@@ -448,13 +448,13 @@ class AuthGroup extends Base
     public function access(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->errorJson(__('ID不能为空'));
+            return $this->error(__('ID不能为空'));
         }
         
         $info = AuthGroupModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->errorJson(__('信息不存在'));
+            return $this->error(__('信息不存在'));
         }
         
         AuthRuleAccessModel::where([
@@ -474,7 +474,7 @@ class AuthGroup extends Base
             }
         }
         
-        return $this->successJson(__('授权成功'));
+        return $this->success(__('授权成功'));
     }
     
 }

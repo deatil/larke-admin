@@ -46,7 +46,7 @@ class System extends Base
             $info = array_merge($info, $eventInfo);
         }
         
-        return $this->successJson(__('获取成功'), $info);
+        return $this->success(__('获取成功'), $info);
     }
     
     /**
@@ -68,7 +68,7 @@ class System extends Base
         
         event(new SystemClearCacheEvent());
         
-        return $this->successJson(__('清除缓存成功'));
+        return $this->success(__('清除缓存成功'));
     }
     
     /**
@@ -88,7 +88,7 @@ class System extends Base
         
         event(new SystemCacheEvent());
         
-        return $this->successJson(__('路由及配置信息缓存成功'));
+        return $this->success(__('路由及配置信息缓存成功'));
     }
     
     /**
@@ -116,7 +116,7 @@ class System extends Base
         ]);
 
         if ($validator->fails()) {
-            return $this->errorJson($validator->errors()->first());
+            return $this->error($validator->errors()->first());
         }
         
         $translator = app('translator');
@@ -133,7 +133,7 @@ class System extends Base
             ]);
 
             if ($validator->fails()) {
-                return $this->errorJson($validator->errors()->first());
+                return $this->error($validator->errors()->first());
             }
         } else {
             $locale = $translator->getLocale();
@@ -146,7 +146,7 @@ class System extends Base
             $langs = $translator->getLoader()->load($locale, $group);
         }
         
-        return $this->successJson(__('查询成功'), [
+        return $this->success(__('查询成功'), [
             'list' => $langs,
         ]);
     }

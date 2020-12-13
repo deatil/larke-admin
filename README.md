@@ -6,7 +6,7 @@
 *  `larke-admin` 是基于 `laravel8` 版本的后台快速开发框架，完全api接口化，适用于前后端分离的项目
 *  基于 `JWT` 的用户登陆态管理
 *  权限判断基于 `php-casbin` 的 `RBAC` 授权
-*  本项目为后台纯api接口，需要前端页面可查看 [Larke Admin](https://github.com/deatil/larke-admin-frontend) 项目
+*  本项目为 `后台api服务`，后台前端页面可查看 [Larke Admin Frontend](https://github.com/deatil/larke-admin-frontend) 项目
 
 
 ### 环境要求

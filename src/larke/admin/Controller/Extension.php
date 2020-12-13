@@ -84,7 +84,7 @@ class Extension extends Base
             ->get()
             ->toArray(); 
         
-        return $this->successJson(__('获取成功'), [
+        return $this->success(__('获取成功'), [
             'start' => $start,
             'limit' => $limit,
             'total' => $total,
@@ -127,7 +127,7 @@ class Extension extends Base
             return $data;
         });
         
-        return $this->successJson(__('获取成功'), [
+        return $this->success(__('获取成功'), [
             'list' => $extensions,
         ]);
     }
@@ -146,37 +146,37 @@ class Extension extends Base
     public function install(string $name)
     {
         if (empty($name)) {
-            return $this->errorJson(__('扩展名称不能为空'));
+            return $this->error(__('扩展名称不能为空'));
         }
         
         $installInfo = ExtensionModel::where(['name' => $name])
             ->first();
         if (!empty($installInfo)) {
-            return $this->errorJson(__('扩展已经安装'));
+            return $this->error(__('扩展已经安装'));
         }
         
         AdminExtension::loadExtension();
         
         $info = AdminExtension::getExtension($name);
         if (empty($info)) {
-            return $this->errorJson(__('扩展信息不存在'));
+            return $this->error(__('扩展信息不存在'));
         }
         
         $checkInfo = AdminExtension::validateInfo($info);
         if (!$checkInfo) {
-            return $this->errorJson(__('扩展信息不正确'));
+            return $this->error(__('扩展信息不正确'));
         }
         
         try {
             $infoVersion = (new VersionParser())->normalize($info['version']);
         } catch(\Exception $e) {
-            return $this->errorJson(__('扩展版本信息不正确'));
+            return $this->error(__('扩展版本信息不正确'));
         }
         
         $adminVersion = config('larkeadmin.admin.version');
         $versionCheck = Semver::satisfies($adminVersion, $info['adaptation']);
         if (!$versionCheck) {
-            return $this->errorJson(__('扩展适配系统版本错误，当前系统版本：:version', [
+            return $this->error(__('扩展适配系统版本错误，当前系统版本：:version', [
                 'version' => $adminVersion,
             ]));
         }
@@ -187,7 +187,7 @@ class Extension extends Base
                 return ($data['match'] == 0);
             });
             if ($match) {
-                return $this->successJson(__('扩展依赖出现错误'), [
+                return $this->success(__('扩展依赖出现错误'), [
                     'require_extensions' => $requireExtensions
                 ]);
             }
@@ -209,12 +209,12 @@ class Extension extends Base
             'status' => 1,
         ]);
         if ($extension === false) {
-            return $this->errorJson(__('安装扩展失败'));
+            return $this->error(__('安装扩展失败'));
         }
         
         AdminExtension::getNewClassMethod($extension->class_name, 'install');
         
-        return $this->successJson(__('安装扩展成功'), [
+        return $this->success(__('安装扩展成功'), [
             'name' => $extension->name
         ]);
     }
@@ -233,23 +233,23 @@ class Extension extends Base
     public function uninstall(string $name)
     {
         if (empty($name)) {
-            return $this->errorJson(__('扩展名称不能为空'));
+            return $this->error(__('扩展名称不能为空'));
         }
         
         $info = ExtensionModel::where(['name' => $name])
             ->first();
         if (empty($info)) {
-            return $this->errorJson(__('扩展还没有安装'));
+            return $this->error(__('扩展还没有安装'));
         }
         
         $deleteStatus = $info->delete();
         if ($deleteStatus === false) {
-            return $this->errorJson(__('扩展删除失败'));
+            return $this->error(__('扩展删除失败'));
         }
         
         AdminExtension::getNewClassMethod($info->class_name, 'uninstall');
         
-        return $this->successJson(__('扩展删除成功'));
+        return $this->success(__('扩展删除成功'));
     }
     
     /**
@@ -266,30 +266,30 @@ class Extension extends Base
     public function upgrade(string $name)
     {
         if (empty($name)) {
-            return $this->errorJson(__('扩展名称不能为空'));
+            return $this->error(__('扩展名称不能为空'));
         }
         
         $installInfo = ExtensionModel::where(['name' => $name])
             ->first();
         if (empty($installInfo)) {
-            return $this->errorJson(__('扩展还没有安装'));
+            return $this->error(__('扩展还没有安装'));
         }
         
         AdminExtension::loadExtension();
         $info = AdminExtension::getExtension($name);
         if (empty($info)) {
-            return $this->errorJson(__('扩展信息不存在'));
+            return $this->error(__('扩展信息不存在'));
         }
         
         $checkInfo = AdminExtension::validateInfo($info);
         if (!$checkInfo) {
-            return $this->errorJson(__('扩展信息不正确'));
+            return $this->error(__('扩展信息不正确'));
         }
         
         $adminVersion = config('larkeadmin.admin.version');
         $versionCheck = Semver::satisfies($adminVersion, $info['adaptation']);
         if (!$versionCheck) {
-            return $this->errorJson(__('扩展适配系统版本错误，当前系统版本：:version', [
+            return $this->error(__('扩展适配系统版本错误，当前系统版本：:version', [
                 'version' => $adminVersion,
             ]));
         }
@@ -297,13 +297,13 @@ class Extension extends Base
         try {
             $infoVersion = (new VersionParser())->normalize($info['version']);
         } catch(\Exception $e) {
-            return $this->errorJson(__('扩展版本信息不正确'));
+            return $this->error(__('扩展版本信息不正确'));
         }
         
         $infoVersion = Arr::get($info, 'version', 0);
         $installVersion = Arr::get($installInfo, 'version', 0);
         if (!Comparator::greaterThan($infoVersion, $installVersion)) {
-            return $this->errorJson(__('扩展不需要更新'));
+            return $this->error(__('扩展不需要更新'));
         }
         
         $requireExtensions = ExtensionModel::checkRequireExtension($info['require_extension']);
@@ -312,7 +312,7 @@ class Extension extends Base
                 return ($data['match'] == 0);
             });
             if ($match) {
-                return $this->successJson(__('扩展依赖出现错误'), [
+                return $this->success(__('扩展依赖出现错误'), [
                     'require_extensions' => $requireExtensions
                 ]);
             }
@@ -333,12 +333,12 @@ class Extension extends Base
             'upgradetime' => time(),
         ]);
         if ($updateInfo === false) {
-            return $this->errorJson(__('更新扩展失败'));
+            return $this->error(__('更新扩展失败'));
         }
         
         AdminExtension::getNewClassMethod(Arr::get($info, 'class_name'), 'upgrade');
         
-        return $this->successJson(__('更新扩展成功'));
+        return $this->success(__('更新扩展成功'));
     }
     
     /**
@@ -356,23 +356,23 @@ class Extension extends Base
     public function listorder(string $name, Request $request)
     {
         if (empty($name)) {
-            return $this->errorJson(__('扩展名称不能为空'));
+            return $this->error(__('扩展名称不能为空'));
         }
         
         $info = ExtensionModel::where(['name' => $name])
             ->first();
         if (empty($info)) {
-            return $this->errorJson(__('扩展还没有安装'));
+            return $this->error(__('扩展还没有安装'));
         }
         
         $listorder = $request->get('listorder', 100);
         
         $status = $info->updateListorder($listorder);
         if ($status === false) {
-            return $this->errorJson(__('更新扩展排序失败'));
+            return $this->error(__('更新扩展排序失败'));
         }
         
-        return $this->successJson(__('更新扩展排序成功'));
+        return $this->success(__('更新扩展排序成功'));
     }
     
     /**
@@ -389,27 +389,27 @@ class Extension extends Base
     public function enable(string $name)
     {
         if (empty($name)) {
-            return $this->errorJson(__('扩展名称不能为空'));
+            return $this->error(__('扩展名称不能为空'));
         }
         
         $installInfo = ExtensionModel::where(['name' => $name])
             ->first();
         if (empty($installInfo)) {
-            return $this->errorJson(__('扩展还没有安装'));
+            return $this->error(__('扩展还没有安装'));
         }
         
         if ($installInfo['status'] == 1) {
-            return $this->errorJson(__('扩展已启用中'));
+            return $this->error(__('扩展已启用中'));
         }
         
         $status = $installInfo->enable();
         if ($status === false) {
-            return $this->errorJson(__('启用扩展失败'));
+            return $this->error(__('启用扩展失败'));
         }
         
         AdminExtension::getNewClassMethod($installInfo->class_name, 'enable');
         
-        return $this->successJson(__('启用扩展成功'));
+        return $this->success(__('启用扩展成功'));
     }
     
     /**
@@ -426,27 +426,27 @@ class Extension extends Base
     public function disable(string $name)
     {
         if (empty($name)) {
-            return $this->errorJson(__('扩展名称不能为空'));
+            return $this->error(__('扩展名称不能为空'));
         }
         
         $installInfo = ExtensionModel::where(['name' => $name])
             ->first();
         if (empty($installInfo)) {
-            return $this->errorJson(__('扩展还没有安装'));
+            return $this->error(__('扩展还没有安装'));
         }
         
         if ($installInfo['status'] == 0) {
-            return $this->errorJson(__('扩展已禁用中'));
+            return $this->error(__('扩展已禁用中'));
         }
         
         $status = $installInfo->disable();
         if ($status === false) {
-            return $this->errorJson(__('禁用扩展失败'));
+            return $this->error(__('禁用扩展失败'));
         }
         
         AdminExtension::getNewClassMethod($installInfo->class_name, 'disable');
         
-        return $this->successJson(__('禁用扩展成功'));
+        return $this->success(__('禁用扩展成功'));
     }
     
     /**
@@ -464,7 +464,7 @@ class Extension extends Base
     public function config(string $name, Request $request)
     {
         if (empty($name)) {
-            return $this->errorJson(__('扩展名称不能为空'));
+            return $this->error(__('扩展名称不能为空'));
         }
         
         event(new Event\ExtensionConfigBefore($request));
@@ -474,23 +474,23 @@ class Extension extends Base
         $info = ExtensionModel::where(['name' => $name])
             ->first();
         if (empty($info)) {
-            return $this->errorJson(__('扩展还没有安装'));
+            return $this->error(__('扩展还没有安装'));
         }
         
         if (empty(json_decode($config))) {
-            return $this->errorJson(__('扩展配置需要为json'));
+            return $this->error(__('扩展配置需要为json'));
         }
         
         $status = $info->update([
             'config_data' => $config,
         ]);
         if ($status === false) {
-            return $this->errorJson(__('更新扩展配置失败'));
+            return $this->error(__('更新扩展配置失败'));
         }
         
         event(new Event\ExtensionConfigAfter($info));
         
-        return $this->successJson(__('更新扩展配置成功'));
+        return $this->success(__('更新扩展配置成功'));
     }
     
     /**
@@ -508,13 +508,13 @@ class Extension extends Base
     {
         $requestFile = $request->file('file');
         if (empty($requestFile)) {
-            return $this->errorJson(__('上传文件不能为空'));
+            return $this->error(__('上传文件不能为空'));
         }
         
         // 扩展名
         $extension = $requestFile->extension();
         if ($extension != 'zip') {
-            return $this->errorJson(__('上传的文件格式有误！'));
+            return $this->error(__('上传的文件格式有误！'));
         }
         
         // 原始名称
@@ -526,7 +526,7 @@ class Extension extends Base
         
         // 检查插件目录是否存在
         if (file_exists($extensionPath)) {
-            return $this->errorJson(__('扩展已经存在'));
+            return $this->error(__('扩展已经存在'));
         }
         
         // 解压文件
@@ -534,10 +534,10 @@ class Extension extends Base
         $zip = new PclZipService($filename);
         $status = $zip->extract(PCLZIP_OPT_PATH, $extensionPath);
         if (!$status) {
-            return $this->errorJson(__('扩展解压失败'));
+            return $this->error(__('扩展解压失败'));
         }
         
-        return $this->successJson(__('扩展上传成功！'));
+        return $this->success(__('扩展上传成功！'));
     }
     
 }

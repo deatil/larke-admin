@@ -20,7 +20,7 @@ class AdminCheck
     {
         $isAdministrator = app('larke.admin.admin')->isAdministrator();
         if (!$isAdministrator) {
-            $this->errorJson(__('你没有权限进行该操作'), \ResponseCode::AUTH_ERROR);
+            $this->error(__('你没有权限进行该操作'), \ResponseCode::AUTH_ERROR);
         }
         
         return $next($request);

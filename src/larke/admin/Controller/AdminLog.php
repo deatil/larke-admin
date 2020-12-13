@@ -81,7 +81,7 @@ class AdminLog extends Base
             ->get()
             ->toArray(); 
         
-        return $this->successJson(__('获取成功'), [
+        return $this->success(__('获取成功'), [
             'start' => $start,
             'limit' => $limit,
             'total' => $total,
@@ -103,17 +103,17 @@ class AdminLog extends Base
     public function detail(string $id)
     {
         if (empty($id)) {
-            return $this->errorJson(__('日志ID不能为空'));
+            return $this->error(__('日志ID不能为空'));
         }
         
         $info = AdminLogModel::where(['id' => $id])
             ->withCertain('admin', ['name', 'email', 'avatar', 'last_active', 'last_ip'])
             ->first();
         if (empty($info)) {
-            return $this->errorJson(__('日志信息不存在'));
+            return $this->error(__('日志信息不存在'));
         }
         
-        return $this->successJson(__('获取成功'), $info);
+        return $this->success(__('获取成功'), $info);
     }
     
     /**
@@ -130,21 +130,21 @@ class AdminLog extends Base
     public function delete(string $id)
     {
         if (empty($id)) {
-            return $this->errorJson(__('日志ID不能为空'));
+            return $this->error(__('日志ID不能为空'));
         }
         
         $info = AdminLogModel::where('id', $id)
             ->first();
         if (empty($info)) {
-            return $this->errorJson(__('日志信息不存在'));
+            return $this->error(__('日志信息不存在'));
         }
         
         $deleteStatus = $info->delete();
         if ($deleteStatus === false) {
-            return $this->errorJson(__('日志删除失败'));
+            return $this->error(__('日志删除失败'));
         }
         
-        return $this->successJson(__('日志删除成功'));
+        return $this->success(__('日志删除成功'));
     }
     
     /**
@@ -170,10 +170,10 @@ class AdminLog extends Base
         }
         
         if ($status === false) {
-            return $this->errorJson(__('日志清空失败'));
+            return $this->error(__('日志清空失败'));
         }
         
-        return $this->successJson(__('日志清空成功'));
+        return $this->success(__('日志清空成功'));
     }
     
 }

@@ -36,7 +36,7 @@ class Profile extends Base
     {
         $data = app('larke.admin.admin')->getData();
         
-        return $this->successJson(__('获取成功'), $data);
+        return $this->success(__('获取成功'), $data);
     }
     
     /**
@@ -69,7 +69,7 @@ class Profile extends Base
         ]);
 
         if ($validator->fails()) {
-            return $this->errorJson($validator->errors()->first());
+            return $this->error($validator->errors()->first());
         }
         
         $updateData = [
@@ -83,10 +83,10 @@ class Profile extends Base
         $status = AdminModel::where('id', $adminid)
             ->update($updateData);
         if ($status === false) {
-            return $this->errorJson(__('修改信息失败'));
+            return $this->error(__('修改信息失败'));
         }
         
-        return $this->successJson(__('修改信息成功'));
+        return $this->success(__('修改信息成功'));
     }
 
     /**
@@ -112,7 +112,7 @@ class Profile extends Base
         ]);
 
         if ($validator->fails()) {
-            return $this->errorJson($validator->errors()->first());
+            return $this->error($validator->errors()->first());
         }
         
         $adminid = app('larke.admin.admin')->getId();
@@ -120,10 +120,10 @@ class Profile extends Base
             ->first()
             ->updateAvatar($data['avatar']);
         if ($status === false) {
-            return $this->errorJson(__('修改信息失败'));
+            return $this->error(__('修改信息失败'));
         }
         
-        return $this->successJson(__('修改头像成功'));
+        return $this->success(__('修改头像成功'));
     }
 
     /**
@@ -142,36 +142,36 @@ class Profile extends Base
         // 密码长度错误
         $oldPassword = $request->get('oldpassword');
         if (strlen($oldPassword) != 32) {
-            return $this->errorJson(__('旧密码错误'));
+            return $this->error(__('旧密码错误'));
         }
 
         // 密码长度错误
         $newPassword = $request->get('newpassword');
         if (strlen($newPassword) != 32) {
-            return $this->errorJson(__('新密码错误'));
+            return $this->error(__('新密码错误'));
         }
 
         $newPasswordConfirm = $request->get('newpassword_confirm');
         if (strlen($newPasswordConfirm) != 32) {
-            return $this->errorJson(__('确认密码错误'));
+            return $this->error(__('确认密码错误'));
         }
 
         if ($newPassword != $newPasswordConfirm) {
-            return $this->errorJson(__('两次密码输入不一致'));
+            return $this->error(__('两次密码输入不一致'));
         }
 
         $adminid = app('larke.admin.admin')->getId();
         $adminInfo = AdminModel::where('id', $adminid)
             ->first();
         if (empty($adminInfo)) {
-            return $this->errorJson(__('帐号错误'));
+            return $this->error(__('帐号错误'));
         }
         
         $encryptPassword = (new PasswordService())
             ->withSalt(config('larkeadmin.passport.password_salt'))
             ->encrypt($oldPassword, $adminInfo['password_salt']); 
         if ($encryptPassword != $adminInfo['password']) {
-            return $this->errorJson(__('用户密码错误'));
+            return $this->error(__('用户密码错误'));
         }
 
         // 新密码
@@ -185,10 +185,10 @@ class Profile extends Base
                 'password_salt' => $newPasswordInfo['encrypt'],
             ]);
         if ($status === false) {
-            return $this->errorJson(__('密码修改失败'));
+            return $this->error(__('密码修改失败'));
         }
         
-        return $this->successJson(__('密码修改成功'));
+        return $this->success(__('密码修改成功'));
     }
 
     /**
@@ -205,7 +205,7 @@ class Profile extends Base
     {
         $rules = app('larke.admin.admin')->getRules();
         
-        return $this->successJson(__('获取成功'), [
+        return $this->success(__('获取成功'), [
             'list' => $rules,
         ]);
     }
