@@ -259,8 +259,8 @@ class Passport extends Base
         $refreshTokenExpiresIn = $refreshJwt->getClaim('exp') - $refreshJwt->getClaim('iat');
         
         // 添加缓存黑名单
-        app('larke.admin.cache')->add(md5($accessToken), 'out', $refreshTokenExpiresIn);
-        app('larke.admin.cache')->add(md5($refreshToken), 'out', $refreshTokenExpiresIn);
+        app('larke.admin.cache')->add(md5($accessToken), time(), $refreshTokenExpiresIn);
+        app('larke.admin.cache')->add(md5($refreshToken), time(), $refreshTokenExpiresIn);
         
         // 监听事件
         event(new Event\PassportLogoutAfter());

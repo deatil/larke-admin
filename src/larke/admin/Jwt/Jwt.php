@@ -6,7 +6,8 @@ use Illuminate\Support\Arr;
 
 use Larke\JWT\Builder;
 use Larke\JWT\Parser;
-use Larke\JWT\Signer\Key;
+use Larke\JWT\Signer\Key\InMemory;
+use Larke\JWT\Signer\Key\LocalFileReference;
 use Larke\JWT\ValidationData;
 
 use Larke\Admin\Contracts\Jwt as JwtContract;
@@ -225,20 +226,23 @@ class Jwt implements JwtContract
                 $class = $signerNamespace . 'Hmac\\' . $sha;
                 $signer = new $class;
                 $key = Arr::get($algorithm, 'hmac.secrect', '');
-                $secrect = new Key($key);
+                $secrect = InMemory::plainText($key);
                 break;
             case 'rsa':
                 $class = $signerNamespace . 'Rsa\\' . $sha;
                 $signer = new $class;
                 if ($isPrivate) {
                     $privateKey = Arr::get($algorithm, 'rsa.private_key', '');
-                    $key = 'file://'.$privateKey;
+                    
                     $passphrase = Arr::get($algorithm, 'rsa.passphrase', null);
-                    $secrect = new Key($key, $passphrase);
+                    if (!empty($passphrase)) {
+                        $passphrase = InMemory::base64Encoded($passphrase)->contents();
+                    }
+                    
+                    $secrect = LocalFileReference::file($privateKey, $passphrase);
                 } else {
                     $publicKey = Arr::get($algorithm, 'rsa.public_key', '');
-                    $key = 'file://'.$publicKey;
-                    $secrect = new Key($key);
+                    $secrect = LocalFileReference::file($publicKey);
                 }
                 break;
             case 'ecdsa':
@@ -246,15 +250,17 @@ class Jwt implements JwtContract
                 $signer = new $class;
                 if ($isPrivate) {
                     $privateKey = Arr::get($algorithm, 'ecdsa.private_key', '');
-                    $key = 'file://'.$privateKey;
+                    
                     $passphrase = Arr::get($algorithm, 'ecdsa.passphrase', null);
-                    $secrect = new Key($key, $passphrase);
+                    if (!empty($passphrase)) {
+                        $passphrase = InMemory::base64Encoded($passphrase)->contents();
+                    }
+                    
+                    $secrect = LocalFileReference::file($privateKey, $passphrase);
                 } else {
                     $publicKey = Arr::get($algorithm, 'ecdsa.public_key', '');
-                    $key = 'file://'.$publicKey;
-                    $secrect = new Key($key);
+                    $secrect = LocalFileReference::file($publicKey);
                 }
-                $secrect = new Key($key);
                 break;
         }
         
@@ -286,9 +292,13 @@ class Jwt implements JwtContract
             $Builder->withClaim($claimKey, $claim);
         }
         
-        list($signer, $secrect) = $this->getSigner(true);
-        
-        $this->token = $Builder->getToken($signer, $secrect);
+        try {
+            list($signer, $secrect) = $this->getSigner(true);
+            
+            $this->token = $Builder->getToken($signer, $secrect);
+        } catch(\Exception $e) {
+            $this->token = false;
+        }
         
         return $this;
     }
@@ -299,10 +309,8 @@ class Jwt implements JwtContract
     public function decode()
     {
         if (! $this->decodeToken) {
-            $Parser = (new Parser());
-            
             try {
-                $this->decodeToken = $Parser->parse((string) $this->token); 
+                $this->decodeToken = (new Parser())->parse((string) $this->token); 
             } catch(\Exception $e) {
                 $this->decodeToken = false;
             }
@@ -338,7 +346,11 @@ class Jwt implements JwtContract
             return false;
         }
         
-        list($signer, $secrect) = $this->getSigner(false);
+        try {
+            list($signer, $secrect) = $this->getSigner(false);
+        } catch(\Exception $e) {
+            return false;
+        }
         
         return $this->decodeToken->verify($signer, $secrect);
     }
