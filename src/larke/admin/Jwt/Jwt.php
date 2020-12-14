@@ -236,7 +236,7 @@ class Jwt implements JwtContract
                     
                     $passphrase = Arr::get($algorithm, 'rsa.passphrase', null);
                     if (!empty($passphrase)) {
-                        $passphrase = InMemory::base64Encoded($passphrase)->contents();
+                        $passphrase = InMemory::base64Encoded($passphrase)->getContent();
                     }
                     
                     $secrect = LocalFileReference::file($privateKey, $passphrase);
@@ -253,7 +253,7 @@ class Jwt implements JwtContract
                     
                     $passphrase = Arr::get($algorithm, 'ecdsa.passphrase', null);
                     if (!empty($passphrase)) {
-                        $passphrase = InMemory::base64Encoded($passphrase)->contents();
+                        $passphrase = InMemory::base64Encoded($passphrase)->getContent();
                     }
                     
                     $secrect = LocalFileReference::file($privateKey, $passphrase);
