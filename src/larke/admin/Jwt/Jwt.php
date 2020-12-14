@@ -233,11 +233,13 @@ class Jwt implements JwtContract
                 if ($isPrivate) {
                     $privateKey = Arr::get($algorithm, 'rsa.private_key', '');
                     $key = 'file://'.$privateKey;
+                    $passphrase = Arr::get($algorithm, 'rsa.passphrase', null);
+                    $secrect = new Key($key, $passphrase);
                 } else {
                     $publicKey = Arr::get($algorithm, 'rsa.public_key', '');
                     $key = 'file://'.$publicKey;
+                    $secrect = new Key($key);
                 }
-                $secrect = new Key($key);
                 break;
             case 'ecdsa':
                 $class = $signerNamespace . 'Ecdsa\\' . $sha;
@@ -245,9 +247,12 @@ class Jwt implements JwtContract
                 if ($isPrivate) {
                     $privateKey = Arr::get($algorithm, 'ecdsa.private_key', '');
                     $key = 'file://'.$privateKey;
+                    $passphrase = Arr::get($algorithm, 'ecdsa.passphrase', null);
+                    $secrect = new Key($key, $passphrase);
                 } else {
                     $publicKey = Arr::get($algorithm, 'ecdsa.public_key', '');
                     $key = 'file://'.$publicKey;
+                    $secrect = new Key($key);
                 }
                 $secrect = new Key($key);
                 break;

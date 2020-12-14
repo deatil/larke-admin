@@ -39,10 +39,14 @@ return [
             'rsa' => [
                 'private_key' => env('LARKE_ADMIN_JWT_SIGNER_RSA_PRIVATE_KEY', ''),
                 'public_key' => env('LARKE_ADMIN_JWT_SIGNER_RSA_PUBLIC_KEY', ''),
+                // 私钥密码
+                'passphrase' => env('LARKE_ADMIN_JWT_SIGNER_RSA_PASSPHRASE', null),
             ],
             'ecdsa' => [
                 'private_key' => env('LARKE_ADMIN_JWT_SIGNER_ECDSA_PRIVATE_KEY', ''),
                 'public_key' => env('LARKE_ADMIN_JWT_SIGNER_ECDSA_PUBLIC_KEY', ''),
+                // 私钥密码
+                'passphrase' => env('LARKE_ADMIN_JWT_SIGNER_ECDSA_PASSPHRASE', null),
             ],
         ],
     ],

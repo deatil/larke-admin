@@ -78,6 +78,8 @@ php artisan larke-admin:import-route
 ### 扩展开发
 
 *  扩展开发可查看 `docs/extension/Test` 示例
+*  扩展目录默认为 `/extension` 目录
+*  `composer` 加载插件，在 `ServiceProvider->register()` 注册 `Extension::extend('Test', Test\TestService::class);` 即可
 
 
 ### 特别鸣谢
