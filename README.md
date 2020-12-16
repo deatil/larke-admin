@@ -90,7 +90,7 @@ php artisan larke-admin:import-route
 
 laravel/framework
 
-lcobucci/jwt
+lake/larke-jwt (基于 `lcobucci/jwt` 更新)
 
 casbin/casbin
 
