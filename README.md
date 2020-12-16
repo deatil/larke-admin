@@ -74,6 +74,8 @@ php artisan larke-admin:import-route
 \Larke\Admin\Middleware\RequestOptions::class,
 ```
 
+后台登陆账号：`admin` 及密码 `123456`
+
 
 ### 扩展开发
 

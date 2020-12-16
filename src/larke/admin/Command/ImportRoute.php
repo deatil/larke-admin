@@ -62,13 +62,15 @@ class ImportRoute extends Command
         }
         
         foreach ($routes as $route) {
-            if (!isset($route['prefix']) 
+            if (! isset($route['prefix']) 
                 || empty($route['method'])
                 || empty($route['name'])
                 || $route['prefix'] != config('larkeadmin.route.prefix')
             ) {
                 continue;
             }
+            
+            $route['uri'] = substr($route['uri'], strlen($route['prefix']) + 1);
             
             $actions = $this->formatAction($route['action']);
             if ($actions !== false) {
