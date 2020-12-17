@@ -262,6 +262,17 @@ class Jwt implements JwtContract
                     $secrect = LocalFileReference::file($publicKey);
                 }
                 break;
+            case 'eddsa':
+                $class = $signerNamespace . 'Eddsa';
+                $signer = new $class;
+                if ($isPrivate) {
+                    $privateKey = Arr::get($algorithm, 'eddsa.private_key', '');
+                    $secrect = LocalFileReference::file($privateKey, $passphrase);
+                } else {
+                    $publicKey = Arr::get($algorithm, 'eddsa.public_key', '');
+                    $secrect = LocalFileReference::file($publicKey);
+                }
+                break;
         }
         
         return [$signer, $secrect];

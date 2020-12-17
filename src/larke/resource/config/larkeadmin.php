@@ -48,6 +48,10 @@ return [
                 // 私钥密码
                 'passphrase' => env('LARKE_ADMIN_JWT_SIGNER_ECDSA_PASSPHRASE', null),
             ],
+            'eddsa' => [
+                'private_key' => env('LARKE_ADMIN_JWT_SIGNER_EDDSA_PRIVATE_KEY', ''),
+                'public_key' => env('LARKE_ADMIN_JWT_SIGNER_EDDSA_PUBLIC_KEY', ''),
+            ],
         ],
     ],
     

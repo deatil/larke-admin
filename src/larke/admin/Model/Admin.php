@@ -11,6 +11,7 @@ namespace Larke\Admin\Model;
 class Admin extends Base
 {
     protected $table = 'larke_admin';
+    protected $keyType = 'string';
     protected $primaryKey = 'id';
     
     protected $guarded = [];

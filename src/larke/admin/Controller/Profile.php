@@ -2,8 +2,8 @@
 
 namespace Larke\Admin\Controller;
 
-use Arr;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 
 use Larke\Admin\Service\Password as PasswordService;

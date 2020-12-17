@@ -2,10 +2,11 @@
 
 namespace Larke\Admin\Service;
 
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Upload
@@ -65,11 +66,21 @@ class Upload
     /**
      * Initialize the storage instance.
      *
-     * @return void.
+     * @return $this.
      */
-    public function initStorage()
+    public static function driver($disk = null)
     {
-        return $this->disk(config('larkeadmin.upload.disk'));
+        return (new static())->disk($disk);
+    }
+    
+    /**
+     * Initialize the storage instance.
+     *
+     * @return $this.
+     */
+    public static function initStorage()
+    {
+        return static::driver(config('larkeadmin.upload.disk'));
     }
 
     /**
@@ -87,9 +98,7 @@ class Upload
      *
      * @param string $disk Disks defined in `config/filesystems.php`.
      *
-     * @throws \Exception
-     *
-     * @return $this
+     * @return $this|bool
      */
     public function disk($disk)
     {

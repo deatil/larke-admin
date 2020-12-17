@@ -1,9 +1,13 @@
 <?php
 
+use Illuminate\Support\Arr;
+
+use Larke\Admin\Model\Config as ConfigModel;
+use Larke\Admin\Model\Attachment as AttachmentModel;
 use Larke\Admin\Model\Extension as ExtensionModel;
 use Larke\Admin\Traits\ResponseJson as ResponseJsonTrait;
 
-if (!function_exists('larke_success')) {
+if (! function_exists('larke_success')) {
     /**
      * 返回成功JSON
      *
@@ -22,7 +26,7 @@ if (!function_exists('larke_success')) {
     }
 }
 
-if (!function_exists('larke_error')) {
+if (! function_exists('larke_error')) {
     /**
      * 返回失败JSON
      *
@@ -41,7 +45,7 @@ if (!function_exists('larke_error')) {
     }
 }
 
-if (!function_exists('larke_extension_config')) {
+if (! function_exists('larke_extension_config')) {
     /**
      * 扩展配置信息
      *
@@ -52,5 +56,30 @@ if (!function_exists('larke_extension_config')) {
         return ExtensionModel::where('name', '=', $name)
             ->first()
             ->config_datas;
+    }
+}
+
+if (! function_exists('larke_config')) {
+    /**
+     * 配置信息
+     *
+     * @create 2020-12-17
+     * @author deatil
+     */
+    function larke_config($name, $default = null) {
+        $settins =  ConfigModel::getSettings();
+        return Arr::get($settins, $name, $default);
+    }
+}
+
+if (! function_exists('larke_attachment_url')) {
+    /**
+     * 附件信息
+     *
+     * @create 2020-12-17
+     * @author deatil
+     */
+    function larke_attachment_url($id, $default = null) {
+        return AttachmentModel::path($id, $default);
     }
 }

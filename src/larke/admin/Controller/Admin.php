@@ -142,14 +142,15 @@ class Admin extends Base
         
         $adminGroups = $info['groups'];
         unset($info['groupAccesses'], $info['groups']);
-        $info['groups'] = collect($adminGroups)->map(function($data) {
-            return [
-                'id' => $data['id'],
-                'parentid' => $data['parentid'],
-                'title' => $data['title'],
-                'description' => $data['description'],
-            ];
-        });
+        $info['groups'] = collect($adminGroups)
+            ->map(function($data) {
+                return [
+                    'id' => $data['id'],
+                    'parentid' => $data['parentid'],
+                    'title' => $data['title'],
+                    'description' => $data['description'],
+                ];
+            });
         
         return $this->success(__('获取成功'), $info);
     }

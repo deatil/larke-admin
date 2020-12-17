@@ -25,7 +25,7 @@ class Config extends Base
     {
         return Cache::rememberForever(md5('larkeadmin.model.config.settings'), function() {
             return self::where('status', '=', 1)
-                ->all()
+                ->get()
                 ->mapWithKeys(function ($setting) {
                     return [$setting->name => $setting->value];
                 })

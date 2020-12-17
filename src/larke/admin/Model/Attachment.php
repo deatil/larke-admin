@@ -32,9 +32,12 @@ class Attachment extends Base
             return '';
         }
         
-        return (new UploadService())
-            ->disk($this->driver)
-            ->objectUrl($value);
+        $upload = UploadService::driver($this->driver);
+        if ($upload === false) {
+            return '';
+        }
+        
+        return $upload->objectUrl($value);
     }
     
     public function attachmentable()
@@ -42,18 +45,11 @@ class Attachment extends Base
         return $this->morphTo(__FUNCTION__, 'belong_type', 'belong_id');
     }
     
-    public static function path($id)
+    public static function path($id, $default = null)
     {
-        $data = self::where('id', $id)
-            ->select('path', 'driver')
-            ->first();
-        if (empty($data)) {
-            return '';
-        }
-        
-        return (new UploadService())
-            ->disk($data->driver)
-            ->objectUrl($data->path);
+        return static::where('id', $id)
+            ->first()
+            ->url ?? $default;
     }
 
 }
