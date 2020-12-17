@@ -21,7 +21,7 @@ return [
     
     'jwt' => [
         'iss' => env('LARKE_ADMIN_JWT_ISS', 'admin-api.domain.com'),
-        'aud' => env('LARKE_ADMIN_JWT_AUD', md5(request()->ip().request()->server('HTTP_USER_AGENT'))),
+        'aud' => env('LARKE_ADMIN_JWT_AUD', !app()->runningInConsole() ? md5(request()->ip().request()->server('HTTP_USER_AGENT')) : ''),
         'sub' => env('LARKE_ADMIN_JWT_SUB', 'larke-admin-passport'),
         'jti' => env('LARKE_ADMIN_JWT_JTI', 'larke-admin-jid'),
         'exp' => env('LARKE_ADMIN_JWT_EXP', 3600),
@@ -40,13 +40,13 @@ return [
                 'private_key' => env('LARKE_ADMIN_JWT_SIGNER_RSA_PRIVATE_KEY', ''),
                 'public_key' => env('LARKE_ADMIN_JWT_SIGNER_RSA_PUBLIC_KEY', ''),
                 // 私钥密码
-                'passphrase' => env('LARKE_ADMIN_JWT_SIGNER_RSA_PASSPHRASE', null),
+                'passphrase' => env('LARKE_ADMIN_JWT_SIGNER_RSA_PASSPHRASE', ''),
             ],
             'ecdsa' => [
                 'private_key' => env('LARKE_ADMIN_JWT_SIGNER_ECDSA_PRIVATE_KEY', ''),
                 'public_key' => env('LARKE_ADMIN_JWT_SIGNER_ECDSA_PUBLIC_KEY', ''),
                 // 私钥密码
-                'passphrase' => env('LARKE_ADMIN_JWT_SIGNER_ECDSA_PASSPHRASE', null),
+                'passphrase' => env('LARKE_ADMIN_JWT_SIGNER_ECDSA_PASSPHRASE', ''),
             ],
             'eddsa' => [
                 'private_key' => env('LARKE_ADMIN_JWT_SIGNER_EDDSA_PRIVATE_KEY', ''),

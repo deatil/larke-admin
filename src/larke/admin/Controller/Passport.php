@@ -1,5 +1,7 @@
 <?php
 
+declare (strict_types = 1);
+
 namespace Larke\Admin\Controller;
 
 use Illuminate\Http\Request;
@@ -182,7 +184,7 @@ class Passport extends Base
             ->decode();
         
         if (!($refreshJwt->validate() && $refreshJwt->verify())) {
-            return $this->error(__('refreshToken已过期'), \ResponseCode::REFRESH_TOKEN_ERROR);
+            return $this->error(__('refreshToken已过期'), \ResponseCode::REFRESH_TOKEN_TIMEOUT);
         }
         
         $refreshAdminid = $refreshJwt->getClaim('adminid');

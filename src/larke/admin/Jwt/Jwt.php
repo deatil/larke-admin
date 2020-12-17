@@ -207,7 +207,9 @@ class Jwt implements JwtContract
      */
     public function getSigner($isPrivate = true)
     {
-        $algorithm = Arr::get($this->signerConfig, 'algorithm', []);
+        $config = $this->signerConfig;
+        
+        $algorithm = Arr::get($config, 'algorithm', []);
         if (empty($algorithm)) {
             return false;
         }
@@ -220,56 +222,56 @@ class Jwt implements JwtContract
         
         $signer = '';
         $secrect = '';
-        $signerNamespace = '\\Larke\\JWT\\Signer\\';
+        $signerNamespace = '\\Larke\\JWT\\Signer';
         switch ($type) {
             case 'hmac':
-                $class = $signerNamespace . 'Hmac\\' . $sha;
+                $class = $signerNamespace . '\\Hmac\\' . $sha;
                 $signer = new $class;
-                $key = Arr::get($algorithm, 'hmac.secrect', '');
+                $key = Arr::get($config, 'hmac.secrect', '');
                 $secrect = InMemory::plainText($key);
                 break;
             case 'rsa':
-                $class = $signerNamespace . 'Rsa\\' . $sha;
+                $class = $signerNamespace . '\\Rsa\\' . $sha;
                 $signer = new $class;
                 if ($isPrivate) {
-                    $privateKey = Arr::get($algorithm, 'rsa.private_key', '');
+                    $privateKey = Arr::get($config, 'rsa.private_key', '');
                     
-                    $passphrase = Arr::get($algorithm, 'rsa.passphrase', null);
+                    $passphrase = Arr::get($config, 'rsa.passphrase', null);
                     if (!empty($passphrase)) {
                         $passphrase = InMemory::base64Encoded($passphrase)->getContent();
                     }
                     
                     $secrect = LocalFileReference::file($privateKey, $passphrase);
                 } else {
-                    $publicKey = Arr::get($algorithm, 'rsa.public_key', '');
+                    $publicKey = Arr::get($config, 'rsa.public_key', '');
                     $secrect = LocalFileReference::file($publicKey);
                 }
                 break;
             case 'ecdsa':
-                $class = $signerNamespace . 'Ecdsa\\' . $sha;
+                $class = $signerNamespace . '\\Ecdsa\\' . $sha;
                 $signer = new $class;
                 if ($isPrivate) {
-                    $privateKey = Arr::get($algorithm, 'ecdsa.private_key', '');
+                    $privateKey = Arr::get($config, 'ecdsa.private_key', '');
                     
-                    $passphrase = Arr::get($algorithm, 'ecdsa.passphrase', null);
+                    $passphrase = Arr::get($config, 'ecdsa.passphrase', null);
                     if (!empty($passphrase)) {
                         $passphrase = InMemory::base64Encoded($passphrase)->getContent();
                     }
                     
                     $secrect = LocalFileReference::file($privateKey, $passphrase);
                 } else {
-                    $publicKey = Arr::get($algorithm, 'ecdsa.public_key', '');
+                    $publicKey = Arr::get($config, 'ecdsa.public_key', '');
                     $secrect = LocalFileReference::file($publicKey);
                 }
                 break;
             case 'eddsa':
-                $class = $signerNamespace . 'Eddsa';
+                $class = $signerNamespace . '\\Eddsa';
                 $signer = new $class;
                 if ($isPrivate) {
-                    $privateKey = Arr::get($algorithm, 'eddsa.private_key', '');
+                    $privateKey = Arr::get($config, 'eddsa.private_key', '');
                     $secrect = LocalFileReference::file($privateKey, $passphrase);
                 } else {
-                    $publicKey = Arr::get($algorithm, 'eddsa.public_key', '');
+                    $publicKey = Arr::get($config, 'eddsa.public_key', '');
                     $secrect = LocalFileReference::file($publicKey);
                 }
                 break;

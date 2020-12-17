@@ -170,9 +170,12 @@ class AuthGroup extends Base
             return $this->error(__('信息不存在'));
         }
         
-        $ruleAccesses = collect($info['ruleAccesses'])->map(function($data) {
-            return $data['rule_id'];
-        });
+        $ruleAccesses = collect($info['ruleAccesses'])
+            ->map(function($data) {
+                return $data['rule_id'];
+            })
+            ->values()
+            ->all();
         unset($info['ruleAccesses']);
         $info['rule_accesses'] = $ruleAccesses;
         
