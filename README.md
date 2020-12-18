@@ -24,7 +24,7 @@
 
 ![admin](https://user-images.githubusercontent.com/24578855/101988564-6bd8c100-3cd5-11eb-8524-21151ba3b404.png)
 
-![admin-access](https://user-images.githubusercontent.com/24578855/101989890-4e5c2500-3cde-11eb-8db3-3b79674f102e.jpg)
+![admin-access](https://user-images.githubusercontent.com/24578855/102609135-f3a34d00-4165-11eb-87a9-c2d98eaca02a.png)
 
 ![attach](https://user-images.githubusercontent.com/24578855/101988566-6da28480-3cd5-11eb-9532-69d88b2f598d.png)
 
@@ -32,7 +32,7 @@
 
 ![menus](https://user-images.githubusercontent.com/24578855/101988573-71cea200-3cd5-11eb-8e8b-e80ab319b216.png)
 
-![rule](https://user-images.githubusercontent.com/24578855/101988577-72ffcf00-3cd5-11eb-956c-37d3453689b1.png)
+![rule2](https://user-images.githubusercontent.com/24578855/102609155-f9992e00-4165-11eb-93ad-82275af134ab.png)
 
 更多截图 
 [Larke Admin 后台截图](https://github.com/deatil/larke-admin/issues/1)
