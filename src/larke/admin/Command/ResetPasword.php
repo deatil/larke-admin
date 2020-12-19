@@ -4,7 +4,7 @@ namespace Larke\Admin\Command;
 
 use Illuminate\Console\Command;
 
-use Larke\Admin\Service\Password as PasswordService;
+use Larke\Admin\Support\Password as PasswordService;
 use Larke\Admin\Model\Admin as AdminModel;
 
 /**

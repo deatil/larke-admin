@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Validator;
 
 use Larke\Admin\Model\Admin as AdminModel;
 use Larke\Admin\Model\AuthGroupAccess as AuthGroupAccessModel;
-use Larke\Admin\Service\Password as PasswordService;
+use Larke\Admin\Support\Password as PasswordService;
 use Larke\Admin\Repository\Admin as AdminRepository;
 
 /**

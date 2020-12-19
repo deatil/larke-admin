@@ -13,8 +13,8 @@ class TestService extends Service
         'author' => 'deatil', 
         'authorsite' => 'http://github.com/deatil', // 选填
         'authoremail' => 'deatil@github.com',
-        'version' => '1.0.3',
-        'adaptation' => '1.0.*',
+        'version' => '1.0.3', // 扩展版本
+        'adaptation' => '1.0.*', // 适配admin系统版本
         'require_extension' => [], // 选填
         'config' => [ // 配置，选填
             [

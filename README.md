@@ -6,7 +6,7 @@
 *  `larke-admin` 是基于 `laravel8` 版本的后台快速开发框架，完全api接口化，适用于前后端分离的项目
 *  基于 `JWT` 的用户登陆态管理
 *  权限判断基于 `php-casbin` 的 `RBAC` 授权
-*  本项目为 `后台api服务`，后台前端页面可查看 [Larke Admin Frontend](https://github.com/deatil/larke-admin-frontend) 项目
+*  本项目为 `后台api服务`，`后台前端页面` 可查看 [Larke Admin Frontend](https://github.com/deatil/larke-admin-frontend) 项目
 
 
 ### 环境要求
@@ -81,7 +81,7 @@ php artisan larke-admin:import-route
 
 *  扩展开发可查看 `docs/extension/Test` 示例
 *  扩展目录默认为 `/extension` 目录
-*  `composer` 加载插件，在 `ServiceProvider->register()` 注册 `Extension::extend('Test', Test\TestService::class);` 即可
+*  `composer` 加载扩展，在 `ServiceProvider->register()` 注册 `\Larke\Admin\Facade\Extension::extend('Test', \Test\TestService::class);` 即可
 
 
 ### 特别鸣谢

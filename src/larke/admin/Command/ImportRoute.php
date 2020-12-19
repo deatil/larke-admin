@@ -7,7 +7,7 @@ use ReflectionClass;
 use Illuminate\Support\Arr;
 use Illuminate\Console\Command;
 
-use Larke\Admin\Service\Doc;
+use Larke\Admin\Support\Doc;
 use Larke\Admin\Service\Route as RouteService;
 use Larke\Admin\Model\AuthRule as AuthRuleModel;
 

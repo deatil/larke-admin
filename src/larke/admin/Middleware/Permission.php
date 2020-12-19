@@ -54,10 +54,10 @@ class Permission
     protected function shouldPassThrough($request)
     {
         $excepts = array_merge(config('larkeadmin.auth.excepts', []), [
-            'larke-admin.passport.captcha',
-            'larke-admin.passport.login',
-            'larke-admin.passport.refresh-token',
-            'larke-admin.attachment.download',
+            $this->formatRouteSlug('passport.captcha'),
+            $this->formatRouteSlug('passport.login'),
+            $this->formatRouteSlug('passport.refresh-token'),
+            $this->formatRouteSlug('attachment.download'),
         ]);
         
         $excepts = array_merge($excepts, $this->shouldPassSlugs());
@@ -89,6 +89,25 @@ class Permission
         })->toArray();
         
         return $ruleSlugs;
+    }
+    
+    /*
+     * 格式化路由标识
+     */
+    protected function formatRouteSlug($slug = '')
+    {
+        if (empty($slug)) {
+            return '';
+        }
+        
+        $newSlug = '';
+        
+        $routeAs = config('larkeadmin.route.as', '');
+        if (! empty($routeAs)) {
+            $newSlug = sprintf('%s'.$slug, $routeAs);
+        }
+        
+        return $newSlug;
     }
 
 }

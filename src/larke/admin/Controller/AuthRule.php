@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 
-use Larke\Admin\Service\Tree;
+use Larke\Admin\Support\Tree;
 use Larke\Admin\Model\AuthRule as AuthRuleModel;
 use Larke\Admin\Repository\AuthRule as AuthRuleRepository;
 

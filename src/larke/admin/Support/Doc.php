@@ -1,6 +1,6 @@
 <?php
 
-namespace Larke\Admin\Service;
+namespace Larke\Admin\Support;
 
 /**
  * 类注释解析

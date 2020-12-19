@@ -11,7 +11,7 @@ use Larke\Admin\Jwt\Jwt;
 use Larke\Admin\Http\Response as HttpResponse;
 use Larke\Admin\Http\ResponseCode;
 use Larke\Admin\Service\Cache;
-use Larke\Admin\Service\Loader;
+use Larke\Admin\Support\Loader;
 use Larke\Admin\Auth\Admin;
 
 // use directory
@@ -193,6 +193,8 @@ class ServiceProvider extends BaseServiceProvider
             $Jwt->withExp($config['exp']);
             $Jwt->withNbf($config['nbf']);
             $Jwt->withLeeway($config['leeway']);
+            
+            $Jwt->withPassphrase($config['passphrase']);
             
             $Jwt->withSignerConfig($config['signer']);
             

@@ -1,6 +1,6 @@
 <?php
 
-namespace Larke\Admin\Service;
+namespace Larke\Admin\Support;
 
 // --------------------------------------------------------------------------------
 // PhpConcept Library - Zip Module 2.8.2

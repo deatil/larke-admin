@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 use Larke\Admin\Captcha\Captcha;
-use Larke\Admin\Service\Password as PasswordService;
+use Larke\Admin\Support\Password;
 use Larke\Admin\Model\Admin as AdminModel;
 
 // use dir
@@ -40,8 +40,6 @@ class Passport extends Base
      */
     public function captcha(Request $request)
     {
-        $data = $request->all();
-        
         $Captcha = new Captcha();
         
         $captcha = $Captcha->getData();
@@ -107,7 +105,7 @@ class Passport extends Base
         $adminInfo = $admin->toArray();
         $password = $request->post('password');
         
-        $encryptPassword = (new PasswordService())
+        $encryptPassword = (new Password())
             ->withSalt(config('larkeadmin.passport.password_salt'))
             ->encrypt($password, $adminInfo['password_salt']); 
         if ($encryptPassword != $adminInfo['password']) {

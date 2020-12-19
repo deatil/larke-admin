@@ -1,6 +1,6 @@
 <?php
 
-namespace Larke\Admin\Service;
+namespace Larke\Admin\Support;
 
 use Composer\Autoload\ClassLoader;
 

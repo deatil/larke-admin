@@ -10,10 +10,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
 use Larke\Admin\Event;
+use Larke\Admin\Support\PclZip;
 use Larke\Admin\Facade\Extension as AdminExtension;
 use Larke\Admin\Model\Extension as ExtensionModel;
-use Larke\Admin\Service\Upload as UploadService;
-use Larke\Admin\Service\PclZip as PclZipService;
 
 /**
  * 扩展
@@ -524,14 +523,14 @@ class Extension extends Base
         
         $extensionPath = AdminExtension::getExtensionDirectory($extensionName);
         
-        // 检查插件目录是否存在
+        // 检查扩展目录是否存在
         if (file_exists($extensionPath)) {
             return $this->error(__('扩展已经存在'));
         }
         
         // 解压文件
         $filename = $requestFile->getPathname();
-        $zip = new PclZipService($filename);
+        $zip = new PclZip($filename);
         $status = $zip->extract(PCLZIP_OPT_PATH, $extensionPath);
         if (!$status) {
             return $this->error(__('扩展解压失败'));

@@ -2,7 +2,7 @@
 
 namespace Larke\Admin\Model;
 
-use Larke\Admin\Service\Upload as UploadService;
+use Larke\Admin\Service\Upload;
 
 /**
  * 附件模型
@@ -32,7 +32,7 @@ class Attachment extends Base
             return '';
         }
         
-        $upload = UploadService::driver($this->driver);
+        $upload = Upload::driver($this->driver);
         if ($upload === false) {
             return '';
         }

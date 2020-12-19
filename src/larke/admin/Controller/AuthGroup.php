@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 
-use Larke\Admin\Service\Tree;
+use Larke\Admin\Support\Tree;
 use Larke\Admin\Model\AuthGroup as AuthGroupModel;
 use Larke\Admin\Model\AuthRuleAccess as AuthRuleAccessModel;
 use Larke\Admin\Repository\AuthGroup as AuthGroupRepository;

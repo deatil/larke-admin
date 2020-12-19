@@ -10,6 +10,7 @@ use Larke\JWT\Signer\Key\InMemory;
 use Larke\JWT\Signer\Key\LocalFileReference;
 use Larke\JWT\ValidationData;
 
+use Larke\Admin\Support\Crypt;
 use Larke\Admin\Contracts\Jwt as JwtContract;
 
 /**
@@ -54,6 +55,11 @@ class Jwt implements JwtContract
      * 时间差兼容
      */
     private $leeway = 0;
+    
+    /**
+     * 荷载加密密码
+     */
+    private $passphrase = '';
     
     /**
      * decode token
@@ -160,6 +166,15 @@ class Jwt implements JwtContract
     }
     
     /**
+     * 设置荷载加密密码
+     */
+    public function withPassphrase($passphrase)
+    {
+        $this->passphrase = $passphrase;
+        return $this;
+    }
+    
+    /**
      * 设置token
      */
     public function withToken($token)
@@ -189,6 +204,7 @@ class Jwt implements JwtContract
             return $this;
         }
         
+        $value = Crypt::encrypt($value, $this->passphrase);
         $this->claims[(string) $claim] = $value;
         return $this;
     }
@@ -393,6 +409,18 @@ class Jwt implements JwtContract
         
         return $header;
     }
+    
+    /**
+     * 获取 Headers
+     */
+    public function getHeaders()
+    {
+        if (! $this->decodeToken) {
+            return false;
+        }
+        
+        return $this->decodeToken->getHeaders();
+    }
 
     /**
      * 获取token存储数据
@@ -409,19 +437,8 @@ class Jwt implements JwtContract
             return false;
         }
         
+        $claim = Crypt::decrypt($claim, $this->passphrase);
         return $claim;
-    }
-    
-    /**
-     * 获取 Headers
-     */
-    public function getHeaders()
-    {
-        if (! $this->decodeToken) {
-            return false;
-        }
-        
-        return $this->decodeToken->getHeaders();
     }
     
     /**
@@ -437,7 +454,8 @@ class Jwt implements JwtContract
         
         $data = [];
         foreach ($claims as $claim) {
-            $data[$claim->getName()] = $claim->getValue();
+            $claimValue = Crypt::decrypt($claim->getValue(), $this->passphrase);
+            $data[$claim->getName()] = $claimValue;
         }
         
         return $data;

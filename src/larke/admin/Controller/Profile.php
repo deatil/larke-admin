@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 
-use Larke\Admin\Service\Password as PasswordService;
+use Larke\Admin\Support\Password;
 use Larke\Admin\Model\Admin as AdminModel;
 
 /**
@@ -167,7 +167,7 @@ class Profile extends Base
             return $this->error(__('帐号错误'));
         }
         
-        $encryptPassword = (new PasswordService())
+        $encryptPassword = (new Password())
             ->withSalt(config('larkeadmin.passport.password_salt'))
             ->encrypt($oldPassword, $adminInfo['password_salt']); 
         if ($encryptPassword != $adminInfo['password']) {
@@ -175,7 +175,7 @@ class Profile extends Base
         }
 
         // 新密码
-        $newPasswordInfo = (new PasswordService())
+        $newPasswordInfo = (new Password())
             ->withSalt(config('larkeadmin.passport.password_salt'))
             ->encrypt($newPassword); 
 

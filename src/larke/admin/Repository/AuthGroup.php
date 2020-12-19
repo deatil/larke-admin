@@ -4,7 +4,7 @@ namespace Larke\Admin\Repository;
 
 use Arr;
 
-use Larke\Admin\Service\Tree as TreeService;
+use Larke\Admin\Support\Tree;
 use Larke\Admin\Model\AuthGroup as AuthGroupModel;
 
 /*
@@ -45,13 +45,13 @@ class AuthGroup
                 ->get()
                 ->toArray();
                 
-            $TreeService = new TreeService();
-            $res = $TreeService
+            $Tree = new Tree();
+            $res = $Tree
                 ->withConfig('buildChildKey', 'children')
                 ->withData($data)
                 ->build($groupid);
             
-            $list = $TreeService->buildFormatList($res, $groupid);
+            $list = $Tree->buildFormatList($res, $groupid);
             return $list;
         }
     }
@@ -70,13 +70,13 @@ class AuthGroup
      */
     public static function getChildrenFromData($data = [], $parentid = '')
     {
-        $TreeService = new TreeService();
-        $res = $TreeService
+        $Tree = new Tree();
+        $res = $Tree
             ->withConfig('buildChildKey', 'children')
             ->withData($data)
             ->build($parentid);
         
-        $list = $TreeService->buildFormatList($res, $parentid);
+        $list = $Tree->buildFormatList($res, $parentid);
         
         return $list;
     }

@@ -4,7 +4,7 @@ namespace Larke\Admin\Repository;
 
 use Arr;
 
-use Larke\Admin\Service\Tree as TreeService;
+use Larke\Admin\Support\Tree;
 use Larke\Admin\Model\AuthRule as AuthRuleModel;
 
 /*
@@ -44,13 +44,13 @@ class AuthRule
                 ->get()
                 ->toArray();
                 
-            $TreeService = new TreeService();
-            $res = $TreeService
+            $Tree = new Tree();
+            $res = $Tree
                 ->withConfig('buildChildKey', 'children')
                 ->withData($data)
                 ->build($ruleid);
             
-            $list = $TreeService->buildFormatList($res, $ruleid);
+            $list = $Tree->buildFormatList($res, $ruleid);
             return $list;
         }
     }
@@ -69,13 +69,13 @@ class AuthRule
      */
     public static function getChildrenFromData($data = [], $parentid = '')
     {
-        $TreeService = new TreeService();
-        $res = $TreeService
+        $Tree = new Tree();
+        $res = $Tree
             ->withConfig('buildChildKey', 'children')
             ->withData($data)
             ->build($parentid);
         
-        $list = $TreeService->buildFormatList($res, $parentid);
+        $list = $Tree->buildFormatList($res, $parentid);
         
         return $list;
     }

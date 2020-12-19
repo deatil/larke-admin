@@ -104,10 +104,10 @@ class Authenticate
     protected function shouldPassThrough($request)
     {
         $excepts = array_merge(config('larkeadmin.auth.excepts', []), [
-            'larke-admin.passport.captcha',
-            'larke-admin.passport.login',
-            'larke-admin.passport.refresh-token',
-            'larke-admin.attachment.download',
+            $this->formatRouteSlug('passport.captcha'),
+            $this->formatRouteSlug('passport.login'),
+            $this->formatRouteSlug('passport.refresh-token'),
+            $this->formatRouteSlug('attachment.download'),
         ]);
 
         return collect($excepts)
@@ -115,6 +115,25 @@ class Authenticate
                 $requestUrl = \Route::currentRouteName();
                 return ($except == $requestUrl);
             });
+    }
+    
+    /*
+     * 格式化路由标识
+     */
+    protected function formatRouteSlug($slug = '')
+    {
+        if (empty($slug)) {
+            return '';
+        }
+        
+        $newSlug = '';
+        
+        $routeAs = config('larkeadmin.route.as', '');
+        if (! empty($routeAs)) {
+            $newSlug = sprintf('%s'.$slug, $routeAs);
+        }
+        
+        return $newSlug;
     }
 
 }
