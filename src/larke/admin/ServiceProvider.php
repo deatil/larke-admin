@@ -194,8 +194,6 @@ class ServiceProvider extends BaseServiceProvider
             $Jwt->withNbf($config['nbf']);
             $Jwt->withLeeway($config['leeway']);
             
-            $Jwt->withPassphrase($config['passphrase']);
-            
             $Jwt->withSignerConfig($config['signer']);
             
             return $Jwt;

@@ -57,11 +57,6 @@ class Jwt implements JwtContract
     private $leeway = 0;
     
     /**
-     * 荷载加密密码
-     */
-    private $passphrase = '';
-    
-    /**
      * decode token
      */
     private $decodeToken;
@@ -166,15 +161,6 @@ class Jwt implements JwtContract
     }
     
     /**
-     * 设置荷载加密密码
-     */
-    public function withPassphrase($passphrase)
-    {
-        $this->passphrase = $passphrase;
-        return $this;
-    }
-    
-    /**
      * 设置token
      */
     public function withToken($token)
@@ -204,7 +190,6 @@ class Jwt implements JwtContract
             return $this;
         }
         
-        $value = Crypt::encrypt($value, $this->passphrase);
         $this->claims[(string) $claim] = $value;
         return $this;
     }
@@ -437,7 +422,6 @@ class Jwt implements JwtContract
             return false;
         }
         
-        $claim = Crypt::decrypt($claim, $this->passphrase);
         return $claim;
     }
     
