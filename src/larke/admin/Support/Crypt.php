@@ -74,7 +74,7 @@ class Crypt
         $ikey = "-x6g5ZWm2G7g_v90Bo.pOq3kTaxsZ6rb";
         $knum = 0;
         $i = 0;
-        $tlen = @strlen($txt);
+        $tlen = strlen($txt);
         while (isset($key{$i})) {
             $knum += ord($key{$i++});
         }
@@ -93,8 +93,8 @@ class Crypt
         $tmp = '';
         $j = 0;
         $k = 0;
-        $tlen = @strlen($txt);
-        $klen = @strlen($mdKey);
+        $tlen = strlen($txt);
+        $klen = strlen($mdKey);
         for ($i = 0; $i < $tlen; $i++) {
             $k = $k == $klen ? 0 : $k;
             $j = strpos($chars, $txt{$i}) - $nhnum - ord($mdKey{$k++});

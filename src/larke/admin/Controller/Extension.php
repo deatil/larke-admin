@@ -163,18 +163,24 @@ class Extension extends Base
         
         $checkInfo = AdminExtension::validateInfo($info);
         if (!$checkInfo) {
-            return $this->error(__('扩展信息不正确'));
+            return $this->error(__('扩展信息错误'));
         }
         
         try {
             $infoVersion = (new VersionParser())->normalize($info['version']);
         } catch(\Exception $e) {
-            return $this->error(__('扩展版本信息不正确'));
+            return $this->error(__('扩展版本信息错误'));
         }
         
         $adminVersion = config('larkeadmin.admin.version');
-        $versionCheck = Semver::satisfies($adminVersion, $info['adaptation']);
-        if (!$versionCheck) {
+        
+        try {
+            $versionCheck = Semver::satisfies($adminVersion, $info['adaptation']);
+        } catch(\Exception $e) {
+            return $this->error(__('扩展适配系统版本错误'));
+        }
+        
+        if (! $versionCheck) {
             return $this->error(__('扩展适配系统版本错误，当前系统版本：:version', [
                 'version' => $adminVersion,
             ]));
@@ -183,7 +189,7 @@ class Extension extends Base
         $requireExtensions = ExtensionModel::checkRequireExtension($info['require_extension']);
         if (!empty($requireExtensions)) {
             $match = collect($requireExtensions)->contains(function ($data) {
-                return ($data['match'] == 0);
+                return ($data['match'] === false);
             });
             if ($match) {
                 return $this->success(__('扩展依赖出现错误'), [
@@ -286,8 +292,14 @@ class Extension extends Base
         }
         
         $adminVersion = config('larkeadmin.admin.version');
-        $versionCheck = Semver::satisfies($adminVersion, $info['adaptation']);
-        if (!$versionCheck) {
+        
+        try {
+            $versionCheck = Semver::satisfies($adminVersion, $info['adaptation']);
+        } catch(\Exception $e) {
+            return $this->error(__('扩展适配系统版本错误'));
+        }
+        
+        if (! $versionCheck) {
             return $this->error(__('扩展适配系统版本错误，当前系统版本：:version', [
                 'version' => $adminVersion,
             ]));
@@ -308,7 +320,7 @@ class Extension extends Base
         $requireExtensions = ExtensionModel::checkRequireExtension($info['require_extension']);
         if (!empty($requireExtensions)) {
             $match = collect($requireExtensions)->contains(function ($data) {
-                return ($data['match'] == 0);
+                return ($data['match'] === false);
             });
             if ($match) {
                 return $this->success(__('扩展依赖出现错误'), [

@@ -13,15 +13,15 @@ class TestService extends Service
         'author' => 'deatil', 
         'authorsite' => 'http://github.com/deatil', // 选填
         'authoremail' => 'deatil@github.com',
-        'version' => '1.0.3', // 扩展版本
-        'adaptation' => '1.0.*', // 适配admin系统版本
+        'version' => '1.0.1',
+        'adaptation' => '1.0.*',
         'require_extension' => [], // 选填
         'config' => [ // 配置，选填
             [
                 'name' => 'atext',
                 'title' => '文本',
                 'type' => 'text',
-                'value' => '',
+                'value' => '文本',
                 'require' => '1',
                 'description' => '设置内容文本',
             ],
@@ -29,7 +29,7 @@ class TestService extends Service
                 'name' => 'atextarea',
                 'title' => '文本框',
                 'type' => 'textarea',
-                'value' => '',
+                'value' => '文本框',
                 'require' => '1',
                 'description' => '设置内容文本框',
             ],

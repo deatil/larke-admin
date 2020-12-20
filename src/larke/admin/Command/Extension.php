@@ -130,8 +130,15 @@ class Extension extends Command
         }
         
         $adminVersion = config('larkeadmin.admin.version');
-        $versionCheck = Semver::satisfies($adminVersion, $info['adaptation']);
-        if (!$versionCheck) {
+        
+        try {
+            $versionCheck = Semver::satisfies($adminVersion, $info['adaptation']);
+        } catch(\Exception $e) {
+            $this->line("<error>Extension adaptation'version ({$info['adaptation']}) is error !</error> ");
+            return false;
+        }
+        
+        if (! $versionCheck) {
             $this->line("<error>Extension adaptation'version is error ! Admin'version is {$adminVersion} !</error> ");
             return false;
         }
@@ -139,7 +146,7 @@ class Extension extends Command
         $requireExtensions = ExtensionModel::checkRequireExtension($info['require_extension']);
         if (!empty($requireExtensions)) {
             $match = collect($requireExtensions)->contains(function ($data) {
-                return ($data['match'] == 0);
+                return ($data['match'] === false);
             });
             if ($match) {
                 $this->line("<error>Error ! </error>You need check {$name} require'extensions: ");
@@ -237,8 +244,15 @@ class Extension extends Command
         }
         
         $adminVersion = config('larkeadmin.admin.version');
-        $versionCheck = Semver::satisfies($adminVersion, $info['adaptation']);
-        if (!$versionCheck) {
+        
+        try {
+            $versionCheck = Semver::satisfies($adminVersion, $info['adaptation']);
+        } catch(\Exception $e) {
+            $this->line("<error>Extension adaptation'version ({$info['adaptation']}) is error !</error> ");
+            return false;
+        }
+        
+        if (! $versionCheck) {
             $this->line("<error>Extension adaptation'version is error ! Admin'version is {$adminVersion} !</error> ");
             return false;
         }
@@ -260,7 +274,7 @@ class Extension extends Command
         $requireExtensions = ExtensionModel::checkRequireExtension($info['require_extension']);
         if (!empty($requireExtensions)) {
             $match = collect($requireExtensions)->contains(function ($data) {
-                return ($data['match'] == 0);
+                return ($data['match'] === false);
             });
             if ($match) {
                 $this->line("<error>Error ! </error>You need check {$name} require'extensions: ");

@@ -59,6 +59,27 @@ class Extension extends Base
         return json_decode($value, true);
     }
     
+    public static function has(string $name)
+    {
+        return static::where('name', $name)
+            ->exists();
+    }
+    
+    public static function versionSatisfies(string $name, string $constraints = null)
+    {
+        $version = static::where('name', $name)
+            ->first()
+            ->version;
+        
+        try {
+            $versionCheck =  Semver::satisfies($version, $constraints);
+        } catch(\Exception $e) {
+            return false;
+        }
+        
+        return $versionCheck;
+    }
+    
     public static function getExtensions()
     {
         return Cache::rememberForever(md5('larkeadmin.model.extensions'), function() {
@@ -83,7 +104,7 @@ class Extension extends Base
      * @param string $name
      * @return array|null
      */
-    public static function checkRequireExtension($requireExtensions = [])
+    public static function checkRequireExtension(array $requireExtensions = [])
     {
         if (empty($requireExtensions)) {
             return [];
@@ -110,20 +131,25 @@ class Extension extends Base
         $data = [];
         foreach ($requireExtensions as $name => $version) {
             if (isset($installExtensions[$name])) {
-                $versionCheck = Semver::satisfies($installExtensions[$name], $version);
+                try {
+                    $versionCheck = Semver::satisfies($installExtensions[$name], $version);
+                } catch(\Exception $e) {
+                    $versionCheck = false;
+                }
+                
                 if ($versionCheck) {
                     $requireExtensionData = [
                         'name' => $name,
                         'version' => $version,
                         'install_version' => $installExtensions[$name],
-                        'match' => 1,
+                        'match' => true,
                     ];
                 } else {
                     $requireExtensionData = [
                         'name' => $name,
                         'version' => $version,
                         'install_version' => $installExtensions[$name],
-                        'match' => 0,
+                        'match' => false,
                     ];
                 }
             } else {
@@ -131,7 +157,7 @@ class Extension extends Base
                     'name' => $name,
                     'version' => $version,
                     'install_version' => '',
-                    'match' => 0,
+                    'match' => false,
                 ];
             }
             
