@@ -94,6 +94,7 @@ Route::group([
     $router->put('/extension/{name}/config', 'Extension@config')->name('extension.config')->where('name', '[A-Za-z0-9\-\_\.]+');
     $router->patch('/extension/{name}/enable', 'Extension@enable')->name('extension.enable')->where('name', '[A-Za-z0-9\-\_\.]+');
     $router->patch('/extension/{name}/disable', 'Extension@disable')->name('extension.disable')->where('name', '[A-Za-z0-9\-\_\.]+');
+    $router->patch('/extension/{id}/sort', 'Extension@listorder')->name('extension.listorder')->where('id', '[A-Za-z0-9]+');
     $router->post('/extension/upload', 'Extension@upload')->name('extension.upload');
     
     $router->get('/system/info', 'System@info')->name('system.info');

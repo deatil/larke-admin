@@ -78,6 +78,7 @@ class Extension extends Base
         $list = $query
             ->offset($start)
             ->limit($limit)
+            ->orderBy('listorder', $order)
             ->orderBy('installtime', $order)
             ->orderBy('upgradetime', $order)
             ->get()
