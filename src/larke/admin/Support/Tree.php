@@ -32,6 +32,14 @@ class Tree
     
     // 返回子级key
     public $buildChildKey = "child";
+    
+    /**
+     * 创建
+     */
+    public static function create()
+    {
+        return new static();
+    }
 
     /**
      * 设置配置

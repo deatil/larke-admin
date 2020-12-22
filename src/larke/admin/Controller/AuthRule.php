@@ -261,7 +261,7 @@ class AuthRule extends Base
             $info->delete();
         }
         
-        return $this->success(__('特定日志删除成功'));
+        return $this->success(__('删除特定权限成功'));
     }
     
     /**

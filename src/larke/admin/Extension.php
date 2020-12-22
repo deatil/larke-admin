@@ -395,42 +395,4 @@ class Extension
             });
     }
     
-    /**
-     * Create rule.
-     *
-     * @return $data array
-     * @return $parentId int|string
-     * @return $children array
-     *
-     * @return array
-     */
-    public function createRule(
-        $data = [], 
-        $parentId = 0, 
-        array $children = []
-    ) {
-        if (empty($data)) {
-            return false;
-        }
-        
-        $lastOrder = AuthRuleModel::max('listorder');
-        
-        $rule = AuthRuleModel::create([
-            'parentid' => $parentId,
-            'listorder' => $lastOrder + 1,
-            'title' => Arr::get($data, 'title'),
-            'url' => Arr::get($data, 'url'),
-            'method' => Arr::get($data, 'method'),
-            'slug' => Arr::get($data, 'slug'),
-            'description' => Arr::get($data, 'description'),
-        ]);
-        if (!empty($children)) {
-            foreach ($children as $child) {
-                $subChildren = Arr::get($child, 'children', []);
-                $this->createRule($child, $rule->id, $subChildren);
-            }
-        }
-
-        return $rule;
-    }
 }
