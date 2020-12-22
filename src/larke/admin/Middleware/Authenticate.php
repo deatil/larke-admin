@@ -66,7 +66,7 @@ class Authenticate
             $this->error(__('token已过期'), \ResponseCode::ACCESS_TOKEN_TIMEOUT);
         }
         
-        $adminid = $jwtAuth->getClaim('adminid');
+        $adminid = $jwtAuth->getData('adminid');
         if ($adminid === false) {
             $this->error(__('token错误'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }

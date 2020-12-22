@@ -399,7 +399,7 @@ class Extension
      * Create rule.
      *
      * @return $data array
-     * @return $parentId int
+     * @return $parentId int|string
      * @return $children array
      *
      * @return array

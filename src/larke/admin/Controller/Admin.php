@@ -628,7 +628,7 @@ class Admin extends Base
             return $this->error(__('refreshToken已过期'));
         }
         
-        $refreshAdminid = $refreshJwt->getClaim('adminid');
+        $refreshAdminid = $refreshJwt->getData('adminid');
         if ($refreshAdminid === false) {
             return $this->error(__('token错误'));
         }

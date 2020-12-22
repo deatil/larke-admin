@@ -109,6 +109,8 @@ class Passport extends Base
             ->withSalt(config('larkeadmin.passport.password_salt'))
             ->encrypt($password, $adminInfo['password_salt']); 
         if ($encryptPassword != $adminInfo['password']) {
+            event(new Event\PassportLoginPasswordError($admin));
+            
             return $this->error(__('账号密码错误'), \ResponseCode::LOGIN_ERROR);
         }
         
@@ -119,7 +121,7 @@ class Passport extends Base
         // 生成 accessToken
         $expiresIn = config('larkeadmin.passport.access_expires_in', 86400);
         $accessToken = app('larke.admin.jwt')
-            ->withClaim([
+            ->withData([
                 'adminid' => $adminInfo['id'],
             ])
             ->withExp($expiresIn)
@@ -133,7 +135,7 @@ class Passport extends Base
         // 刷新token
         $refreshExpiresIn = config('larkeadmin.passport.refresh_expires_in', 300);
         $refreshToken = app('larke.admin.jwt')
-            ->withClaim([
+            ->withData([
                 'adminid' => $adminInfo['id'],
             ])
             ->withExp($refreshExpiresIn)
@@ -185,14 +187,14 @@ class Passport extends Base
             return $this->error(__('refreshToken已过期'), \ResponseCode::REFRESH_TOKEN_TIMEOUT);
         }
         
-        $refreshAdminid = $refreshJwt->getClaim('adminid');
+        $refreshAdminid = $refreshJwt->getData('adminid');
         if ($refreshAdminid === false) {
             return $this->error(__('refreshToken错误'), \ResponseCode::REFRESH_TOKEN_ERROR);
         }
         
         $expiresIn = config('larkeadmin.passport.access_expires_in', 86400);
         $newAccessToken = app('larke.admin.jwt')
-            ->withClaim([
+            ->withData([
                 'adminid' => $refreshAdminid,
             ])
             ->withExp($expiresIn)
@@ -244,7 +246,7 @@ class Passport extends Base
             return $this->error(__('refreshToken已过期'), \ResponseCode::LOGOUT_ERROR);
         }
         
-        $refreshAdminid = $refreshJwt->getClaim('adminid');
+        $refreshAdminid = $refreshJwt->getData('adminid');
         if ($refreshAdminid === false) {
             return $this->error(__('refreshToken错误'), \ResponseCode::LOGOUT_ERROR);
         }

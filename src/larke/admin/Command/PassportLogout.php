@@ -67,7 +67,7 @@ class PassportLogout extends Command
             return;
         }
         
-        $refreshAdminid = $refreshJwt->getClaim('adminid');
+        $refreshAdminid = $refreshJwt->getData('adminid');
         if ($refreshAdminid === false) {
             $this->line("<error>Refresh_token'adminid is error !</error> ");
 

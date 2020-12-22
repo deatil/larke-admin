@@ -57,6 +57,11 @@ class Jwt implements JwtContract
     private $leeway = 0;
     
     /**
+     * 载荷加密秘钥
+     */
+    private $passphrase = '';
+    
+    /**
      * decode token
      */
     private $decodeToken;
@@ -157,6 +162,15 @@ class Jwt implements JwtContract
     public function withLeeway($leeway)
     {
         $this->leeway = $leeway;
+        return $this;
+    }
+    
+    /**
+     * 载荷加密秘钥
+     */
+    public function withPassphrase($passphrase)
+    {
+        $this->passphrase = $passphrase;
         return $this;
     }
     
@@ -438,11 +452,44 @@ class Jwt implements JwtContract
         
         $data = [];
         foreach ($claims as $claim) {
-            $claimValue = Crypt::decrypt($claim->getValue(), $this->passphrase);
             $data[$claim->getName()] = $claimValue;
         }
         
         return $data;
+    }
+    
+    /**
+     * 加密载荷数据
+     */
+    public function withData($claim, $value = null)
+    {
+        if (is_array($claim)) {
+            foreach ($claim as $k => $v) {
+                $this->withData($k, $v);
+            }
+            
+            return $this;
+        }
+        
+        if (! empty($claim) && ! empty($value)) {
+            $value = Crypt::encrypt($value, $this->passphrase);
+            $this->claims[(string) $claim] = $value;
+        }
+        
+        return $this;
+    }
+
+    /**
+     * 载荷解密后数据
+     */
+    public function getData($name)
+    {
+        $claim = $this->getClaim($name);
+        if ($claim !== false) {
+            $claim = Crypt::decrypt($claim, $this->passphrase);
+        }
+        
+        return $claim;
     }
 
 }
