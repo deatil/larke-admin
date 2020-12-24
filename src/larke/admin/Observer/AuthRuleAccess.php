@@ -2,6 +2,7 @@
 
 namespace Larke\Admin\Observer;
 
+use Larke\Admin\Auth\Permission;
 use Larke\Admin\Model\AuthRuleAccess as AuthRuleAccessModel;
 
 class AuthRuleAccess
@@ -15,7 +16,7 @@ class AuthRuleAccess
     {
         $rule = $model->rule;
         if (!empty($rule)) {
-            \Enforcer::addPolicy($model->group_id, $rule['slug'], strtoupper($rule['method']));
+            Permission::addPolicy($model->group_id, $rule['slug'], strtoupper($rule['method']));
         }
     }
     
@@ -23,7 +24,7 @@ class AuthRuleAccess
     {
         $rule = $model->rule;
         if (!empty($rule)) {
-            \Enforcer::deletePermissionForUser($model->group_id, $rule['slug'], strtoupper($rule['method']));
+            Permission::deletePolicy($model->group_id, $rule['slug'], strtoupper($rule['method']));
         }
     }
 }

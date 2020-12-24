@@ -232,6 +232,7 @@ class Admin
     public function getRuleids()
     {
         $rules = $this->getRules();
+        
         return collect($rules)
             ->sortBy('id')
             ->pluck('id')

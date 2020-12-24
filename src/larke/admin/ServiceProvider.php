@@ -42,7 +42,7 @@ class ServiceProvider extends BaseServiceProvider
         Command\ImportRoute::class,
         Command\ResetPasword::class,
         Command\PassportLogout::class,
-        Command\ResetEnforcer::class,
+        Command\ResetPermission::class,
         Command\ClearCache::class,
         Command\Extension::class,
     ];

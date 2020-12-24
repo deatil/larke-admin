@@ -5,30 +5,31 @@ namespace Larke\Admin\Command;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
+use Larke\Admin\Auth\Permission;
 use Larke\Admin\Model\AuthGroupAccess as AuthGroupAccessModel;
 use Larke\Admin\Model\AuthRuleAccess as AuthRuleAccessModel;
 
 /**
  * 重设权限缓存
  *
- * php artisan larke-admin:reset-enforcer
+ * php artisan larke-admin:reset-permission
  *
  */
-class ResetEnforcer extends Command
+class ResetPermission extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'larke-admin:reset-enforcer';
+    protected $signature = 'larke-admin:reset-permission';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'larke-admin reset-enforcer';
+    protected $description = 'larke-admin reset enforcer\'permission.';
 
     /**
      * Execute the console command.
@@ -39,13 +40,13 @@ class ResetEnforcer extends Command
     {
         $this->runReset();
         
-        $this->info('Larke-admin reset enforcer success.');
+        $this->info('Larke-admin reset permission success.');
     }
     
     protected function runReset()
     {
         // 清空原始数据
-        $table = config('larkeadminauth.basic.database.rules_table');
+        $table = config('larkeauth.basic.database.rules_table');
         DB::table($table)->truncate();
         
         // 规则权限
@@ -57,7 +58,7 @@ class ResetEnforcer extends Command
             ->get()
             ->toArray();
         collect($rules)->each(function($data) {
-            \Enforcer::addPolicy($data['group_id'], $data['rule']['slug'], strtoupper($data['rule']['method']));
+            Permission::addPolicy($data['group_id'], $data['rule']['slug'], strtoupper($data['rule']['method']));
         });
         
         // 分组权限
@@ -69,7 +70,7 @@ class ResetEnforcer extends Command
             ->get()
             ->toArray();
         collect($groups)->each(function($data) {
-            \Enforcer::addRoleForUser($data['admin_id'], $data['group_id']);
+            Permission::addRoleForUser($data['admin_id'], $data['group_id']);
         });
     }
 }

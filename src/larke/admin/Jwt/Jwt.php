@@ -473,7 +473,7 @@ class Jwt implements JwtContract
         
         if (! empty($claim) && ! empty($value)) {
             $value = Crypt::encrypt($value, $this->passphrase);
-            $this->claims[(string) $claim] = $value;
+            $this->withClaim($claim, $value);
         }
         
         return $this;

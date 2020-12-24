@@ -2,6 +2,7 @@
 
 namespace Larke\Admin\Observer;
 
+use Larke\Admin\Auth\Permission;
 use Larke\Admin\Model\AuthGroupAccess as AuthGroupAccessModel;
 
 class AuthGroupAccess
@@ -13,11 +14,11 @@ class AuthGroupAccess
     
     public function created(AuthGroupAccessModel $model)
     {
-        \Enforcer::addRoleForUser($model->admin_id, $model->group_id);
+        Permission::addRoleForUser($model->admin_id, $model->group_id);
     }
     
     public function deleting(AuthGroupAccessModel $model)
     {
-        \Enforcer::deleteRoleForUser($model->admin_id, $model->group_id);
+        Permission::deleteRoleForUser($model->admin_id, $model->group_id);
     }
 }

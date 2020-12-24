@@ -4,6 +4,7 @@ namespace Larke\Admin\Middleware;
 
 use Closure;
 
+use Larke\Admin\Auth\Permission as AuthPermission;
 use Larke\Admin\Traits\ResponseJson as ResponseJsonTrait;
 use Larke\Admin\Model\AuthRule as AuthRuleModel;
 
@@ -39,7 +40,7 @@ class Permission
         $requestUrl = \Route::currentRouteName();
         $requestMethod = request()->getMethod();
         
-        if (!\Enforcer::enforce($adminId, $requestUrl, $requestMethod)) {
+        if (! AuthPermission::enforce($adminId, $requestUrl, $requestMethod)) {
             $this->error(__('你没有访问权限'), \ResponseCode::AUTH_ERROR);
         }
     }
