@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Schema;
 
 use Larke\Admin\Model\AuthRule as AuthRuleModel;
 use Larke\Admin\Model\Extension as ExtensionModel;
-use Larke\Admin\Extension\Service as ExtensionService;
+use Larke\Admin\Extension\ServiceProvider as ExtensionServiceProvider;
 
 /*
  * 扩展
@@ -180,7 +180,7 @@ class Extension
      *
      * @return void
      */
-    protected function bootService(ExtensionService $service)
+    protected function bootService(ExtensionServiceProvider $service)
     {
         $service->callBootingCallbacks();
 
@@ -235,8 +235,8 @@ class Extension
             return false;
         }
         
-        $newClass = app($className);
-        if (!($newClass instanceof ExtensionService)) {
+        $newClass = new $className(app());
+        if (!($newClass instanceof ExtensionServiceProvider)) {
             return false;
         }
         

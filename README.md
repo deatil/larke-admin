@@ -81,7 +81,7 @@ php artisan larke-admin:import-route
 
 *  扩展开发可查看 `docs/extension/Test` 示例
 *  扩展目录默认为 `/extension` 目录
-*  `composer` 加载扩展，在 `ServiceProvider->register()` 注册 `\Larke\Admin\Facade\Extension::extend('Test', \Test\TestService::class);` 即可
+*  `composer` 加载扩展，在 `\Test\ExtensionServiceProvider->register()` 注册 `\Larke\Admin\Facade\Extension::extend('Test', __CLASS__);` 即可
 
 
 ### 特别鸣谢

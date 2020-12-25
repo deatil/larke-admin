@@ -2,18 +2,16 @@
 
 namespace Larke\Admin\Extension;
 
-use Larke\Admin\Traits\ExtensionService as ExtensionServiceTrait;
+use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
 
 /*
- * 扩展服务，类似于服务提供者
+ * 扩展服务提供者
  *
  * @create 2020-10-30
  * @author deatil
  */
-abstract class Service
-{
-    use ExtensionServiceTrait;
-    
+abstract class ServiceProvider extends LaravelServiceProvider
+{    
     /**
      * 扩展信息
      */
@@ -31,6 +29,12 @@ abstract class Service
         ], // 依赖扩展[选填]
         'config' => [], // 配置[选填]
     ];
+    
+    /**
+     * 注册，只在compser扩展有效
+     */
+    public function register()
+    {}
     
     /**
      * 引导，只有启用后加载
