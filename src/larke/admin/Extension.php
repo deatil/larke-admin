@@ -57,8 +57,7 @@ class Extension
         }
         
         if (isset($this->extensions[$names])) {
-            $extension = $this->extensions[$names];
-            return $extension;
+            return $this->extensions[$names];
         }
         
         return $this->extensions;
@@ -171,7 +170,7 @@ class Extension
         })->toArray();
         
         array_walk($services, function ($s) {
-            $this->bootService($s);
+            $this->startService($s);
         });
     }
     
@@ -180,15 +179,15 @@ class Extension
      *
      * @return void
      */
-    protected function bootService(ExtensionServiceProvider $service)
+    protected function startService(ExtensionServiceProvider $service)
     {
-        $service->callBootingCallbacks();
+        $service->callStartingCallbacks();
 
-        if (method_exists($service, 'boot')) {
-            app()->call([$service, 'boot']);
+        if (method_exists($service, 'start')) {
+            app()->call([$service, 'start']);
         }
 
-        $service->callBootedCallbacks();
+        $service->callStartedCallbacks();
     }
     
     /**
