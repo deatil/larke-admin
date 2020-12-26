@@ -5,6 +5,7 @@ namespace Larke\Admin\Middleware;
 use Closure;
 
 use Larke\Admin\Auth\Permission as AuthPermission;
+use Larke\Admin\Service\Route as RouteService;
 use Larke\Admin\Traits\ResponseJson as ResponseJsonTrait;
 use Larke\Admin\Model\AuthRule as AuthRuleModel;
 
@@ -92,23 +93,12 @@ class Permission
         return $ruleSlugs;
     }
     
-    /*
+    /**
      * 格式化路由标识
      */
     protected function formatRouteSlug($slug = '')
     {
-        if (empty($slug)) {
-            return '';
-        }
-        
-        $newSlug = '';
-        
-        $routeAs = config('larkeadmin.route.as', '');
-        if (! empty($routeAs)) {
-            $newSlug = sprintf('%s'.$slug, $routeAs);
-        }
-        
-        return $newSlug;
+        return RouteService::formatRouteSlug($slug);
     }
 
 }

@@ -35,12 +35,12 @@ class Config extends Base
      */
     public function index(Request $request)
     {
-        $start = (int) $request->get('start', 0);
-        $limit = (int) $request->get('limit', 10);
+        $start = (int) $request->input('start', 0);
+        $limit = (int) $request->input('limit', 10);
         
-        $order = $this->formatOrderBy($request->get('order', 'ASC'));
+        $order = $this->formatOrderBy($request->input('order', 'ASC'));
         
-        $searchword = $request->get('searchword', '');
+        $searchword = $request->input('searchword', '');
         $orWheres = [];
         if (! empty($searchword)) {
             $orWheres = [
@@ -52,22 +52,22 @@ class Config extends Base
 
         $wheres = [];
         
-        $startTime = $this->formatDate($request->get('start_time'));
+        $startTime = $this->formatDate($request->input('start_time'));
         if ($startTime !== false) {
             $wheres[] = ['create_time', '>=', $startTime];
         }
         
-        $endTime = $this->formatDate($request->get('end_time'));
+        $endTime = $this->formatDate($request->input('end_time'));
         if ($endTime !== false) {
             $wheres[] = ['create_time', '<=', $endTime];
         }
         
-        $status = $this->switchStatus($request->get('status'));
+        $status = $this->switchStatus($request->input('status'));
         if ($status !== false) {
             $wheres[] = ['status', $status];
         }
        
-        $group = $request->get('group');
+        $group = $request->input('group');
         if (!empty($group)) {
             $validator = Validator::make([
                 'group' => $group,
@@ -206,8 +206,8 @@ class Config extends Base
             'value' => $data['value'] ?? '',
             'description' => $data['description'],
             'listorder' => $data['listorder'] ?? 100,
-            'is_show' => ($request->get('is_show', 0) == 1) ? 1 : 0,
-            'is_system' => ($request->get('is_system', 0) == 1) ? 1 : 0,
+            'is_show' => ($request->input('is_show', 0) == 1) ? 1 : 0,
+            'is_system' => ($request->input('is_system', 0) == 1) ? 1 : 0,
             'status' => ($data['status'] == 1) ? 1 : 0,
         ];
         
@@ -348,7 +348,7 @@ class Config extends Base
      */
     public function setting(Request $request)
     {
-        $fields = $request->get('fields');
+        $fields = $request->input('fields');
         
         event(new Event\ConfigSettingBefore($fields));
         
@@ -406,7 +406,7 @@ class Config extends Base
             return $this->error(__('信息不存在'));
         }
         
-        $listorder = $request->get('listorder', 100);
+        $listorder = $request->input('listorder', 100);
         
         $status = $info->updateListorder($listorder);
         if ($status === false) {

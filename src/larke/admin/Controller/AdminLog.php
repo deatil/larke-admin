@@ -32,12 +32,12 @@ class AdminLog extends Base
      */
     public function index(Request $request)
     {
-        $start = (int) $request->get('start', 0);
-        $limit = (int) $request->get('limit', 10);
+        $start = (int) $request->input('start', 0);
+        $limit = (int) $request->input('limit', 10);
         
-        $order = $this->formatOrderBy($request->get('order', 'ASC'));
+        $order = $this->formatOrderBy($request->input('order', 'ASC'));
         
-        $searchword = $request->get('searchword', '');
+        $searchword = $request->input('searchword', '');
         $orWheres = [];
         if (! empty($searchword)) {
             $orWheres = [
@@ -49,22 +49,22 @@ class AdminLog extends Base
 
         $wheres = [];
         
-        $startTime = $this->formatDate($request->get('start_time'));
+        $startTime = $this->formatDate($request->input('start_time'));
         if ($startTime !== false) {
             $wheres[] = ['create_time', '>=', $startTime];
         }
         
-        $endTime = $this->formatDate($request->get('end_time'));
+        $endTime = $this->formatDate($request->input('end_time'));
         if ($endTime !== false) {
             $wheres[] = ['create_time', '<=', $endTime];
         }
         
-        $status = $this->switchStatus($request->get('status'));
+        $status = $this->switchStatus($request->input('status'));
         if ($status !== false) {
             $wheres[] = ['status', $status];
         }
         
-        $method = $request->get('method');
+        $method = $request->input('method');
         if (!empty($method)) {
             $wheres[] = ['method', $method];
         }
@@ -160,7 +160,7 @@ class AdminLog extends Base
      */
     public function clear(Request $request)
     {
-        $ids = $request->get('ids');
+        $ids = $request->input('ids');
         if (! empty($ids)) {
             $ids = explode(',', $ids);
             $status = AdminLogModel::whereIn('id', $ids)->delete();

@@ -140,18 +140,18 @@ class Profile extends Base
     public function updatePasssword(Request $request)
     {
         // 密码长度错误
-        $oldPassword = $request->get('oldpassword');
+        $oldPassword = $request->input('oldpassword');
         if (strlen($oldPassword) != 32) {
             return $this->error(__('旧密码错误'));
         }
 
         // 密码长度错误
-        $newPassword = $request->get('newpassword');
+        $newPassword = $request->input('newpassword');
         if (strlen($newPassword) != 32) {
             return $this->error(__('新密码错误'));
         }
 
-        $newPasswordConfirm = $request->get('newpassword_confirm');
+        $newPasswordConfirm = $request->input('newpassword_confirm');
         if (strlen($newPasswordConfirm) != 32) {
             return $this->error(__('确认密码错误'));
         }

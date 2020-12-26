@@ -4,6 +4,7 @@ namespace Larke\Admin\Middleware;
 
 use Closure;
 
+use Larke\Admin\Service\Route as RouteService;
 use Larke\Admin\Model\Admin as AdminModel;
 use Larke\Admin\Traits\ResponseJson as ResponseJsonTrait;
 
@@ -117,23 +118,12 @@ class Authenticate
             });
     }
     
-    /*
+    /**
      * 格式化路由标识
      */
     protected function formatRouteSlug($slug = '')
     {
-        if (empty($slug)) {
-            return '';
-        }
-        
-        $newSlug = '';
-        
-        $routeAs = config('larkeadmin.route.as', '');
-        if (! empty($routeAs)) {
-            $newSlug = sprintf('%s'.$slug, $routeAs);
-        }
-        
-        return $newSlug;
+        return RouteService::formatRouteSlug($slug);
     }
 
 }

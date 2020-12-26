@@ -104,7 +104,7 @@ class System extends Base
      */
     public function lang(Request $request)
     {
-        $group = $request->get('group');
+        $group = $request->input('group');
         
         $validator = Validator::make([
             'group' => $group,
@@ -121,7 +121,7 @@ class System extends Base
         
         $translator = app('translator');
         
-        $locale = $request->get('locale');
+        $locale = $request->input('locale');
         if (!empty($locale)) {
             $validator = Validator::make([
                 'locale' => $locale,

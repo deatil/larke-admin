@@ -86,16 +86,15 @@ class Passport extends Base
             return $this->error($validator->errors()->first(), \ResponseCode::LOGIN_ERROR);
         }
         
-        $name = $request->get('name');
-        
         $captchaKey = config('larkeadmin.passport.header_captcha_key');
         $captchaUniq = $request->header($captchaKey);
-        $captcha = $request->get('captcha');
+        $captcha = $request->input('captcha');
         if (!Captcha::check($captcha, $captchaUniq)) {
             return $this->error(__('验证码错误'), \ResponseCode::LOGIN_ERROR);
         }
         
         // 校验密码
+        $name = $request->input('name');
         $admin = AdminModel::where('name', $name)
             ->first();
         if (empty($admin)) {
@@ -103,7 +102,7 @@ class Passport extends Base
         }
         
         $adminInfo = $admin->toArray();
-        $password = $request->post('password');
+        $password = $request->input('password');
         
         $encryptPassword = (new Password())
             ->withSalt(config('larkeadmin.passport.password_salt'))
@@ -169,7 +168,7 @@ class Passport extends Base
      */
     public function refreshToken(Request $request)
     {
-        $refreshToken = $request->get('refresh_token');
+        $refreshToken = $request->input('refresh_token');
         if (empty($refreshToken)) {
             return $this->error(__('refreshToken不能为空'), \ResponseCode::REFRESH_TOKEN_ERROR);
         }
@@ -227,7 +226,7 @@ class Passport extends Base
      */
     public function logout(Request $request)
     {
-        $refreshToken = $request->get('refresh_token');
+        $refreshToken = $request->input('refresh_token');
         if (empty($refreshToken)) {
             return $this->error(__('refreshToken不能为空'), \ResponseCode::LOGOUT_ERROR);
         }

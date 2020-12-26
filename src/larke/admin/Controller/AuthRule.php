@@ -36,12 +36,12 @@ class AuthRule extends Base
      */
     public function index(Request $request)
     {
-        $start = (int) $request->get('start', 0);
-        $limit = (int) $request->get('limit', 10);
+        $start = (int) $request->input('start', 0);
+        $limit = (int) $request->input('limit', 10);
         
-        $order = $this->formatOrderBy($request->get('order', 'ASC'));
+        $order = $this->formatOrderBy($request->input('order', 'ASC'));
         
-        $searchword = $request->get('searchword', '');
+        $searchword = $request->input('searchword', '');
         $orWheres = [];
         if (! empty($searchword)) {
             $orWheres = [
@@ -54,22 +54,22 @@ class AuthRule extends Base
 
         $wheres = [];
         
-        $startTime = $this->formatDate($request->get('start_time'));
+        $startTime = $this->formatDate($request->input('start_time'));
         if ($startTime !== false) {
             $wheres[] = ['create_time', '>=', $startTime];
         }
         
-        $endTime = $this->formatDate($request->get('end_time'));
+        $endTime = $this->formatDate($request->input('end_time'));
         if ($endTime !== false) {
             $wheres[] = ['create_time', '<=', $endTime];
         }
         
-        $status = $this->switchStatus($request->get('status'));
+        $status = $this->switchStatus($request->input('status'));
         if ($status !== false) {
             $wheres[] = ['status', $status];
         }
         
-        $method = $request->get('method');
+        $method = $request->input('method');
         if (!empty($method)) {
             $wheres[] = ['method', $method];
         }
@@ -138,12 +138,12 @@ class AuthRule extends Base
      */
     public function indexChildren(Request $request)
     {
-        $id = $request->get('id', 0);
+        $id = $request->input('id', 0);
         if (is_array($id)) {
             return $this->error(__('ID错误'));
         }
         
-        $type = $request->get('type');
+        $type = $request->input('type');
         if ($type == 'list') {
             $data = AuthRuleRepository::getChildren($id);
         } else {
@@ -235,7 +235,7 @@ class AuthRule extends Base
      */
     public function clear(Request $request)
     {
-        $ids = $request->get('ids');
+        $ids = $request->input('ids');
         if (empty($ids)) {
             return $this->error(__('权限ID列表不能为空'));
         }
@@ -444,7 +444,7 @@ class AuthRule extends Base
             return $this->error(__('信息不存在'));
         }
         
-        $listorder = $request->get('listorder', 100);
+        $listorder = $request->input('listorder', 100);
         
         $status = $info->updateListorder($listorder);
         if ($status === false) {

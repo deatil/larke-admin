@@ -36,31 +36,31 @@ class Admin extends Base
      */
     public function index(Request $request)
     {
-        $start = (int) $request->get('start', 0);
-        $limit = (int) $request->get('limit', 10);
+        $start = (int) $request->input('start', 0);
+        $limit = (int) $request->input('limit', 10);
         
-        $order = $this->formatOrderBy($request->get('order', 'ASC'));
+        $order = $this->formatOrderBy($request->input('order', 'ASC'));
         
         $wheres = [];
         
-        $startTime = $this->formatDate($request->get('start_time'));
+        $startTime = $this->formatDate($request->input('start_time'));
         if ($startTime !== false) {
             $wheres[] = ['create_time', '>=', $startTime];
         }
         
-        $endTime = $this->formatDate($request->get('end_time'));
+        $endTime = $this->formatDate($request->input('end_time'));
         if ($endTime !== false) {
             $wheres[] = ['create_time', '<=', $endTime];
         }
         
-        $status = $this->switchStatus($request->get('status'));
+        $status = $this->switchStatus($request->input('status'));
         if ($status !== false) {
             $wheres[] = ['status', $status];
         }
         
         $orWheres = [];
         
-        $searchword = $request->get('searchword', '');
+        $searchword = $request->input('searchword', '');
         if (! empty($searchword)) {
             $orWheres = [
                 ['name', 'like', '%'.$searchword.'%'],
@@ -492,7 +492,7 @@ class Admin extends Base
         }
 
         // 密码长度错误
-        $password = $request->get('password');
+        $password = $request->input('password');
         if (strlen($password) != 32) {
             return $this->error(__('密码格式错误'));
         }
@@ -676,7 +676,7 @@ class Admin extends Base
             ->each
             ->delete();
         
-        $access = $request->get('access');
+        $access = $request->input('access');
         if (!empty($access)) {
             $groupIds = app('larke.admin.admin')->getGroupChildrenIds();
             $accessIds = explode(',', $access);

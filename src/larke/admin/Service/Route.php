@@ -51,4 +51,23 @@ class Route
         });
     }
     
+    /**
+     * 格式化路由标识
+     */
+    public static function formatRouteSlug($slug = '')
+    {
+        if (empty($slug)) {
+            return '';
+        }
+        
+        $newSlug = '';
+        
+        $routeAs = config('larkeadmin.route.as', '');
+        if (! empty($routeAs)) {
+            $newSlug = sprintf('%s'.$slug, $routeAs);
+        }
+        
+        return $newSlug;
+    }
+    
 }
