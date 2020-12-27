@@ -110,7 +110,7 @@ class Authenticate
             $this->formatRouteSlug('passport.refresh-token'),
             $this->formatRouteSlug('attachment.download'),
         ]);
-
+        
         return collect($excepts)
             ->contains(function ($except) {
                 $requestUrl = \Route::currentRouteName();

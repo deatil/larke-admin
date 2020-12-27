@@ -2,6 +2,8 @@
 
 namespace Larke\Admin;
 
+use ReflectionClass;
+
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
@@ -392,6 +394,20 @@ class Extension
             ->contains(function ($key) use ($info) {
                 return (!isset($info[$key]) || empty($info[$key]));
             });
+    }
+    
+    /**
+     * 获取类路径
+     *
+     * @param string|null $class
+     * @return string|bool
+     */
+    public function getPathFromClass($class = null)
+    {
+        $reflection = new ReflectionClass(get_class($class));
+        $filePath = dirname($reflection->getFileName());
+
+        return $filePath;
     }
     
 }

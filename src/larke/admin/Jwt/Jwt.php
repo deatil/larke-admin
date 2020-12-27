@@ -3,6 +3,7 @@
 namespace Larke\Admin\Jwt;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 use Larke\JWT\Builder;
 use Larke\JWT\Parser;
@@ -326,6 +327,8 @@ class Jwt implements JwtContract
             $this->token = $Builder->getToken($signer, $secrect);
         } catch(\Exception $e) {
             $this->token = false;
+            
+            Log::error('larke-admin-jwt-encode: '.$e->getMessage());
         }
         
         return $this;
@@ -341,6 +344,8 @@ class Jwt implements JwtContract
                 $this->decodeToken = (new Parser())->parse((string) $this->token); 
             } catch(\Exception $e) {
                 $this->decodeToken = false;
+                
+                Log::error('larke-admin-jwt-decode: '.$e->getMessage());
             }
         }
         
@@ -377,6 +382,8 @@ class Jwt implements JwtContract
         try {
             list($signer, $secrect) = $this->getSigner(false);
         } catch(\Exception $e) {
+            Log::error('larke-admin-jwt-verify: '.$e->getMessage());
+            
             return false;
         }
         
@@ -403,6 +410,8 @@ class Jwt implements JwtContract
         try {
             $header = $this->decodeToken->getHeader($name);
         } catch(\Exception $e) {
+            Log::error('larke-admin-jwt-getHeader: '.$e->getMessage());
+            
             return false;
         }
         
@@ -433,6 +442,8 @@ class Jwt implements JwtContract
         try {
             $claim = $this->decodeToken->getClaim($name);
         } catch(\Exception $e) {
+            Log::error('larke-admin-jwt-getClaim: '.$e->getMessage());
+            
             return false;
         }
         
