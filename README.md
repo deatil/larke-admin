@@ -81,7 +81,7 @@ php artisan larke-admin:import-route
 
 *  扩展开发可查看 `docs/extension/Demo` 示例
 *  扩展目录默认为 `/extension` 目录
-*  `composer` 加载扩展，将 `bootstrap.php` 注册到 `autoload->files` 中加载
+*  `composer` 加载扩展，需要将 `bootstrap.php` 注册到 `autoload->files` 中进行加载
 
 
 ### 特别鸣谢
