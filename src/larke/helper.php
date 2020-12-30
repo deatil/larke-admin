@@ -14,11 +14,11 @@ if (! function_exists('larke_success')) {
      * @create 2020-10-19
      * @author deatil
      */
-    function larke_success($message = '获取成功', $data = null, $code = 0, $header = []) {
+    function larke_success($message = null, $data = null, $code = 0, $header = []) {
         return (new class {
             use ResponseJsonTrait;
             
-            public function json($message = '获取成功', $data = null, $code = 0, $header = [])
+            public function json($message = null, $data = null, $code = 0, $header = [])
             {
                 return $this->success($message, $data, $code, $header);
             }
@@ -33,7 +33,7 @@ if (! function_exists('larke_error')) {
      * @create 2020-10-19
      * @author deatil
      */
-    function larke_error($message = '获取失败', $code = 1, $data = [], $header = []) {
+    function larke_error($message = null, $code = 1, $data = [], $header = []) {
         return (new class {
             use ResponseJsonTrait;
             
@@ -52,10 +52,16 @@ if (! function_exists('larke_extension_config')) {
      * @create 2020-12-15
      * @author deatil
      */
-    function larke_extension_config($name) {
-        return ExtensionModel::where('name', '=', $name)
+    function larke_extension_config($name, $key = null, $default = null) {
+        $data = ExtensionModel::where('name', '=', $name)
             ->first()
             ->config_datas;
+            
+        if (! empty($key)) {
+            return Arr::get($data, $key, $default);
+        }
+        
+        return $data;
     }
 }
 
@@ -67,8 +73,8 @@ if (! function_exists('larke_config')) {
      * @author deatil
      */
     function larke_config($name, $default = null) {
-        $settins =  ConfigModel::getSettings();
-        return Arr::get($settins, $name, $default);
+        $settings =  ConfigModel::getSettings();
+        return Arr::get($settings, $name, $default);
     }
 }
 

@@ -144,7 +144,7 @@ CREATE TABLE `pre__larke_extension` (
   `authoremail` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '作者邮箱',
   `version` varchar(50) CHARACTER SET utf8mb4 NOT NULL DEFAULT '' COMMENT '版本',
   `adaptation` varchar(50) CHARACTER SET utf8mb4 NOT NULL DEFAULT '' COMMENT '适配最低版本',
-  `require_extension` text CHARACTER SET utf8mb4 COMMENT '依赖扩展',
+  `require` text CHARACTER SET utf8mb4 COMMENT '依赖扩展',
   `config` mediumtext CHARACTER SET utf8mb4 COMMENT '配置设置信息',
   `config_data` text CHARACTER SET utf8mb4 COMMENT '配置结果信息',
   `class_name` text CHARACTER SET utf8mb4 COMMENT '扩展绑定类',

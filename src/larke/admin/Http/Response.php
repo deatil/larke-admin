@@ -23,7 +23,7 @@ class Response implements ResponseContract
     // 允许跨域域名
     protected $allowOrigin = '*';
     
-    // 是否允许后续请求携带认证信息（cookies）,该值只能是true,否则不返回
+    // 是否允许后续请求携带认证信息（cookies）, 该值只能是true,否则不返回
     protected $allowCredentials = false; // true or false
     
     // 预检结果缓存时间,缓存
@@ -37,7 +37,7 @@ class Response implements ResponseContract
     
     protected $exposeHeaders = 'Authorization,authenticated';
     
-    /*
+    /**
      * 是否允许跨域域名
      */
     public function withIsAllowOrigin($isAllowOrigin = false)
@@ -51,7 +51,7 @@ class Response implements ResponseContract
         return $this;
     }
     
-    /*
+    /**
      * 允许跨域域名
      */
     public function withAllowOrigin($allowOrigin = '*')
@@ -61,7 +61,7 @@ class Response implements ResponseContract
         return $this;
     }
     
-    /*
+    /**
      * 允许后续请求携带认证信息
      */
     public function withAllowCredentials($allowCredentials = false)
@@ -75,7 +75,7 @@ class Response implements ResponseContract
         return $this;
     }
     
-    /*
+    /**
      * 预检结果缓存时间
      */
     public function withMaxAge($maxAge = '')
@@ -85,7 +85,7 @@ class Response implements ResponseContract
         return $this;
     }
     
-    /*
+    /**
      * 该次请求的请求方式
      */
     public function withAllowMethods($allowMethods = false)
@@ -95,7 +95,7 @@ class Response implements ResponseContract
         return $this;
     }
     
-    /*
+    /**
      * 该次请求的自定义请求头字段
      */
     public function withAllowHeaders($allowHeaders = false)
@@ -105,7 +105,7 @@ class Response implements ResponseContract
         return $this;
     }
     
-    /*
+    /**
      * 设置 js 允许获取的header字段
      */
     public function withExposeHeaders($exposeHeaders = false)
@@ -115,7 +115,7 @@ class Response implements ResponseContract
         return $this;
     }
     
-    /*
+    /**
      * 设置 haders
      */
     public function withHeader($name, $content = null)
@@ -133,7 +133,7 @@ class Response implements ResponseContract
         return $this;
     }
     
-    /*
+    /**
      * 获取haders
      */
     public function getHeaders()
@@ -141,7 +141,7 @@ class Response implements ResponseContract
         return $this->headers;
     }
     
-    /*
+    /**
      * 组合跨域 haders
      */
     public function mergeCorsHeaders()
@@ -180,7 +180,7 @@ class Response implements ResponseContract
      */
     public function json(
         $success = true, 
-        $code = 99999, 
+        $code = \ResponseCode::INVALID, 
         $message = "", 
         $data = [], 
         $userHeader = []

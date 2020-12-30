@@ -4,7 +4,7 @@
 ### 项目介绍
 
 *  `larke-admin` 是基于 `laravel8` 版本的后台快速开发框架，完全api接口化，适用于前后端分离的项目
-*  基于 `JWT` 的用户登陆态管理
+*  基于 `JWT` 的用户登录态管理
 *  权限判断基于 `php-casbin` 的 `RBAC` 授权
 *  本项目为 `后台api服务`，`后台前端页面` 可查看 [Larke Admin Frontend](https://github.com/deatil/larke-admin-frontend) 项目
 
@@ -40,13 +40,13 @@
 
 ### 安装步骤
 
-首先安装 `laravel 8.*`，并确认连接数据库的配置没有问题，开始执行以下命令
+1. 首先安装 `laravel 8.*`，并确认连接数据库的配置没有问题，开始执行以下命令
 
 ```php
 composer require lake/larke-admin
 ```
 
-然后运行下面的命令，推送配置文件
+2. 然后运行下面的命令，推送配置文件
 
 ```php
 php artisan vendor:publish --tag=larke-admin-config
@@ -54,47 +54,47 @@ php artisan vendor:publish --tag=larke-admin-config
 
 运行完命令后，你可以找到 `config/larkeadmin.php`、`config/larkeauth.php` 及 `config/larkeauth-rbac-model.conf` 三个配置文件
 
-最后运行下面的命令安装完成系统
+3. 最后运行下面的命令安装完成系统
 
 ```php
 php artisan larke-admin:install
 ```
 
-你可能第一次安装需要运行以下命令导入路由权限规则
+4. 你可能第一次安装需要运行以下命令导入路由权限规则
 
 ```php
 php artisan larke-admin:import-route
 ```
 
-如果遇到跨域问题，你可以修改官方的配置文件 `config/cors.php`，在 `paths` 列表增加系统接口前缀 `admin-api/*`
+5. 如果遇到跨域问题，你可以修改官方的配置文件 `config/cors.php`，在 `paths` 列表增加系统接口前缀 `admin-api/*`
 
-如果官方没有配置，你也可以在 `App\Http\Kernel->middleware` 属性添加
+6. 如果官方没有配置，你也可以在 `App\Http\Kernel->middleware` 属性添加
 
 ```php
 \Larke\Admin\Middleware\RequestOptions::class,
 ```
 
-后台登陆账号：`admin` 及密码 `123456`
+7. 后台登录账号：`admin` 及密码 `123456`
 
 
 ### 扩展开发
 
-*  扩展开发可查看 `docs/extension/Test` 示例
+*  扩展开发可查看 `docs/extension/Demo` 示例
 *  扩展目录默认为 `/extension` 目录
-*  `composer` 加载扩展，在 `\Test\ExtensionServiceProvider->register()` 注册 `\Larke\Admin\Facade\Extension::extend('Test', __CLASS__);` 即可
+*  `composer` 加载扩展，将 `bootstrap.php` 注册到 `autoload->files` 中加载
 
 
 ### 特别鸣谢
 
 感谢以下的项目,排名不分先后
 
-laravel/framework
+ - laravel/framework
 
-lcobucci/jwt
+ - lcobucci/jwt
 
-casbin/casbin
+ - casbin/casbin
 
-composer/semver
+ - composer/semver
 
 
 ### 开源协议

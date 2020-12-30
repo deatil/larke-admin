@@ -204,13 +204,13 @@ class ServiceProvider extends BaseServiceProvider
         // 扩展
         $this->app->singleton('larke.admin.extension', Extension::class);
         
-        // response()->success('获取成功');
-        Response::macro('success', function($message = '获取成功', $data = null, $code = 0, $header = []) {
+        // response()->success('success');
+        Response::macro('success', function($message = null, $data = null, $code = 0, $header = []) {
             return app('larke.admin.json')->json(true, $code, $message, $data, $header);
         });
         
-        // response()->error('获取失败');
-        Response::macro('error', function($message = '获取失败', $code = 1, $data = [], $header = []) {
+        // response()->error('error');
+        Response::macro('error', function($message = null, $code = 1, $data = [], $header = []) {
             return app('larke.admin.json')->json(false, $code, $message, $data, $header);
         });
     }

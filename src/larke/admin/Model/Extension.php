@@ -23,7 +23,7 @@ class Extension extends Base
     protected $appends = [
         'configs',
         'config_datas',
-        'require_extensions',
+        'requires',
     ];
     
     public $incrementing = false;
@@ -49,9 +49,9 @@ class Extension extends Base
         return json_decode($value, true);
     }
     
-    public function getRequireExtensionsAttribute() 
+    public function getRequiresAttribute() 
     {
-        $value = $this->require_extension;
+        $value = $this->require;
         if (empty($value)) {
             return [];
         }

@@ -38,6 +38,6 @@ class ClearCache extends Command
         $this->call('config:clear');
         $this->call('view:clear');
         
-        $this->info("Clear cache successfully! </info> ");
+        $this->info("Clear cache successfully!");
     }
 }

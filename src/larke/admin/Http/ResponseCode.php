@@ -26,9 +26,9 @@ class ResponseCode
 {
     const SUCCESS = 0; 
     const ERROR = 1; 
-    const INVALID = 99999;
-    const UNKNOWN = 99998; 
     const EXCEPTION = 99997;
+    const UNKNOWN = 99998; 
+    const INVALID = 99999;
     
     const LOGIN_ERROR = 101;
     const LOGOUT_ERROR = 102;
@@ -47,6 +47,8 @@ class ResponseCode
     const DATA_EXISTS = 401;
     const ACCESS_TOKEN_EMPTY = 402;
     const REFRESH_TOKEN_EMPTY = 403;
+    
+    const EXTENSION_NOT_MATCH = 410; // 扩展没有匹配成功
 
     const FILE_SAVE_FAILED = 500;
     const RECORD_NOT_FOUND = 501; // 记录未找到

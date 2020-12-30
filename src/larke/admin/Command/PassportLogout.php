@@ -7,7 +7,7 @@ use Illuminate\Console\Command;
 /**
  * 强制 jwt 的 refreshToken 放入黑名单
  *
- * php artisan larke-admin:passport-logout [refresh_token]
+ * php artisan larke-admin:passport-logout
  *
  */
 class PassportLogout extends Command
@@ -17,7 +17,7 @@ class PassportLogout extends Command
      *
      * @var string
      */
-    protected $signature = 'larke-admin:passport-logout {refresh_token}';
+    protected $signature = 'larke-admin:passport-logout';
 
     /**
      * The console command description.
@@ -43,15 +43,24 @@ class PassportLogout extends Command
      */
     protected function logout()
     {
-        $refreshToken = $this->argument('refresh_token');
+        $emptyNum = 0;
+        
+        askForRefreshToken:
+        $refreshToken = $this->ask('Please enter a refreshToken');
+        
         if (empty($refreshToken)) {
-            $this->line("<error>Refresh_token is empty !</error> ");
-
-            return;
+            $emptyNum ++;
+            
+            if ($emptyNum < 3) {
+                goto askForRefreshToken;
+            } else {
+                $this->line("<error>The refreshToken what you entered is not empty !</error> ");
+                return;
+            }
         }
         
         if (app('larke.admin.cache')->has(md5($refreshToken))) {
-            $this->line("<error>Refresh_token is logouted !</error> ");
+            $this->line("<error>RefreshToken is logouted !</error> ");
 
             return;
         }
@@ -62,23 +71,23 @@ class PassportLogout extends Command
             ->decode();
         
         if (!($refreshJwt->validate() && $refreshJwt->verify())) {
-            $this->line("<error>Refresh_token'verify is error !</error> ");
+            $this->line("<error>RefreshToken'verify is error !</error> ");
 
             return;
         }
         
         $refreshAdminid = $refreshJwt->getData('adminid');
         if ($refreshAdminid === false) {
-            $this->line("<error>Refresh_token'adminid is error !</error> ");
+            $this->line("<error>RefreshToken'adminid is error !</error> ");
 
             return;
         }
         
         $refreshTokenExpiresIn = $refreshJwt->getClaim('exp') - $refreshJwt->getClaim('iat');
         
-        // 添加缓存黑名单
-        app('larke.admin.cache')->add(md5($refreshToken), $refreshToken, $refreshTokenExpiresIn);
+        // 添加进黑名单
+        app('larke.admin.cache')->add(md5($refreshToken), time(), $refreshTokenExpiresIn);
         
-        $this->line('<info>Logout success and adminid is:</info> '.$refreshAdminid);
+        $this->info('Logout success and adminid is: '.$refreshAdminid);
     }
 }

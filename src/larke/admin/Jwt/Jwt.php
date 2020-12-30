@@ -366,8 +366,14 @@ class Jwt implements JwtContract
         $data->permittedFor($this->audience);
         $data->identifiedBy($this->jti);
         $data->relatedTo($this->subject);
-
-        return $this->decodeToken->validate($data);
+        
+        try {
+            return $this->decodeToken->validate($data);
+        } catch(\Exception $e) {
+            Log::error('larke-admin-jwt-validate: '.$e->getMessage());
+            
+            return false;
+        }
     }
 
     /**
@@ -387,7 +393,13 @@ class Jwt implements JwtContract
             return false;
         }
         
-        return $this->decodeToken->verify($signer, $secrect);
+        try {
+            return $this->decodeToken->verify($signer, $secrect);
+        } catch(\Exception $e) {
+            Log::error('larke-admin-jwt-verify: '.$e->getMessage());
+            
+            return false;
+        }
     }
 
     /**

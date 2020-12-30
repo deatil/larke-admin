@@ -19,7 +19,7 @@ abstract class ServiceProvider extends LaravelServiceProvider
     /**
      * 扩展信息
      */
-    public $info = [
+    protected $info = [
         'name' => '', // 扩展ID名称
         'title' => '', // 扩展名称
         'introduce' => '', // 扩展描述
@@ -28,11 +28,24 @@ abstract class ServiceProvider extends LaravelServiceProvider
         'authoremail' => '', // 作者邮箱[选填]
         'version' => '1.0.0', // 版本号
         'adaptation' => '^1.0', // 适配系统版本
-        'require_extension' => [
+        'require' => [
             // 'Extension2' => '1.2.*',
         ], // 依赖扩展[选填]
         'config' => [], // 配置[选填]
     ];
+    
+    public function __construct($app)
+    {
+        parent::__construct($app);
+        
+        $this->init();
+    }
+    
+    /**
+     * 初始化，一直加载
+     */
+    public function init()
+    {}
     
     /**
      * 启动，只有启用后加载

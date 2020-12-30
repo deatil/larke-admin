@@ -14,7 +14,7 @@ class Handler extends ExceptionHandler
         
         return response()->json([
             'success' => false,
-            'code' => 999,
+            'code' => \ResponseCode::INVALID,
             'message' => $message,
         ]);
     }

@@ -80,8 +80,8 @@ class Extension extends Command
             $action = $actions[$action];
         }
         
-        if (!in_array($action, $actions)) {
-            $this->line("<error>Enter action is error !</error> ");
+        if (! in_array($action, $actions)) {
+            $this->line("<error>Enter action '{$action}' is error !</error> ");
             return;
         }
         
@@ -101,7 +101,9 @@ class Extension extends Command
      */
     protected function install($name)
     {
-        $installInfo = ExtensionModel::where(['name' => $name])
+        $installInfo = ExtensionModel::where([
+                'name' => $name,
+            ])
             ->first();
         if (!empty($installInfo)) {
             $this->line("<error>Extension is installed !</error> ");
@@ -143,7 +145,7 @@ class Extension extends Command
             return false;
         }
         
-        $requireExtensions = ExtensionModel::checkRequireExtension($info['require_extension']);
+        $requireExtensions = ExtensionModel::checkRequireExtension($info['require']);
         if (!empty($requireExtensions)) {
             $match = collect($requireExtensions)->contains(function ($data) {
                 return ($data['match'] === false);
@@ -177,7 +179,7 @@ class Extension extends Command
             'authoremail' => Arr::get($info, 'authoremail'),
             'version' => Arr::get($info, 'version'),
             'adaptation' => Arr::get($info, 'adaptation'),
-            'require_extension' => json_encode(Arr::get($info, 'require_extension', [])),
+            'require' => json_encode(Arr::get($info, 'require', [])),
             'config' => json_encode(Arr::get($info, 'config', [])),
             'class_name' => Arr::get($info, 'class_name'),
             'listorder' => 100,
@@ -271,7 +273,7 @@ class Extension extends Command
             return false;
         }
         
-        $requireExtensions = ExtensionModel::checkRequireExtension($info['require_extension']);
+        $requireExtensions = ExtensionModel::checkRequireExtension($info['require']);
         if (!empty($requireExtensions)) {
             $match = collect($requireExtensions)->contains(function ($data) {
                 return ($data['match'] === false);
@@ -305,7 +307,7 @@ class Extension extends Command
             'authoremail' => Arr::get($info, 'authoremail'),
             'version' => Arr::get($info, 'version'),
             'adaptation' => Arr::get($info, 'adaptation'),
-            'require_extension' => json_encode(Arr::get($info, 'require_extension', [])),
+            'require' => json_encode(Arr::get($info, 'require', [])),
             'config' => json_encode(Arr::get($info, 'config', [])),
             'class_name' => Arr::get($info, 'class_name'),
             'upgradetime' => time(),

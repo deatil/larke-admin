@@ -37,7 +37,7 @@ class ResetPasword extends Command
     public function handle()
     {
         askForAdminName:
-        $name = $this->ask('Please enter a adminName who needs to reset his password');
+        $name = $this->ask('Please enter an adminName who needs to reset his password');
         
         $admin = AdminModel::query()
             ->where('name', $name)

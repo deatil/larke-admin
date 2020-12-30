@@ -30,14 +30,34 @@ class Extension
     /**
      * Extend a extension.
      *
-     * @param string $name
      * @param string $class
      *
-     * @return void
+     * @return bool
      */
-    public function extend($name, $class)
+    public function extend($class)
     {
+        $newClass = $this->getNewClass($class);
+        
+        if ($newClass === false) {
+            return false;
+        }
+        
+        if (! isset($newClass->info)) {
+            return false;
+        }
+        
+        if (! isset($newClass->info['name'])) {
+            return false;
+        }
+        
+        $name = $newClass->info['name'];
+        if (isset($this->extensions[$name])) {
+            return false;
+        }
+        
         $this->extensions[$name] = $class;
+        
+        return true;
     }
     
     /**
@@ -226,18 +246,36 @@ class Extension
     }
     
     /**
+     * Get extension class.
+     *
+     * @param string
+     *
+     * @return string
+     */
+    public function getExtensionClass($name = null)
+    {
+        if (empty($name)) {
+            return '';
+        }
+        
+        $className = Arr::get($this->extensions, $name, '');
+        
+        return $className;
+    }
+    
+    /**
      * Get new class.
      *
      * @param string
      */
     public function getNewClass($className = null)
     {
-        if (!class_exists($className)) {
+        if (! class_exists($className)) {
             return false;
         }
         
         $newClass = new $className(app());
-        if (!($newClass instanceof ExtensionServiceProvider)) {
+        if (! ($newClass instanceof ExtensionServiceProvider)) {
             return false;
         }
         
@@ -281,11 +319,7 @@ class Extension
      */
     public function getExtensionNewClass($name = null)
     {
-        if (empty($name)) {
-            return false;
-        }
-        
-        $className = Arr::get($this->extensions, $name);
+        $className = $this->getExtensionClass($name);
         
         return $this->getNewClass($className);
     }
@@ -304,7 +338,7 @@ class Extension
             return [];
         }
         
-        if (!isset($newClass->info)) {
+        if (! isset($newClass->info)) {
             return [];
         }
         
@@ -319,9 +353,9 @@ class Extension
             'authoremail' => Arr::get($info, 'authoremail'),
             'version' => Arr::get($info, 'version'),
             'adaptation' => Arr::get($info, 'adaptation'),
-            'require_extension' => Arr::get($info, 'require_extension', []),
+            'require' => Arr::get($info, 'require', []),
             'config' => Arr::get($info, 'config', []),
-            'class_name' => Arr::get($this->extensions, $name),
+            'class_name' => Arr::get($this->extensions, $name, ''),
         ];
     }
     

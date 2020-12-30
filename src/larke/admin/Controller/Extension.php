@@ -1,5 +1,7 @@
 <?php
 
+declare (strict_types = 1);
+
 namespace Larke\Admin\Controller;
 
 use Composer\Semver\Semver;
@@ -187,14 +189,14 @@ class Extension extends Base
             ]));
         }
         
-        $requireExtensions = ExtensionModel::checkRequireExtension($info['require_extension']);
+        $requireExtensions = ExtensionModel::checkRequireExtension($info['require']);
         if (!empty($requireExtensions)) {
             $match = collect($requireExtensions)->contains(function ($data) {
                 return ($data['match'] === false);
             });
             if ($match) {
-                return $this->success(__('扩展依赖出现错误'), [
-                    'require_extensions' => $requireExtensions
+                return $this->error(__('扩展依赖出现错误'), \ResponseCode::EXTENSION_NOT_MATCH, [
+                    'require' => $requireExtensions
                 ]);
             }
         }
@@ -208,7 +210,7 @@ class Extension extends Base
             'authoremail' => Arr::get($info, 'authoremail'),
             'version' => Arr::get($info, 'version'),
             'adaptation' => Arr::get($info, 'adaptation'),
-            'require_extension' => json_encode(Arr::get($info, 'require_extension', [])),
+            'require' => json_encode(Arr::get($info, 'require', [])),
             'config' => json_encode(Arr::get($info, 'config', [])),
             'class_name' => Arr::get($info, 'class_name'),
             'listorder' => 100,
@@ -318,14 +320,14 @@ class Extension extends Base
             return $this->error(__('扩展不需要更新'));
         }
         
-        $requireExtensions = ExtensionModel::checkRequireExtension($info['require_extension']);
+        $requireExtensions = ExtensionModel::checkRequireExtension($info['require']);
         if (!empty($requireExtensions)) {
             $match = collect($requireExtensions)->contains(function ($data) {
                 return ($data['match'] === false);
             });
             if ($match) {
-                return $this->success(__('扩展依赖出现错误'), [
-                    'require_extensions' => $requireExtensions
+                return $this->error(__('扩展依赖出现错误'), \ResponseCode::EXTENSION_NOT_MATCH, [
+                    'require' => $requireExtensions
                 ]);
             }
         }
@@ -339,7 +341,7 @@ class Extension extends Base
             'authoremail' => Arr::get($info, 'authoremail'),
             'version' => Arr::get($info, 'version'),
             'adaptation' => Arr::get($info, 'adaptation'),
-            'require_extension' => json_encode(Arr::get($info, 'require_extension', [])),
+            'require' => json_encode(Arr::get($info, 'require', [])),
             'config' => json_encode(Arr::get($info, 'config', [])),
             'class_name' => Arr::get($info, 'class_name'),
             'upgradetime' => time(),

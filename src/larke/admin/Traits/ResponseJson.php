@@ -13,7 +13,7 @@ trait ResponseJson
     /**
      * 返回成功json
      */
-    protected function success($message = '获取成功', $data = null, $code = 0, $header = []) 
+    protected function success($message = null, $data = null, $code = 0, $header = []) 
     {
         return app('larke.admin.json')->json(true, $code, $message, $data, $header);
     }

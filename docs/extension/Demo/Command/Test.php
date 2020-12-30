@@ -1,23 +1,23 @@
 <?php
 
-namespace Test\Command;
+namespace Demo\Command;
 
 use Illuminate\Console\Command;
 
 /**
- * test
+ * Demo
  *
- * php artisan test:test
+ * php artisan demo:run
  *
  */
-class Test extends Command
+class Demo extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'test:test';
+    protected $signature = 'demo:run';
 
     /**
      * The console command description.
@@ -33,6 +33,6 @@ class Test extends Command
      */
     public function handle()
     {
-        $this->info('test run success.');
+        $this->info('demo run success.');
     }
 }

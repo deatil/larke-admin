@@ -56,10 +56,9 @@ class ResetPermission extends Command
             })
             ->select()
             ->get()
-            ->toArray();
-        collect($rules)->each(function($data) {
-            Permission::addPolicy($data['group_id'], $data['rule']['slug'], strtoupper($data['rule']['method']));
-        });
+            ->each(function($data) {
+                Permission::addPolicy($data['group_id'], $data['rule']['slug'], strtoupper($data['rule']['method']));
+            });
         
         // 分组权限
         $groups = AuthGroupAccessModel::with('group')
@@ -68,9 +67,8 @@ class ResetPermission extends Command
             })
             ->select()
             ->get()
-            ->toArray();
-        collect($groups)->each(function($data) {
-            Permission::addRoleForUser($data['admin_id'], $data['group_id']);
-        });
+            ->each(function($data) {
+                Permission::addRoleForUser($data['admin_id'], $data['group_id']);
+            });
     }
 }

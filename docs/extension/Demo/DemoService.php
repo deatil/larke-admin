@@ -1,21 +1,23 @@
 <?php
 
-namespace Test;
+namespace Demo;
 
-use Larke\Admin\Extension\Service;
+use Larke\Admin\Extension\ServiceProvider;
 
-class TestService extends Service
+class DemoService extends ServiceProvider
 {
     public $info = [
-        'name' => 'Test',
-        'title' => '测试扩展',
-        'introduce' => '测试扩展描述',
+        'name' => 'Demo',
+        'title' => '示例扩展',
+        'introduce' => '示例扩展描述',
         'author' => 'deatil', 
         'authorsite' => 'http://github.com/deatil', // 选填
         'authoremail' => 'deatil@github.com',
         'version' => '1.0.1',
         'adaptation' => '1.0.*',
-        'require_extension' => [], // 选填
+        'require' => [
+            // 'SignCert' => '1.0.0'
+        ], // 选填
         'config' => [ // 配置，选填
             [
                 'name' => 'atext',
@@ -83,7 +85,7 @@ class TestService extends Service
         ], 
     ];
     
-    public function boot()
+    public function start()
     {
         $this->commands([
             Command\Test::class,
