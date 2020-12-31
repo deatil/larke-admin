@@ -21,6 +21,8 @@ class Extension extends Base
     protected $guarded = [];
     
     protected $appends = [
+        'keywordlist',
+        'authorlist',
         'configs',
         'config_datas',
         'requires',
@@ -28,6 +30,26 @@ class Extension extends Base
     
     public $incrementing = false;
     public $timestamps = false;
+    
+    public function getKeywordlistAttribute() 
+    {
+        $value = $this->keywords;
+        if (empty($value)) {
+            return [];
+        }
+        
+        return json_decode($value, true);
+    }
+    
+    public function getAuthorlistAttribute() 
+    {
+        $value = $this->authors;
+        if (empty($value)) {
+            return [];
+        }
+        
+        return json_decode($value, true);
+    }
     
     public function getConfigsAttribute() 
     {

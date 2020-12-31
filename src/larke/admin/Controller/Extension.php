@@ -204,17 +204,15 @@ class Extension extends Base
         $extension = ExtensionModel::create([
             'name' => Arr::get($info, 'name'),
             'title' => Arr::get($info, 'title'),
-            'introduce' => Arr::get($info, 'introduce'),
-            'author' => Arr::get($info, 'author'), 
-            'authorsite' => Arr::get($info, 'authorsite'),
-            'authoremail' => Arr::get($info, 'authoremail'),
+            'description' => Arr::get($info, 'description'),
+            'keywords' => json_encode(Arr::get($info, 'keywords', [])), 
+            'homepage' => Arr::get($info, 'homepage'),
+            'authors' => json_encode(Arr::get($info, 'authors', [])),
             'version' => Arr::get($info, 'version'),
             'adaptation' => Arr::get($info, 'adaptation'),
             'require' => json_encode(Arr::get($info, 'require', [])),
             'config' => json_encode(Arr::get($info, 'config', [])),
             'class_name' => Arr::get($info, 'class_name'),
-            'listorder' => 100,
-            'status' => 1,
         ]);
         if ($extension === false) {
             return $this->error(__('安装扩展失败'));
@@ -335,10 +333,10 @@ class Extension extends Base
         $updateInfo = $installInfo->update([
             'name' => Arr::get($info, 'name'),
             'title' => Arr::get($info, 'title'),
-            'introduce' => Arr::get($info, 'introduce'),
-            'author' => Arr::get($info, 'author'), 
-            'authorsite' => Arr::get($info, 'authorsite'),
-            'authoremail' => Arr::get($info, 'authoremail'),
+            'description' => Arr::get($info, 'description'),
+            'keywords' => json_encode(Arr::get($info, 'keywords')), 
+            'homepage' => Arr::get($info, 'homepage'),
+            'authors' => json_encode(Arr::get($info, 'authors', [])),
             'version' => Arr::get($info, 'version'),
             'adaptation' => Arr::get($info, 'adaptation'),
             'require' => json_encode(Arr::get($info, 'require', [])),

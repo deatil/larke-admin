@@ -34,24 +34,13 @@ class Extension
      *
      * @return bool
      */
-    public function extend($class)
+    public function extend($name, $class = null)
     {
-        $newClass = $this->getNewClass($class);
-        
-        if ($newClass === false) {
-            return false;
-        }
-        
-        if (! isset($newClass->info)) {
-            return false;
-        }
-        
-        if (! isset($newClass->info['name'])) {
-            return false;
-        }
-        
-        $name = $newClass->info['name'];
         if (isset($this->extensions[$name])) {
+            return false;
+        }
+        
+        if (empty($class)) {
             return false;
         }
         
@@ -345,12 +334,12 @@ class Extension
         $info = $newClass->info;
         
         return [
-            'name' => Arr::get($info, 'name'),
+            'name' => $name,
             'title' => Arr::get($info, 'title'),
-            'introduce' => Arr::get($info, 'introduce'),
-            'author' => Arr::get($info, 'author'), 
-            'authorsite' => Arr::get($info, 'authorsite'),
-            'authoremail' => Arr::get($info, 'authoremail'),
+            'description' => Arr::get($info, 'description'),
+            'keywords' => Arr::get($info, 'keywords'),
+            'homepage' => Arr::get($info, 'homepage'),
+            'authors' => Arr::get($info, 'authors', []), 
             'version' => Arr::get($info, 'version'),
             'adaptation' => Arr::get($info, 'adaptation'),
             'require' => Arr::get($info, 'require', []),
@@ -413,10 +402,10 @@ class Extension
     public function validateInfo(array $info)
     {
         $mustInfo = [
-            'name',
             'title',
-            'introduce',
-            'author',
+            'description',
+            'keywords',
+            'authors',
             'version',
             'adaptation',
         ];
