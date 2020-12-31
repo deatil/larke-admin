@@ -3,6 +3,8 @@
 namespace Larke\Admin;
 
 use ReflectionClass;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
@@ -37,16 +39,16 @@ class Extension
     public function extend($name, $class = null)
     {
         if (isset($this->extensions[$name])) {
-            return false;
+            return $this;
         }
         
         if (empty($class)) {
-            return false;
+            return $this;
         }
         
         $this->extensions[$name] = $class;
         
-        return true;
+        return $this;
     }
     
     /**
@@ -107,7 +109,7 @@ class Extension
      * @param $callback
      * @param $config
      * 
-     * @return void
+     * @return self
      */
     public function routes($callback, $config = [])
     {
@@ -120,6 +122,8 @@ class Extension
         );
 
         Route::group($attributes, $callback);
+        
+        return $this;
     }
     
     /**
@@ -128,24 +132,13 @@ class Extension
      * @param $prefix
      * @param $paths
      * 
-     * @return void
+     * @return self
      */
     public function namespaces($prefix, $paths = [])
     {
         app('larke.admin.loader')->setPsr4($prefix, $paths)->register();
-    }
-    
-    /**
-     * Register extensions'namespace.
-     * 
-     * @return void
-     */
-    public function registerExtensionNamespace()
-    {
-        $dir = $this->getExtensionDirectory();
         
-        // 注入扩展命名空间
-        app('larke.admin.loader')->set('', $dir)->register();
+        return $this;
     }
     
     /**
@@ -160,14 +153,26 @@ class Extension
         }
         
         $list = ExtensionModel::getExtensions();
+        $extensionDirectory = $this->getExtensionDirectory();
         
-        $services = collect($list)->map(function($data) {
+        $services = collect($list)->map(function($data) use($extensionDirectory) {
             if ($data['status'] != 1) {
                 return null;
             }
 
             if (empty($data['class_name'])) {
                 return null;
+            }
+
+            if (empty($data['name'])) {
+                return null;
+            }
+            
+            $bootstrap = $extensionDirectory 
+                . DIRECTORY_SEPARATOR . $data['name'] 
+                . DIRECTORY_SEPARATOR . 'bootstrap.php';
+            if (File::exists($bootstrap)) {
+                File::requireOnce($bootstrap);
             }
             
             $newClass = $this->getNewClass($data['class_name']);
@@ -210,7 +215,8 @@ class Extension
     {
         $dir = $this->getExtensionDirectory();
         
-        $dirs = File::directories($dir);
+        $dirs = $this->getDirectories($dir);
+        
         collect($dirs)->each(function($dir) {
             $bootstrap = $dir . DIRECTORY_SEPARATOR . 'bootstrap.php';
             if (File::exists($bootstrap)) {
@@ -333,6 +339,12 @@ class Extension
         
         $info = $newClass->info;
         
+        // 配置
+        $config = [];
+        if (isset($newClass->config)) {
+            $config = (array) $newClass->config;
+        }
+        
         return [
             'name' => $name,
             'title' => Arr::get($info, 'title'),
@@ -343,7 +355,7 @@ class Extension
             'version' => Arr::get($info, 'version'),
             'adaptation' => Arr::get($info, 'adaptation'),
             'require' => Arr::get($info, 'require', []),
-            'config' => Arr::get($info, 'config', []),
+            'config' => $config,
             'class_name' => Arr::get($this->extensions, $name, ''),
         ];
     }
@@ -431,6 +443,38 @@ class Extension
         $filePath = dirname($reflection->getFileName());
 
         return $filePath;
+    }
+    
+    /**
+     * 获取扩展目录.
+     *
+     * @param string $dirPath
+     *
+     * @return array
+     */
+    public function getDirectories($dirPath = null)
+    {
+        $extensions = [];
+        
+        if (empty($dirPath) || ! is_dir($dirPath)) {
+            return $extensions;
+        }
+
+        $it = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($dirPath, RecursiveDirectoryIterator::FOLLOW_SYMLINKS)
+        );
+        $it->setMaxDepth(2);
+        $it->rewind();
+
+        while ($it->valid()) {
+            if ($it->getDepth() > 1 && $it->getFilename() === 'bootstrap.php') {
+                $extensions[] = dirname($it->getPathname());
+            }
+
+            $it->next();
+        }
+
+        return $extensions;
     }
     
 }

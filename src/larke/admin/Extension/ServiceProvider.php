@@ -28,11 +28,17 @@ abstract class ServiceProvider extends LaravelServiceProvider
         'authoremail' => '', // 作者邮箱[选填]
         'version' => '1.0.0', // 版本号
         'adaptation' => '^1.0', // 适配系统版本
+        
+        // 依赖扩展[选填]
         'require' => [
             // 'Extension2' => '1.2.*',
-        ], // 依赖扩展[选填]
-        'config' => [], // 配置[选填]
+        ], 
     ];
+    
+    /**
+     * 扩展配置，选填
+     */
+    public $config = [];
     
     public function __construct($app)
     {

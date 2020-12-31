@@ -1,22 +1,32 @@
 <?php
 
-namespace Demo;
+namespace Larke\Admin\Demo;
 
-use Larke\Admin\Extension\ServiceProvider;
+use Larke\Admin\Extension\ServiceProvider as BaseServiceProvider;
 
-class DemoService extends ServiceProvider
+class ServiceProvider extends BaseServiceProvider
 {
     public $info = [
-        'name' => 'Demo',
         'title' => '示例扩展',
-        'introduce' => '示例扩展描述',
-        'author' => 'deatil', 
-        'authorsite' => 'http://github.com/deatil', // 选填
-        'authoremail' => 'deatil@github.com',
-        'version' => '1.0.1',
-        'adaptation' => '1.0.*',
+        'description' => '示例扩展描述',
+        'keywords' => [
+            'Demo',
+            'Larke',
+            'Admin',
+            'LarkeAdmin',
+        ],
+        'homepage' => 'http://github.com/deatil',
+        'authors' => [
+            [
+                'name' => 'deatil', 
+                'email' => 'deatil@github.com', 
+                'homepage' => 'http://github.com/deatil', 
+            ],
+        ],
+        'version' => '1.0.2',
+        'adaptation' => '1.1.*',
         'require' => [
-            // 'SignCert' => '1.0.0'
+            // 'SignCert' => '1.0.*'
         ], // 选填
         'config' => [ // 配置，选填
             [
@@ -88,7 +98,7 @@ class DemoService extends ServiceProvider
     public function start()
     {
         $this->commands([
-            Command\Test::class,
+            Command\Demo::class,
         ]);
     }
 }

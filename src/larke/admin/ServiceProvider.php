@@ -90,8 +90,6 @@ class ServiceProvider extends BaseServiceProvider
         $this->commands($this->commands);
         
         $this->registerEvent();
-        
-        $this->registerExtension();
     }
     
     /**
@@ -245,14 +243,6 @@ class ServiceProvider extends BaseServiceProvider
         foreach ($this->middlewareGroups as $key => $middleware) {
             app('router')->middlewareGroup($key, $middleware);
         }
-    }
-    
-    /**
-     * Register Extensions.
-     */
-    public function registerExtension()
-    {
-        app('larke.admin.extension')->registerExtensionNamespace();
     }
     
     /**

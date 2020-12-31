@@ -1,6 +1,6 @@
 <?php
 
-namespace Demo\Command;
+namespace Larke\Admin\Demo\Command;
 
 use Illuminate\Console\Command;
 
