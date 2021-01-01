@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 
+use Larke\Admin\Support\Composer;
 use Larke\Admin\Model\AuthRule as AuthRuleModel;
 use Larke\Admin\Model\Extension as ExtensionModel;
 use Larke\Admin\Extension\ServiceProvider as ExtensionServiceProvider;
@@ -168,11 +169,13 @@ class Extension
                 return null;
             }
             
-            $bootstrap = $extensionDirectory 
-                . DIRECTORY_SEPARATOR . $data['name'] 
-                . DIRECTORY_SEPARATOR . 'bootstrap.php';
-            if (File::exists($bootstrap)) {
-                File::requireOnce($bootstrap);
+            $directory = $extensionDirectory 
+                . DIRECTORY_SEPARATOR . $data['name'];
+            $this->registerAutoload($directory);
+            
+            // 加载dev数据
+            if (config('app.debug')) {
+                $this->registerAutoload($directory, 'autoload-dev');
             }
             
             $newClass = $this->getNewClass($data['class_name']);
@@ -213,14 +216,16 @@ class Extension
      */
     public function loadExtension()
     {
-        $dir = $this->getExtensionDirectory();
+        $directory = $this->getExtensionDirectory();
         
-        $dirs = $this->getDirectories($dir);
+        $directories = $this->getDirectories($directory);
         
-        collect($dirs)->each(function($dir) {
-            $bootstrap = $dir . DIRECTORY_SEPARATOR . 'bootstrap.php';
-            if (File::exists($bootstrap)) {
-                File::requireOnce($bootstrap);
+        collect($directories)->each(function($directory) {
+            $this->registerAutoload($directory);
+            
+            // 加载dev数据
+            if (config('app.debug')) {
+                $this->registerAutoload($directory, 'autoload-dev');
             }
         });
         
@@ -432,21 +437,78 @@ class Extension
     }
     
     /**
-     * 获取类路径
+     * Get composer info.
      *
-     * @param string|null $class
-     * @return string|bool
+     * @param string $directory
+     *
+     * @return object $this
      */
-    public function getPathFromClass($class = null)
+    public function composer($composer)
     {
-        $reflection = new ReflectionClass(get_class($class));
-        $filePath = dirname($reflection->getFileName());
-
-        return $filePath;
+        return Composer::parse($composer);
     }
     
     /**
-     * 获取扩展目录.
+     * Register autoload.
+     *
+     * @param string $directory
+     *
+     * @return object $this
+     */
+    public function registerAutoload($directory = null, $autoload = 'autoload')
+    {
+        $composerProperty = $this->composer($directory.'/composer.json');
+
+        $psr0 = $composerProperty->get($autoload.'.psr-0');
+        $psr4 = $composerProperty->get($autoload.'.psr-4');
+        $classmap = $composerProperty->get($autoload.'.classmap');
+        $files = $composerProperty->get($autoload.'.files');
+
+        $classLoader = app('larke.admin.loader');
+        
+        if (! empty($psr0)) {
+            foreach ($psr0 as $namespace0 => $path0) {
+                $path0 = $directory.'/'.trim($path0, '/').'/';
+
+                $classLoader->add($namespace0, $path0);
+            }
+        }
+        
+        if (! empty($psr4)) {
+            foreach ($psr4 as $namespace => $path) {
+                $path = $directory.'/'.trim($path, '/').'/';
+
+                $classLoader->addPsr4($namespace, $path);
+            }
+        }
+        
+        if (! empty($classmap)) {
+            $classmaps = [];
+            foreach ($classmap as $namespaceitem => $classitem) {
+                $classfile = $directory.'/'.ltrim($classitem, '/');
+                $classmaps[$namespaceitem] = $classfile;
+            }
+            
+            $classLoader->addClassMap($classmaps);
+        }
+        
+        if (! empty($files)) {
+            foreach ($files as $file) {
+                $file = $directory.'/'.ltrim($file, '/');
+
+                if (File::exists($file)) {
+                    File::requireOnce($file);
+                }
+            }
+        }
+        
+        $classLoader->register();
+        
+        return $this;
+    }
+    
+    /**
+     * get directories.
      *
      * @param string $dirPath
      *
@@ -467,7 +529,7 @@ class Extension
         $it->rewind();
 
         while ($it->valid()) {
-            if ($it->getDepth() > 1 && $it->getFilename() === 'bootstrap.php') {
+            if ($it->getDepth() > 1 && $it->getFilename() === 'composer.json') {
                 $extensions[] = dirname($it->getPathname());
             }
 
@@ -475,6 +537,20 @@ class Extension
         }
 
         return $extensions;
+    }
+    
+    /**
+     * get path from class
+     *
+     * @param string|null $class
+     * @return string|bool
+     */
+    public function getPathFromClass($class = null)
+    {
+        $reflection = new ReflectionClass(get_class($class));
+        $filePath = dirname($reflection->getFileName());
+
+        return $filePath;
     }
     
 }

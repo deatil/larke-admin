@@ -10,6 +10,7 @@ use Composer\Semver\VersionParser;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 use Larke\Admin\Event;
 use Larke\Admin\Support\PclZip;
@@ -509,7 +510,7 @@ class Extension extends Base
      * 上传
      *
      * @title 扩展上传
-     * @desc 系统扩展上传
+     * @desc 扩展压缩包上传
      * @order 1059
      * @auth true
      *
@@ -526,30 +527,66 @@ class Extension extends Base
         // 扩展名
         $extension = $requestFile->extension();
         if ($extension != 'zip') {
-            return $this->error(__('上传的文件格式有误！'));
+            return $this->error(__('上传的文件格式有误'));
         }
         
-        // 原始名称
-        $name = $requestFile->getClientOriginalName();
-        $extensionPathinfo = pathinfo($name);
-        $extensionName = $extensionPathinfo['filename'];
+        // 解析composer.json
+        $filename = $requestFile->getPathname();
+        $zip = new PclZip($filename);
+        $list = $zip->listContent();
         
-        $extensionPath = AdminExtension::getExtensionDirectory($extensionName);
+        if ($list == 0) {
+            return $this->error(__('上传的文件错误！'));
+        }
+        
+        $composer = collect($list)
+            ->map(function($item) {
+                if (strpos($item['filename'], 'composer.json') !== false) {
+                    return $item;
+                }
+            })
+            ->filter(function($data) {
+                return !empty($data);
+            })
+            ->values()
+            ->toArray();
+        
+        if (empty($composer)) {
+            return $this->error(__('扩展composer.json不存在'));
+        }
+        
+        $data = $zip->extractByIndex($composer[0]['index'], PCLZIP_OPT_EXTRACT_AS_STRING);
+        try {
+            $composerInfo = json_decode($data[0]['content'], true);
+        } catch(\Exception $e) {
+            return $this->error(__('扩展composer.json格式错误'));
+        }
+        
+        if (! isset($composerInfo['name']) 
+            || empty($composerInfo['name'])
+        ) {
+            return $this->error(__('扩展composer.json格式错误'));
+        }
+        
+        $extensionPath = AdminExtension::getExtensionDirectory($composerInfo['name']);
         
         // 检查扩展目录是否存在
         if (file_exists($extensionPath)) {
-            return $this->error(__('扩展已经存在'));
+            return $this->error(__('扩展('.$composerInfo['name'].')已经存在'));
         }
+        
+        $extensionRemovePath = Str::replaceLast('composer.json', '', $composer[0]['filename']);
         
         // 解压文件
-        $filename = $requestFile->getPathname();
-        $zip = new PclZip($filename);
-        $status = $zip->extract(PCLZIP_OPT_PATH, $extensionPath);
+        $status = $zip->extract(
+            PCLZIP_OPT_PATH, $extensionPath,
+            PCLZIP_OPT_REMOVE_PATH, $extensionRemovePath,
+        );
         if (!$status) {
-            return $this->error(__('扩展解压失败'));
+            return $this->error(__('扩展('.$composerInfo['name'].')解压失败'));
         }
         
-        return $this->success(__('扩展上传成功！'));
+        return $this->success(__('扩展('.$composerInfo['name'].')上传成功'));
     }
     
 }
