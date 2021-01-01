@@ -24,7 +24,7 @@
 
 ![admin](https://user-images.githubusercontent.com/24578855/101988564-6bd8c100-3cd5-11eb-8524-21151ba3b404.png)
 
-![admin-access](https://user-images.githubusercontent.com/24578855/102609135-f3a34d00-4165-11eb-87a9-c2d98eaca02a.png)
+![admin-access](https://user-images.githubusercontent.com/24578855/103433753-db393500-4c31-11eb-8d8a-b40dfa0db84e.png)
 
 ![attach](https://user-images.githubusercontent.com/24578855/101988566-6da28480-3cd5-11eb-9532-69d88b2f598d.png)
 
