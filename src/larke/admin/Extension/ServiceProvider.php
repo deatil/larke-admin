@@ -1,5 +1,7 @@
 <?php
 
+declare (strict_types = 1);
+
 namespace Larke\Admin\Extension;
 
 use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
@@ -39,19 +41,6 @@ abstract class ServiceProvider extends LaravelServiceProvider
      * 扩展配置，选填
      */
     public $config = [];
-    
-    public function __construct($app)
-    {
-        parent::__construct($app);
-        
-        $this->init();
-    }
-    
-    /**
-     * 初始化，一直加载
-     */
-    public function init()
-    {}
     
     /**
      * 启动，只有启用后加载

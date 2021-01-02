@@ -1,5 +1,7 @@
 <?php
 
+declare (strict_types = 1);
+
 namespace Larke\Admin\Listener;
 
 use Larke\Admin\Event\ConfigCreated as ConfigCreatedEvent;

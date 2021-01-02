@@ -1,5 +1,9 @@
 <?php
 
+declare (strict_types = 1);
+
+declare (strict_types = 1);
+
 namespace Larke\Admin\Command;
 
 use Illuminate\Console\Command;

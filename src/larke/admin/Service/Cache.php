@@ -1,5 +1,7 @@
 <?php
 
+declare (strict_types = 1);
+
 namespace Larke\Admin\Service;
 
 use Illuminate\Support\Facades\Cache as LaravelCache;

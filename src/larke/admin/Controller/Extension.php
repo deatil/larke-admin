@@ -11,6 +11,7 @@ use Composer\Semver\VersionParser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 
 use Larke\Admin\Event;
 use Larke\Admin\Support\PclZip;
@@ -221,6 +222,8 @@ class Extension extends Base
         
         AdminExtension::getNewClassMethod($extension->class_name, 'install');
         
+        Cache::flush();
+        
         return $this->success(__('安装扩展成功'), [
             'name' => $extension->name
         ]);
@@ -254,7 +257,10 @@ class Extension extends Base
             return $this->error(__('扩展删除失败'));
         }
         
+        AdminExtension::loadExtension();
         AdminExtension::getNewClassMethod($info->class_name, 'uninstall');
+        
+        Cache::flush();
         
         return $this->success(__('扩展删除成功'));
     }
@@ -351,6 +357,8 @@ class Extension extends Base
         
         AdminExtension::getNewClassMethod(Arr::get($info, 'class_name'), 'upgrade');
         
+        Cache::flush();
+        
         return $this->success(__('更新扩展成功'));
     }
     
@@ -420,7 +428,10 @@ class Extension extends Base
             return $this->error(__('启用扩展失败'));
         }
         
-        AdminExtension::getNewClassMethod($installInfo->class_name, 'enable');
+        AdminExtension::loadExtension();
+        AdminExtension::getNewClassMethod($installInfo['class_name'], 'enable');
+        
+        Cache::flush();
         
         return $this->success(__('启用扩展成功'));
     }
@@ -458,6 +469,8 @@ class Extension extends Base
         }
         
         AdminExtension::getNewClassMethod($installInfo->class_name, 'disable');
+        
+        Cache::flush();
         
         return $this->success(__('禁用扩展成功'));
     }
@@ -536,7 +549,7 @@ class Extension extends Base
         $list = $zip->listContent();
         
         if ($list == 0) {
-            return $this->error(__('上传的文件错误！'));
+            return $this->error(__('上传的文件错误'));
         }
         
         $composer = collect($list)
@@ -547,6 +560,10 @@ class Extension extends Base
             })
             ->filter(function($data) {
                 return !empty($data);
+            })
+            ->sortBy(function($item) {
+                $item['filename'] = str_replace('\\', '/', $item['filename']);
+                return count(explode('/', $item['filename']));
             })
             ->values()
             ->toArray();

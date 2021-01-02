@@ -1,5 +1,7 @@
 <?php
 
+declare (strict_types = 1);
+
 namespace Larke\Admin;
 
 use ReflectionClass;
@@ -279,7 +281,7 @@ class Extension
             return false;
         }
         
-        $newClass = new $className(app());
+        $newClass = app()->register($className);
         if (! ($newClass instanceof ExtensionServiceProvider)) {
             return false;
         }
@@ -303,11 +305,11 @@ class Extension
         }
         
         $newClass = $this->getNewClass($className);
-        if (!$newClass) {
+        if (! $newClass) {
             return false;
         }
         
-        if (!method_exists($newClass, $method)) {
+        if (! method_exists($newClass, $method)) {
             return false;
         }
         
@@ -504,7 +506,7 @@ class Extension
                     }
                 }
                 
-                Cache::add($classmapId, $classmaps, 43200);
+                Cache::put($classmapId, $classmaps, 43200);
             }
             
             $classLoader->addClassMap($classmaps);

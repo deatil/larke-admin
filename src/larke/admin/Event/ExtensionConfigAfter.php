@@ -1,5 +1,7 @@
 <?php
 
+declare (strict_types = 1);
+
 namespace Larke\Admin\Event;
 
 use Larke\Admin\Model\Extension as ExtensionModel;

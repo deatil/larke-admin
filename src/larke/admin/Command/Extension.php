@@ -1,5 +1,7 @@
 <?php
 
+declare (strict_types = 1);
+
 namespace Larke\Admin\Command;
 
 use Composer\Semver\Semver;
@@ -8,6 +10,7 @@ use Composer\Semver\VersionParser;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
 
 use Larke\Admin\Facade\Extension as AdminExtension;
 use Larke\Admin\Model\Extension as ExtensionModel;
@@ -89,6 +92,8 @@ class Extension extends Command
         if ($status === false) {
             return;
         }
+        
+        Cache::flush();
         
         $this->info("Extension {$action} run successfully.");
     }
@@ -212,6 +217,7 @@ class Extension extends Command
             return false;
         }
         
+        AdminExtension::loadExtension();
         AdminExtension::getNewClassMethod($info->class_name, 'uninstall');
     }
     
@@ -344,6 +350,7 @@ class Extension extends Command
             return false;
         }
         
+        AdminExtension::loadExtension();
         AdminExtension::getNewClassMethod($installInfo->class_name, 'enable');
     }
     

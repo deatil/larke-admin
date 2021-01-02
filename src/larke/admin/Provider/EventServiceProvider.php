@@ -1,10 +1,12 @@
 <?php
 
+declare (strict_types = 1);
+
 namespace Larke\Admin\Provider;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
-// for directory
+// use directory
 use Larke\Admin\Event;
 use Larke\Admin\Listener;
 
