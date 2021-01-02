@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 
 use Larke\Admin\Support\Composer;
+use Larke\Admin\Support\ClassMapGenerator;
 use Larke\Admin\Model\AuthRule as AuthRuleModel;
 use Larke\Admin\Model\Extension as ExtensionModel;
 use Larke\Admin\Extension\ServiceProvider as ExtensionServiceProvider;
@@ -178,8 +179,12 @@ class Extension
                 $this->registerAutoload($directory, 'autoload-dev');
             }
             
-            $newClass = $this->getNewClass($data['class_name']);
-            if (!$newClass) {
+            if (! class_exists($data['class_name'])) {
+                return null;
+            }
+            
+            $newClass = app()->register($data['class_name']);
+            if (! $newClass) {
                 return null;
             }
             
@@ -463,6 +468,7 @@ class Extension
         $psr4 = $composerProperty->get($autoload.'.psr-4');
         $classmap = $composerProperty->get($autoload.'.classmap');
         $files = $composerProperty->get($autoload.'.files');
+        $exclude = $composerProperty->get($autoload.'.exclude-from-classmap');
 
         $classLoader = app('larke.admin.loader');
         
@@ -482,11 +488,23 @@ class Extension
             }
         }
         
+        $excluded = ClassMapGenerator::excluded($exclude);
         if (! empty($classmap)) {
-            $classmaps = [];
-            foreach ($classmap as $namespaceitem => $classitem) {
-                $classfile = $directory.'/'.ltrim($classitem, '/');
-                $classmaps[$namespaceitem] = $classfile;
+            $classmapId = md5($directory.$autoload);
+            
+            $classmaps = Cache::get($classmapId);
+            if (! $classmaps) {
+                $classmaps = [];
+                foreach ($classmap as $classmapItem) {
+                    $path = $directory.'/'.trim($classmapItem, '/').'/';
+                    $mapData = ClassMapGenerator::createMap($path, $excluded);
+                    
+                    foreach ($mapData as $classname => $classpath) {
+                        $classmaps[$classname] = realpath($classpath);
+                    }
+                }
+                
+                Cache::add($classmapId, $classmaps, 43200);
             }
             
             $classLoader->addClassMap($classmaps);
