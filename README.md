@@ -77,18 +77,14 @@ php artisan larke-admin:import-route
 7. 后台登录账号：`admin` 及密码 `123456`
 
 
-### 扩展开发
-
-*  扩展开发可查看 `docs/extension/Demo` 示例
-*  扩展目录默认为 `/extension` 目录
-
-
 ### 扩展推荐
 
 | 名称 | 描述 |
 | --- | --- |
 | [demo](https://github.com/deatil/larke-admin-demo) | 扩展示例 |
 | [签名证书](https://github.com/deatil/larke-admin-signcert) | 生成RSA,EDDSA,ECDSA等非对称签名证书 |
+
+注：扩展目录默认为 `/extension` 目录
 
 
 ### 特别鸣谢
