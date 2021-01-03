@@ -40,18 +40,11 @@ class Upload
     protected $storage = '';
 
     /**
-     * If use unique name to store upload file.
+     * Use (unique or datetime or sequence) name for store upload file.
      *
      * @var bool
      */
-    protected $useUniqueName = false;
-    
-    /**
-     * If use sequence name to store upload file.
-     *
-     * @var bool
-     */
-    protected $useSequenceName = false;
+    protected $generateName = null;
 
     /**
      * Controls the storage permission. Could be 'private' or 'public'.
@@ -59,11 +52,16 @@ class Upload
      * @var string
      */
     protected $storagePermission;
-
+    
     /**
-     * @var string
+     * Initialize the storage instance.
+     *
+     * @return $this.
      */
-    protected $pathColumn;
+    public static function create()
+    {
+        return static::driver(config('larkeadmin.upload.disk'));
+    }
     
     /**
      * Initialize the storage instance.
@@ -73,16 +71,6 @@ class Upload
     public static function driver($disk = null)
     {
         return (new static())->disk($disk);
-    }
-    
-    /**
-     * Initialize the storage instance.
-     *
-     * @return $this.
-     */
-    public static function initStorage()
-    {
-        return static::driver(config('larkeadmin.upload.disk'));
     }
 
     /**
@@ -152,7 +140,19 @@ class Upload
      */
     public function uniqueName()
     {
-        $this->useUniqueName = true;
+        $this->generateName = 'unique';
+
+        return $this;
+    }
+
+    /**
+     * Use datetime name for store upload file.
+     *
+     * @return $this
+     */
+    public function datetimeName()
+    {
+        $this->generateName = 'datetime';
 
         return $this;
     }
@@ -164,7 +164,7 @@ class Upload
      */
     public function sequenceName()
     {
-        $this->useSequenceName = true;
+        $this->generateName = 'sequence';
 
         return $this;
     }
@@ -188,23 +188,23 @@ class Upload
      */
     public function getStoreName(UploadedFile $file)
     {
-        if ($this->useUniqueName) {
+        if ($this->generateName == 'unique') {
             return $this->generateUniqueName($file);
-        }
-
-        if ($this->useSequenceName) {
+        } elseif ($this->generateName == 'datetime') {
+            return $this->generateDatetimeName($file);
+        } elseif ($this->generateName == 'sequence') {
             return $this->generateSequenceName($file);
         }
 
         if ($this->name instanceof \Closure) {
-            return $this->name->call($this, $file);
+            return call_user_func_array($this->name, [$this, $file]);
         }
 
         if (is_string($this->name)) {
             return $this->name;
         }
 
-        return $file->getClientOriginalName();
+        return $this->generateClientName($file);
     }
 
     /**
@@ -265,20 +265,6 @@ class Upload
     }
 
     /**
-     * Set path column.
-     *
-     * @param string $column
-     *
-     * @return $this
-     */
-    public function pathColumn($column = 'path')
-    {
-        $this->pathColumn = $column;
-
-        return $this;
-    }
-
-    /**
      * Upload file and delete original file.
      *
      * @param UploadedFile $file
@@ -321,10 +307,6 @@ class Upload
      */
     public function objectUrl($path)
     {
-        if ($this->pathColumn && is_array($path)) {
-            $path = Arr::get($path, $this->pathColumn);
-        }
-
         if (URL::isValidUrl($path)) {
             return $path;
         }
@@ -347,6 +329,18 @@ class Upload
     {
         return md5(uniqid().microtime()).'.'.$file->getClientOriginalExtension();
     }
+    
+    /**
+     * Generate a datetime name for uploaded file.
+     *
+     * @param UploadedFile $file
+     *
+     * @return string
+     */
+    public function generateDatetimeName(UploadedFile $file)
+    {
+        return date('YmdHis').mt_rand(10000, 99999).'.'.$file->getClientOriginalExtension();
+    }
 
     /**
      * Generate a sequence name for uploaded file.
@@ -368,6 +362,18 @@ class Upload
         }
 
         return $new;
+    }
+    
+    /**
+     * Use file'oldname for uploaded file.
+     *
+     * @param UploadedFile $file
+     *
+     * @return string
+     */
+    public function generateClientName(UploadedFile $file)
+    {
+        return $file->getClientOriginalName() . '.' . $file->getClientOriginalExtension();
     }
 
     /**

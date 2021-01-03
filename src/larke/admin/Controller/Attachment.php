@@ -139,7 +139,7 @@ class Attachment extends Base
             return $this->error(__('文件信息不存在'));
         }
         
-        $UploadService = UploadService::initStorage();
+        $UploadService = UploadService::create();
         if ($UploadService === false) {
             return $this->error(__('文件删除失败'));
         }
@@ -261,7 +261,7 @@ class Attachment extends Base
         
         $sha1 = hash_file('sha1', $pathname);
         
-        $UploadService = UploadService::initStorage();
+        $UploadService = UploadService::create();
         if ($UploadService === false) {
             return $this->error(__('上传文件失败'));
         }
@@ -397,7 +397,7 @@ class Attachment extends Base
             return $this->error(__('文件不存在'));
         }
         
-        $UploadService = UploadService::initStorage();
+        $UploadService = UploadService::create();
         if ($UploadService === false) {
             return $this->error(__('下载文件失败'));
         }
