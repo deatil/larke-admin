@@ -18,7 +18,7 @@
 
 ### 截图预览
 
-![login](https://user-images.githubusercontent.com/24578855/101988572-71360b80-3cd5-11eb-9109-1e959f99663b.png)
+![login](https://user-images.githubusercontent.com/24578855/103483910-8cec8780-4e25-11eb-93c5-ea7ce7a09b60.png)
 
 ![index](https://user-images.githubusercontent.com/24578855/103433805-aed1e880-4c32-11eb-8d5b-50638bfc13b5.png)
 
@@ -81,7 +81,14 @@ php artisan larke-admin:import-route
 
 *  扩展开发可查看 `docs/extension/Demo` 示例
 *  扩展目录默认为 `/extension` 目录
-*  `composer` 加载扩展，需要将 `bootstrap.php` 注册到 `autoload->files` 中进行加载
+
+
+### 扩展推荐
+
+| 名称 | 描述 |
+| --- | --- |
+| [demo](https://github.com/deatil/larke-admin-demo) | 扩展示例 |
+| [签名证书](https://github.com/deatil/larke-admin-signcert) | 生成RSA,EDDSA,ECDSA等非对称签名证书 |
 
 
 ### 特别鸣谢

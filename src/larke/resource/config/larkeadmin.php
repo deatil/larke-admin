@@ -5,8 +5,8 @@ return [
         'name' => "LarkeAdmin",
         'name_mini' => "Larke",
         'logo' => '<b>Larke</b> admin',
-        'release' => 20201231,
-        'version' => "1.1.0",
+        'release' => 20210105,
+        'version' => "1.1.1",
     ],
     
     'https' => env('LARKE_ADMIN_HTTPS', false),
@@ -42,13 +42,13 @@ return [
             'rsa' => [
                 'private_key' => env('LARKE_ADMIN_JWT_SIGNER_RSA_PRIVATE_KEY', ''),
                 'public_key' => env('LARKE_ADMIN_JWT_SIGNER_RSA_PUBLIC_KEY', ''),
-                // 私钥密码
+                // 私钥密码，base64编码后
                 'passphrase' => env('LARKE_ADMIN_JWT_SIGNER_RSA_PASSPHRASE', ''),
             ],
             'ecdsa' => [
                 'private_key' => env('LARKE_ADMIN_JWT_SIGNER_ECDSA_PRIVATE_KEY', ''),
                 'public_key' => env('LARKE_ADMIN_JWT_SIGNER_ECDSA_PUBLIC_KEY', ''),
-                // 私钥密码
+                // 私钥密码，base64编码后
                 'passphrase' => env('LARKE_ADMIN_JWT_SIGNER_ECDSA_PASSPHRASE', ''),
             ],
             'eddsa' => [

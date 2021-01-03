@@ -9,13 +9,12 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 
-use Larke\Admin\Support\Composer;
-use Larke\Admin\Support\ClassMapGenerator;
+use Larke\Admin\Service\Composer;
 use Larke\Admin\Model\AuthRule as AuthRuleModel;
 use Larke\Admin\Model\Extension as ExtensionModel;
 use Larke\Admin\Extension\ServiceProvider as ExtensionServiceProvider;
@@ -174,12 +173,24 @@ class Extension
             
             $directory = $extensionDirectory 
                 . DIRECTORY_SEPARATOR . $data['name'];
-            $this->registerAutoload($directory);
+            
+            $composer = Composer::create()->withDirectory($directory);
+            $cacheId = md5(str_replace('\\', '/', $data['name']));
+            
+            $composerData = Cache::get($cacheId);
+            if (! $composerData) {
+                $composerData = $composer->getData();
+                Cache::put($cacheId, $composerData, 10080);
+            }
+            
+            $composer->registerAutoload($composerData['autoload']);
             
             // 加载dev数据
             if (config('app.debug')) {
-                $this->registerAutoload($directory, 'autoload-dev');
+                $composer->registerAutoload($composerData['autoload-dev']);
             }
+            
+            $composer->registerProvider($composerData['providers']);
             
             if (! class_exists($data['class_name'])) {
                 return null;
@@ -219,7 +230,7 @@ class Extension
     /**
      * Load extensions.
      *
-     * @return $this
+     * @return object $this
      */
     public function loadExtension()
     {
@@ -227,14 +238,43 @@ class Extension
         
         $directories = $this->getDirectories($directory);
         
-        collect($directories)->each(function($directory) {
-            $this->registerAutoload($directory);
+        collect($directories)->each(function($path) use($directory) {
+            $composer = Composer::create()->withDirectory($path);
+            
+            $cacheId = Str::replaceLast(realpath($directory), '', realpath($path));
+            $cacheId = md5(ltrim(str_replace('\\', '/', $cacheId), '/'));
+            
+            $composerData = Cache::get($cacheId);
+            if (! $composerData) {
+                $composerData = $composer->getData();
+                Cache::put($cacheId, $composerData, 10080);
+            }
+            
+            $composer->registerAutoload($composerData['autoload']);
             
             // 加载dev数据
             if (config('app.debug')) {
-                $this->registerAutoload($directory, 'autoload-dev');
+                $composer->registerAutoload($composerData['autoload-dev']);
             }
+            
+            $composer->registerProvider($composerData['providers']);
         });
+        
+        return $this;
+    }
+    
+    /**
+     * Forget extension cache
+     *
+     * @param string $name
+     *
+     * @return object $this
+     */
+    public function forgetExtensionCache(string $name)
+    {
+        // 清除缓存
+        $cacheId = md5(str_replace('\\', '/', $name));
+        $composerData = Cache::forget($cacheId);
         
         return $this;
     }
@@ -242,11 +282,11 @@ class Extension
     /**
      * Get extensions directory.
      *
-     * @param string
+     * @param string $path
      *
      * @return string
      */
-    public function getExtensionDirectory($path = '')
+    public function getExtensionDirectory(string $path = '')
     {
         $extensionDirectory =  config('larkeadmin.extension.directory');
         return $extensionDirectory.($path ? DIRECTORY_SEPARATOR.$path : $path);
@@ -255,11 +295,11 @@ class Extension
     /**
      * Get extension class.
      *
-     * @param string
+     * @param string|null $name
      *
      * @return string
      */
-    public function getExtensionClass($name = null)
+    public function getExtensionClass(?string $name = null)
     {
         if (empty($name)) {
             return '';
@@ -273,9 +313,11 @@ class Extension
     /**
      * Get new class.
      *
-     * @param string
+     * @param string|null $className
+     *
+     * @return object
      */
-    public function getNewClass($className = null)
+    public function getNewClass(?string $className = null)
     {
         if (! class_exists($className)) {
             return false;
@@ -292,13 +334,13 @@ class Extension
     /**
      * Get new class.
      *
-     * @param $className string
-     * @param $method string
-     * @param $param array
+     * @param string|null $className 
+     * @param string|null $method 
+     * @param array $param 
      *
      * @return mixed
      */
-    public function getNewClassMethod($className = null, $method = null, $param = [])
+    public function getNewClassMethod(?string $className = null, ?string $method = null, array $param = [])
     {
         if (empty($className) || empty($method)) {
             return false;
@@ -320,11 +362,11 @@ class Extension
     /**
      * Get extension new class.
      *
-     * @param string
+     * @param string|null $name
      *
      * @return mixed|object
      */
-    public function getExtensionNewClass($name = null)
+    public function getExtensionNewClass(?string $name = null)
     {
         $className = $this->getExtensionClass($name);
         
@@ -334,11 +376,11 @@ class Extension
     /**
      * Get extension info.
      *
-     * @param $name string
+     * @param string|null $name
      *
      * @return array
      */
-    public function getExtension($name = null)
+    public function getExtension(?string $name = null)
     {
         $newClass = $this->getExtensionNewClass($name);
         if ($newClass === false) {
@@ -375,11 +417,11 @@ class Extension
     /**
      * Get extension config.
      *
-     * @param $name string
+     * @param string|null $name
      *
      * @return array
      */
-    public function getExtensionConfig($name = null)
+    public function getExtensionConfig(?string $name = null)
     {
         $info = $this->getExtension($name);
         if (empty($info)) {
@@ -419,7 +461,7 @@ class Extension
     /**
      * validateInfo.
      *
-     * @param array
+     * @param array $info
      *
      * @return boolen
      */
@@ -444,97 +486,13 @@ class Extension
     }
     
     /**
-     * Get composer info.
-     *
-     * @param string $directory
-     *
-     * @return object $this
-     */
-    public function composer($composer)
-    {
-        return Composer::parse($composer);
-    }
-    
-    /**
-     * Register autoload.
-     *
-     * @param string $directory
-     *
-     * @return object $this
-     */
-    public function registerAutoload($directory = null, $autoload = 'autoload')
-    {
-        $composerProperty = $this->composer($directory.'/composer.json');
-
-        $psr0 = $composerProperty->get($autoload.'.psr-0');
-        $psr4 = $composerProperty->get($autoload.'.psr-4');
-        $classmap = $composerProperty->get($autoload.'.classmap');
-        $files = $composerProperty->get($autoload.'.files');
-        $exclude = $composerProperty->get($autoload.'.exclude-from-classmap');
-
-        $classLoader = app('larke.admin.loader');
-        
-        if (! empty($psr0)) {
-            foreach ($psr0 as $namespace0 => $path0) {
-                $path0 = $directory.'/'.trim($path0, '/').'/';
-
-                $classLoader->add($namespace0, $path0);
-            }
-        }
-        
-        if (! empty($psr4)) {
-            foreach ($psr4 as $namespace => $path) {
-                $path = $directory.'/'.trim($path, '/').'/';
-
-                $classLoader->addPsr4($namespace, $path);
-            }
-        }
-        
-        $excluded = ClassMapGenerator::excluded($exclude);
-        if (! empty($classmap)) {
-            $classmapId = md5($directory.$autoload);
-            
-            $classmaps = Cache::get($classmapId);
-            if (! $classmaps) {
-                $classmaps = [];
-                foreach ($classmap as $classmapItem) {
-                    $path = $directory.'/'.trim($classmapItem, '/').'/';
-                    $mapData = ClassMapGenerator::createMap($path, $excluded);
-                    
-                    foreach ($mapData as $classname => $classpath) {
-                        $classmaps[$classname] = realpath($classpath);
-                    }
-                }
-                
-                Cache::put($classmapId, $classmaps, 43200);
-            }
-            
-            $classLoader->addClassMap($classmaps);
-        }
-        
-        if (! empty($files)) {
-            foreach ($files as $file) {
-                $file = $directory.'/'.ltrim($file, '/');
-
-                if (File::exists($file)) {
-                    File::requireOnce($file);
-                }
-            }
-        }
-        
-        $classLoader->register();
-        
-        return $this;
-    }
-    
-    /**
      * get directories.
      *
-     * @param string $dirPath
+     * @param string|null $dirPath
      *
      * @return array
      */
-    public function getDirectories($dirPath = null)
+    public function getDirectories(?string $dirPath = null)
     {
         $extensions = [];
         
@@ -563,9 +521,10 @@ class Extension
      * get path from class
      *
      * @param string|null $class
+     *
      * @return string|bool
      */
-    public function getPathFromClass($class = null)
+    public function getPathFromClass(?string $class = null)
     {
         $reflection = new ReflectionClass(get_class($class));
         $filePath = dirname($reflection->getFileName());

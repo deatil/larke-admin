@@ -11,7 +11,6 @@ use Composer\Semver\VersionParser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Cache;
 
 use Larke\Admin\Event;
 use Larke\Admin\Support\PclZip;
@@ -222,7 +221,8 @@ class Extension extends Base
         
         AdminExtension::getNewClassMethod($extension->class_name, 'install');
         
-        Cache::flush();
+        // 清除缓存
+        AdminExtension::forgetExtensionCache($name);
         
         return $this->success(__('安装扩展成功'), [
             'name' => $extension->name
@@ -260,7 +260,8 @@ class Extension extends Base
         AdminExtension::loadExtension();
         AdminExtension::getNewClassMethod($info->class_name, 'uninstall');
         
-        Cache::flush();
+        // 清除缓存
+        AdminExtension::forgetExtensionCache($name);
         
         return $this->success(__('扩展删除成功'));
     }
@@ -357,7 +358,8 @@ class Extension extends Base
         
         AdminExtension::getNewClassMethod(Arr::get($info, 'class_name'), 'upgrade');
         
-        Cache::flush();
+        // 清除缓存
+        AdminExtension::forgetExtensionCache($name);
         
         return $this->success(__('更新扩展成功'));
     }
@@ -431,7 +433,8 @@ class Extension extends Base
         AdminExtension::loadExtension();
         AdminExtension::getNewClassMethod($installInfo['class_name'], 'enable');
         
-        Cache::flush();
+        // 清除缓存
+        AdminExtension::forgetExtensionCache($name);
         
         return $this->success(__('启用扩展成功'));
     }
@@ -470,7 +473,8 @@ class Extension extends Base
         
         AdminExtension::getNewClassMethod($installInfo->class_name, 'disable');
         
-        Cache::flush();
+        // 清除缓存
+        AdminExtension::forgetExtensionCache($name);
         
         return $this->success(__('禁用扩展成功'));
     }
