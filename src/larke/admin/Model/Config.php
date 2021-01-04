@@ -23,7 +23,7 @@ class Config extends Base
     public $incrementing = false;
     public $timestamps = false;
     
-    public static function getSettings(): array
+    public static function getSettings()
     {
         return Cache::rememberForever(md5('larkeadmin.model.config.settings'), function() {
             return self::where('status', '=', 1)
@@ -36,25 +36,25 @@ class Config extends Base
         });
     }
     
-    public static function clearCahce(): void
+    public static function clearCahce()
     {
         Cache::forget(md5('larkeadmin.model.config.settings'));
     }
     
-    public static function has(string $key): bool
+    public static function has(string $key)
     {
         return static::where('name', $key)
             ->exists();
     }
     
-    public static function get(string $key, ?string $default = null): string
+    public static function get(string $key, $default = null)
     {
         return static::where('name', $key)
             ->first()
             ->value ?? $default;
     }
     
-    public static function set(string $key, ?string $value): bool
+    public static function set(string $key, $value)
     {
         return static::where('name', '=', $key)
             ->first()
@@ -63,14 +63,14 @@ class Config extends Base
             ]);
     }
     
-    public static function setMany(array $settings = []): void
+    public static function setMany(array $settings = [])
     {
         foreach ($settings as $key => $value) {
             static::set($key, $value);
         }
     }
     
-    public static function remove(string $key): bool
+    public static function remove(string $key)
     {
         $deleted = static::where('name', $key)->first()->delete();
         Cache::forget(md5('larkeadmin.model.config.settings'));

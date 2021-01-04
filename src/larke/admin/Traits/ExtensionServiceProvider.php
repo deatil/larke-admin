@@ -6,7 +6,7 @@ namespace Larke\Admin\Traits;
 
 use Closure;
 
-trait ExtensionService
+trait ExtensionServiceProvider
 {
     /**
      * All of the registered starting callbacks.

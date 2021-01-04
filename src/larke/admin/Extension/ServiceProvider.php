@@ -6,7 +6,7 @@ namespace Larke\Admin\Extension;
 
 use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
 
-use Larke\Admin\Traits\ExtensionService as ExtensionServiceTrait;
+use Larke\Admin\Traits\ExtensionServiceProvider as ExtensionServiceProviderTrait;
 
 /*
  * 扩展服务提供者
@@ -16,24 +16,39 @@ use Larke\Admin\Traits\ExtensionService as ExtensionServiceTrait;
  */
 abstract class ServiceProvider extends LaravelServiceProvider
 {    
-    use ExtensionServiceTrait;
+    use ExtensionServiceProviderTrait;
     
     /**
      * 扩展信息
      */
     protected $info = [
-        'name' => '', // 扩展ID名称
-        'title' => '', // 扩展名称
-        'introduce' => '', // 扩展描述
-        'author' => '', // 作者
-        'authorsite' => '', // 作者网站[选填]
-        'authoremail' => '', // 作者邮箱[选填]
-        'version' => '1.0.0', // 版本号
-        'adaptation' => '^1.0', // 适配系统版本
+        // 扩展名称
+        'title' => '',
+        // 扩展描述
+        'description' => '',
+        // 扩展关键字
+        'keywords' => [
+            'larke',
+            'extension',
+        ],
+        // 扩展主页
+        'homepage' => 'http://github.com/deatil',
+        // 作者
+        'authors' => [
+            [
+                'name' => 'deatil', 
+                'email' => 'deatil@github.com', 
+                'homepage' => 'http://github.com/deatil', 
+            ],
+        ],
+        // 版本号
+        'version' => '1.0.2',
+        // 适配系统版本
+        'adaptation' => '1.1.*',
         
         // 依赖扩展[选填]
         'require' => [
-            // 'Extension2' => '1.2.*',
+            // 'extension/extension' => '1.0.*',
         ], 
     ];
     

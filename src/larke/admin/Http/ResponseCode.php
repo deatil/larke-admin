@@ -49,6 +49,7 @@ class ResponseCode
     const REFRESH_TOKEN_EMPTY = 403;
     
     const EXTENSION_NOT_MATCH = 410; // 扩展没有匹配成功
+    const EXTENSION_EXISTS = 411; // 扩展已经存在
 
     const FILE_SAVE_FAILED = 500;
     const RECORD_NOT_FOUND = 501; // 记录未找到

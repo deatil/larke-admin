@@ -547,11 +547,16 @@ class Extension extends Base
             return $this->error(__('上传的文件格式有误'));
         }
         
+        // 缓存目录
+        if (!defined('PCLZIP_TEMPORARY_DIR')) {
+            define('PCLZIP_TEMPORARY_DIR', storage_path('tmp'));
+        }
+        
         // 解析composer.json
         $filename = $requestFile->getPathname();
         $zip = new PclZip($filename);
-        $list = $zip->listContent();
         
+        $list = $zip->listContent();
         if ($list == 0) {
             return $this->error(__('上传的文件错误'));
         }
@@ -577,6 +582,10 @@ class Extension extends Base
         }
         
         $data = $zip->extractByIndex($composer[0]['index'], PCLZIP_OPT_EXTRACT_AS_STRING);
+        if ($data == 0) {
+            return $this->error(__('上传的文件错误'));
+        }
+        
         try {
             $composerInfo = json_decode($data[0]['content'], true);
         } catch(\Exception $e) {
@@ -589,21 +598,29 @@ class Extension extends Base
             return $this->error(__('扩展composer.json格式错误'));
         }
         
+        $extensionDirectory = AdminExtension::getExtensionDirectory('');
         $extensionPath = AdminExtension::getExtensionDirectory($composerInfo['name']);
         
+        $force = $request->input('force');
+        
         // 检查扩展目录是否存在
-        if (file_exists($extensionPath)) {
-            return $this->error(__('扩展('.$composerInfo['name'].')已经存在'));
+        if (file_exists($extensionPath) && !$force) {
+            return $this->error(__('扩展('.$composerInfo['name'].')已经存在'), \ResponseCode::EXTENSION_EXISTS);
         }
         
         $extensionRemovePath = Str::replaceLast('composer.json', '', $composer[0]['filename']);
+        $extensionPregPath = '/^'.str_replace(['\\', '/'], ['\\\\', '\\/'], $extensionRemovePath).'.*?/';
         
         // 解压文件
-        $status = $zip->extract(
+        $list = $zip->extract(
             PCLZIP_OPT_PATH, $extensionPath,
             PCLZIP_OPT_REMOVE_PATH, $extensionRemovePath,
+            PCLZIP_OPT_EXTRACT_DIR_RESTRICTION, $extensionDirectory,
+            PCLZIP_OPT_BY_PREG, $extensionPregPath,
+            PCLZIP_OPT_REPLACE_NEWER,
         );
-        if (!$status) {
+        
+        if ($list == 0) {
             return $this->error(__('扩展('.$composerInfo['name'].')解压失败'));
         }
         
