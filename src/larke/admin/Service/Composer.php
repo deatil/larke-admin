@@ -68,11 +68,8 @@ class Composer
         $info = $this->getInfo();
         $require = $this->getRequire();
         
-        $autoloads = $this->getAutoload('autoload');
-        $formatAutoloads = $this->formatAutoload($autoloads, $this->directory);
-        
-        $autoloadDevs = $this->getAutoload('autoload-dev');
-        $formatAutoloadDevs = $this->formatAutoload($autoloadDevs, $this->directory);
+        $formatAutoloads = $this->getFormatAutoload();
+        $formatAutoloadDevs = $this->getFormatAutoloadDev();
         
         $providers = $this->getProviders();
         
@@ -142,6 +139,46 @@ class Composer
     }
     
     /**
+     * 获取格式化后的自动加载
+     *
+     * @return array
+     */
+    public function getFormatAutoload()
+    {
+        $autoloads = $this->getAutoload('autoload');
+        $data = $this->formatAutoload($autoloads, $this->directory);
+        
+        return $data;
+    }
+    
+    /**
+     * 获取格式化后的自动加载dev
+     *
+     * @return array
+     */
+    public function getFormatAutoloadDev()
+    {
+        $autoloadDevs = $this->getAutoload('autoload-dev');
+        $data = $this->formatAutoload($autoloadDevs, $this->directory);
+        
+        return $data;
+    }
+    
+    /**
+     * 服务提供者
+     *
+     * @return array
+     */
+    public function getProviders()
+    {
+        $composerProperty = $this->getComposer();
+        
+        $providers = $composerProperty->get('extra.laravel.providers', []);
+        
+        return $providers;
+    }
+    
+    /**
      * 自动加载信息
      *
      * @param string $autoload
@@ -167,20 +204,6 @@ class Composer
         ];
         
         return $data;
-    }
-    
-    /**
-     * 服务提供者
-     *
-     * @return array
-     */
-    public function getProviders()
-    {
-        $composerProperty = $this->getComposer();
-        
-        $providers = $composerProperty->get('extra.laravel.providers', []);
-        
-        return $providers;
     }
     
     /**

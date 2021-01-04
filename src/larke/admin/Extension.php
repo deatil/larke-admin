@@ -163,11 +163,12 @@ class Extension
                 return null;
             }
 
-            if (empty($data['class_name'])) {
+            if (empty($data['name'])) {
                 return null;
             }
-
-            if (empty($data['name'])) {
+            
+            // 扩展绑定类
+            if (empty($data['class_name'])) {
                 return null;
             }
             
