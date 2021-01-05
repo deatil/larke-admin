@@ -1,8 +1,6 @@
 {
     "name": "lake/larke-admin",
     "description": "The larke-admin is an admin library.",
-    "license": "Apache-2.0",
-    "type": "library",
     "keywords": [
         "lake",
         "larke",
@@ -10,6 +8,8 @@
         "larke-admin"
     ],
     "homepage": "https://github.com/deatil/larke-admin",
+    "type": "library",
+    "license": "Apache-2.0",
     "authors": [
         {
             "name": "deatil",

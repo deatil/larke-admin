@@ -67,17 +67,19 @@ class Composer
     {
         $info = $this->getInfo();
         $require = $this->getRequire();
+        $requireDev = $this->getRequireDev();
         
-        $formatAutoloads = $this->getFormatAutoload();
-        $formatAutoloadDevs = $this->getFormatAutoloadDev();
+        $formatAutoload = $this->getFormatAutoload();
+        $formatAutoloadDev = $this->getFormatAutoloadDev();
         
         $providers = $this->getProviders();
         
         return [
             'info' => $info,
             'require' => $require,
-            'autoload' => $formatAutoloads,
-            'autoload-dev' => $formatAutoloadDevs,
+            'require-dev' => $requireDev,
+            'autoload' => $formatAutoload,
+            'autoload-dev' => $formatAutoloadDev,
             'providers' => $providers,
         ];
     }
@@ -114,11 +116,12 @@ class Composer
         $info = Arr::only($info, [
             'name', 
             'description', 
-            'license', 
-            'type',
             'keywords',
             'homepage',
+            'type',
+            'license', 
             'authors',
+            'support',
         ]);
         
         return $info;
@@ -137,6 +140,20 @@ class Composer
         
         return $require;
     }
+    
+    /**
+     * 依赖Dev
+     *
+     * @return array
+     */
+    public function getRequireDev()
+    {
+        $composerProperty = $this->getComposer();
+        
+        $require = $composerProperty->get('require-dev', []);
+        
+        return $require;
+    }    
     
     /**
      * 获取格式化后的自动加载
