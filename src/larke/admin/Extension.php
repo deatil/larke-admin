@@ -400,7 +400,14 @@ class Extension
             $config = (array) $newClass->config;
         }
         
+        // 配置
+        $icon = '';
+        if (isset($newClass->icon)) {
+            $icon = $this->getIcon($newClass->icon);
+        }
+        
         return [
+            'icon' => $icon,
             'name' => $name,
             'title' => Arr::get($info, 'title'),
             'description' => Arr::get($info, 'description'),
@@ -457,6 +464,29 @@ class Extension
         })->toArray();
         
         return $list;
+    }
+    
+    /**
+     * Get icon data.
+     *
+     * @param string|null $icon
+     *
+     * @return string
+     */    
+    public function getIcon($icon = '')
+    {
+        if (! file_exists($icon)) {
+            $icon = __DIR__ . '/../resource/icon/larke.png';
+        }
+        
+        ob_start();
+        $data = file_get_contents($icon);
+        ob_end_clean();
+        $base64Data = base64_encode($data);
+        
+        $iconData = "data:image/png;base64,{$base64Data}";
+        
+        return $iconData;
     }
     
     /**

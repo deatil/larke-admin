@@ -58,6 +58,11 @@ abstract class ServiceProvider extends LaravelServiceProvider
     public $config = [];
     
     /**
+     * 扩展图标
+     */
+    public $icon = '';
+    
+    /**
      * 启动，只有启用后加载
      */
     public function start()
