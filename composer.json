@@ -1,6 +1,6 @@
 {
     "name": "lake/larke-admin",
-    "description": "The larke-admin is an admin library.",
+    "description": "An admin api library with jwt and rabc.",
     "keywords": [
         "lake",
         "larke",
@@ -19,10 +19,10 @@
     ],
     "require": {
         "php": "^7.3",
-        "laravel/framework": "^8.0",
-        "composer/semver": "^3.2",
-        "lake/larke-jwt": "^1.0",
-        "lake/larke-auth":"^1.0"
+        "laravel/framework": "8.20.*",
+        "composer/semver": "3.2.*",
+        "lake/larke-jwt": "1.0.*",
+        "lake/larke-auth":"1.0.*"
     },
     "autoload": {
         "psr-4": {
