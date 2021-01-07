@@ -91,7 +91,7 @@ class ServiceProvider extends BaseServiceProvider
         
         $this->commands($this->commands);
         
-        $this->registerEvent();
+        $this->registerProviders();
     }
     
     /**
@@ -250,7 +250,7 @@ class ServiceProvider extends BaseServiceProvider
     /**
      * Register Events.
      */
-    public function registerEvent()
+    public function registerProviders()
     {
         $this->app->register(Provider\EventServiceProvider::class);
     }
