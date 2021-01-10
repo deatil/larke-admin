@@ -25,11 +25,27 @@ class RequestOptions
     
     public function handle($request, Closure $next)
     {
-        if ($request->isMethod('OPTIONS')) {
+        if ($this->isLakeAdminRequest($request) 
+            && $request->isMethod('OPTIONS')
+        ) {
             $this->success('');
         }
         
         return $next($request);
+    }
+
+    /**
+     * Is system'request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return bool
+     */
+    protected function isLakeAdminRequest($request)
+    {
+        $path = trim(config('larkeadmin.route.prefix'), '/') ?: '/';
+
+        return $request->is($path) ||
+               $request->is(trim($path.'/*', '/'));
     }
 
 }

@@ -4,8 +4,9 @@ declare (strict_types = 1);
 
 namespace Larke\Admin;
 
-use Illuminate\Support\ServiceProvider as BaseServiceProvider;
+use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 use Larke\Admin\Contracts\Response as ResponseContract;
 use Larke\Admin\Contracts\Jwt as JwtContract;
@@ -100,6 +101,8 @@ class ServiceProvider extends BaseServiceProvider
     public function boot()
     {
         $this->ensureHttps();
+        
+        $this->bootGlobalMiddleware();
         
         $this->bootObserver();
         
@@ -253,6 +256,19 @@ class ServiceProvider extends BaseServiceProvider
     public function registerProviders()
     {
         $this->app->register(Provider\EventServiceProvider::class);
+    }
+
+    /**
+     * Boot global middleware.
+     *
+     * @return void
+     */
+    protected function bootGlobalMiddleware()
+    {
+        $this->app
+            ->make(HttpKernel::class)
+            ->pushMiddleware(Middleware\RequestOptions::class);
+
     }
 
     /**
