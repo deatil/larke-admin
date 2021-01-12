@@ -43,13 +43,13 @@ class Passport extends Base
         $Captcha = new Captcha();
         
         $captcha = $Captcha->getData();
-        $captchaUniq = $Captcha->getUniqid();
+        $captchaUniqid = $Captcha->getUniqid();
         
         $captchaKey = config('larkeadmin.passport.header_captcha_key');
         return $this->success(__('获取成功'), [
             'captcha' => $captcha,
         ], 0, [
-            $captchaKey => $captchaUniq,
+            $captchaKey => $captchaUniqid,
         ]);
     }
     

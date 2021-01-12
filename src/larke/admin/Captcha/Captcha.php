@@ -25,21 +25,39 @@ class Captcha
     private $fontsize = 20; // 指定字体大小
     private $fontcolor = ''; // 指定字体颜色
     private $cachetime = 300; // 验证码缓存时间
-
+    
     /**
-     * 构造方法初始化
-     * CaptchaService constructor.
-     * @param array $config
+     * 设置配置
+     * 
+     * @param string|array $name
+     * @return string $value
+     *
+     * @return object
      */
-    public function __construct($config = [])
+    public function withConfig($name, $value = null)
     {
-        // 动态配置属性
-        foreach ($config as $k => $v) {
-            if (isset($this->{$k})) {
-                $this->{$k} = $v;
+        if (is_array($name)) {
+            foreach ($name as $k => $v) {
+                $this->withConfig($k, $v);
             }
+            
+            return $this;
         }
         
+        if (isset($this->{$name})) {
+            $this->{$name} = $value;
+        }
+        
+        return $this;
+    }
+
+    /**
+     * 生成验证码信息
+     *
+     * @return object
+     */
+    public function makeCode()
+    {
         // 生成验证码序号
         if (empty($this->uniqid)) {
             $this->uniqid = md5(uniqid('larke.captcha') . mt_rand(10000, 99999));
@@ -56,6 +74,8 @@ class Captcha
         
         // 设置字体文件路径
         $this->font = __DIR__ . '/font/icon.ttf';
+        
+        return $this;
     }
 
     /**
@@ -124,6 +144,7 @@ class Captcha
      */
     public function getData()
     {
+        $this->makeCode();
         return "data:image/png;base64,{$this->createImage()}";
     }
 

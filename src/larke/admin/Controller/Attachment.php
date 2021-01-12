@@ -139,8 +139,8 @@ class Attachment extends Base
             return $this->error(__('文件信息不存在'));
         }
         
-        $UploadService = UploadService::create();
-        if ($UploadService === false) {
+        $uploadService = UploadService::create();
+        if ($uploadService === false) {
             return $this->error(__('文件删除失败'));
         }
         
@@ -149,7 +149,7 @@ class Attachment extends Base
             return $this->error(__('文件删除失败'));
         }
         
-        $UploadService->destroy($fileInfo['path']);
+        $uploadService->destroy($fileInfo['path']);
         
         return $this->success(__('文件删除成功'));
     }
@@ -261,8 +261,8 @@ class Attachment extends Base
         
         $sha1 = hash_file('sha1', $pathname);
         
-        $UploadService = UploadService::create();
-        if ($UploadService === false) {
+        $uploadService = UploadService::create();
+        if ($uploadService === false) {
             return $this->error(__('上传文件失败'));
         }
         
@@ -270,9 +270,9 @@ class Attachment extends Base
         
         $driver = $uploadDisk ?: 'local';
         
-        $mimeType = $UploadService->getMimeType($requestFile);
+        $mimeType = $uploadService->getMimeType($requestFile);
         
-        $filetype = $UploadService->getFileType($requestFile);
+        $filetype = $uploadService->getFileType($requestFile);
         
         $fileInfo = AttachmentModel::where([
             'md5' => $md5
@@ -303,7 +303,7 @@ class Attachment extends Base
             $uploadDir = config('larkeadmin.upload.directory.file');
         }
         
-        $path = $UploadService->dir($uploadDir)
+        $path = $uploadService->dir($uploadDir)
             ->uniqueName()
             ->upload($requestFile);
         
@@ -322,11 +322,11 @@ class Attachment extends Base
         ];
         $attachment = AttachmentModel::create($data);
         if ($attachment === false) {
-            $UploadService->destroy($path);
+            $uploadService->destroy($path);
             return $this->error(__('上传失败'));
         }
         
-        $url = $UploadService->objectUrl($path);
+        $url = $uploadService->objectUrl($path);
         
         $res = [
             'id' => $attachment->id,
@@ -397,12 +397,12 @@ class Attachment extends Base
             return $this->error(__('文件不存在'));
         }
         
-        $UploadService = UploadService::create();
-        if ($UploadService === false) {
+        $uploadService = UploadService::create();
+        if ($uploadService === false) {
             return $this->error(__('下载文件失败'));
         }
         
-        return $UploadService->getStorage()->download($fileInfo['path'], $fileInfo['name']);
+        return $uploadService->getStorage()->download($fileInfo['path'], $fileInfo['name']);
     }
     
 }
