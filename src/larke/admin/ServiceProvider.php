@@ -265,10 +265,14 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function bootGlobalMiddleware()
     {
+        // 错误返回json
+        $this->app
+            ->make(HttpKernel::class)
+            ->prependMiddleware(Middleware\JsonExceptionHandler::class);
+        
         $this->app
             ->make(HttpKernel::class)
             ->pushMiddleware(Middleware\RequestOptions::class);
-
     }
 
     /**
