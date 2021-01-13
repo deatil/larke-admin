@@ -35,6 +35,7 @@ class Extension
     /**
      * Extend a extension.
      *
+     * @param string $name
      * @param string $class
      *
      * @return bool
@@ -61,19 +62,19 @@ class Extension
      *
      * @return string|array
      */
-    public function getExtend($names = null)
+    public function getExtend($name = null)
     {
-        if (is_array($names)) {
+        if (is_array($name)) {
             $extensions = [];
-            foreach ($names as $name) {
-                $extensions[$name] = $this->getExtend($name);
+            foreach ($name as $value) {
+                $extensions[$name] = $this->getExtend($value);
             }
             
             return $extensions;
         }
         
-        if (isset($this->extensions[$names])) {
-            return $this->extensions[$names];
+        if (isset($this->extensions[$name])) {
+            return $this->extensions[$name];
         }
         
         return $this->extensions;
@@ -86,20 +87,20 @@ class Extension
      *
      * @return string|array
      */
-    public function forget($names)
+    public function forget($name)
     {
-        if (is_array($names)) {
+        if (is_array($name)) {
             $forgetExtensions = [];
-            foreach ($names as $name) {
-                $forgetExtensions[$name] = $this->forget($name);
+            foreach ($name as $value) {
+                $forgetExtensions[$value] = $this->forget($value);
             }
             
             return $forgetExtensions;
         }
         
-        if (isset($this->extensions[$names])) {
-            $extension = $this->extensions[$names];
-            unset($this->extensions[$names]);
+        if (isset($this->extensions[$name])) {
+            $extension = $this->extensions[$name];
+            unset($this->extensions[$name]);
             return $extension;
         }
         
@@ -214,7 +215,7 @@ class Extension
     }
     
     /**
-     * Boot the given service.
+     * Start the given service.
      *
      * @return void
      */
