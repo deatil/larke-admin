@@ -73,6 +73,7 @@ class Composer
         $formatAutoloadDev = $this->getFormatAutoloadDev();
         
         $providers = $this->getProviders();
+        $aliases = $this->getAliases();
         
         return [
             'info' => $info,
@@ -81,6 +82,7 @@ class Composer
             'autoload' => $formatAutoload,
             'autoload-dev' => $formatAutoloadDev,
             'providers' => $providers,
+            'aliases' => $aliases,
         ];
     }
     
@@ -193,6 +195,20 @@ class Composer
         $providers = $composerProperty->get('extra.laravel.providers', []);
         
         return $providers;
+    }
+    
+    /**
+     * 别名
+     *
+     * @return array
+     */
+    public function getAliases()
+    {
+        $composerProperty = $this->getComposer();
+        
+        $aliases = $composerProperty->get('extra.laravel.aliases', []);
+        
+        return $aliases;
     }
     
     /**
@@ -363,5 +379,27 @@ class Composer
         
         $newClass = app()->register($provider);
         return $newClass;
+    }
+    
+    /**
+     * 注册别名
+     *
+     * @param array|string $alias
+     *
+     * @return object
+     */
+    public function registerAlias($alias, $class = null)
+    {
+        if (is_array($alias)) {
+            foreach ($alias as $name => $class) {
+                $this->registerAlias($name, $class);
+            }
+            
+            return $this;
+        }
+        
+        class_alias($class, $alias);
+        
+        return $this;
     }
 }

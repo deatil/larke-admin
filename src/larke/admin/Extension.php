@@ -184,14 +184,15 @@ class Extension
                 Cache::put($cacheId, $composerData, 10080);
             }
             
-            $composer->registerAutoload($composerData['autoload']);
+            $composer->registerAutoload(Arr::get($composerData, 'autoload', []));
             
             // 加载dev数据
             if (config('app.debug')) {
-                $composer->registerAutoload($composerData['autoload-dev']);
+                $composer->registerAutoload(Arr::get($composerData, 'autoload-dev', []));
             }
             
-            $composer->registerProvider($composerData['providers']);
+            $composer->registerProvider(Arr::get($composerData, 'providers', []));
+            $composer->registerAlias(Arr::get($composerData, 'aliases', []));
             
             if (! class_exists($data['class_name'])) {
                 return null;
@@ -251,14 +252,15 @@ class Extension
                 Cache::put($cacheId, $composerData, 10080);
             }
             
-            $composer->registerAutoload($composerData['autoload']);
+            $composer->registerAutoload(Arr::get($composerData, 'autoload', []));
             
             // 加载dev数据
             if (config('app.debug')) {
-                $composer->registerAutoload($composerData['autoload-dev']);
+                $composer->registerAutoload(Arr::get($composerData, 'autoload-dev', []));
             }
             
-            $composer->registerProvider($composerData['providers']);
+            $composer->registerProvider(Arr::get($composerData, 'providers', []));
+            $composer->registerAlias(Arr::get($composerData, 'aliases', []));
         });
         
         return $this;
