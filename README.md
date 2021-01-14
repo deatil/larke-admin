@@ -66,15 +66,7 @@ php artisan larke-admin:install
 php artisan larke-admin:import-route
 ```
 
-5. 如果遇到跨域问题，你可以修改官方的配置文件 `config/cors.php`，在 `paths` 列表增加系统接口前缀 `admin-api/*`
-
-6. 如果官方没有配置，你也可以在 `App\Http\Kernel->middleware` 属性添加
-
-```php
-\Larke\Admin\Middleware\RequestOptions::class,
-```
-
-7. 后台登录账号：`admin` 及密码 `123456`
+5. 后台登录账号：`admin` 及密码 `123456`
 
 
 ### 扩展推荐
