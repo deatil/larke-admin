@@ -17,17 +17,23 @@ use Larke\Admin\Service\Cache;
 use Larke\Admin\Support\Loader;
 use Larke\Admin\Auth\Admin;
 
-// use directory
+// 文件夹引用
 use Larke\Admin\Model;
 use Larke\Admin\Observer;
 use Larke\Admin\Command;
 use Larke\Admin\Provider;
 use Larke\Admin\Middleware;
 
+/**
+ * 服务提供者
+ *
+ * @create 2020-10-30
+ * @author deatil
+ */
 class ServiceProvider extends BaseServiceProvider
 {
     /**
-     * The application's alias.
+     * 别名
      *
      * @var array
      */
@@ -36,7 +42,7 @@ class ServiceProvider extends BaseServiceProvider
     ];
     
     /**
-     * The application's commands.
+     * 脚本
      *
      * @var array
      */
@@ -51,7 +57,7 @@ class ServiceProvider extends BaseServiceProvider
     ];
 
     /**
-     * The application's route middleware.
+     * 路由中间件
      *
      * @var array
      */
@@ -63,7 +69,7 @@ class ServiceProvider extends BaseServiceProvider
     ];
 
     /**
-     * The application's route middleware groups.
+     * 中间件分组
      *
      * @var array
      */
@@ -110,7 +116,7 @@ class ServiceProvider extends BaseServiceProvider
     }
 
     /**
-     * Force to set https scheme if https enabled.
+     * 开启https
      *
      * @return void
      */
@@ -123,7 +129,7 @@ class ServiceProvider extends BaseServiceProvider
     }
     
     /**
-     * Register the ResponseCode.
+     * 别名
      *
      * @return void
      */
@@ -135,7 +141,7 @@ class ServiceProvider extends BaseServiceProvider
     }
     
     /**
-     * Register the config.
+     * 配置
      *
      * @return void
      */
@@ -147,7 +153,7 @@ class ServiceProvider extends BaseServiceProvider
     }
     
     /**
-     * Register the bind.
+     * 绑定
      *
      * @return void
      */
@@ -219,7 +225,7 @@ class ServiceProvider extends BaseServiceProvider
     }
     
     /**
-     * Register the publishing.
+     * 推送
      *
      * @return void
      */
@@ -233,7 +239,7 @@ class ServiceProvider extends BaseServiceProvider
     }
     
     /**
-     * Register the route middleware.
+     * 中间件
      *
      * @return void
      */
@@ -251,7 +257,9 @@ class ServiceProvider extends BaseServiceProvider
     }
     
     /**
-     * Register Events.
+     * 服务提供者
+     *
+     * @return void
      */
     public function registerProviders()
     {
@@ -259,7 +267,7 @@ class ServiceProvider extends BaseServiceProvider
     }
 
     /**
-     * Boot global middleware.
+     * 全局中间件
      *
      * @return void
      */
@@ -276,7 +284,7 @@ class ServiceProvider extends BaseServiceProvider
     }
 
     /**
-     * Boot Observer.
+     * 模型事件
      *
      * @return void
      */
@@ -294,7 +302,7 @@ class ServiceProvider extends BaseServiceProvider
     }
 
     /**
-     * Boot Extension.
+     * 加载扩展
      *
      * @return void
      */

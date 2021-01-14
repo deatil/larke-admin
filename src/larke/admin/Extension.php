@@ -19,7 +19,7 @@ use Larke\Admin\Model\AuthRule as AuthRuleModel;
 use Larke\Admin\Model\Extension as ExtensionModel;
 use Larke\Admin\Extension\ServiceProvider as ExtensionServiceProvider;
 
-/*
+/**
  * 扩展
  *
  * @create 2020-10-30
@@ -33,7 +33,7 @@ class Extension
     public $extensions = [];
 
     /**
-     * Extend a extension.
+     * 添加扩展
      *
      * @param string $name
      * @param string $class
@@ -56,7 +56,7 @@ class Extension
     }
     
     /**
-     * Get a extension.
+     * 获取添加的扩展
      *
      * @param string|array $name
      *
@@ -81,7 +81,7 @@ class Extension
     }
     
     /**
-     * Forget a extension or extensions.
+     * 移除添加的扩展
      *
      * @param string|array $name
      *
@@ -108,7 +108,7 @@ class Extension
     }
     
     /**
-     * Set routes for this Route.
+     * 设置扩展路由
      *
      * @param $callback
      * @param $config
@@ -131,7 +131,7 @@ class Extension
     }
     
     /**
-     * Set namespaces.
+     * 设置命名空间
      *
      * @param $prefix
      * @param $paths
@@ -146,7 +146,7 @@ class Extension
     }
     
     /**
-     * Boot Extension.
+     * 加载扩展
      *
      * @return void
      */
@@ -215,7 +215,7 @@ class Extension
     }
     
     /**
-     * Start the given service.
+     * 启动扩展服务
      *
      * @return void
      */
@@ -231,7 +231,7 @@ class Extension
     }
     
     /**
-     * Load extensions.
+     * 加载本地扩展
      *
      * @return object $this
      */
@@ -268,7 +268,7 @@ class Extension
     }
     
     /**
-     * Forget extension cache
+     * 移除扩展信息缓存
      *
      * @param string $name
      *
@@ -284,7 +284,7 @@ class Extension
     }
     
     /**
-     * Get extensions directory.
+     * 获取扩展文件夹
      *
      * @param string $path
      *
@@ -297,7 +297,7 @@ class Extension
     }
     
     /**
-     * Get extension class.
+     * 扩展绑定类
      *
      * @param string|null $name
      *
@@ -315,7 +315,7 @@ class Extension
     }
     
     /**
-     * Get new class.
+     * 实例化类
      *
      * @param string|null $className
      *
@@ -336,7 +336,7 @@ class Extension
     }
     
     /**
-     * Get new class.
+     * 实例化类方法
      *
      * @param string|null $className 
      * @param string|null $method 
@@ -364,7 +364,7 @@ class Extension
     }
     
     /**
-     * Get extension new class.
+     * 扩展的实例化类
      *
      * @param string|null $name
      *
@@ -378,7 +378,7 @@ class Extension
     }
     
     /**
-     * Get extension info.
+     * 扩展信息
      *
      * @param string|null $name
      *
@@ -426,7 +426,7 @@ class Extension
     }
     
     /**
-     * Get extension config.
+     * 扩展配置信息
      *
      * @param string|null $name
      *
@@ -447,7 +447,7 @@ class Extension
     }
     
     /**
-     * Get extensions.
+     * 全部添加的扩展
      *
      * @return array
      */
@@ -470,7 +470,7 @@ class Extension
     }
     
     /**
-     * Get icon data.
+     * 扩展标识图片
      *
      * @param string|null $icon
      *
@@ -493,7 +493,7 @@ class Extension
     }
     
     /**
-     * validateInfo.
+     * 验证扩展信息
      *
      * @param array $info
      *
@@ -520,7 +520,7 @@ class Extension
     }
     
     /**
-     * get directories.
+     * 获取满足条件的扩展文件夹
      *
      * @param string|null $dirPath
      *
@@ -552,7 +552,7 @@ class Extension
     }
     
     /**
-     * get path from class
+     * 根据类名获取类所在文件夹
      *
      * @param string|null $class
      *
