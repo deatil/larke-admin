@@ -78,6 +78,14 @@ class Admin
      */
     public function getData()
     {
+        return $this->data;
+    }
+    
+    /*
+     * 获取个人信息
+     */
+    public function getProfile()
+    {
         if (empty($this->data)) {
             return [];
         }
@@ -157,7 +165,7 @@ class Admin
      */
     public function getGroups()
     {
-        $data = $this->getData();
+        $data = $this->getProfile();
         return $data['groups'] ?: [];
     }
     

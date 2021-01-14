@@ -6,10 +6,12 @@ namespace Larke\Admin\Middleware;
 
 use Closure;
 
+use Illuminate\Contracts\Debug\ExceptionHandler;
+
 use Larke\Admin\Exception\JsonHandler;
 
 /*
- * 请求options过滤
+ * 绑定自定义错误处理
  *
  * @create 2021-1-13
  * @author deatil
@@ -20,7 +22,7 @@ class JsonExceptionHandler
     {
         if ($this->isLakeAdminRequest($request)) {
             app()->singleton(
-                \Illuminate\Contracts\Debug\ExceptionHandler::class,
+                ExceptionHandler::class,
                 JsonHandler::class
             );
         }

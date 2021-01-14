@@ -36,7 +36,7 @@ class Profile extends Base
      */
     public function index()
     {
-        $data = app('larke.admin.admin')->getData();
+        $data = app('larke.admin.admin')->getProfile();
         
         return $this->success(__('获取成功'), $data);
     }
