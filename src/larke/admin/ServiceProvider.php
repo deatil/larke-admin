@@ -159,7 +159,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function registerBind()
     {
-        // 导入器
+        // 加载器
         $this->app->bind('larke.admin.loader', Loader::class);
         
         // json响应
