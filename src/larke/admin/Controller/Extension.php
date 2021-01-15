@@ -11,6 +11,7 @@ use Composer\Semver\VersionParser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
 
 use Larke\Admin\Event;
 use Larke\Admin\Support\PclZip;
@@ -596,6 +597,10 @@ class Extension extends Base
             || empty($composerInfo['name'])
         ) {
             return $this->error(__('扩展composer.json格式错误'));
+        }
+        
+        if (! preg_match('/^[a-zA-Z][a-zA-Z0-9\_\-\/]+$/', $composerInfo['name'])) {
+            return $this->error(__('扩展包名格式错误'));
         }
         
         $extensionDirectory = AdminExtension::getExtensionDirectory('');
