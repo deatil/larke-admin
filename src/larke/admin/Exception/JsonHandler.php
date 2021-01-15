@@ -16,13 +16,16 @@ class JsonHandler extends ExceptionHandler
 {
     public function render($request, $exception)
     {
-        parent::render($request, $exception);
-        
         $message = $exception->getMessage();
+        if (empty($message)) {
+            return parent::render($request, $exception);
+        }
+        
+        parent::render($request, $exception);
         
         return response()->json([
             'success' => false,
-            'code' => \ResponseCode::INVALID,
+            'code' => \ResponseCode::EXCEPTION,
             'message' => $message,
         ]);
     }

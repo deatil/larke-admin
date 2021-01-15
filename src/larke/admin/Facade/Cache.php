@@ -7,7 +7,7 @@ namespace Larke\Admin\Facade;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * Cache
+ * 缓存
  *
  * @create 2020-10-27
  * @author deatil

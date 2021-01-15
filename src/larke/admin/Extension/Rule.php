@@ -9,13 +9,19 @@ use Illuminate\Support\Arr;
 use Larke\Admin\Support\Tree;
 use Larke\Admin\Model\AuthRule as AuthRuleModel;
 
+/*
+ * 规则
+ *
+ * @create 2021-1-2
+ * @author deatil
+ */
 class Rule
 {
     /**
-     * 创建规则
+     * 创建
      *
-     * @return $data array
-     * @return $parentId int|string
+     * @return array $data 
+     * @return int|string $parentId 
      *
      * @return array
      */
@@ -46,8 +52,10 @@ class Rule
     }
 
     /**
-     * 删除菜单
+     * 删除
+     *
      * @param string $slug 规则slug
+     *
      * @return boolean
      */
     public static function delete($slug)
@@ -67,14 +75,16 @@ class Rule
     }
 
     /**
-     * 启用菜单
+     * 启用
+     *
      * @param string $slug
+     *
      * @return boolean
      */
     public static function enable($slug)
     {
         $ids = self::getAuthRuleIdsBySlug($slug);
-        if (!$ids) {
+        if (! $ids) {
             return false;
         }
         
@@ -88,8 +98,10 @@ class Rule
     }
 
     /**
-     * 禁用菜单
+     * 禁用
+     *
      * @param string $slug
+     *
      * @return boolean
      */
     public static function disable($slug)
@@ -109,8 +121,10 @@ class Rule
     }
 
     /**
-     * 导出指定slug的菜单规则
+     * 导出指定slug的规则
+     *
      * @param string $slug
+     *
      * @return array
      */
     public static function export($slug)
@@ -142,7 +156,9 @@ class Rule
 
     /**
      * 根据slug获取规则IDS
+     *
      * @param string $slug
+     *
      * @return array
      */
     public static function getAuthRuleIdsBySlug($slug)

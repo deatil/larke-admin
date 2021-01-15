@@ -7,7 +7,7 @@ namespace Larke\Admin\Facade;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * Extension
+ * 扩展
  *
  * @create 2020-10-30
  * @author deatil

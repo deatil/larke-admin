@@ -10,6 +10,7 @@ use RecursiveIteratorIterator;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
@@ -176,24 +177,27 @@ class Extension
             $directory = $extensionDirectory 
                 . DIRECTORY_SEPARATOR . $data['name'];
             
-            $composer = Composer::create()->withDirectory($directory);
-            $cacheId = md5(str_replace('\\', '/', $data['name']));
-            
-            $composerData = Cache::get($cacheId);
-            if (! $composerData) {
-                $composerData = $composer->getData();
-                Cache::put($cacheId, $composerData, 10080);
+            if (File::exists($directory)) {
+                // 绑定非composer扩展
+                $composer = Composer::create()->withDirectory($directory);
+                $cacheId = md5(str_replace('\\', '/', $data['name']));
+                
+                $composerData = Cache::get($cacheId);
+                if (! $composerData) {
+                    $composerData = $composer->getData();
+                    Cache::put($cacheId, $composerData, 10080);
+                }
+                
+                $composer->registerAutoload(Arr::get($composerData, 'autoload', []));
+                
+                // 加载dev数据
+                if (config('app.debug')) {
+                    $composer->registerAutoload(Arr::get($composerData, 'autoload-dev', []));
+                }
+                
+                $composer->registerProvider(Arr::get($composerData, 'providers', []));
+                $composer->registerAlias(Arr::get($composerData, 'aliases', []));
             }
-            
-            $composer->registerAutoload(Arr::get($composerData, 'autoload', []));
-            
-            // 加载dev数据
-            if (config('app.debug')) {
-                $composer->registerAutoload(Arr::get($composerData, 'autoload-dev', []));
-            }
-            
-            $composer->registerProvider(Arr::get($composerData, 'providers', []));
-            $composer->registerAlias(Arr::get($composerData, 'aliases', []));
             
             if (! class_exists($data['class_name'])) {
                 return null;

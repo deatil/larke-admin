@@ -7,7 +7,7 @@ namespace Larke\Admin\Model;
 use Illuminate\Support\Facades\Cache;
 
 /*
- * Config
+ * 配置
  *
  * @create 2020-10-24
  * @author deatil

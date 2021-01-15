@@ -9,7 +9,7 @@ use Composer\Semver\Semver;
 use Illuminate\Support\Facades\Cache;
 
 /*
- * Extension
+ * 扩展
  *
  * @create 2020-10-30
  * @author deatil

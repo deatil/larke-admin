@@ -7,7 +7,7 @@ namespace Larke\Admin\Facade;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * AuthAdmin
+ * 当前管理员信息
  *
  * @create 2020-10-26
  * @author deatil
