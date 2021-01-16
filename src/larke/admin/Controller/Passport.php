@@ -5,9 +5,9 @@ declare (strict_types = 1);
 namespace Larke\Admin\Controller;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 
-use Larke\Admin\Captcha\Captcha;
 use Larke\Admin\Support\Password;
 use Larke\Admin\Model\Admin as AdminModel;
 
@@ -40,14 +40,14 @@ class Passport extends Base
      */
     public function captcha(Request $request)
     {
-        $Captcha = new Captcha();
+        $captchaAttr = app('larke.admin.captcha')->makeCode()->getAttr();
         
-        $captcha = $Captcha->getData();
-        $captchaUniqid = $Captcha->getUniqid();
+        $captchaImage = Arr::get($captchaAttr, 'data', '');
+        $captchaUniqid = Arr::get($captchaAttr, 'uniq', '');
         
         $captchaKey = config('larkeadmin.passport.header_captcha_key');
         return $this->success(__('获取成功'), [
-            'captcha' => $captcha,
+            'captcha' => $captchaImage,
         ], 0, [
             $captchaKey => $captchaUniqid,
         ]);
@@ -89,7 +89,7 @@ class Passport extends Base
         $captchaKey = config('larkeadmin.passport.header_captcha_key');
         $captchaUniq = $request->header($captchaKey);
         $captcha = $request->input('captcha');
-        if (!Captcha::check($captcha, $captchaUniq)) {
+        if (! app('larke.admin.captcha')->check($captcha, $captchaUniq)) {
             return $this->error(__('验证码错误'), \ResponseCode::LOGIN_ERROR);
         }
         

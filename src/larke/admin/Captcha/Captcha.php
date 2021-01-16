@@ -125,7 +125,7 @@ class Captcha
         return [
             'code' => $this->code,
             'uniq' => $this->uniqid,
-            'data' => $this->getData()
+            'data' => $this->getData(),
         ];
     }
 
@@ -139,16 +139,6 @@ class Captcha
     }
 
     /**
-     * 获取图片内容
-     * @return string
-     */
-    public function getData()
-    {
-        $this->makeCode();
-        return "data:image/png;base64,{$this->createImage()}";
-    }
-
-    /**
      * 获取验证码编号
      * @return string
      */
@@ -158,12 +148,21 @@ class Captcha
     }
 
     /**
+     * 获取图片内容
+     * @return string
+     */
+    public function getData()
+    {
+        return "data:image/png;base64,{$this->createImage()}";
+    }
+
+    /**
      * 检查验证码是否正确
      * @param string $code 需要验证的值
      * @param string $uniqid 验证码编号
      * @return boolean
      */
-    public static function check($code, $uniqid = null)
+    public function check($code, $uniqid = null)
     {
         if (empty($uniqid)) {
             return false;

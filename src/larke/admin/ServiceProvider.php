@@ -16,6 +16,7 @@ use Larke\Admin\Http\ResponseCode;
 use Larke\Admin\Service\Cache;
 use Larke\Admin\Support\Loader;
 use Larke\Admin\Auth\Admin;
+use Larke\Admin\Captcha\Captcha;
 
 // 文件夹引用
 use Larke\Admin\Model;
@@ -161,6 +162,9 @@ class ServiceProvider extends BaseServiceProvider
     {
         // 加载器
         $this->app->bind('larke.admin.loader', Loader::class);
+        
+        // 验证码
+        $this->app->bind('larke.admin.captcha', Captcha::class);
         
         // json响应
         $this->app->bind('larke.admin.json', ResponseContract::class);
