@@ -486,9 +486,7 @@ class Extension
             $icon = __DIR__ . '/../resource/icon/larke.png';
         }
         
-        ob_start();
         $data = file_get_contents($icon);
-        ob_end_clean();
         $base64Data = base64_encode($data);
         
         $iconData = "data:image/png;base64,{$base64Data}";
