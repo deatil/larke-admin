@@ -88,6 +88,7 @@ Route::group([
     
     $router->get('/extension/index', 'Extension@index')->name('extension.index');
     $router->get('/extension/local', 'Extension@local')->name('extension.local');
+    $router->put('/extension/refresh', 'Extension@refreshLocal')->name('extension.refresh');
     $router->post('/extension/install/{name}', 'Extension@install')->name('extension.install')->where('name', '[A-Za-z0-9\-\_\.\/]+');
     $router->delete('/extension/uninstall/{name}', 'Extension@uninstall')->name('extension.uninstall')->where('name', '[A-Za-z0-9\-\_\.\/]+');
     $router->put('/extension/upgrade/{name}', 'Extension@upgrade')->name('extension.upgrade')->where('name', '[A-Za-z0-9\-\_\.\/]+');

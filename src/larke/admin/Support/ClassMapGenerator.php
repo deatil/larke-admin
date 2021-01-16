@@ -212,5 +212,57 @@ class ClassMapGenerator
 
         return $classes;
     }
+    
+    /**
+     * 从命名空间找出类位置
+     */
+    public static function filterByNamespace(
+        $classes, 
+        $filePath, 
+        $baseNamespace = '', 
+        $namespaceType = 'psr-0', 
+        $basePath = ''
+    ) {
+        $validClasses = [];
+        $rejectedClasses = [];
+
+        $realSubPath = substr($filePath, strlen($basePath) + 1);
+        $realSubPath = substr($realSubPath, 0, strrpos($realSubPath, '.'));
+
+        foreach ($classes as $class) {
+            if ('' !== $baseNamespace && 0 !== strpos($class, $baseNamespace)) {
+                continue;
+            }
+            
+            if ('psr-0' === $namespaceType) {
+                $namespaceLength = strrpos($class, '\\');
+                if (false !== $namespaceLength) {
+                    $namespace = substr($class, 0, $namespaceLength + 1);
+                    $className = substr($class, $namespaceLength + 1);
+                    $subPath = str_replace('\\', DIRECTORY_SEPARATOR, $namespace)
+                        . str_replace('_', DIRECTORY_SEPARATOR, $className);
+                } else {
+                    $subPath = str_replace('_', DIRECTORY_SEPARATOR, $class);
+                }
+            } elseif ('psr-4' === $namespaceType) {
+                $subNamespace = ('' !== $baseNamespace) ? substr($class, strlen($baseNamespace)) : $class;
+                $subPath = str_replace('\\', DIRECTORY_SEPARATOR, $subNamespace);
+            } else {
+                throw new \RuntimeException("namespaceType must be psr-0 or psr-4, $namespaceType given");
+            }
+            
+            if ($subPath === $realSubPath) {
+                $validClasses[] = $class;
+            } else {
+                $rejectedClasses[] = $class;
+            }
+        }
+
+        if (empty($validClasses)) {
+            return [];
+        }
+
+        return $validClasses;
+    }
 
 }

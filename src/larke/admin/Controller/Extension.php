@@ -137,11 +137,29 @@ class Extension extends Base
     }
     
     /**
+     * 刷新本地扩展
+     *
+     * @title 刷新扩展
+     * @desc 刷新本地扩展
+     * @order 1053
+     * @auth true
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function refreshLocal(Request $request)
+    {
+        AdminExtension::refresh();
+        
+        return $this->success(__('刷新成功'));
+    }
+    
+    /**
      * 安装
      *
      * @title 扩展安装
      * @desc 系统扩展安装
-     * @order 1053
+     * @order 1054
      * @auth true
      *
      * @param string $name
@@ -235,7 +253,7 @@ class Extension extends Base
      *
      * @title 扩展卸载
      * @desc 系统扩展卸载
-     * @order 1054
+     * @order 1055
      * @auth true
      *
      * @param string $name
@@ -272,7 +290,7 @@ class Extension extends Base
      *
      * @title 扩展更新
      * @desc 系统扩展更新
-     * @order 1055
+     * @order 1056
      * @auth true
      *
      * @param string $name
@@ -370,7 +388,7 @@ class Extension extends Base
      *
      * @title 扩展排序
      * @desc 系统扩展排序
-     * @order 1056
+     * @order 1057
      * @auth true
      *
      * @param string $name
@@ -404,7 +422,7 @@ class Extension extends Base
      *
      * @title 扩展启用
      * @desc 系统扩展启用
-     * @order 1057
+     * @order 1058
      * @auth true
      *
      * @param string $name
@@ -445,7 +463,7 @@ class Extension extends Base
      *
      * @title 扩展禁用
      * @desc 系统扩展禁用
-     * @order 1058
+     * @order 1059
      * @auth true
      *
      * @param string $name
@@ -485,7 +503,7 @@ class Extension extends Base
      *
      * @title 扩展配置
      * @desc 系统扩展配置
-     * @order 1058
+     * @order 10510
      * @auth true
      *
      * @param string $name
@@ -529,7 +547,7 @@ class Extension extends Base
      *
      * @title 扩展上传
      * @desc 扩展压缩包上传
-     * @order 1059
+     * @order 10511
      * @auth true
      *
      * @param  Request  $request

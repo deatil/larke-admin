@@ -93,10 +93,6 @@ class Composer
      */
     public function getComposer()
     {
-        if (empty($this->directory)) {
-            return [];
-        }
-        
         $directory = $this->directory;
         $composerFile = $directory . '/' . $this->composerName;
         $composerProperty = SupportComposer::parse($composerFile);
@@ -262,16 +258,30 @@ class Composer
         $newPsr0 = [];
         if (! empty($psr0)) {
             foreach ($psr0 as $namespace => $path) {
-                $path = $directory.'/'.trim($path, '/').'/';
-                $newPsr0[$namespace] = realpath($path);
+                if (is_array($path)) {
+                    foreach ($path as $pathItem) {
+                        $pathItem = $directory.'/'.trim($pathItem, '/').'/';
+                        $newPsr0[$namespace] = realpath($pathItem);
+                    }
+                } else {
+                    $path = $directory.'/'.trim($path, '/').'/';
+                    $newPsr0[$namespace] = realpath($path);
+                }
             }
         }
         
         $newPsr4 = [];
         if (! empty($psr4)) {
             foreach ($psr4 as $namespace => $path) {
-                $path = $directory.'/'.trim($path, '/').'/';
-                $newPsr4[$namespace] = realpath($path);
+                if (is_array($path)) {
+                    foreach ($path as $pathItem) {
+                        $pathItem = $directory.'/'.trim($pathItem, '/').'/';
+                        $newPsr4[$namespace] = realpath($pathItem);
+                    }
+                } else {
+                    $path = $directory.'/'.trim($path, '/').'/';
+                    $newPsr4[$namespace] = realpath($path);
+                }
             }
         }
         
@@ -289,7 +299,7 @@ class Composer
         }
         
         $newFiles = [];
-        if (! empty($files)) {
+        if (! empty($files) && is_array($files)) {
             foreach ($files as $file) {
                 $file = $directory.'/'.ltrim($file, '/');
                 $newFiles[] = realpath($file);

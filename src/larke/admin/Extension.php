@@ -32,6 +32,11 @@ class Extension
      * @var array
      */
     public $extensions = [];
+    
+    /**
+     * @var string 本地扩展缓存id
+     */
+    public $extensionsCacheId = 'extensions-cache-id';
 
     /**
      * 添加扩展
@@ -241,32 +246,46 @@ class Extension
      */
     public function loadExtension()
     {
-        $directory = $this->getExtensionDirectory();
+        $extensions = Cache::get($this->extensionsCacheId);
+        if (! $extensions) {
+            $directory = $this->getExtensionDirectory();
+            $directories = $this->getDirectories($directory);
+            
+            $extensions = collect($directories)
+                ->map(function($path) {
+                    $composer = Composer::create()->withDirectory($path);
+                    return $composer->getData();
+                })
+                ->values()
+                ->toArray();
+            
+            Cache::put($this->extensionsCacheId, $extensions, 10080);
+        }
         
-        $directories = $this->getDirectories($directory);
-        
-        collect($directories)->each(function($path) use($directory) {
-            $composer = Composer::create()->withDirectory($path);
-            
-            $cacheId = Str::replaceLast(realpath($directory), '', realpath($path));
-            $cacheId = md5(ltrim(str_replace('\\', '/', $cacheId), '/'));
-            
-            $composerData = Cache::get($cacheId);
-            if (! $composerData) {
-                $composerData = $composer->getData();
-                Cache::put($cacheId, $composerData, 10080);
-            }
-            
-            $composer->registerAutoload(Arr::get($composerData, 'autoload', []));
+        $composer = Composer::create();
+        collect($extensions)->each(function($extension) use($composer) {
+            $composer->registerAutoload(Arr::get($extension, 'autoload', []));
             
             // 加载dev数据
             if (config('app.debug')) {
-                $composer->registerAutoload(Arr::get($composerData, 'autoload-dev', []));
+                $composer->registerAutoload(Arr::get($extension, 'autoload-dev', []));
             }
             
-            $composer->registerProvider(Arr::get($composerData, 'providers', []));
-            $composer->registerAlias(Arr::get($composerData, 'aliases', []));
+            $composer->registerProvider(Arr::get($extension, 'providers', []));
+            $composer->registerAlias(Arr::get($extension, 'aliases', []));
         });
+        
+        return $this;
+    }
+    
+    /**
+     * 刷新本地加载扩展
+     *
+     * @return object $this
+     */
+    public function refresh()
+    {
+        Cache::forget($this->extensionsCacheId);
         
         return $this;
     }
