@@ -8,6 +8,9 @@ use Illuminate\Routing\Route as Router;
 
 /**
  * 路由
+ *
+ * @create 2020-10-29
+ * @author deatil
  */
 class Route
 {

@@ -10,6 +10,12 @@ use Illuminate\Support\Facades\File;
 use Larke\Admin\Support\Composer as SupportComposer;
 use Larke\Admin\Support\ClassMapGenerator;
 
+/**
+ * Composer
+ *
+ * @create 2021-1-10
+ * @author deatil
+ */
 class Composer
 {
     /**

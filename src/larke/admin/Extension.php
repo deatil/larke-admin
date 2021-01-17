@@ -426,11 +426,13 @@ class Extension
             $config = (array) $newClass->config;
         }
         
-        // 配置
-        $icon = '';
+        // 扩展icon
         if (isset($newClass->icon)) {
-            $icon = $this->getIcon($newClass->icon);
+            $icon = $newClass->icon;
+        } else {
+            $icon = '';
         }
+        $icon = $this->getIcon($icon);
         
         return [
             'icon' => $icon,
@@ -501,7 +503,7 @@ class Extension
      */    
     public function getIcon($icon = '')
     {
-        if (! file_exists($icon)) {
+        if (! File::exists($icon) || ! File::isFile($icon)) {
             $icon = __DIR__ . '/../resource/icon/larke.png';
         }
         
