@@ -36,7 +36,7 @@ class Extension
     /**
      * @var string 本地扩展缓存id
      */
-    public $extensionsCacheId = 'extensions-cache-id';
+    public $extensionsCacheId = 'extensions-local-cache';
 
     /**
      * 添加扩展
