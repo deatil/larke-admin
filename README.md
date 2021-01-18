@@ -1,4 +1,4 @@
-## larke-admin 后台快速开发框架
+## larke-admin通用后台管理系统
 
 
 ### 项目介绍
