@@ -19,6 +19,7 @@ use Larke\Admin\Repository\AuthRule as AuthRuleRepository;
  * @desc 系统权限管理
  * @order 106
  * @auth true
+ * @slug larke-admin.auth-rule
  *
  * @create 2020-10-24
  * @author deatil

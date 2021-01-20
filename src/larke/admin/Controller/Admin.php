@@ -19,6 +19,7 @@ use Larke\Admin\Repository\Admin as AdminRepository;
  * @desc 系统账号管理
  * @order 105
  * @auth true
+ * @slug larke-admin.admin
  *
  * @create 2020-10-23
  * @author deatil

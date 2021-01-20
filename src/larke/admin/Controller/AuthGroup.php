@@ -20,6 +20,7 @@ use Larke\Admin\Repository\AuthGroup as AuthGroupRepository;
  * @desc 系统管理分组管理
  * @order 107
  * @auth true
+ * @slug larke-admin.auth-group
  *
  * @create 2020-10-25
  * @author deatil

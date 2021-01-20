@@ -18,6 +18,7 @@ use Larke\Admin\Model\Config as ConfigModel;
  * @desc 系统配置管理
  * @order 104
  * @auth true
+ * @slug larke-admin.config
  *
  * @create 2020-10-25
  * @author deatil

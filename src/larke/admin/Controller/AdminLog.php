@@ -15,6 +15,7 @@ use Larke\Admin\Model\AdminLog as AdminLogModel;
  * @desc 操作日志管理
  * @order 109
  * @auth true
+ * @slug larke-admin.admin-log
  *
  * @create 2020-10-23
  * @author deatil

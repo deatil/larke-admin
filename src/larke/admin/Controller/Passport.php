@@ -21,6 +21,7 @@ use Larke\Admin\Event;
  * @desc 系统登陆管理
  * @order 100
  * @auth false
+ * @slug larke-admin.passport
  *
  * @create 2020-10-19
  * @author deatil

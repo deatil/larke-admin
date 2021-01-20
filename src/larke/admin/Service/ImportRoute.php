@@ -87,52 +87,71 @@ class ImportRoute
      */
     public function importActionRoute($route)
     {
+        // 路由类信息
         $classDoc = $this->formatActionClassDoc($route['action']);
         $classDocInfo = [
+            'slug' => '',
             'title' => '',
             'description' => '',
             'listorder' => 100,
             'is_need_auth' => 1,
         ];
         $classDocInfo = array_merge($classDocInfo, $classDoc);
+        $classParent = Arr::pull($classDocInfo, 'parent');
         
-        $actions = $this->formatAction($route['action']);
-        list ($actionClass, $actionMethod) = $actions;
-        
-        $oldParent = AuthRuleModel::where('slug', md5($actionClass))
-            ->first();
-        if (!empty($oldParent)) {
-            $parentid = $oldParent->id;
-        } else {
-            if (empty($classDocInfo['title'])) {
-                $classDocInfo['title'] = $route['name'];
-            }
-            if (empty($classDocInfo['description'])) {
-                $classDocInfo['description'] = $route['name'];
-            }
-            
-            $parentData = array_merge($classDocInfo, [
-                'parentid' => 0,
-                'url' => '#',
-                'method' => 'OPTIONS',
-                'slug' => md5($actionClass),
-                'is_system' => 0,
-                'status' => 1,
-            ]);
-            
-            $parent = AuthRuleModel::create($parentData);
-            
-            $parentid = $parent->id;
-        }
-        
+        // 路由方法信息
         $methodDoc = $this->formatActionMethodDoc($route['action']);
         $methodDocInfo = [
+            'slug' => '',
             'title' => '',
             'description' => '',
             'listorder' => 100,
             'is_need_auth' => 1,
         ];
         $methodDocInfo = array_merge($methodDocInfo, $methodDoc);
+        $methodParent = Arr::pull($methodDocInfo, 'parent');
+        
+        // 父级slug判断
+        if (! empty($classDocInfo['slug'])) {
+            if (empty($classDocInfo['title'])) {
+                $classDocInfo['title'] = $classDocInfo['slug'];
+            }
+            if (empty($classDocInfo['description'])) {
+                $classDocInfo['description'] = $classDocInfo['slug'];
+            }
+        } elseif (! empty($methodParent)) {
+            $classDocInfo['slug'] = $methodParent;
+            $classDocInfo['title'] = $methodParent;
+            $classDocInfo['description'] = $methodParent;
+        } else {
+            $classDocInfo['slug'] = '';
+            $classDocInfo['title'] = '';
+            $classDocInfo['description'] = '';
+        }
+        
+        // 设置父级slug
+        if (! empty($classDocInfo['slug'])) {
+            $oldParent = AuthRuleModel::where('slug', $classDocInfo['slug'])
+                ->first();
+            if (! empty($oldParent)) {
+                $parentid = $oldParent->id;
+            } else {
+                $parentData = array_merge([
+                    'parentid' => 0,
+                    'url' => '#',
+                    'method' => 'OPTIONS',
+                    'slug' => '',
+                    'is_system' => 0,
+                    'status' => 1,
+                ], $classDocInfo);
+                
+                $parent = AuthRuleModel::create($parentData);
+                
+                $parentid = $parent->id;
+            }
+        } else {
+            $parentid = 0;
+        }
         
         if (empty($methodDocInfo['title'])) {
             $methodDocInfo['title'] = $route['name'];
@@ -202,6 +221,8 @@ class ImportRoute
         $docComment = $this->parseDoc($reflection->getDocComment());
         
         $commentInfo = [
+            'parent' => Arr::get($docComment, 'parent'),
+            'slug' => Arr::get($docComment, 'slug'),
             'title' => Arr::get($docComment, 'title'),
             'description' => Arr::get($docComment, 'desc'),
             'listorder' => Arr::get($docComment, 'order', 100),
@@ -235,6 +256,8 @@ class ImportRoute
         $docComment = $this->parseDoc($methodDocComment);
         
         $commentInfo = [
+            'parent' => Arr::get($docComment, 'parent'),
+            'slug' => Arr::get($docComment, 'slug'),
             'title' => Arr::get($docComment, 'title'),
             'description' => Arr::get($docComment, 'desc'),
             'listorder' => Arr::get($docComment, 'order', 100),
