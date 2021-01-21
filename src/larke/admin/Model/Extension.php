@@ -150,6 +150,7 @@ class Extension extends Base
     public static function enabled($name)
     {
         return static::where('name', $name)
+            ->where('status', 1)
             ->exists();
     }
 
