@@ -83,12 +83,11 @@ class Extension extends Base
         return json_decode($value, true);
     }
     
-    public static function has(string $name)
-    {
-        return static::where('name', $name)
-            ->exists();
-    }
-    
+    /**
+     * 版本检测
+     *
+     * @return void
+     */
     public static function versionSatisfies(string $name, string $constraints = null)
     {
         $version = static::where('name', $name)
@@ -104,6 +103,11 @@ class Extension extends Base
         return $versionCheck;
     }
     
+    /**
+     * 缓存扩展
+     *
+     * @return void
+     */
     public static function getExtensions()
     {
         return Cache::rememberForever(md5('larkeadmin.model.extensions'), function() {
@@ -117,16 +121,53 @@ class Extension extends Base
         });
     }
     
+    /**
+     * 清空缓存
+     *
+     * @return void
+     */
     public function clearCahce()
     {
         Cache::forget(md5('larkeadmin.model.extensions'));
     }
     
     /**
+     * 检测是否安装
+     *
+     * @return void
+     */
+    public static function has(string $name)
+    {
+        return static::where('name', $name)
+            ->exists();
+    }
+
+    /**
+     * 判断是否启用
+     *
+     * @return bool
+     */
+    public static function enabled($name)
+    {
+        return static::where('name', $name)
+            ->exists();
+    }
+
+    /**
+     * 判断是否禁用
+     *
+     * @return bool
+     */
+    public static function disabled($name)
+    {
+        return ! $this->enabled($name);
+    }
+    
+    /**
      * 检测扩展依赖
      * 
-     * @param string $name
-     * @return array|null
+     * @param array $requireExtensions
+     * @return array
      */
     public static function checkRequireExtension(array $requireExtensions = [])
     {

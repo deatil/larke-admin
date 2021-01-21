@@ -136,7 +136,7 @@ CREATE TABLE `pre__larke_config` (
 DROP TABLE IF EXISTS `pre__larke_extension`;
 CREATE TABLE `pre__larke_extension` (
   `id` char(32) CHARACTER SET utf8mb4 NOT NULL DEFAULT '',
-  `name` varchar(160) CHARACTER SET utf8mb4 NOT NULL DEFAULT '' COMMENT '扩展id',
+  `name` varchar(160) CHARACTER SET utf8mb4 NOT NULL DEFAULT '' COMMENT '扩展包名',
   `title` varchar(250) CHARACTER SET utf8mb4 NOT NULL DEFAULT '' COMMENT '名称',
   `description` mediumtext CHARACTER SET utf8mb4 NOT NULL COMMENT '描述',
   `keywords` varchar(200) CHARACTER SET utf8mb4 DEFAULT '' COMMENT '关键字',
