@@ -48,15 +48,11 @@ class Extension
      */
     public function extend($name, $class = null)
     {
-        if (isset($this->extensions[$name])) {
-            return $this;
+        if (!empty($name) && !empty($class)) {
+            $this->forget($name);
+            
+            $this->extensions[$name] = $class;
         }
-        
-        if (empty($class)) {
-            return $this;
-        }
-        
-        $this->extensions[$name] = $class;
         
         return $this;
     }
@@ -111,6 +107,92 @@ class Extension
         }
         
         return null;
+    }
+    
+    /**
+     * 检测非compoer扩展是否存在
+     *
+     * @param string $name 扩展包名
+     *
+     * @return bool
+     */
+    public function checkLocal($name)
+    {
+        $extensionDirectory = $this->getExtensionDirectory();
+        
+        $directory = $extensionDirectory 
+            . DIRECTORY_SEPARATOR . $name;
+        
+        if (File::exists($directory)) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * composer安装语句
+     *
+     * @param string $name 扩展包名
+     *
+     * @return string
+     */
+    public function composerRequireCommand($name)
+    {
+        $extensionDirectory = $this->getExtensionDirectory();
+        
+        $directory = $extensionDirectory 
+            . DIRECTORY_SEPARATOR . $name;
+        
+        if (! File::exists($directory)) {
+            return '';
+        }
+        
+        $path = substr(
+            str_replace('\\', '/', $directory), 
+            strlen(str_replace('\\', '/', base_path())) + 1
+        );
+        
+        $command = sprintf(
+            'composer config repositories.%s path %s && composer require %s',
+            $name,
+            $path,
+            $name
+        );
+        
+        return $command;
+    }
+    
+    /**
+     * composer卸载语句
+     *
+     * @param string $name 扩展包名
+     *
+     * @return object
+     */
+    public function composerRemoveCommand($name)
+    {
+        $extensionDirectory = $this->getExtensionDirectory();
+        
+        $directory = $extensionDirectory 
+            . DIRECTORY_SEPARATOR . $name;
+        
+        if (! File::exists($directory)) {
+            return '';
+        }
+        
+        $path = substr(
+            str_replace('\\', '/', $directory), 
+            strlen(str_replace('\\', '/', base_path())) + 1
+        );
+        
+        $command = sprintf(
+            'composer remove %s && composer config --unset repositories.%s', 
+            $name,
+            $name
+        );
+        
+        return $command;
     }
     
     /**

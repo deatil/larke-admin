@@ -9,6 +9,8 @@ use Throwable;
 use Illuminate\Support\Arr;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
+use Larke\Admin\Traits\ResponseJson as ResponseJsonTrait;
+
 /**
  * 异常返回json
  *
@@ -17,6 +19,8 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
  */
 class JsonHandler extends ExceptionHandler
 {
+    use ResponseJsonTrait;
+    
     public function render($request, $exception)
     {
         $message = $exception->getMessage();
@@ -26,17 +30,15 @@ class JsonHandler extends ExceptionHandler
         
         parent::render($request, $exception);
         
-        $data = [
-            'success' => false,
-            'code' => \ResponseCode::EXCEPTION,
-            'message' => $message,
-        ];
-        
         if (config('app.debug')) {
-            $data['exception'] = $this->renderException($exception);
+            $data = [
+                'exception' => $this->renderException($exception),
+            ];
+        } else {
+            $data = '';
         }
         
-        return response()->json($data);
+        return $this->error($message, \ResponseCode::EXCEPTION, $data);
     }
 
     /**

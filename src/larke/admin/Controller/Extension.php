@@ -108,7 +108,7 @@ class Extension extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function local(Request $request)
+    public function local()
     {
         $extensions = AdminExtension::loadExtension()->getExtensions();
         
@@ -145,14 +145,49 @@ class Extension extends Base
      * @order 1053
      * @auth true
      *
-     * @param  Request  $request
      * @return Response
      */
-    public function refreshLocal(Request $request)
+    public function refreshLocal()
     {
         AdminExtension::refresh();
         
         return $this->success(__('刷新成功'));
+    }
+    
+    /**
+     * 本地扩展命令
+     *
+     * @title 本地扩展命令
+     * @desc 本地扩展命令，只限用于非composer扩展
+     * @order 1053
+     * @auth true
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function command(string $name)
+    {
+        if (empty($name)) {
+            return $this->error(__('扩展包名不能为空'));
+        }
+        
+        $installInfo = ExtensionModel::where(['name' => $name])
+            ->first();
+        if (empty($installInfo)) {
+            return $this->error(__('扩展未安装'));
+        }
+        
+        $require = AdminExtension::composerRequireCommand($name);
+        $remove = AdminExtension::composerRemoveCommand($name);
+        
+        $command = [
+            'require' => $require,
+            'remove' => $remove,
+        ];
+        
+        return $this->success(__('获取成功'), [
+            'command' => $command,
+        ]);
     }
     
     /**
@@ -169,12 +204,12 @@ class Extension extends Base
     public function install(string $name)
     {
         if (empty($name)) {
-            return $this->error(__('扩展名称不能为空'));
+            return $this->error(__('扩展包名不能为空'));
         }
         
         $installInfo = ExtensionModel::where(['name' => $name])
             ->first();
-        if (!empty($installInfo)) {
+        if (! empty($installInfo)) {
             return $this->error(__('扩展已经安装'));
         }
         
@@ -263,7 +298,7 @@ class Extension extends Base
     public function uninstall(string $name)
     {
         if (empty($name)) {
-            return $this->error(__('扩展名称不能为空'));
+            return $this->error(__('扩展包名不能为空'));
         }
         
         $info = ExtensionModel::where(['name' => $name])
@@ -300,7 +335,7 @@ class Extension extends Base
     public function upgrade(string $name)
     {
         if (empty($name)) {
-            return $this->error(__('扩展名称不能为空'));
+            return $this->error(__('扩展包名不能为空'));
         }
         
         $installInfo = ExtensionModel::where(['name' => $name])
@@ -399,7 +434,7 @@ class Extension extends Base
     public function listorder(string $name, Request $request)
     {
         if (empty($name)) {
-            return $this->error(__('扩展名称不能为空'));
+            return $this->error(__('扩展包名不能为空'));
         }
         
         $info = ExtensionModel::where(['name' => $name])
@@ -432,7 +467,7 @@ class Extension extends Base
     public function enable(string $name)
     {
         if (empty($name)) {
-            return $this->error(__('扩展名称不能为空'));
+            return $this->error(__('扩展包名不能为空'));
         }
         
         $installInfo = ExtensionModel::where(['name' => $name])
@@ -473,7 +508,7 @@ class Extension extends Base
     public function disable(string $name)
     {
         if (empty($name)) {
-            return $this->error(__('扩展名称不能为空'));
+            return $this->error(__('扩展包名不能为空'));
         }
         
         $installInfo = ExtensionModel::where(['name' => $name])
@@ -514,7 +549,7 @@ class Extension extends Base
     public function config(string $name, Request $request)
     {
         if (empty($name)) {
-            return $this->error(__('扩展名称不能为空'));
+            return $this->error(__('扩展包名不能为空'));
         }
         
         event(new Event\ExtensionConfigBefore($request));
