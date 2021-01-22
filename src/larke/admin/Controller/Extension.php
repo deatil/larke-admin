@@ -105,7 +105,6 @@ class Extension extends Base
      * @order 1052
      * @auth true
      *
-     * @param  Request  $request
      * @return Response
      */
     public function local()
@@ -162,7 +161,7 @@ class Extension extends Base
      * @order 1053
      * @auth true
      *
-     * @param  Request  $request
+     * @param string $name
      * @return Response
      */
     public function command(string $name)
