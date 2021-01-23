@@ -44,7 +44,7 @@ class Extension
      * @param string $name
      * @param string $class
      *
-     * @return bool
+     * @return self
      */
     public function extend($name, $class = null)
     {
@@ -87,7 +87,7 @@ class Extension
      *
      * @param string|array $name
      *
-     * @return string|array
+     * @return string|array|null
      */
     public function forget($name)
     {
@@ -168,7 +168,7 @@ class Extension
      *
      * @param string $name 扩展包名
      *
-     * @return object
+     * @return string
      */
     public function composerRemoveCommand($name)
     {
@@ -324,7 +324,7 @@ class Extension
     /**
      * 加载本地扩展
      *
-     * @return object $this
+     * @return self
      */
     public function loadExtension()
     {
@@ -363,7 +363,7 @@ class Extension
     /**
      * 刷新本地加载扩展
      *
-     * @return object $this
+     * @return self
      */
     public function refresh()
     {
@@ -377,7 +377,7 @@ class Extension
      *
      * @param string $name
      *
-     * @return object $this
+     * @return self
      */
     public function forgetExtensionCache(string $name)
     {
@@ -589,7 +589,7 @@ class Extension
             $icon = __DIR__ . '/../resource/icon/larke.png';
         }
         
-        $data = file_get_contents($icon);
+        $data = File::get($icon);
         $base64Data = base64_encode($data);
         
         $iconData = "data:image/png;base64,{$base64Data}";
