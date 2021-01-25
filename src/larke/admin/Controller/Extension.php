@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Validator;
 
 use Larke\Admin\Event;
 use Larke\Admin\Support\PclZip;
+use Larke\Admin\Composer\Repository as ComposerRepository;
 use Larke\Admin\Facade\Extension as AdminExtension;
 use Larke\Admin\Model\Extension as ExtensionModel;
 
@@ -656,8 +657,8 @@ class Extension extends Base
             return $this->error(__('扩展包名格式错误'));
         }
         
-        $extensionDirectory = AdminExtension::getExtensionDirectory('');
-        $extensionPath = AdminExtension::getExtensionDirectory($composerInfo['name']);
+        $extensionDirectory = AdminExtension::getExtensionPath('');
+        $extensionPath = AdminExtension::getExtensionPath($composerInfo['name']);
         
         $force = $request->input('force');
         
@@ -683,6 +684,47 @@ class Extension extends Base
         }
         
         return $this->success(__('扩展('.$composerInfo['name'].')上传成功'));
+    }
+    
+    /**
+     * 扩展composer仓库注册/移除
+     *
+     * @title 扩展仓库
+     * @desc 扩展composer仓库注册/移除
+     * @order 10512
+     * @auth true
+     *
+     * @param string $name
+     * @param Request $request
+     * @return Response
+     */
+    public function repository(string $name, Request $request)
+    {
+        if (empty($name)) {
+            return $this->error(__('包名不能为空'));
+        }
+        
+        $type = $request->input('type');
+        if (! in_array($type, ['register', 'remove'])) {
+            return $this->error(__('限制访问'));
+        }
+        
+        $composerRepository = ComposerRepository::create()
+            ->withDirectory(base_path());
+        
+        if ($type == 'register') {
+            $url = AdminExtension::getExtensionDirectory() . '/' . $name;
+            $repository = [
+                'type' => 'path',
+                'url' => $url,
+            ];
+            
+            $composerRepository->register($name, $repository);
+        } else {
+            $composerRepository->remove($name);
+        }
+        
+        return $this->success(__('更新成功'));
     }
     
 }

@@ -2,21 +2,21 @@
 
 declare (strict_types = 1);
 
-namespace Larke\Admin\Service;
+namespace Larke\Admin\Composer;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 
-use Larke\Admin\Support\Composer as SupportComposer;
-use Larke\Admin\Support\ClassMapGenerator;
+use Larke\Admin\Composer\Composer;
+use Larke\Admin\Composer\ClassMapGenerator;
 
 /**
- * Composer
+ * Resolve
  *
  * @create 2021-1-10
  * @author deatil
  */
-class Composer
+class Resolve
 {
     /**
      * @var string
@@ -65,6 +65,16 @@ class Composer
     }
     
     /**
+     * 获取文件路径
+     *
+     * @return string
+     */
+    public function getComposerNamePath()
+    {
+        return $this->directory . '/' . $this->composerName;
+    }
+    
+    /**
      * 获取composer信息
      *
      * @return array
@@ -99,9 +109,8 @@ class Composer
      */
     public function getComposer()
     {
-        $directory = $this->directory;
-        $composerFile = $directory . '/' . $this->composerName;
-        $composerProperty = SupportComposer::parse($composerFile);
+        $composerFile = $this->getComposerNamePath();
+        $composerProperty = Composer::parse($composerFile);
         
         return $composerProperty;
     }
@@ -418,4 +427,53 @@ class Composer
         
         return $this;
     }
+    
+    /**
+     * 注册仓库
+     *
+     * @param string $name
+     * @param array $repository
+     *
+     * @return array
+     */
+    public function registerRepository(string $name, array $repository = [])
+    {
+        $this->removeRepository($name);
+        
+        $composerProperty = $this->getComposer();
+        $data = $composerProperty->set('repositories.'.$name, $repository);
+        
+        return $data->toArray();
+    }
+    
+    /**
+     * 移除仓库
+     *
+     * @param string $name
+     *
+     * @return array
+     */
+    public function removeRepository(string $name)
+    {
+        $composerProperty = $this->getComposer();
+        $data = $composerProperty->delete('repositories.'.$name);
+        
+        return $data->toArray();
+    }
+    
+    /**
+     * 格式化为json
+     *
+     * @param array $contents
+     *
+     * @return string
+     */
+    public function formatToJson(array $contents)
+    {
+        $data = json_encode($contents, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
+        $data = str_replace(': null', ': ""', $data);
+        
+        return $data;
+    }
+
 }

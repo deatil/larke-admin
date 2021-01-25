@@ -95,7 +95,8 @@ return [
     ],
     
     'extension' => [
-        'directory' => env('LARKE_ADMIN_EXTENSION_DIRECTORY', base_path('extension')),
+        'directory' => env('LARKE_ADMIN_EXTENSION_DIRECTORY', 'extension'),
+        'path' => env('LARKE_ADMIN_EXTENSION_PATH', base_path('extension')),
     ],
     
     'upload' => [

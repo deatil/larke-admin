@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 
-use Larke\Admin\Service\Composer;
+use Larke\Admin\Composer\Resolve as ComposerResolve;
 use Larke\Admin\Model\AuthRule as AuthRuleModel;
 use Larke\Admin\Model\Extension as ExtensionModel;
 use Larke\Admin\Extension\ServiceProvider as ExtensionServiceProvider;
@@ -118,7 +118,7 @@ class Extension
      */
     public function checkLocal($name)
     {
-        $extensionDirectory = $this->getExtensionDirectory();
+        $extensionDirectory = $this->getExtensionPath();
         
         $directory = $extensionDirectory 
             . DIRECTORY_SEPARATOR . $name;
@@ -139,19 +139,13 @@ class Extension
      */
     public function composerRequireCommand($name)
     {
-        $extensionDirectory = $this->getExtensionDirectory();
-        
-        $directory = $extensionDirectory 
-            . DIRECTORY_SEPARATOR . $name;
-        
+        $directory = $this->getExtensionPath($name);
         if (! File::exists($directory)) {
             return '';
         }
         
-        $path = substr(
-            str_replace('\\', '/', $directory), 
-            strlen(str_replace('\\', '/', base_path())) + 1
-        );
+        $extensionDirectory = $this->getExtensionDirectory();
+        $path = $extensionDirectory . '/' . $name;
         
         $command = sprintf(
             'composer config repositories.%s path %s && composer require %s',
@@ -172,19 +166,13 @@ class Extension
      */
     public function composerRemoveCommand($name)
     {
-        $extensionDirectory = $this->getExtensionDirectory();
-        
-        $directory = $extensionDirectory 
-            . DIRECTORY_SEPARATOR . $name;
-        
+        $directory = $this->getExtensionPath($name);
         if (! File::exists($directory)) {
             return '';
         }
         
-        $path = substr(
-            str_replace('\\', '/', $directory), 
-            strlen(str_replace('\\', '/', base_path())) + 1
-        );
+        $extensionDirectory = $this->getExtensionDirectory();
+        $path = $extensionDirectory . '/' . $name;
         
         $command = sprintf(
             'composer remove %s && composer config --unset repositories.%s', 
@@ -245,7 +233,7 @@ class Extension
         }
         
         $list = ExtensionModel::getExtensions();
-        $extensionDirectory = $this->getExtensionDirectory();
+        $extensionDirectory = $this->getExtensionPath();
         
         $services = collect($list)->map(function($data) use($extensionDirectory) {
             if ($data['status'] != 1) {
@@ -264,9 +252,11 @@ class Extension
             $directory = $extensionDirectory 
                 . DIRECTORY_SEPARATOR . $data['name'];
             
-            if (File::exists($directory)) {
+            if (! class_exists($data['class_name']) 
+                && File::exists($directory)
+            ) {
                 // 绑定非composer扩展
-                $composer = Composer::create()->withDirectory($directory);
+                $composer = ComposerResolve::create()->withDirectory($directory);
                 $cacheId = md5(str_replace('\\', '/', $data['name']));
                 
                 $composerData = Cache::get($cacheId);
@@ -330,12 +320,12 @@ class Extension
     {
         $extensions = Cache::get($this->extensionsCacheId);
         if (! $extensions) {
-            $directory = $this->getExtensionDirectory();
+            $directory = $this->getExtensionPath();
             $directories = $this->getDirectories($directory);
             
             $extensions = collect($directories)
                 ->map(function($path) {
-                    $composer = Composer::create()->withDirectory($path);
+                    $composer = ComposerResolve::create()->withDirectory($path);
                     return $composer->getData();
                 })
                 ->values()
@@ -344,8 +334,15 @@ class Extension
             Cache::put($this->extensionsCacheId, $extensions, 10080);
         }
         
-        $composer = Composer::create();
+        $composer = ComposerResolve::create();
         collect($extensions)->each(function($extension) use($composer) {
+            $providers = Arr::get($extension, 'providers', []);
+            if (! empty($providers) 
+                && class_exists($providers[0])
+            ) {
+                return;
+            }
+            
             $composer->registerAutoload(Arr::get($extension, 'autoload', []));
             
             // 加载dev数据
@@ -395,10 +392,22 @@ class Extension
      *
      * @return string
      */
-    public function getExtensionDirectory(string $path = '')
+    public function getExtensionDirectory()
     {
-        $extensionDirectory =  config('larkeadmin.extension.directory');
-        return $extensionDirectory.($path ? DIRECTORY_SEPARATOR.$path : $path);
+        return config('larkeadmin.extension.directory');
+    }
+    
+    /**
+     * 获取扩展目录
+     *
+     * @param string $path
+     *
+     * @return string
+     */
+    public function getExtensionPath(string $path = '')
+    {
+        $extensionPath =  config('larkeadmin.extension.path');
+        return $extensionPath.($path ? DIRECTORY_SEPARATOR.$path : $path);
     }
     
     /**

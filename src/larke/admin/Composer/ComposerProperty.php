@@ -2,7 +2,7 @@
 
 declare (strict_types = 1);
 
-namespace Larke\Admin\Support;
+namespace Larke\Admin\Composer;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
