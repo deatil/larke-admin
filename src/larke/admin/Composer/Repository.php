@@ -58,6 +58,20 @@ class Repository
     }
     
     /**
+     * 判断
+     *
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function has(string $name)
+    {
+        $resolve = $this->getResolve();
+        
+        return $resolve->hasRepository($name);
+    }
+    
+    /**
      * 注册仓库
      *
      * @param string $name

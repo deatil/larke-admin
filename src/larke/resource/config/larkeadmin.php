@@ -5,8 +5,8 @@ return [
         'name' => "LarkeAdmin",
         'name_mini' => "Larke",
         'logo' => '<b>Larke</b> admin',
-        'release' => 20210123,
-        'version' => "1.1.3",
+        'release' => 20210125,
+        'version' => "1.1.5",
     ],
     
     'https' => env('LARKE_ADMIN_HTTPS', false),
@@ -82,10 +82,10 @@ return [
             'is_allow_origin' => env('LARKE_ADMIN_RESPONSE_JSON_IS_ALLOW_ORIGIN', 1),
             'allow_origin' => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_ORIGIN', '*'),
             'allow_credentials' => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_CREDENTIALS', 0),
-            'max_age' => env('LARKE_ADMIN_RESPONSE_JSON_MAX_AGE', ''),
             'allow_methods' => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_METHODS', 'GET,POST,PATCH,PUT,DELETE,OPTIONS'),
             'allow_headers' => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_HEADERS', 'X-Requested-With,X_Requested_With,Content-Type'),
             'expose_headers' => env('LARKE_ADMIN_RESPONSE_JSON_EXPOSE_HEADERS', 'Larke-Admin-Captcha-Id'),
+            'max_age' => env('LARKE_ADMIN_RESPONSE_JSON_MAX_AGE', ''),
         ],
     ],
     
@@ -95,8 +95,8 @@ return [
     ],
     
     'extension' => [
+        // 扩展存放文件夹
         'directory' => env('LARKE_ADMIN_EXTENSION_DIRECTORY', 'extension'),
-        'path' => env('LARKE_ADMIN_EXTENSION_PATH', base_path('extension')),
     ],
     
     'upload' => [

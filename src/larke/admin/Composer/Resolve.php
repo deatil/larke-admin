@@ -429,6 +429,20 @@ class Resolve
     }
     
     /**
+     * 判断是否在仓库
+     *
+     * @param string $name
+     *
+     * @return array
+     */
+    public function hasRepository(string $name)
+    {
+        $composerProperty = $this->getComposer();
+        
+        return $composerProperty->has('repositories.'.$name);
+    }
+    
+    /**
      * 注册仓库
      *
      * @param string $name

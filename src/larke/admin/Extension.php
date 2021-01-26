@@ -383,7 +383,7 @@ class Extension
     }
     
     /**
-     * 获取扩展文件夹
+     * 扩展存放文件夹
      *
      * @param string $path
      *
@@ -395,7 +395,7 @@ class Extension
     }
     
     /**
-     * 获取扩展目录
+     * 扩展存放目录
      *
      * @param string $path
      *
@@ -403,7 +403,7 @@ class Extension
      */
     public function getExtensionPath(string $path = '')
     {
-        $extensionPath =  config('larkeadmin.extension.path');
+        $extensionPath = base_path($this->getExtensionDirectory());
         return $extensionPath.($path ? DIRECTORY_SEPARATOR.$path : $path);
     }
     

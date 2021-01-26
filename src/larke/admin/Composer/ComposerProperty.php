@@ -40,6 +40,16 @@ class ComposerProperty implements Arrayable
 
     /**
      * @param $key
+     *
+     * @return bool
+     */
+    public function has($key)
+    {
+        return Arr::has($this->attributes, $key);
+    }
+
+    /**
+     * @param $key
      * @param null $default
      *
      * @return mixed

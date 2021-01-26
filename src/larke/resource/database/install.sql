@@ -141,7 +141,7 @@ CREATE TABLE `pre__larke_extension` (
   `description` mediumtext CHARACTER SET utf8mb4 NOT NULL COMMENT '描述',
   `keywords` varchar(200) CHARACTER SET utf8mb4 DEFAULT '' COMMENT '关键字',
   `homepage` varchar(200) CHARACTER SET utf8mb4 DEFAULT '' COMMENT '扩展地址',
-  `authors` varchar(100) CHARACTER SET utf8mb4 NOT NULL DEFAULT '' COMMENT '作者',
+  `authors` text CHARACTER SET utf8mb4 NOT NULL COMMENT '作者',
   `version` varchar(50) CHARACTER SET utf8mb4 NOT NULL DEFAULT '' COMMENT '版本',
   `adaptation` varchar(50) CHARACTER SET utf8mb4 NOT NULL DEFAULT '' COMMENT '适配最低版本',
   `require` text CHARACTER SET utf8mb4 COMMENT '依赖扩展',

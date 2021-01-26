@@ -180,9 +180,15 @@ class Extension extends Base
         $require = AdminExtension::composerRequireCommand($name);
         $remove = AdminExtension::composerRemoveCommand($name);
         
+        // 判断仓库是否注册本地扩展
+        $hasRepository = ComposerRepository::create()
+            ->withDirectory(base_path())
+            ->has($name);
+        
         $command = [
             'require' => $require,
             'remove' => $remove,
+            'has_repository' => $hasRepository,
         ];
         
         return $this->success(__('获取成功'), [
@@ -720,14 +726,14 @@ class Extension extends Base
             'url' => $url,
         ];
         
-        $actionStatus = $composerRepository = ComposerRepository::create()
+        $actionStatus = ComposerRepository::create()
             ->withDirectory(base_path())
             ->register($name, $repository);
         if ($actionStatus === false) {
-            return $this->error(__('扩展注册失败'));
+            return $this->error(__('仓库注册扩展失败'));
         }
         
-        return $this->success(__('扩展仓库注册成功'));
+        return $this->success(__('仓库注册扩展成功'));
     }
     
     /**
@@ -758,10 +764,10 @@ class Extension extends Base
             ->withDirectory(base_path())
             ->remove($name);
         if ($actionStatus === false) {
-            return $this->error(__('扩展移除失败'));
+            return $this->error(__('仓库移除扩展失败'));
         }
         
-        return $this->success(__('扩展仓库移除成功'));
+        return $this->success(__('仓库移除扩展成功'));
     }
     
 }
