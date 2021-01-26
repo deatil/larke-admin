@@ -45,29 +45,33 @@ class Repository
     }
     
     /**
+     * Resolve对象
+     *
+     * @return Resolve
+     */
+    public function getResolve()
+    {
+        $resolve = Resolve::create()
+            ->withDirectory($this->directory);
+        
+        return $resolve;
+    }
+    
+    /**
      * 注册仓库
      *
      * @param string $name
      * @param array $repository
      *
-     * @return object
+     * @return bool
      */
     public function register(string $name, array $repository = [])
     {
-        if (empty($this->directory)) {
-            return false;
-        }
-        
-        $resolve = Resolve::create()->withDirectory($this->directory);
-        $composerPath = $resolve->getComposerNamePath();
+        $resolve = $this->getResolve();
         
         $contents = $resolve->registerRepository($name, $repository);
-        $data = $resolve->formatToJson($contents);
-        if (empty($data)) {
-            return false;
-        }
         
-        return File::put($composerPath, $data, true);
+        return $this->updateComposer($resolve, $contents);
     }
     
     /**
@@ -75,23 +79,47 @@ class Repository
      *
      * @param string $name
      *
-     * @return object
+     * @return bool
      */
     public function remove(string $name)
     {
+        $resolve = $this->getResolve();
+        
+        $contents = $resolve->removeRepository($name);
+        
+        return $this->updateComposer($resolve, $contents);
+    }
+    
+    /**
+     * 更新composer信息
+     *
+     * @param Resolve $resolve
+     * @param array $contents
+     *
+     * @return bool
+     */
+    public function updateComposer(Resolve $resolve, array $contents)
+    {
+        if (empty($contents)) {
+            return false;
+        }
+        
         if (empty($this->directory)) {
             return false;
         }
         
-        $resolve = Resolve::create()->withDirectory($this->directory);
         $composerPath = $resolve->getComposerNamePath();
+        if (! File::exists($composerPath)) {
+            return false;
+        }
         
-        $contents = $resolve->removeRepository($name);
-        $data = $resolve->formatToJson($contents);
-        if (empty($data)) {
+        try {
+            $data = $resolve->formatToJson($contents);
+        } catch(\Exception $e) {
             return false;
         }
         
         return File::put($composerPath, $data, true);
     }
+
 }

@@ -93,7 +93,8 @@ Route::group([
     $router->post('/extension/install/{name}', 'Extension@install')->name('extension.install')->where('name', '[A-Za-z0-9\-\_\.\/]+');
     $router->delete('/extension/uninstall/{name}', 'Extension@uninstall')->name('extension.uninstall')->where('name', '[A-Za-z0-9\-\_\.\/]+');
     $router->put('/extension/upgrade/{name}', 'Extension@upgrade')->name('extension.upgrade')->where('name', '[A-Za-z0-9\-\_\.\/]+');
-    $router->put('/extension/repository/{name}', 'Extension@repository')->name('extension.repository')->where('name', '[A-Za-z0-9\-\_\.\/]+');
+    $router->put('/extension/{name}/repository-register', 'Extension@repositoryRegister')->name('extension.repository-register')->where('name', '[A-Za-z0-9\-\_\.\/]+');
+    $router->put('/extension/{name}/repository-remove', 'Extension@repositoryRemove')->name('extension.repository-remove')->where('name', '[A-Za-z0-9\-\_\.\/]+');
     $router->put('/extension/{name}/config', 'Extension@config')->name('extension.config')->where('name', '[A-Za-z0-9\-\_\.\/]+');
     $router->patch('/extension/{name}/enable', 'Extension@enable')->name('extension.enable')->where('name', '[A-Za-z0-9\-\_\.\/]+');
     $router->patch('/extension/{name}/disable', 'Extension@disable')->name('extension.disable')->where('name', '[A-Za-z0-9\-\_\.\/]+');

@@ -687,10 +687,10 @@ class Extension extends Base
     }
     
     /**
-     * 扩展composer仓库注册/移除
+     * 本地扩展注册到composer.json
      *
-     * @title 扩展仓库
-     * @desc 扩展composer仓库注册/移除
+     * @title 仓库注册扩展
+     * @desc 本地扩展注册到composer.json仓库
      * @order 10512
      * @auth true
      *
@@ -698,33 +698,67 @@ class Extension extends Base
      * @param Request $request
      * @return Response
      */
-    public function repository(string $name, Request $request)
+    public function repositoryRegister(string $name, Request $request)
     {
         if (empty($name)) {
-            return $this->error(__('包名不能为空'));
+            return $this->error(__('扩展包名不能为空'));
         }
         
-        $type = $request->input('type');
-        if (! in_array($type, ['register', 'remove'])) {
-            return $this->error(__('限制访问'));
+        // 检测本地扩展是否存在
+        $extensionDirectory = AdminExtension::checkLocal($name);
+        if ($extensionDirectory === false) {
+            return $this->error(__('扩展不为本地扩展，禁止操作'));
         }
         
-        $composerRepository = ComposerRepository::create()
-            ->withDirectory(base_path());
+        // 扩展本地仓库
+        $url = AdminExtension::getExtensionDirectory() . '/' . $name;
+        $repository = [
+            'type' => 'path',
+            'url' => $url,
+        ];
         
-        if ($type == 'register') {
-            $url = AdminExtension::getExtensionDirectory() . '/' . $name;
-            $repository = [
-                'type' => 'path',
-                'url' => $url,
-            ];
-            
-            $composerRepository->register($name, $repository);
-        } else {
-            $composerRepository->remove($name);
+        $actionStatus = $composerRepository = ComposerRepository::create()
+            ->withDirectory(base_path())
+            ->register($name, $repository);
+        if ($actionStatus === false) {
+            return $this->error(__('扩展注册失败'));
         }
         
-        return $this->success(__('更新成功'));
+        return $this->success(__('扩展仓库注册成功'));
+    }
+    
+    /**
+     * 本地扩展从composer.json移除
+     *
+     * @title 仓库移除扩展
+     * @desc 本地扩展从composer.json仓库移除
+     * @order 10513
+     * @auth true
+     *
+     * @param string $name
+     * @param Request $request
+     * @return Response
+     */
+    public function repositoryRemove(string $name, Request $request)
+    {
+        if (empty($name)) {
+            return $this->error(__('扩展包名不能为空'));
+        }
+        
+        // 检测本地扩展是否为本地扩展
+        $extensionDirectory = AdminExtension::checkLocal($name);
+        if ($extensionDirectory === false) {
+            return $this->error(__('扩展不为本地扩展，禁止操作'));
+        }
+        
+        $actionStatus = ComposerRepository::create()
+            ->withDirectory(base_path())
+            ->remove($name);
+        if ($actionStatus === false) {
+            return $this->error(__('扩展移除失败'));
+        }
+        
+        return $this->success(__('扩展仓库移除成功'));
     }
     
 }

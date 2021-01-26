@@ -118,12 +118,9 @@ class Extension
      */
     public function checkLocal($name)
     {
-        $extensionDirectory = $this->getExtensionPath();
+        $extensionDirectory = $this->getExtensionPath($name);
         
-        $directory = $extensionDirectory 
-            . DIRECTORY_SEPARATOR . $name;
-        
-        if (File::exists($directory)) {
+        if (File::exists($extensionDirectory)) {
             return true;
         }
         
