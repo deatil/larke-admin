@@ -683,6 +683,9 @@ class Extension extends Base
             return $this->error(__('扩展('.$composerInfo['name'].')解压失败'));
         }
         
+        // 上传后刷新本地缓存
+        AdminExtension::refresh();
+        
         return $this->success(__('扩展('.$composerInfo['name'].')上传成功'));
     }
     
