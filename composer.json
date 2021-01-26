@@ -14,7 +14,8 @@
         {
             "name": "deatil",
             "email": "deatil@github.com",
-            "homepage": "https://github.com/deatil"
+            "homepage": "https://github.com/deatil",
+            "role": "Developer"
         }
     ],
     "require": {
