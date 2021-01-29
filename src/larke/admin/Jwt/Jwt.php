@@ -355,7 +355,7 @@ class Jwt implements JwtContract
     }
     
     /**
-     * validate
+     * 验证
      */
     public function validate()
     {
@@ -379,7 +379,7 @@ class Jwt implements JwtContract
     }
 
     /**
-     * verify token
+     * 检测
      */
     public function verify()
     {
@@ -497,7 +497,14 @@ class Jwt implements JwtContract
         }
         
         if (! empty($claim) && ! empty($value)) {
-            $value = Crypt::encrypt($value, $this->passphrase);
+            try {
+                $value = (new Crypt())->encrypt($value, $this->passphrase);
+            } catch(\Exception $e) {
+                Log::error('larke-admin-jwt-withData: '.$e->getMessage());
+                
+                $value = '';
+            }
+            
             $this->withClaim($claim, $value);
         }
         
@@ -511,7 +518,13 @@ class Jwt implements JwtContract
     {
         $claim = $this->getClaim($name);
         if ($claim !== false) {
-            $claim = Crypt::decrypt($claim, $this->passphrase);
+            try {
+                $claim = (new Crypt())->decrypt($claim, $this->passphrase);
+            } catch(\Exception $e) {
+                Log::error('larke-admin-jwt-getData: '.$e->getMessage());
+                
+                $claim = false;
+            }
         }
         
         return $claim;
