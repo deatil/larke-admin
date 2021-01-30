@@ -622,18 +622,22 @@ class Admin extends Base
             return $this->error(__('refreshToken已失效'));
         }
         
-        $refreshJwt = app('larke.admin.jwt')
-            ->withJti(config('larkeadmin.passport.refresh_token_id'))
-            ->withToken($refreshToken)
-            ->decode();
-        
-        if (!($refreshJwt->validate() && $refreshJwt->verify())) {
-            return $this->error(__('refreshToken已过期'));
-        }
-        
-        $refreshAdminid = $refreshJwt->getData('adminid');
-        if ($refreshAdminid === false) {
-            return $this->error(__('token错误'));
+        try {
+            $refreshJwt = app('larke.admin.jwt')
+                ->withJti(config('larkeadmin.passport.refresh_token_id'))
+                ->withToken($refreshToken)
+                ->decode();
+            
+            if (! ($refreshJwt->validate() && $refreshJwt->verify())) {
+                return $this->error(__('refreshToken已过期'));
+            }
+            
+            $refreshAdminid = $refreshJwt->getData('adminid');
+            
+            // 过期时间
+            $refreshTokenExpiresIn = $refreshJwt->getClaim('exp') - $refreshJwt->getClaim('iat');
+        } catch(\Exception $e) {
+            return $this->error($e->getMessage());
         }
         
         $adminid = app('larke.admin.admin')->getId();
@@ -641,10 +645,8 @@ class Admin extends Base
             return $this->error(__('你不能退出你的账号'));
         }
         
-        $refreshTokenExpiresIn = $refreshJwt->getClaim('exp') - $refreshJwt->getClaim('iat');
-        
         // 添加缓存黑名单
-        app('larke.admin.cache')->add(md5($refreshToken), 'out', $refreshTokenExpiresIn);
+        app('larke.admin.cache')->add(md5($refreshToken), time(), $refreshTokenExpiresIn);
         
         return $this->success(__('退出成功'));
     }

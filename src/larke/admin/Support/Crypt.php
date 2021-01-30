@@ -66,9 +66,9 @@ class Crypt
         $aes = new AES($this->mode);
         $aes->setIV($this->iv);
         $aes->setKey($key);
-        $encodeDate = $aes->encrypt($plaintext);
+        $encodeData = $aes->encrypt($plaintext);
         
-        return base64_encode($encodeDate);
+        return base64_encode($encodeData);
     }
 
     /**
@@ -87,17 +87,17 @@ class Crypt
         $aes = new AES($this->mode);
         $aes->setIV($this->iv);
         $aes->setKey($key);
-        $decodeDate = $aes->decrypt(base64_decode($plaintext));
+        $decodeData = $aes->decrypt(base64_decode($plaintext));
         
-        $decodeDate = trim(base64_decode($decodeDate));
-        if (preg_match("/\d{10}_/s", substr($decodeDate, 0, 11))) {
-            if ($ttl > 0 && (time() - substr($decodeDate, 0, 10) > $ttl)) {
-                $decodeDate = null;
+        $decodeData = trim(base64_decode($decodeData));
+        if (preg_match("/\d{10}_/s", substr($decodeData, 0, 11))) {
+            if ($ttl > 0 && (time() - substr($decodeData, 0, 10) > $ttl)) {
+                $decodeData = null;
             } else {
-                $decodeDate = substr($decodeDate, 11);
+                $decodeData = substr($decodeData, 11);
             }
         }
         
-        return $decodeDate;
+        return $decodeData;
     }
 }

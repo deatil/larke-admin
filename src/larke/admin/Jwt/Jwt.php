@@ -13,6 +13,7 @@ use Larke\JWT\Signer\Key\InMemory;
 use Larke\JWT\Signer\Key\LocalFileReference;
 use Larke\JWT\ValidationData;
 
+use Larke\Admin\Exception\JWTException;
 use Larke\Admin\Support\Crypt;
 use Larke\Admin\Contracts\Jwt as JwtContract;
 
@@ -328,9 +329,9 @@ class Jwt implements JwtContract
             
             $this->token = $Builder->getToken($signer, $secrect);
         } catch(\Exception $e) {
-            $this->token = false;
-            
             Log::error('larke-admin-jwt-encode: '.$e->getMessage());
+            
+            throw new JWTException(__('JWT编码失败'));
         }
         
         return $this;
@@ -341,14 +342,12 @@ class Jwt implements JwtContract
      */
     public function decode()
     {
-        if (! $this->decodeToken) {
-            try {
-                $this->decodeToken = (new Parser())->parse((string) $this->token); 
-            } catch(\Exception $e) {
-                $this->decodeToken = false;
-                
-                Log::error('larke-admin-jwt-decode: '.$e->getMessage());
-            }
+        try {
+            $this->decodeToken = (new Parser())->parse((string) $this->token); 
+        } catch(\Exception $e) {
+            Log::error('larke-admin-jwt-decode: '.$e->getMessage());
+            
+            throw new JWTException(__('JWT解析失败'));
         }
         
         return $this;
@@ -359,23 +358,13 @@ class Jwt implements JwtContract
      */
     public function validate()
     {
-        if (! $this->decodeToken) {
-            return false;
-        }
-        
         $data = new ValidationData(time(), $this->leeway); 
         $data->issuedBy($this->issuer);
         $data->permittedFor($this->audience);
         $data->identifiedBy($this->jti);
         $data->relatedTo($this->subject);
         
-        try {
-            return $this->decodeToken->validate($data);
-        } catch(\Exception $e) {
-            Log::error('larke-admin-jwt-validate: '.$e->getMessage());
-            
-            return false;
-        }
+        return $this->decodeToken->validate($data);
     }
 
     /**
@@ -383,25 +372,9 @@ class Jwt implements JwtContract
      */
     public function verify()
     {
-        if (! $this->decodeToken) {
-            return false;
-        }
-        
-        try {
-            list($signer, $secrect) = $this->getSigner(false);
-        } catch(\Exception $e) {
-            Log::error('larke-admin-jwt-verify: '.$e->getMessage());
-            
-            return false;
-        }
-        
-        try {
-            return $this->decodeToken->verify($signer, $secrect);
-        } catch(\Exception $e) {
-            Log::error('larke-admin-jwt-verify: '.$e->getMessage());
-            
-            return false;
-        }
+        list($signer, $secrect) = $this->getSigner(false);
+    
+        return $this->decodeToken->verify($signer, $secrect);
     }
 
     /**
@@ -417,17 +390,7 @@ class Jwt implements JwtContract
      */
     public function getHeader($name)
     {
-        if (! $this->decodeToken) {
-            return false;
-        }
-        
-        try {
-            $header = $this->decodeToken->getHeader($name);
-        } catch(\Exception $e) {
-            Log::error('larke-admin-jwt-getHeader: '.$e->getMessage());
-            
-            return false;
-        }
+        $header = $this->decodeToken->getHeader($name);
         
         return $header;
     }
@@ -437,10 +400,6 @@ class Jwt implements JwtContract
      */
     public function getHeaders()
     {
-        if (! $this->decodeToken) {
-            return false;
-        }
-        
         return $this->decodeToken->getHeaders();
     }
 
@@ -449,17 +408,7 @@ class Jwt implements JwtContract
      */
     public function getClaim($name)
     {
-        if (! $this->decodeToken) {
-            return false;
-        }
-        
-        try {
-            $claim = $this->decodeToken->getClaim($name);
-        } catch(\Exception $e) {
-            Log::error('larke-admin-jwt-getClaim: '.$e->getMessage());
-            
-            return false;
-        }
+        $claim = $this->decodeToken->getClaim($name);
         
         return $claim;
     }
@@ -469,10 +418,6 @@ class Jwt implements JwtContract
      */
     public function getClaims()
     {
-        if (! $this->decodeToken) {
-            return false;
-        }
-        
         $claims = $this->decodeToken->getClaims();
         
         $data = [];
@@ -497,13 +442,7 @@ class Jwt implements JwtContract
         }
         
         if (! empty($claim) && ! empty($value)) {
-            try {
-                $value = (new Crypt())->encrypt($value, $this->passphrase);
-            } catch(\Exception $e) {
-                Log::error('larke-admin-jwt-withData: '.$e->getMessage());
-                
-                $value = '';
-            }
+            $value = (new Crypt())->encrypt($value, $this->passphrase);
             
             $this->withClaim($claim, $value);
         }
@@ -517,15 +456,8 @@ class Jwt implements JwtContract
     public function getData($name)
     {
         $claim = $this->getClaim($name);
-        if ($claim !== false) {
-            try {
-                $claim = (new Crypt())->decrypt($claim, $this->passphrase);
-            } catch(\Exception $e) {
-                Log::error('larke-admin-jwt-getData: '.$e->getMessage());
-                
-                $claim = false;
-            }
-        }
+        
+        $claim = (new Crypt())->decrypt($claim, $this->passphrase);
         
         return $claim;
     }

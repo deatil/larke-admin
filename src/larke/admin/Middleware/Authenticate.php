@@ -60,18 +60,19 @@ class Authenticate
             $this->error(__('token已失效'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
-        $jwtAuth = app('larke.admin.jwt')
-            ->withJti(config('larkeadmin.passport.access_token_id'))
-            ->withToken($accessToken)
-            ->decode();
-        
-        if (!($jwtAuth->validate() && $jwtAuth->verify())) {
-            $this->error(__('token已过期'), \ResponseCode::ACCESS_TOKEN_TIMEOUT);
-        }
-        
-        $adminid = $jwtAuth->getData('adminid');
-        if ($adminid === false) {
-            $this->error(__('token错误'), \ResponseCode::ACCESS_TOKEN_ERROR);
+        try {
+            $jwtAuth = app('larke.admin.jwt')
+                ->withJti(config('larkeadmin.passport.access_token_id'))
+                ->withToken($accessToken)
+                ->decode();
+            
+            if (! ($jwtAuth->validate() && $jwtAuth->verify())) {
+                $this->error(__('token已过期'), \ResponseCode::ACCESS_TOKEN_TIMEOUT);
+            }
+            
+            $adminid = $jwtAuth->getData('adminid');
+        } catch(\Exception $e) {
+            $this->error($e->getMessage(), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
         $adminInfo = AdminModel::where('id', $adminid)

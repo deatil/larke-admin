@@ -67,25 +67,27 @@ class PassportLogout extends Command
             return;
         }
         
-        $refreshJwt = app('larke.admin.jwt')
-            ->withJti(config('larkeadmin.passport.refresh_token_id'))
-            ->withToken($refreshToken)
-            ->decode();
-        
-        if (!($refreshJwt->validate() && $refreshJwt->verify())) {
-            $this->line("<error>RefreshToken'verify is error !</error> ");
+        try {
+            $refreshJwt = app('larke.admin.jwt')
+                ->withJti(config('larkeadmin.passport.refresh_token_id'))
+                ->withToken($refreshToken)
+                ->decode();
+            
+            if (!($refreshJwt->validate() && $refreshJwt->verify())) {
+                $this->line("<error>RefreshToken'verify is error !</error> ");
+
+                return;
+            }
+            
+            $refreshAdminid = $refreshJwt->getData('adminid');
+            
+            // 过期时间
+            $refreshTokenExpiresIn = $refreshJwt->getClaim('exp') - $refreshJwt->getClaim('iat');
+       } catch(\Exception $e) {
+            $this->line("<error>".$e->getMessage()."</error> ");
 
             return;
         }
-        
-        $refreshAdminid = $refreshJwt->getData('adminid');
-        if ($refreshAdminid === false) {
-            $this->line("<error>RefreshToken'adminid is error !</error> ");
-
-            return;
-        }
-        
-        $refreshTokenExpiresIn = $refreshJwt->getClaim('exp') - $refreshJwt->getClaim('iat');
         
         // 添加进黑名单
         app('larke.admin.cache')->add(md5($refreshToken), time(), $refreshTokenExpiresIn);
