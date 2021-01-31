@@ -19,7 +19,7 @@ class Password
      * @param $salt 加密盐
      * @return $this
      */
-    public function withSalt($salt)
+    public function withSalt(string $salt)
     {
         $this->salt = $salt;
         return $this;
@@ -27,11 +27,12 @@ class Password
     
     /**
      * 密码加密
+     *
      * @param $password
-     * @param $encrypt //传入加密串，在修改密码时做认证
+     * @param $encrypt // 传入加密串，在修改密码时做认证
      * @return array/password
      */
-    public function encrypt($password, $encrypt = '')
+    public function encrypt(string $password, string $encrypt = '')
     {
         $pwd = [];
         $pwd['encrypt'] = $encrypt ? $encrypt : $this->randomString();
@@ -40,14 +41,14 @@ class Password
     }
     
     /**
-     * 产生一个指定长度的随机字符串,并返回给用户
-     * @param type $len 产生字符串的长度
+     * 随机字符串
+     * @param type $len 字符长度
      * @return string 随机字符串
      */
-    protected function randomString($len = 6)
+    protected function randomString(int $len = 6)
     {
         $pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        return substr(str_shuffle(str_repeat($pool, ceil($len / strlen($pool)))), 0, $len);
+        return substr(str_shuffle(str_repeat($pool, intval(ceil($len / strlen($pool))))), 0, $len);
     }
 
 }

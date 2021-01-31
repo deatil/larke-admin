@@ -4,6 +4,7 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Auth;
 
+use Larke\Admin\Auth\Permission as AuthPermission;
 use Larke\Admin\Repository\Admin as AdminRepository;
 use Larke\Admin\Repository\AuthGroup as AuthGroupRepository;
 
@@ -158,6 +159,22 @@ class Admin
             ->contains(function ($group) {
                 return ($group['status'] == 1);
             });
+    }
+
+    /**
+     * 判断是否有权限
+     */
+    public function hasAccess($url, $method = 'GET')
+    {
+        if ($this->isAdministrator()) {
+            return true;
+        }
+        
+        if (! AuthPermission::enforce($this->id, $url, $method)) {
+            return false;
+        }
+        
+        return true;
     }
     
     /*
