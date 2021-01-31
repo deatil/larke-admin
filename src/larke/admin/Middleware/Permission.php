@@ -23,7 +23,7 @@ class Permission
     
     public function handle($request, Closure $next)
     {
-        if (!$this->shouldPassThrough($request)) {
+        if (! $this->shouldPassThrough($request)) {
             $this->permissionCheck();
         }
         
@@ -57,7 +57,7 @@ class Permission
      */
     protected function shouldPassThrough($request)
     {
-        $excepts = array_merge(config('larkeadmin.auth.excepts', []), [
+        $excepts = array_merge(config('larkeadmin.auth.permission_excepts', []), [
             $this->formatRouteSlug('passport.captcha'),
             $this->formatRouteSlug('passport.login'),
             $this->formatRouteSlug('passport.refresh-token'),

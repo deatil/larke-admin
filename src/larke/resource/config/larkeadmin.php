@@ -90,7 +90,11 @@ return [
     ],
     
     'auth' => [
-        'excepts' => env('LARKE_ADMIN_AUTH_EXCEPTS') ? explode(',', env('LARKE_ADMIN_AUTH_EXCEPTS')) : [],
+        // 登陆过滤
+        'authenticate_excepts' => env('LARKE_ADMIN_AUTH_AUTHENTICATE_EXCEPTS') ? explode(',', env('LARKE_ADMIN_AUTH_AUTHENTICATE_EXCEPTS')) : [],
+        // 权限过滤
+        'permission_excepts' => env('LARKE_ADMIN_AUTH_PERMISSION_EXCEPTS') ? explode(',', env('LARKE_ADMIN_AUTH_PERMISSION_EXCEPTS')) : [],
+        // 超级管理员
         'admin_id' => env('LARKE_ADMIN_AUTH_ADMIN_ID', '04f65b19e5a2513fe5a89100309da9b7'),
     ],
     

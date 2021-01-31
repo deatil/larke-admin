@@ -4,6 +4,8 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Auth;
 
+use Illuminate\Support\Arr;
+
 use Larke\Admin\Auth\Permission as AuthPermission;
 use Larke\Admin\Repository\Admin as AdminRepository;
 use Larke\Admin\Repository\AuthGroup as AuthGroupRepository;
@@ -178,16 +180,16 @@ class Admin
     }
     
     /*
-     * 获取 groups
+     * 获取用户组列表
      */
     public function getGroups()
     {
         $data = $this->getProfile();
-        return $data['groups'] ?: [];
+        return Arr::get($data, 'groups', []);
     }
     
     /*
-     * 获取 groupids
+     * 获取用户组ID列表
      */
     public function getGroupids()
     {

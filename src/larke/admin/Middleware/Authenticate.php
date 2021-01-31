@@ -22,7 +22,7 @@ class Authenticate
     
     public function handle($request, Closure $next)
     {
-        if (!$this->shouldPassThrough($request)) {
+        if (! $this->shouldPassThrough($request)) {
             $this->jwtCheck();
         }
         
@@ -107,7 +107,7 @@ class Authenticate
      */
     protected function shouldPassThrough($request)
     {
-        $excepts = array_merge(config('larkeadmin.auth.excepts', []), [
+        $excepts = array_merge(config('larkeadmin.auth.authenticate_excepts', []), [
             $this->formatRouteSlug('passport.captcha'),
             $this->formatRouteSlug('passport.login'),
             $this->formatRouteSlug('passport.refresh-token'),

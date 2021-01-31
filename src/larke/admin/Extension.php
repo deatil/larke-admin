@@ -652,7 +652,10 @@ class Extension
         $it->rewind();
 
         while ($it->valid()) {
-            if ($it->getDepth() > 1 && $it->getFilename() === 'composer.json') {
+            if ($it->getDepth() > 1 
+                && $it->isFile()
+                && $it->getFilename() === 'composer.json'
+            ) {
                 $extensions[] = dirname($it->getPathname());
             }
 
