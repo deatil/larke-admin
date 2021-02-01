@@ -16,7 +16,7 @@ use Larke\Admin\Repository\Admin as AdminRepository;
  * 管理员
  *
  * @title 管理员
- * @desc 系统管理员管理
+ * @desc 系统管理员账号管理
  * @order 105
  * @auth true
  * @slug larke-admin.admin
@@ -30,7 +30,7 @@ class Admin extends Base
      * 列表
      *
      * @title 管理员列表
-     * @desc 系统管理员列表
+     * @desc 系统管理员账号列表
      * @order 1051
      * @auth true
      *
@@ -108,7 +108,7 @@ class Admin extends Base
      * 详情
      *
      * @title 管理员详情
-     * @desc 系统管理员详情
+     * @desc 系统管理员账号详情
      * @order 1052
      * @auth true
      *
@@ -118,7 +118,7 @@ class Admin extends Base
     public function detail(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('管理员ID不能为空'));
+            return $this->error(__('账号ID不能为空'));
         }
         
         $info = AdminModel::withAccess()
@@ -140,7 +140,7 @@ class Admin extends Base
             ])
             ->first();
         if (empty($info)) {
-            return $this->error(__('管理员信息不存在'));
+            return $this->error(__('账号不存在'));
         }
         
         $adminGroups = $info['groups'];
@@ -162,7 +162,7 @@ class Admin extends Base
      * 权限
      *
      * @title 管理员权限
-     * @desc 系统管理员权限
+     * @desc 系统管理员账号权限
      * @order 1053
      * @auth true
      *
@@ -172,7 +172,7 @@ class Admin extends Base
     public function rules(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('管理员ID不能为空'));
+            return $this->error(__('账号ID不能为空'));
         }
         
         $info = AdminModel::withAccess()
@@ -185,7 +185,7 @@ class Admin extends Base
             ])
             ->first();
         if (empty($info)) {
-            return $this->error(__('管理员信息不存在'));
+            return $this->error(__('账号不存在'));
         }
         
         $groupids = collect($info['groups'])->pluck('id')->toArray();
@@ -200,7 +200,7 @@ class Admin extends Base
      * 删除
      *
      * @title 管理员删除
-     * @desc 系统管理员删除
+     * @desc 系统管理员账号删除
      * @order 1054
      * @auth true
      *
@@ -210,12 +210,12 @@ class Admin extends Base
     public function delete(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('管理员ID不能为空'));
+            return $this->error(__('账号ID不能为空'));
         }
         
         $adminid = app('larke.admin.admin')->getId();
         if ($id == $adminid) {
-            return $this->error(__('你不能删除你自己'));
+            return $this->error(__('你不能删除自己的账号'));
         }
         
         $info = AdminModel::withAccess()
@@ -226,22 +226,22 @@ class Admin extends Base
         }
         
         if ($info['id'] == config('larkeadmin.auth.admin_id')) {
-            return $this->error(__('当前管理员不能被删除'));
+            return $this->error(__('当前账号不能被删除'));
         }
         
         $deleteStatus = $info->delete();
         if ($deleteStatus === false) {
-            return $this->error(__('管理员删除失败'));
+            return $this->error(__('账号删除失败'));
         }
         
-        return $this->success(__('管理员删除成功'));
+        return $this->success(__('账号删除成功'));
     }
     
     /**
      * 添加
      *
      * @title 管理员添加
-     * @desc 系统管理员添加
+     * @desc 系统管理员账号添加
      * @order 1055
      * @auth true
      *
@@ -258,8 +258,8 @@ class Admin extends Base
             'introduce' => 'required|max:500',
             'status' => 'required',
         ], [
-            'name.required' => __('管理员不能为空'),
-            'name.unique' => __('管理员已经存在'),
+            'name.required' => __('账号不能为空'),
+            'name.unique' => __('账号已经存在'),
             'nickname.required' => __('昵称不能为空'),
             'email.required' => __('邮箱不能为空'),
             'email.email' => __('邮箱格式错误'),
@@ -299,7 +299,7 @@ class Admin extends Base
         
         $admin = AdminModel::create($insertData);
         if ($admin === false) {
-            return $this->error(__('添加信息失败'));
+            return $this->error(__('添加账号失败'));
         }
         
         // 用户组默认取当前用户的用户组的其中之一
@@ -311,7 +311,7 @@ class Admin extends Base
             ]);
         }
         
-        return $this->success(__('添加信息成功'), [
+        return $this->success(__('添加账号成功'), [
             'id' => $admin->id,
         ]);
     }
@@ -320,7 +320,7 @@ class Admin extends Base
      * 更新
      *
      * @title 管理员更新
-     * @desc 系统管理员更新
+     * @desc 系统管理员账号更新
      * @order 1056
      * @auth true
      *
@@ -331,19 +331,19 @@ class Admin extends Base
     public function update(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->error(__('管理员ID不能为空'));
+            return $this->error(__('账号ID不能为空'));
         }
         
         $adminid = app('larke.admin.admin')->getId();
         if ($id == $adminid) {
-            return $this->error(__('你不能修改自己的信息'));
+            return $this->error(__('你不能修改自己的账号'));
         }
         
         $adminInfo = AdminModel::withAccess()
             ->where('id', '=', $id)
             ->first();
         if (empty($adminInfo)) {
-            return $this->error(__('要修改的管理员不存在'));
+            return $this->error(__('账号不存在'));
         }
         
         $data = $request->all();
@@ -376,8 +376,8 @@ class Admin extends Base
                 $query->where('email', '=', $data['email']);
             })
             ->first();
-        if (!empty($nameInfo)) {
-            return $this->error(__('要修改成的管理管理员或者邮箱已经存在'));
+        if (! empty($nameInfo)) {
+            return $this->error(__('管理员账号或者邮箱已经存在'));
         }
         
         $updateData = [
@@ -407,17 +407,17 @@ class Admin extends Base
         // 更新信息
         $status = $adminInfo->update($updateData);
         if ($status === false) {
-            return $this->error(__('信息修改失败'));
+            return $this->error(__('账号修改失败'));
         }
         
-        return $this->success(__('信息修改成功'));
+        return $this->success(__('账号修改成功'));
     }
 
     /**
      * 修改头像
      *
      * @title 修改头像
-     * @desc 系统管理员修改头像
+     * @desc 系统管理员账号修改头像
      * @order 1057
      * @auth true
      *
@@ -428,19 +428,19 @@ class Admin extends Base
     public function updateAvatar(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->error(__('管理员ID不能为空'));
+            return $this->error(__('账号ID不能为空'));
         }
         
         $adminid = app('larke.admin.admin')->getId();
         if ($id == $adminid) {
-            return $this->error(__('你不能修改自己的头像'));
+            return $this->error(__('你不能修改自己的账号'));
         }
         
         $adminInfo = AdminModel::withAccess()
             ->where('id', '=', $id)
             ->first();
         if (empty($adminInfo)) {
-            return $this->error(__('要修改的管理员不存在'));
+            return $this->error(__('账号不存在'));
         }
         
         $data = $request->only(['avatar']);
@@ -458,7 +458,7 @@ class Admin extends Base
         
         $status = $adminInfo->updateAvatar($data['avatar']);
         if ($status === false) {
-            return $this->error(__('修改信息失败'));
+            return $this->error(__('修改头像失败'));
         }
         
         return $this->success(__('修改头像成功'));
@@ -468,7 +468,7 @@ class Admin extends Base
      * 修改密码
      *
      * @title 修改密码
-     * @desc 系统管理员修改密码
+     * @desc 系统管理员账号修改密码
      * @order 1058
      * @auth true
      *
@@ -479,19 +479,19 @@ class Admin extends Base
     public function updatePasssword(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->error(__('管理员ID不能为空'));
+            return $this->error(__('账号ID不能为空'));
         }
         
         $adminid = app('larke.admin.admin')->getId();
         if ($id == $adminid) {
-            return $this->error(__('你不能修改自己的密码'));
+            return $this->error(__('你不能修改自己的账号'));
         }
         
         $adminInfo = AdminModel::withAccess()
             ->where('id', '=', $id)
             ->first();
         if (empty($adminInfo)) {
-            return $this->error(__('要修改的管理员不存在'));
+            return $this->error(__('账号不存在'));
         }
 
         // 密码长度错误
@@ -521,7 +521,7 @@ class Admin extends Base
      * 启用
      *
      * @title 管理员启用
-     * @desc 系统管理员启用
+     * @desc 系统管理员账号启用
      * @order 1059
      * @auth true
      *
@@ -531,38 +531,38 @@ class Admin extends Base
     public function enable(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('ID不能为空'));
+            return $this->error(__('账号ID不能为空'));
         }
         
         $adminid = app('larke.admin.admin')->getId();
         if ($id == $adminid) {
-            return $this->error(__('你不能修改自己的管理员'));
+            return $this->error(__('你不能修改自己的账号'));
         }
         
         $info = AdminModel::withAccess()
             ->where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('管理员不存在'));
+            return $this->error(__('账号不存在'));
         }
         
         if ($info->status == 1) {
-            return $this->error(__('管理员已启用'));
+            return $this->error(__('账号已启用'));
         }
         
         $status = $info->enable();
         if ($status === false) {
-            return $this->error(__('启用失败'));
+            return $this->error(__('启用账号失败'));
         }
         
-        return $this->success(__('启用成功'));
+        return $this->success(__('启用账号成功'));
     }
     
     /**
      * 禁用
      *
      * @title 管理员禁用
-     * @desc 系统管理员禁用
+     * @desc 系统管理员账号禁用
      * @order 10510
      * @auth true
      *
@@ -572,38 +572,38 @@ class Admin extends Base
     public function disable(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('ID不能为空'));
+            return $this->error(__('账号ID不能为空'));
         }
         
         $adminid = app('larke.admin.admin')->getId();
         if ($id == $adminid) {
-            return $this->error(__('你不能修改自己的管理员'));
+            return $this->error(__('你不能修改自己的账号'));
         }
         
         $info = AdminModel::withAccess()
             ->where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('管理员不存在'));
+            return $this->error(__('账号不存在'));
         }
         
         if ($info->status == 0) {
-            return $this->error(__('管理员已禁用'));
+            return $this->error(__('账号已禁用'));
         }
         
         $status = $info->disable();
         if ($status === false) {
-            return $this->error(__('禁用失败'));
+            return $this->error(__('禁用账号失败'));
         }
         
-        return $this->success(__('禁用成功'));
+        return $this->success(__('禁用账号成功'));
     }
     
     /**
      * 退出
      *
      * @title 管理员退出
-     * @desc 系统管理员退出
+     * @desc 系统管理员账号退出
      * @order 10511
      * @auth true
      * 
@@ -642,20 +642,20 @@ class Admin extends Base
         
         $adminid = app('larke.admin.admin')->getId();
         if ($refreshAdminid == $adminid) {
-            return $this->error(__('你不能退出你的管理员'));
+            return $this->error(__('你不能退出你的账号'));
         }
         
         // 添加缓存黑名单
         app('larke.admin.cache')->add(md5($refreshToken), time(), $refreshTokenExpiresIn);
         
-        return $this->success(__('退出成功'));
+        return $this->success(__('账号退出成功'));
     }
     
     /**
      * 授权
      *
      * @title 管理员授权
-     * @desc 系统管理员授权
+     * @desc 系统管理员账号授权
      * @order 10512
      * @auth true
      *
@@ -666,14 +666,14 @@ class Admin extends Base
     public function access(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->error(__('ID不能为空'));
+            return $this->error(__('账号ID不能为空'));
         }
         
         $info = AdminModel::withAccess()
             ->where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('信息不存在'));
+            return $this->error(__('账号不存在'));
         }
         
         AuthGroupAccessModel::where('admin_id', '=', $id)
@@ -703,7 +703,7 @@ class Admin extends Base
             }
         }
         
-        return $this->success(__('授权分组成功'));
+        return $this->success(__('账号授权分组成功'));
     }
     
 }
