@@ -166,13 +166,13 @@ class Admin
     /**
      * 判断是否有权限
      */
-    public function hasAccess($url, $method = 'GET')
+    public function hasAccess($slug, $method = 'GET')
     {
         if ($this->isAdministrator()) {
             return true;
         }
         
-        if (! AuthPermission::enforce($this->id, $url, $method)) {
+        if (! AuthPermission::enforce($this->id, $slug, $method)) {
             return false;
         }
         
