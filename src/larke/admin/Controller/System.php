@@ -6,7 +6,6 @@ namespace Larke\Admin\Controller;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Validator;
 
@@ -93,43 +92,6 @@ class System extends Base
         event(new SystemCacheEvent());
         
         return $this->success(__('路由及配置信息缓存成功'));
-    }
-    
-    /**
-     * 设置语言
-     *
-     * @title 设置语言
-     * @desc 设置系统默认语言
-     * @order 1034
-     * @auth true
-     *
-     * @param  Request  $request
-     * @return Response
-     */
-    public function setLang(Request $request)
-    {
-        // 切换语言
-        $locale = $request->input('locale');
-        
-        $validator = Validator::make([
-            'locale' => $locale,
-        ], [
-            'locale' => 'required|alpha_dash',
-        ], [
-            'locale.required' => __('请选择要查询的语言'),
-            'locale.alpha_dash' => __('语言名称格式错误'),
-        ]);
-
-        if ($validator->fails()) {
-            return $this->error($validator->errors()->first());
-        }
-        
-        // 设置语言
-        if (! App::isLocale($locale)) {
-            App::setLocale($locale);
-        }
-        
-        return $this->success(__('设置语言成功'));
     }
     
     /**

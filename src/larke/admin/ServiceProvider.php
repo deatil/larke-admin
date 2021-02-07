@@ -63,6 +63,7 @@ class ServiceProvider extends BaseServiceProvider
      * @var array
      */
     protected $routeMiddleware = [
+        'larke.admin.lang' => Middleware\CheckLang::class,
         'larke.admin.auth' => Middleware\Authenticate::class,
         'larke.admin.auth.admin' => Middleware\AdminCheck::class,
         'larke.admin.permission' => Middleware\Permission::class,
@@ -76,6 +77,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected $middlewareGroups = [
         'larke.admin' => [
+            'larke.admin.lang',
             'larke.admin.auth',
             'larke.admin.permission',
             'larke.admin.log',

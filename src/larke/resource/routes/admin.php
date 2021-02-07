@@ -103,7 +103,6 @@ Route::group([
     
     $router->get('/system/info', 'System@info')->name('system.info');
     $router->get('/system/lang', 'System@lang')->name('system.lang');
-    $router->put('/system/set-lang', 'System@setLang')->name('system.set-lang');
     $router->post('/system/cache', 'System@cache')->name('system.cache');
     $router->post('/system/clear-cache', 'System@clearCache')->name('system.clear-cache');
 });
