@@ -90,6 +90,23 @@ class Extension extends Base
             ->get()
             ->toArray(); 
         
+        // 添加icon图标
+        $list = collect($list)
+            ->map(function($data, $key) {
+                $icon = '';
+                if (class_exists($data['class_name'])) {
+                    $newClass = app()->register($data['class_name']);
+                    if (isset($newClass->icon)) {
+                        $icon = $newClass->icon;
+                    }
+                }
+                
+                $data['icon'] = AdminExtension::getIcon($icon);
+                
+                return $data;
+            })
+            ->toArray();
+        
         return $this->success(__('获取成功'), [
             'start' => $start,
             'limit' => $limit,
@@ -319,7 +336,9 @@ class Extension extends Base
         }
         
         AdminExtension::loadExtension();
-        AdminExtension::getNewClassMethod($info->class_name, 'uninstall');
+        AdminExtension::getNewClassMethod($info->class_name, 'uninstall', [
+            'extension' => $info->toArray(),
+        ]);
         
         // 清除缓存
         AdminExtension::forgetExtensionCache($name);

@@ -515,10 +515,9 @@ class Extension
         }
         
         // 扩展icon
+        $icon = '';
         if (isset($newClass->icon)) {
             $icon = $newClass->icon;
-        } else {
-            $icon = '';
         }
         $icon = $this->getIcon($icon);
         
