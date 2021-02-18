@@ -377,7 +377,7 @@ class Extension
     {
         // 清除缓存
         $cacheId = md5(str_replace('\\', '/', $name));
-        $composerData = Cache::forget($cacheId);
+        Cache::forget($cacheId);
         
         return $this;
     }

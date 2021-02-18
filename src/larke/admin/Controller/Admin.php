@@ -17,7 +17,7 @@ use Larke\Admin\Repository\Admin as AdminRepository;
  *
  * @title 管理员
  * @desc 系统管理员账号管理
- * @order 105
+ * @order 300
  * @auth true
  * @slug larke-admin.admin
  *
@@ -31,7 +31,7 @@ class Admin extends Base
      *
      * @title 管理员列表
      * @desc 系统管理员账号列表
-     * @order 1051
+     * @order 301
      * @auth true
      *
      * @param  Request  $request
@@ -109,7 +109,7 @@ class Admin extends Base
      *
      * @title 管理员详情
      * @desc 系统管理员账号详情
-     * @order 1052
+     * @order 302
      * @auth true
      *
      * @param string $id
@@ -163,7 +163,7 @@ class Admin extends Base
      *
      * @title 管理员权限
      * @desc 系统管理员账号权限
-     * @order 1053
+     * @order 303
      * @auth true
      *
      * @param string $id
@@ -201,7 +201,7 @@ class Admin extends Base
      *
      * @title 管理员删除
      * @desc 系统管理员账号删除
-     * @order 1054
+     * @order 304
      * @auth true
      *
      * @param string $id
@@ -242,7 +242,7 @@ class Admin extends Base
      *
      * @title 管理员添加
      * @desc 系统管理员账号添加
-     * @order 1055
+     * @order 305
      * @auth true
      *
      * @param  Request  $request
@@ -321,7 +321,7 @@ class Admin extends Base
      *
      * @title 管理员更新
      * @desc 系统管理员账号更新
-     * @order 1056
+     * @order 306
      * @auth true
      *
      * @param string $id
@@ -418,7 +418,7 @@ class Admin extends Base
      *
      * @title 修改头像
      * @desc 系统管理员账号修改头像
-     * @order 1057
+     * @order 307
      * @auth true
      *
      * @param string $id
@@ -469,7 +469,7 @@ class Admin extends Base
      *
      * @title 修改密码
      * @desc 系统管理员账号修改密码
-     * @order 1058
+     * @order 308
      * @auth true
      *
      * @param string $id
@@ -522,7 +522,7 @@ class Admin extends Base
      *
      * @title 管理员启用
      * @desc 系统管理员账号启用
-     * @order 1059
+     * @order 309
      * @auth true
      *
      * @param string $id
@@ -563,7 +563,7 @@ class Admin extends Base
      *
      * @title 管理员禁用
      * @desc 系统管理员账号禁用
-     * @order 10510
+     * @order 310
      * @auth true
      *
      * @param string $id
@@ -603,11 +603,9 @@ class Admin extends Base
      * 退出
      *
      * @title 管理员退出
-     * @desc 系统管理员账号退出
-     * @order 10511
+     * @desc 系统管理员账号退出，添加用户的 refreshToken 到黑名单
+     * @order 311
      * @auth true
-     * 
-     * 添加用户的 refreshToken 到黑名单
      *
      * @param string $refreshToken
      * @return Response
@@ -656,7 +654,7 @@ class Admin extends Base
      *
      * @title 管理员授权
      * @desc 系统管理员账号授权
-     * @order 10512
+     * @order 312
      * @auth true
      *
      * @param string $id

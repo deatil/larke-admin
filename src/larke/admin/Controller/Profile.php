@@ -16,7 +16,7 @@ use Larke\Admin\Model\Admin as AdminModel;
  *
  * @title 个人信息
  * @desc 个人信息管理
- * @order 102
+ * @order 150
  * @auth true
  * @slug larke-admin.profile
  *
@@ -30,7 +30,7 @@ class Profile extends Base
      *
      * @title 我的信息
      * @desc 我的信息管理
-     * @order 1021
+     * @order 151
      * @auth true
      *
      * @return Response
@@ -47,7 +47,7 @@ class Profile extends Base
      *
      * @title 修改我的信息
      * @desc 修改我的信息管理
-     * @order 1022
+     * @order 152
      * @auth true
      *
      * @param  Request  $request
@@ -97,7 +97,7 @@ class Profile extends Base
      *
      * @title 修改头像
      * @desc 修改头像管理
-     * @order 1023
+     * @order 153
      * @auth true
      *
      * @param  Request  $request
@@ -134,7 +134,7 @@ class Profile extends Base
      *
      * @title 修改密码
      * @desc 修改密码管理
-     * @order 1024
+     * @order 154
      * @auth true
      *
      * @param  Request  $request
@@ -199,7 +199,7 @@ class Profile extends Base
      *
      * @title 权限列表
      * @desc 权限列表管理
-     * @order 1025
+     * @order 155
      * @auth true
      *
      * @return Response

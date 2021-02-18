@@ -18,7 +18,7 @@ use Larke\Admin\Service\Upload as UploadService;
  *
  * @title 附件
  * @desc 系统附件管理
- * @order 108
+ * @order 500
  * @auth true
  * @slug larke-admin.attachment
  *
@@ -32,7 +32,7 @@ class Attachment extends Base
      *
      * @title 附件列表
      * @desc 附件列表
-     * @order 1081
+     * @order 501
      * @auth true
      *
      * @param  Request  $request
@@ -96,7 +96,7 @@ class Attachment extends Base
      *
      * @title 附件详情
      * @desc 附件详情
-     * @order 1082
+     * @order 502
      * @auth true
      *
      * @param string $id
@@ -122,7 +122,7 @@ class Attachment extends Base
      *
      * @title 附件删除
      * @desc 附件删除
-     * @order 1083
+     * @order 503
      * @auth true
      *
      * @param string $id
@@ -160,7 +160,7 @@ class Attachment extends Base
      *
      * @title 附件启用
      * @desc 附件启用
-     * @order 1084
+     * @order 504
      * @auth true
      *
      * @param string $id
@@ -195,7 +195,7 @@ class Attachment extends Base
      *
      * @title 附件禁用
      * @desc 附件禁用
-     * @order 1085
+     * @order 505
      * @auth true
      *
      * @param string $id
@@ -230,7 +230,7 @@ class Attachment extends Base
      *
      * @title 上传文件
      * @desc 上传文件附件
-     * @order 1086
+     * @order 506
      * @auth true
      *
      * @param  Request  $request
@@ -344,7 +344,7 @@ class Attachment extends Base
      *
      * @title 附件下载码
      * @desc 附件下载码
-     * @order 1087
+     * @order 507
      * @auth true
      *
      * @param string $id
@@ -375,7 +375,7 @@ class Attachment extends Base
      *
      * @title 附件下载
      * @desc 附件下载
-     * @order 1088
+     * @order 508
      * @auth true
      *
      * @param string $code

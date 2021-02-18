@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use Larke\Admin\Support\Password;
 use Larke\Admin\Model\Admin as AdminModel;
 
-// use dir
+// 文件夹引入
 use Larke\Admin\Event;
 
 /**
@@ -33,7 +33,7 @@ class Passport extends Base
      *
      * @title 验证码
      * @desc 登陆验证码
-     * @order 1001
+     * @order 101
      * @auth false
      *
      * @param  Request  $request
@@ -59,7 +59,7 @@ class Passport extends Base
      *
      * @title 登陆
      * @desc 登陆登陆
-     * @order 1002
+     * @order 102
      * @auth false
      *
      * @param  Request  $request
@@ -165,7 +165,7 @@ class Passport extends Base
      *
      * @title 刷新token
      * @desc 刷新token
-     * @order 1003
+     * @order 103
      * @auth false
      *
      * @param  Request  $request
@@ -227,7 +227,7 @@ class Passport extends Base
      *
      * @title 退出
      * @desc 退出
-     * @order 1004
+     * @order 104
      * @auth true
      *
      * @param  Request  $request

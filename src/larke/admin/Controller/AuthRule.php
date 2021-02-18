@@ -17,7 +17,7 @@ use Larke\Admin\Repository\AuthRule as AuthRuleRepository;
  *
  * @title 权限
  * @desc 系统权限管理
- * @order 106
+ * @order 400
  * @auth true
  * @slug larke-admin.auth-rule
  *
@@ -31,7 +31,7 @@ class AuthRule extends Base
      *
      * @title 权限列表
      * @desc 系统权限列表
-     * @order 1061
+     * @order 401
      * @auth true
      *
      * @param  Request  $request
@@ -103,7 +103,7 @@ class AuthRule extends Base
      *
      * @title 权限树结构
      * @desc 权限树结构列表
-     * @order 1062
+     * @order 402
      * @auth true
      *
      * @param  Request  $request
@@ -133,7 +133,7 @@ class AuthRule extends Base
      *
      * @title 权限子列表
      * @desc 权限子结构列表
-     * @order 1063
+     * @order 403
      * @auth true
      *
      * @param  Request  $request
@@ -163,7 +163,7 @@ class AuthRule extends Base
      *
      * @title 权限详情
      * @desc 权限详情
-     * @order 1064
+     * @order 404
      * @auth true
      *
      * @param string $id
@@ -189,7 +189,7 @@ class AuthRule extends Base
      *
      * @title 权限删除
      * @desc 权限删除
-     * @order 1065
+     * @order 405
      * @auth true
      *
      * @param string $id
@@ -230,7 +230,7 @@ class AuthRule extends Base
      *
      * @title 权限清空
      * @desc 清空特定ID权限
-     * @order 1065
+     * @order 406
      * @auth true
      *
      * @param  Request  $request
@@ -272,7 +272,7 @@ class AuthRule extends Base
      *
      * @title 权限添加
      * @desc 添加权限
-     * @order 1066
+     * @order 407
      * @auth true
      *
      * @param  Request  $request
@@ -341,7 +341,7 @@ class AuthRule extends Base
      *
      * @title 权限更新
      * @desc 更新权限
-     * @order 1067
+     * @order 408
      * @auth true
      *
      * @param string $id
@@ -428,7 +428,7 @@ class AuthRule extends Base
      *
      * @title 权限排序
      * @desc 更新权限排序
-     * @order 1068
+     * @order 409
      * @auth true
      *
      * @param string $id
@@ -462,7 +462,7 @@ class AuthRule extends Base
      *
      * @title 权限启用
      * @desc 更新权限启用
-     * @order 1069
+     * @order 410
      * @auth true
      *
      * @param string $id
@@ -497,7 +497,7 @@ class AuthRule extends Base
      *
      * @title 权限禁用
      * @desc 更新权限禁用
-     * @order 10610
+     * @order 411
      * @auth true
      *
      * @param string $id

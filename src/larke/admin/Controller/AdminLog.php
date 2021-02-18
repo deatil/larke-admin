@@ -13,7 +13,7 @@ use Larke\Admin\Model\AdminLog as AdminLogModel;
  *
  * @title 操作日志
  * @desc 操作日志管理
- * @order 109
+ * @order 550
  * @auth true
  * @slug larke-admin.admin-log
  *
@@ -27,7 +27,7 @@ class AdminLog extends Base
      *
      * @title 日志列表
      * @desc 操作日志全部列表
-     * @order 1091
+     * @order 551
      * @auth true
      *
      * @param  Request  $request
@@ -97,7 +97,7 @@ class AdminLog extends Base
      *
      * @title 日志详情
      * @desc 操作日志详情
-     * @order 1092
+     * @order 552
      * @auth true
      *
      * @param string $id
@@ -124,7 +124,7 @@ class AdminLog extends Base
      *
      * @title 日志删除
      * @desc 操作日志删除
-     * @order 1093
+     * @order 553
      * @auth true
      *
      * @param string $id
@@ -155,7 +155,7 @@ class AdminLog extends Base
      *
      * @title 清空日志
      * @desc 清空操作日志
-     * @order 1094
+     * @order 554
      * @auth true
      *
      * @param  Request  $request

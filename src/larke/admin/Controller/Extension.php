@@ -24,7 +24,7 @@ use Larke\Admin\Model\Extension as ExtensionModel;
  *
  * @title 扩展
  * @desc 系统扩展管理
- * @order 105
+ * @order 350
  * @auth true
  * @slug larke-admin.extension
  *
@@ -38,7 +38,7 @@ class Extension extends Base
      *
      * @title 扩展列表
      * @desc 系统扩展列表管理
-     * @order 1051
+     * @order 351
      * @auth true
      *
      * @param  Request  $request
@@ -120,7 +120,7 @@ class Extension extends Base
      *
      * @title 本地扩展
      * @desc 本地全部扩展
-     * @order 1052
+     * @order 352
      * @auth true
      *
      * @return Response
@@ -159,7 +159,7 @@ class Extension extends Base
      *
      * @title 刷新扩展
      * @desc 刷新本地扩展
-     * @order 1053
+     * @order 353
      * @auth true
      *
      * @return Response
@@ -176,7 +176,7 @@ class Extension extends Base
      *
      * @title 本地扩展命令
      * @desc 本地扩展命令，只限用于非composer扩展
-     * @order 1053
+     * @order 354
      * @auth true
      *
      * @param string $name
@@ -218,7 +218,7 @@ class Extension extends Base
      *
      * @title 扩展安装
      * @desc 系统扩展安装
-     * @order 1054
+     * @order 355
      * @auth true
      *
      * @param string $name
@@ -312,7 +312,7 @@ class Extension extends Base
      *
      * @title 扩展卸载
      * @desc 系统扩展卸载
-     * @order 1055
+     * @order 356
      * @auth true
      *
      * @param string $name
@@ -332,7 +332,7 @@ class Extension extends Base
         
         $deleteStatus = $info->delete();
         if ($deleteStatus === false) {
-            return $this->error(__('扩展删除失败'));
+            return $this->error(__('扩展卸载失败'));
         }
         
         AdminExtension::loadExtension();
@@ -343,7 +343,7 @@ class Extension extends Base
         // 清除缓存
         AdminExtension::forgetExtensionCache($name);
         
-        return $this->success(__('扩展删除成功'));
+        return $this->success(__('扩展卸载成功'));
     }
     
     /**
@@ -351,7 +351,7 @@ class Extension extends Base
      *
      * @title 扩展更新
      * @desc 系统扩展更新
-     * @order 1056
+     * @order 357
      * @auth true
      *
      * @param string $name
@@ -449,7 +449,7 @@ class Extension extends Base
      *
      * @title 扩展排序
      * @desc 系统扩展排序
-     * @order 1057
+     * @order 358
      * @auth true
      *
      * @param string $name
@@ -483,7 +483,7 @@ class Extension extends Base
      *
      * @title 扩展启用
      * @desc 系统扩展启用
-     * @order 1058
+     * @order 359
      * @auth true
      *
      * @param string $name
@@ -524,7 +524,7 @@ class Extension extends Base
      *
      * @title 扩展禁用
      * @desc 系统扩展禁用
-     * @order 1059
+     * @order 360
      * @auth true
      *
      * @param string $name
@@ -564,7 +564,7 @@ class Extension extends Base
      *
      * @title 扩展配置
      * @desc 系统扩展配置
-     * @order 10510
+     * @order 361
      * @auth true
      *
      * @param string $name
@@ -608,7 +608,7 @@ class Extension extends Base
      *
      * @title 扩展上传
      * @desc 扩展压缩包上传
-     * @order 10511
+     * @order 362
      * @auth true
      *
      * @param  Request  $request
@@ -719,7 +719,7 @@ class Extension extends Base
      *
      * @title 仓库注册扩展
      * @desc 本地扩展注册到composer.json仓库
-     * @order 10512
+     * @order 363
      * @auth true
      *
      * @param string $name
@@ -760,7 +760,7 @@ class Extension extends Base
      *
      * @title 仓库移除扩展
      * @desc 本地扩展从composer.json仓库移除
-     * @order 10513
+     * @order 364
      * @auth true
      *
      * @param string $name
