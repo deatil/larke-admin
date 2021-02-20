@@ -21,34 +21,50 @@
 <table>
     <tr>
         <td width="50%">
-            ![login](https://user-images.githubusercontent.com/24578855/103483910-8cec8780-4e25-11eb-93c5-ea7ce7a09b60.png)
+            <center>
+                <img alt="login" src="https://user-images.githubusercontent.com/24578855/103483910-8cec8780-4e25-11eb-93c5-ea7ce7a09b60.png" />
+            </center>
         </td>
         <td width="50%">
-            ![index](https://user-images.githubusercontent.com/24578855/105568367-cacd3380-5d73-11eb-98ab-55701d0068ed.png)
-        </td>
-    </tr>
-    <tr>
-        <td width="50%">
-            ![admin](https://user-images.githubusercontent.com/24578855/101988564-6bd8c100-3cd5-11eb-8524-21151ba3b404.png)
-        </td>
-        <td width="50%">
-            ![admin-access](https://user-images.githubusercontent.com/24578855/103433753-db393500-4c31-11eb-8d8a-b40dfa0db84e.png)
+            <center>
+                <img alt="index" src="https://user-images.githubusercontent.com/24578855/105568367-cacd3380-5d73-11eb-98ab-55701d0068ed.png" />
+            </center>
         </td>
     </tr>
     <tr>
         <td width="50%">
-            ![attach](https://user-images.githubusercontent.com/24578855/101988566-6da28480-3cd5-11eb-9532-69d88b2f598d.png)
+            <center>
+                <img alt="admin" src="https://user-images.githubusercontent.com/24578855/101988564-6bd8c100-3cd5-11eb-8524-21151ba3b404.png" />
+            </center>
         </td>
         <td width="50%">
-            ![config](https://user-images.githubusercontent.com/24578855/101988567-6e3b1b00-3cd5-11eb-8799-66e8ebec6020.png)
+            <center>
+                <img alt="admin-access" src="https://user-images.githubusercontent.com/24578855/103433753-db393500-4c31-11eb-8d8a-b40dfa0db84e.png" />
+            </center>
         </td>
     </tr>
     <tr>
         <td width="50%">
-            ![menus](https://user-images.githubusercontent.com/24578855/101988573-71cea200-3cd5-11eb-8e8b-e80ab319b216.png)
+            <center>
+                <img alt="attach" src="https://user-images.githubusercontent.com/24578855/101988566-6da28480-3cd5-11eb-9532-69d88b2f598d.png" />
+            </center>
         </td>
         <td width="50%">
-            ![rule2](https://user-images.githubusercontent.com/24578855/102609155-f9992e00-4165-11eb-93ad-82275af134ab.png)
+            <center>
+                <img alt="config" src="https://user-images.githubusercontent.com/24578855/101988567-6e3b1b00-3cd5-11eb-8799-66e8ebec6020.png" />
+            </center>
+        </td>
+    </tr>
+    <tr>
+        <td width="50%">
+            <center>
+                <img alt="menus" src="https://user-images.githubusercontent.com/24578855/101988573-71cea200-3cd5-11eb-8e8b-e80ab319b216.png" />
+            </center>
+        </td>
+        <td width="50%">
+            <center>
+                <img alt="rule2" src="https://user-images.githubusercontent.com/24578855/102609155-f9992e00-4165-11eb-93ad-82275af134ab.png" />
+            </center>
         </td>
     </tr>
 </table>
