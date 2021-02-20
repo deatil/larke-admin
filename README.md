@@ -18,7 +18,7 @@
 
 ### 截图预览
 
-| :---: | :---: |
+| --- | --- |
 | ![login](https://user-images.githubusercontent.com/24578855/103483910-8cec8780-4e25-11eb-93c5-ea7ce7a09b60.png) | ![index](https://user-images.githubusercontent.com/24578855/105568367-cacd3380-5d73-11eb-98ab-55701d0068ed.png) |
 | ![admin](https://user-images.githubusercontent.com/24578855/101988564-6bd8c100-3cd5-11eb-8524-21151ba3b404.png) | ![admin-access](https://user-images.githubusercontent.com/24578855/103433753-db393500-4c31-11eb-8d8a-b40dfa0db84e.png) |
 | ![attach](https://user-images.githubusercontent.com/24578855/101988566-6da28480-3cd5-11eb-9532-69d88b2f598d.png) | ![config](https://user-images.githubusercontent.com/24578855/101988567-6e3b1b00-3cd5-11eb-8799-66e8ebec6020.png) |
