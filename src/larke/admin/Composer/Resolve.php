@@ -4,6 +4,8 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Composer;
 
+use Composer\Autoload\ClassLoader;
+
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 
@@ -48,6 +50,7 @@ class Resolve
     public function withDirectory($directory)
     {
         $this->directory = $directory;
+        
         return $this;
     }
     
@@ -61,6 +64,7 @@ class Resolve
     public function withComposerName($composerName)
     {
         $this->composerName = $composerName;
+        
         return $this;
     }
     
@@ -349,7 +353,7 @@ class Resolve
         $classmap = Arr::get($autoload, 'classmap', []);
         $files = Arr::get($autoload, 'files', []);
 
-        $classLoader = app('larke.admin.loader');
+        $classLoader = new ClassLoader();
         
         if (! empty($psr0)) {
             foreach ($psr0 as $namespace0 => $path0) {

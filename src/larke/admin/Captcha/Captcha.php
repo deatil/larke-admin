@@ -14,17 +14,38 @@ use Illuminate\Support\Facades\Cache;
  */
 class Captcha
 {
-    private $code = ''; // 验证码
-    private $uniqid = ''; // 唯一序号
-    private $charset = 'ABCDEFGHKMNPRSTUVWXYZ23456789'; // 随机因子
-    private $codelen = 4; // 验证码长度
-    private $width = 130; // 宽度
-    private $height = 50; // 高度
-    private $img = ''; // 图形资源句柄
-    private $font = ''; // 指定的字体
-    private $fontsize = 20; // 指定字体大小
-    private $fontcolor = ''; // 指定字体颜色
-    private $cachetime = 300; // 验证码缓存时间
+    // 验证码
+    private $code = ''; 
+    
+    // 唯一序号
+    private $uniqid = ''; 
+    
+    // 随机因子
+    private $charset = 'ABCDEFGHKMNPRSTUVWXYZ23456789'; 
+    
+    // 验证码长度
+    private $codelen = 4; 
+    
+    // 宽度
+    private $width = 130; 
+    
+    // 高度
+    private $height = 50; 
+    
+    // 图形资源句柄
+    private $img = ''; 
+    
+    // 指定的字体
+    private $font = ''; 
+    
+    // 指定字体大小
+    private $fontsize = 20; 
+    
+    // 指定字体颜色
+    private $fontcolor = ''; 
+    
+    // 验证码缓存时间
+    private $cachetime = 300; 
     
     /**
      * 设置配置
