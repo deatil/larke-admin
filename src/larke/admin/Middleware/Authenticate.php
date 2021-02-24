@@ -56,12 +56,12 @@ class Authenticate
             $this->error(__('token格式错误'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
-        if (app('larke.admin.cache')->has(md5($accessToken))) {
+        if (app('larke-admin.cache')->has(md5($accessToken))) {
             $this->error(__('token已失效'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
         try {
-            $jwtAuth = app('larke.admin.jwt')
+            $jwtAuth = app('larke-admin.jwt')
                 ->withJti(config('larkeadmin.passport.access_token_id'))
                 ->withToken($accessToken)
                 ->decode();
@@ -84,16 +84,16 @@ class Authenticate
         
         $adminInfo = $adminInfo->toArray();
         
-        app('larke.admin.admin')
+        app('larke-admin.admin')
             ->withAccessToken($accessToken)
             ->withId($adminid)
             ->withData($adminInfo);
         
-        if (! app('larke.admin.admin')->isActive()) {
+        if (! app('larke-admin.admin')->isActive()) {
             $this->error(__('帐号不存在或者已被锁定'), \ResponseCode::AUTH_ERROR);
         }
         
-        if (! app('larke.admin.admin')->isGroupActive()) {
+        if (! app('larke-admin.admin')->isGroupActive()) {
             $this->error(__('帐号用户组不存在或者已被锁定'), \ResponseCode::AUTH_ERROR);
         }
     }

@@ -60,6 +60,25 @@ class Base extends Model
         return $query;
     }
     
+    /**
+     * 活动
+     */
+    public function scopeActived($query)
+    {
+        return $query->where('status', '=', 1);
+    }
+    
+    /**
+     * 未活动
+     */
+    public function scopeInactived($query)
+    {
+        return $query->where('status', '=', 0);
+    }
+    
+    /**
+     * 启用
+     */
     public function enable() 
     {
         return $this->update([
@@ -67,6 +86,9 @@ class Base extends Model
         ]);
     }
     
+    /**
+     * 禁用
+     */
     public function disable() 
     {
         return $this->update([
@@ -74,6 +96,9 @@ class Base extends Model
         ]);
     }
     
+    /**
+     * 更改排序
+     */
     public function updateListorder($listorder) 
     {
         return $this->update([
@@ -81,6 +106,9 @@ class Base extends Model
         ]);
     }
     
+    /**
+     * 是否活动
+     */
     public function isActive() 
     {
         return ($this->status == 1);

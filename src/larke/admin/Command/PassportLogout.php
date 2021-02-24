@@ -61,14 +61,14 @@ class PassportLogout extends Command
             }
         }
         
-        if (app('larke.admin.cache')->has(md5($refreshToken))) {
+        if (app('larke-admin.cache')->has(md5($refreshToken))) {
             $this->line("<error>RefreshToken is logouted !</error> ");
 
             return;
         }
         
         try {
-            $refreshJwt = app('larke.admin.jwt')
+            $refreshJwt = app('larke-admin.jwt')
                 ->withJti(config('larkeadmin.passport.refresh_token_id'))
                 ->withToken($refreshToken)
                 ->decode();
@@ -90,7 +90,7 @@ class PassportLogout extends Command
         }
         
         // 添加进黑名单
-        app('larke.admin.cache')->add(md5($refreshToken), time(), $refreshTokenExpiresIn);
+        app('larke-admin.cache')->add(md5($refreshToken), time(), $refreshTokenExpiresIn);
         
         $this->info('Logout success and adminid is: '.$refreshAdminid);
     }

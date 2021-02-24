@@ -16,6 +16,6 @@ class Captcha extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'larke.admin.captcha';
+        return 'larke-admin.captcha';
     }
 }

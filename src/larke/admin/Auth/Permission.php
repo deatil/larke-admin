@@ -4,6 +4,8 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Auth;
 
+use Enforcer;
+
 /**
  * 权限
  *
@@ -17,7 +19,7 @@ class Permission
      */
     public static function addRoleForUser(string $user, string $role)
     {
-        return \Enforcer::addRoleForUser($user, $role);
+        return Enforcer::addRoleForUser($user, $role);
     }
     
     /**
@@ -25,7 +27,7 @@ class Permission
      */
     public static function hasRoleForUser(string $user, string $role)
     {
-        return \Enforcer::hasRoleForUser($user, $role);
+        return Enforcer::hasRoleForUser($user, $role);
     }
     
     /**
@@ -33,7 +35,7 @@ class Permission
      */
     public static function deleteRoleForUser(string $user, string $role)
     {
-        return \Enforcer::deleteRoleForUser($user, $role);
+        return Enforcer::deleteRoleForUser($user, $role);
     }
     
     /**
@@ -41,7 +43,7 @@ class Permission
      */
     public static function deleteRolesForUser(string $user)
     {
-        return \Enforcer::deleteRolesForUser($user);
+        return Enforcer::deleteRolesForUser($user);
     }
     
     /**
@@ -49,7 +51,7 @@ class Permission
      */
     public static function deleteUser(string $user)
     {
-        return \Enforcer::deleteUser($user);
+        return Enforcer::deleteUser($user);
     }
     
     /**
@@ -57,7 +59,7 @@ class Permission
      */
     public static function addPolicy(string $name, string $type, string $rule)
     {
-        return \Enforcer::addPolicy($name, $type, $rule);
+        return Enforcer::addPolicy($name, $type, $rule);
     }
     
     /**
@@ -65,7 +67,7 @@ class Permission
      */
     public static function deletePolicy(string $name, string $type, string $rule)
     {
-        return \Enforcer::deletePermissionForUser($name, $type, $rule);
+        return Enforcer::deletePermissionForUser($name, $type, $rule);
     }
     
     /**
@@ -73,7 +75,7 @@ class Permission
      */
     public static function deletePolicys(string $name)
     {
-        return \Enforcer::deletePermissionForUser($name);
+        return Enforcer::deletePermissionForUser($name);
     }
     
     /**
@@ -81,7 +83,7 @@ class Permission
      */
     public static function hasPermissionForUser(string $name, string $type, string $rule)
     {
-        return \Enforcer::hasPermissionForUser($name, $type, $rule);
+        return Enforcer::hasPermissionForUser($name, $type, $rule);
     }
     
     /**
@@ -89,7 +91,7 @@ class Permission
      */
     public static function getPermissionsForUser(string $user)
     {
-        return \Enforcer::getPermissionsForUser($user);
+        return Enforcer::getPermissionsForUser($user);
     }
     
     /**
@@ -97,6 +99,6 @@ class Permission
      */
     public static function enforce(string $user, string $type, string $rule)
     {
-        return \Enforcer::enforce($user, $type, $rule);
+        return Enforcer::enforce($user, $type, $rule);
     }
 }

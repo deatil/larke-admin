@@ -63,11 +63,11 @@ class ServiceProvider extends BaseServiceProvider
      * @var array
      */
     protected $routeMiddleware = [
-        'larke.admin.lang' => Middleware\CheckLang::class,
-        'larke.admin.auth' => Middleware\Authenticate::class,
-        'larke.admin.auth.admin' => Middleware\AdminCheck::class,
-        'larke.admin.permission' => Middleware\Permission::class,
-        'larke.admin.log' => Middleware\Log::class,
+        'larke-admin.lang' => Middleware\CheckLang::class,
+        'larke-admin.auth' => Middleware\Authenticate::class,
+        'larke-admin.auth.admin' => Middleware\AdminCheck::class,
+        'larke-admin.permission' => Middleware\Permission::class,
+        'larke-admin.log' => Middleware\Log::class,
     ];
 
     /**
@@ -76,11 +76,11 @@ class ServiceProvider extends BaseServiceProvider
      * @var array
      */
     protected $middlewareGroups = [
-        'larke.admin' => [
-            'larke.admin.lang',
-            'larke.admin.auth',
-            'larke.admin.permission',
-            'larke.admin.log',
+        'larke-admin' => [
+            'larke-admin.lang',
+            'larke-admin.auth',
+            'larke-admin.permission',
+            'larke-admin.log',
         ],
     ];
     
@@ -150,8 +150,13 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function registerConfig()
     {
+        // 配置
         $this->mergeConfigFrom(__DIR__ . '/../resource/config/larkeadmin.php', 'larkeadmin');
         
+        // 语言包
+        $this->loadJsonTranslationsFrom(__DIR__ . '/../resource/lang');
+        
+        // 路由
         $this->loadRoutesFrom(__DIR__ . '/../resource/routes/admin.php');
     }
     
@@ -163,18 +168,25 @@ class ServiceProvider extends BaseServiceProvider
     protected function registerBind()
     {
         // 加载器
-        $this->app->bind('larke.admin.loader', Loader::class);
+        $this->app->bind('larke-admin.loader', function() {
+            $loader = new Loader();
+            return $loader;
+        });
         
         // 验证码
-        $this->app->bind('larke.admin.captcha', Captcha::class);
+        $this->app->bind('larke-admin.captcha', function() {
+            $captcha = new Captcha();
+            return $captcha;
+        });
         
         // json响应
-        $this->app->bind('larke.admin.json', ResponseContract::class);
+        $this->app->bind('larke-admin.json', ResponseContract::class);
         $this->app->bind(ResponseContract::class, function() {
-            $HttpResponse = new HttpResponse();
+            $httpResponse = new HttpResponse();
             
             $config = config('larkeadmin.response.json');
-            $HttpResponse->withIsAllowOrigin($config['is_allow_origin'])
+            $httpResponse
+                ->withIsAllowOrigin($config['is_allow_origin'])
                 ->withAllowOrigin($config['allow_origin'])
                 ->withAllowCredentials($config['allow_credentials'])
                 ->withMaxAge($config['max_age'])
@@ -182,51 +194,51 @@ class ServiceProvider extends BaseServiceProvider
                 ->withAllowHeaders($config['allow_headers'])
                 ->withExposeHeaders($config['expose_headers']);
             
-            return $HttpResponse;
+            return $httpResponse;
         });
         
         // 系统使用缓存
-        $this->app->singleton('larke.admin.cache', function() {
-            $Cache = new Cache();
-            return $Cache->store();
+        $this->app->singleton('larke-admin.cache', function() {
+            $cache = new Cache();
+            return $cache->store();
         });
         
         // 管理员登陆信息
-        $this->app->singleton('larke.admin.admin', Admin::class);
+        $this->app->singleton('larke-admin.admin', Admin::class);
         
         // jwt
-        $this->app->bind('larke.admin.jwt', JwtContract::class);
+        $this->app->bind('larke-admin.jwt', JwtContract::class);
         $this->app->bind(JwtContract::class, function() {
-            $Jwt = new Jwt();
+            $jwt = new Jwt();
             $config = config('larkeadmin.jwt');
 
-            $Jwt->withIss($config['iss']);
-            $Jwt->withAud($config['aud']);
-            $Jwt->withSub($config['sub']);
+            $jwt->withIss($config['iss']);
+            $jwt->withAud($config['aud']);
+            $jwt->withSub($config['sub']);
             
-            $Jwt->withJti($config['jti']); // JWT ID
-            $Jwt->withExp($config['exp']);
-            $Jwt->withNbf($config['nbf']);
-            $Jwt->withLeeway($config['leeway']);
+            $jwt->withJti($config['jti']); // JWT ID
+            $jwt->withExp($config['exp']);
+            $jwt->withNbf($config['nbf']);
+            $jwt->withLeeway($config['leeway']);
             
-            $Jwt->withPassphrase($config['passphrase']);
+            $jwt->withPassphrase($config['passphrase']);
             
-            $Jwt->withSignerConfig($config['signer']);
+            $jwt->withSignerConfig($config['signer']);
             
-            return $Jwt;
+            return $jwt;
         });
         
         // 扩展
-        $this->app->singleton('larke.admin.extension', Extension::class);
+        $this->app->singleton('larke-admin.extension', Extension::class);
         
         // response()->success('success');
         Response::macro('success', function($message = null, $data = null, $code = 0, $header = []) {
-            return app('larke.admin.json')->json(true, $code, $message, $data, $header);
+            return app('larke-admin.json')->json(true, $code, $message, $data, $header);
         });
         
         // response()->error('error');
         Response::macro('error', function($message = null, $code = 1, $data = [], $header = []) {
-            return app('larke.admin.json')->json(false, $code, $message, $data, $header);
+            return app('larke-admin.json')->json(false, $code, $message, $data, $header);
         });
     }
     
@@ -314,7 +326,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function bootExtension()
     {
-        app('larke.admin.extension')->bootExtension();
+        app('larke-admin.extension')->bootExtension();
     }
     
 }

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Traits\Macroable;
 
 use Larke\Admin\Composer\Resolve as ComposerResolve;
 use Larke\Admin\Model\AuthRule as AuthRuleModel;
@@ -28,6 +29,8 @@ use Larke\Admin\Extension\ServiceProvider as ExtensionServiceProvider;
  */
 class Extension
 {
+    use Macroable;
+    
     /**
      * @var array
      */
@@ -213,7 +216,7 @@ class Extension
      */
     public function namespaces($prefix, $paths = [])
     {
-        app('larke.admin.loader')->setPsr4($prefix, $paths)->register();
+        app('larke-admin.loader')->setPsr4($prefix, $paths)->register();
         
         return $this;
     }

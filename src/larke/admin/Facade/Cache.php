@@ -16,6 +16,6 @@ class Cache extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'larke.admin.cache';
+        return 'larke-admin.cache';
     }
 }

@@ -16,6 +16,6 @@ class Jwt extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'larke.admin.jwt';
+        return 'larke-admin.jwt';
     }
 }

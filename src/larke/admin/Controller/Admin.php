@@ -213,7 +213,7 @@ class Admin extends Base
             return $this->error(__('账号ID不能为空'));
         }
         
-        $adminid = app('larke.admin.admin')->getId();
+        $adminid = app('larke-admin.admin')->getId();
         if ($id == $adminid) {
             return $this->error(__('你不能删除自己的账号'));
         }
@@ -303,7 +303,7 @@ class Admin extends Base
         }
         
         // 用户组默认取当前用户的用户组的其中之一
-        $groupIds = app('larke.admin.admin')->getGroupids();
+        $groupIds = app('larke-admin.admin')->getGroupids();
         if (count($groupIds) > 0) {
             AuthGroupAccessModel::create([
                 'admin_id' => $admin->id,
@@ -334,7 +334,7 @@ class Admin extends Base
             return $this->error(__('账号ID不能为空'));
         }
         
-        $adminid = app('larke.admin.admin')->getId();
+        $adminid = app('larke-admin.admin')->getId();
         if ($id == $adminid) {
             return $this->error(__('你不能修改自己的账号'));
         }
@@ -431,7 +431,7 @@ class Admin extends Base
             return $this->error(__('账号ID不能为空'));
         }
         
-        $adminid = app('larke.admin.admin')->getId();
+        $adminid = app('larke-admin.admin')->getId();
         if ($id == $adminid) {
             return $this->error(__('你不能修改自己的账号'));
         }
@@ -482,7 +482,7 @@ class Admin extends Base
             return $this->error(__('账号ID不能为空'));
         }
         
-        $adminid = app('larke.admin.admin')->getId();
+        $adminid = app('larke-admin.admin')->getId();
         if ($id == $adminid) {
             return $this->error(__('你不能修改自己的账号'));
         }
@@ -534,7 +534,7 @@ class Admin extends Base
             return $this->error(__('账号ID不能为空'));
         }
         
-        $adminid = app('larke.admin.admin')->getId();
+        $adminid = app('larke-admin.admin')->getId();
         if ($id == $adminid) {
             return $this->error(__('你不能修改自己的账号'));
         }
@@ -575,7 +575,7 @@ class Admin extends Base
             return $this->error(__('账号ID不能为空'));
         }
         
-        $adminid = app('larke.admin.admin')->getId();
+        $adminid = app('larke-admin.admin')->getId();
         if ($id == $adminid) {
             return $this->error(__('你不能修改自己的账号'));
         }
@@ -616,12 +616,12 @@ class Admin extends Base
             return $this->error(__('refreshToken不能为空'));
         }
         
-        if (app('larke.admin.cache')->has(md5($refreshToken))) {
+        if (app('larke-admin.cache')->has(md5($refreshToken))) {
             return $this->error(__('refreshToken已失效'));
         }
         
         try {
-            $refreshJwt = app('larke.admin.jwt')
+            $refreshJwt = app('larke-admin.jwt')
                 ->withJti(config('larkeadmin.passport.refresh_token_id'))
                 ->withToken($refreshToken)
                 ->decode();
@@ -638,13 +638,13 @@ class Admin extends Base
             return $this->error($e->getMessage());
         }
         
-        $adminid = app('larke.admin.admin')->getId();
+        $adminid = app('larke-admin.admin')->getId();
         if ($refreshAdminid == $adminid) {
             return $this->error(__('你不能退出你的账号'));
         }
         
         // 添加缓存黑名单
-        app('larke.admin.cache')->add(md5($refreshToken), time(), $refreshTokenExpiresIn);
+        app('larke-admin.cache')->add(md5($refreshToken), time(), $refreshTokenExpiresIn);
         
         return $this->success(__('账号退出成功'));
     }
@@ -681,12 +681,12 @@ class Admin extends Base
         
         $access = $request->input('access');
         if (!empty($access)) {
-            $groupIds = app('larke.admin.admin')->getGroupChildrenIds();
+            $groupIds = app('larke-admin.admin')->getGroupChildrenIds();
             $accessIds = explode(',', $access);
             $accessIds = collect($accessIds)->unique();
             
             // 取交集
-            if (!app('larke.admin.admin')->isAdministrator()) {
+            if (!app('larke-admin.admin')->isAdministrator()) {
                 $intersectAccess = array_intersect_assoc($groupIds, $accessIds);
             } else {
                 $intersectAccess = $accessIds;

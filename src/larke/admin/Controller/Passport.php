@@ -41,7 +41,9 @@ class Passport extends Base
      */
     public function captcha(Request $request)
     {
-        $captchaAttr = app('larke.admin.captcha')->makeCode()->getAttr();
+        $captchaAttr = app('larke-admin.captcha')
+            ->makeCode()
+            ->getAttr();
         
         $captchaImage = Arr::get($captchaAttr, 'data', '');
         $captchaUniqid = Arr::get($captchaAttr, 'uniq', '');
@@ -90,7 +92,7 @@ class Passport extends Base
         $captchaKey = config('larkeadmin.passport.header_captcha_key');
         $captchaUniq = $request->header($captchaKey);
         $captcha = $request->input('captcha');
-        if (! app('larke.admin.captcha')->check($captcha, $captchaUniq)) {
+        if (! app('larke-admin.captcha')->check($captcha, $captchaUniq)) {
             return $this->error(__('验证码错误'), \ResponseCode::LOGIN_ERROR);
         }
         
@@ -121,7 +123,7 @@ class Passport extends Base
         try {
             // 生成 accessToken
             $expiresIn = config('larkeadmin.passport.access_expires_in', 86400);
-            $accessToken = app('larke.admin.jwt')
+            $accessToken = app('larke-admin.jwt')
                 ->withData([
                     'adminid' => $adminInfo['id'],
                 ])
@@ -135,7 +137,7 @@ class Passport extends Base
             
             // 刷新token
             $refreshExpiresIn = config('larkeadmin.passport.refresh_expires_in', 300);
-            $refreshToken = app('larke.admin.jwt')
+            $refreshToken = app('larke-admin.jwt')
                 ->withData([
                     'adminid' => $adminInfo['id'],
                 ])
@@ -178,13 +180,13 @@ class Passport extends Base
             return $this->error(__('refreshToken不能为空'), \ResponseCode::REFRESH_TOKEN_ERROR);
         }
         
-        if (app('larke.admin.cache')->has(md5($refreshToken))) {
+        if (app('larke-admin.cache')->has(md5($refreshToken))) {
             return $this->error(__('refreshToken已失效'), \ResponseCode::REFRESH_TOKEN_ERROR);
         }
         
         try {
             // 旧的刷新token
-            $refreshJwt = app('larke.admin.jwt')
+            $refreshJwt = app('larke-admin.jwt')
                 ->withJti(config('larkeadmin.passport.refresh_token_id'))
                 ->withToken($refreshToken)
                 ->decode();
@@ -197,7 +199,7 @@ class Passport extends Base
             
             // 新建access_token
             $expiresIn = config('larkeadmin.passport.access_expires_in', 86400);
-            $newAccessToken = app('larke.admin.jwt')
+            $newAccessToken = app('larke-admin.jwt')
                 ->withData([
                     'adminid' => $refreshAdminid,
                 ])
@@ -240,13 +242,13 @@ class Passport extends Base
             return $this->error(__('refreshToken不能为空'), \ResponseCode::LOGOUT_ERROR);
         }
         
-        if (app('larke.admin.cache')->has(md5($refreshToken))) {
+        if (app('larke-admin.cache')->has(md5($refreshToken))) {
             return $this->error(__('refreshToken已失效'), \ResponseCode::LOGOUT_ERROR);
         }
         
         try {
             // 刷新Token
-            $refreshJwt = app('larke.admin.jwt')
+            $refreshJwt = app('larke-admin.jwt')
                 ->withJti(config('larkeadmin.passport.refresh_token_id'))
                 ->withToken($refreshToken)
                 ->decode();
@@ -263,16 +265,16 @@ class Passport extends Base
             return $this->error($e->getMessage(), \ResponseCode::LOGOUT_ERROR);
         }
         
-        $accessAdminid = app('larke.admin.admin')->getId();
+        $accessAdminid = app('larke-admin.admin')->getId();
         if ($accessAdminid != $refreshAdminid) {
             return $this->error(__('退出失败'), \ResponseCode::LOGOUT_ERROR);
         }
         
-        $accessToken = app('larke.admin.admin')->getAccessToken();
+        $accessToken = app('larke-admin.admin')->getAccessToken();
         
         // 添加缓存黑名单
-        app('larke.admin.cache')->add(md5($accessToken), time(), $refreshTokenExpiresIn);
-        app('larke.admin.cache')->add(md5($refreshToken), time(), $refreshTokenExpiresIn);
+        app('larke-admin.cache')->add(md5($accessToken), time(), $refreshTokenExpiresIn);
+        app('larke-admin.cache')->add(md5($refreshToken), time(), $refreshTokenExpiresIn);
         
         // 监听事件
         event(new Event\PassportLogoutAfter());

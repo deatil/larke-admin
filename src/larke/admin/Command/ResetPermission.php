@@ -42,7 +42,7 @@ class ResetPermission extends Command
     {
         $this->runReset();
         
-        $this->info('Larke-admin reset permission success.');
+        $this->info('Larke-admin reset permission successfully.');
     }
     
     protected function runReset()

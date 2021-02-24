@@ -16,6 +16,6 @@ class Json extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'larke.admin.json';
+        return 'larke-admin.json';
     }
 }

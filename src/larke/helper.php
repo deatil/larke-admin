@@ -80,7 +80,7 @@ if (! function_exists('larke_config')) {
 
 if (! function_exists('larke_attachment_url')) {
     /**
-     * 附件信息
+     * 附件链接
      *
      * @create 2020-12-17
      * @author deatil

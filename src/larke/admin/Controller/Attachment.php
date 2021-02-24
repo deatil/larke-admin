@@ -169,25 +169,25 @@ class Attachment extends Base
     public function enable(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('ID不能为空'));
+            return $this->error(__('文件ID不能为空'));
         }
         
         $info = AttachmentModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('信息不存在'));
+            return $this->error(__('文件信息不存在'));
         }
         
         if ($info->status == 1) {
-            return $this->error(__('信息已启用'));
+            return $this->error(__('文件已启用'));
         }
         
         $status = $info->enable();
         if ($status === false) {
-            return $this->error(__('启用失败'));
+            return $this->error(__('文件启用失败'));
         }
         
-        return $this->success(__('启用成功'));
+        return $this->success(__('文件启用成功'));
     }
     
     /**
@@ -204,25 +204,25 @@ class Attachment extends Base
     public function disable(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('ID不能为空'));
+            return $this->error(__('文件ID不能为空'));
         }
         
         $info = AttachmentModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('信息不存在'));
+            return $this->error(__('文件信息不存在'));
         }
         
         if ($info->status == 0) {
-            return $this->error(__('信息已禁用'));
+            return $this->error(__('文件已禁用'));
         }
         
         $status = $info->disable();
         if ($status === false) {
-            return $this->error(__('禁用失败'));
+            return $this->error(__('文件禁用失败'));
         }
         
-        return $this->success(__('禁用成功'));
+        return $this->success(__('文件禁用成功'));
     }
     
     /**
@@ -293,7 +293,7 @@ class Attachment extends Base
                 $res['url'] = $fileInfo['url'];
             }
             
-            return $this->success(__('上传成功'), $res);
+            return $this->success(__('上传文件成功'), $res);
         }
         
         if ($filetype == 'image') {
@@ -310,7 +310,7 @@ class Attachment extends Base
         
         $data = [
             'belong_type' => AdminModel::class,
-            'belong_id' => app('larke.admin.admin')->getId(),
+            'belong_id' => app('larke-admin.admin')->getId(),
             'name' => $name,
             'path' => $path,
             'mime' => $mimeType,
@@ -324,7 +324,7 @@ class Attachment extends Base
         $attachment = AttachmentModel::create($data);
         if ($attachment === false) {
             $uploadService->destroy($path);
-            return $this->error(__('上传失败'));
+            return $this->error(__('上传文件失败'));
         }
         
         $url = $uploadService->objectUrl($path);
@@ -336,7 +336,7 @@ class Attachment extends Base
             $res['url'] = $url;
         }
         
-        return $this->success(__('上传成功'), $res);
+        return $this->success(__('上传文件成功'), $res);
     }
     
     /**
@@ -359,7 +359,7 @@ class Attachment extends Base
         $fileInfo = AttachmentModel::where(['id' => $id])
             ->first();
         if (empty($fileInfo)) {
-            return $this->error(__('文件不存在'));
+            return $this->error(__('文件信息不存在'));
         }
         
         $code = md5(mt_rand(10000, 99999) . microtime());
@@ -389,13 +389,13 @@ class Attachment extends Base
         
         $fileId = Cache::pull($code);
         if (empty($fileId)) {
-            return $this->error(__('文件不存在'));
+            return $this->error(__('文件信息不存在'));
         }
         
         $fileInfo = AttachmentModel::where(['id' => $fileId])
             ->first();
         if (empty($fileInfo)) {
-            return $this->error(__('文件不存在'));
+            return $this->error(__('文件信息不存在'));
         }
         
         $uploadService = UploadService::create();

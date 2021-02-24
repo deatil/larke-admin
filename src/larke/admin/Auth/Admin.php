@@ -39,6 +39,7 @@ class Admin
     public function withAccessToken($accessToken)
     {
         $this->accessToken = $accessToken;
+        
         return $this;
     }
     
@@ -56,6 +57,7 @@ class Admin
     public function withId($id)
     {
         $this->id = $id;
+        
         return $this;
     }
     
@@ -73,6 +75,7 @@ class Admin
     public function withData($data)
     {
         $this->data = $data;
+        
         return $this;
     }
     
@@ -105,14 +108,15 @@ class Admin
             "last_ip",
         ]);
         
-        $data['groups'] = collect($data['groups'])->map(function($data) {
-            return [
-                'id' => $data['id'],
-                'parentid' => $data['parentid'],
-                'title' => $data['title'],
-                'description' => $data['description'],
-            ];
-        });
+        $data['groups'] = collect($data['groups'])
+            ->map(function($data) {
+                return [
+                    'id' => $data['id'],
+                    'parentid' => $data['parentid'],
+                    'title' => $data['title'],
+                    'description' => $data['description'],
+                ];
+            });
         
         return $data;
     }
