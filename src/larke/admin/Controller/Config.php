@@ -242,7 +242,7 @@ class Config extends Base
     public function update(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->error(__('账号ID不能为空'));
+            return $this->error(__('ID不能为空'));
         }
         
         $info = ConfigModel::where('id', '=', $id)

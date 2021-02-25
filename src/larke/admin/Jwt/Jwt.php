@@ -304,30 +304,30 @@ class Jwt implements JwtContract
      */
     public function encode()
     {
-        $Builder = new Builder();
+        $builder = new Builder();
         
-        $Builder->issuedBy($this->issuer); // 发布者
-        $Builder->permittedFor($this->audience); // 接收者
-        $Builder->relatedTo($this->subject); // 主题
-        $Builder->identifiedBy($this->jti); // 对当前token设置的标识
+        $builder->issuedBy($this->issuer); // 发布者
+        $builder->permittedFor($this->audience); // 接收者
+        $builder->relatedTo($this->subject); // 主题
+        $builder->identifiedBy($this->jti); // 对当前token设置的标识
         
         $time = time();
-        $Builder->issuedAt($time); // token创建时间
-        $Builder->canOnlyBeUsedAfter($time + $this->notBeforeTime); // 多少秒内无法使用
-        $Builder->expiresAt($time + $this->expTime); // 过期时间
+        $builder->issuedAt($time); // token创建时间
+        $builder->canOnlyBeUsedAfter($time + $this->notBeforeTime); // 多少秒内无法使用
+        $builder->expiresAt($time + $this->expTime); // 过期时间
         
         foreach ($this->headers as $headerKey => $header) {
-            $Builder->withHeader($headerKey, $header);
+            $builder->withHeader($headerKey, $header);
         }
         
         foreach ($this->claims as $claimKey => $claim) {
-            $Builder->withClaim($claimKey, $claim);
+            $builder->withClaim($claimKey, $claim);
         }
         
         try {
             list($signer, $secrect) = $this->getSigner(true);
             
-            $this->token = $Builder->getToken($signer, $secrect);
+            $this->token = $builder->getToken($signer, $secrect);
         } catch(\Exception $e) {
             Log::error('larke-admin-jwt-encode: '.$e->getMessage());
             
@@ -372,7 +372,7 @@ class Jwt implements JwtContract
      */
     public function verify()
     {
-        list($signer, $secrect) = $this->getSigner(false);
+        list ($signer, $secrect) = $this->getSigner(false);
     
         return $this->decodeToken->verify($signer, $secrect);
     }
@@ -442,7 +442,7 @@ class Jwt implements JwtContract
         }
         
         if (! empty($claim) && ! empty($value)) {
-            $value = (new Crypt())->encrypt($value, $this->passphrase);
+            $value = (new Crypt())->encrypt($value, $this->base64Decode($this->passphrase));
             
             $this->withClaim($claim, $value);
         }
@@ -457,9 +457,26 @@ class Jwt implements JwtContract
     {
         $claim = $this->getClaim($name);
         
-        $claim = (new Crypt())->decrypt($claim, $this->passphrase);
+        $claim = (new Crypt())->decrypt($claim, $this->base64Decode($this->passphrase));
         
         return $claim;
     }
-
+    
+    /**
+     * base64解密
+     */
+    public function base64Decode($contents)
+    {
+        if (empty($contents)) {
+            return '';
+        }
+        
+        $decoded = base64_decode($contents, true);
+        
+        if ($decoded === false) {
+            throw new JWTException(__('JWT载荷解析失败'));
+        }
+        
+        return $decoded;
+    }
 }

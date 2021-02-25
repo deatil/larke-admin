@@ -208,6 +208,12 @@ class AuthGroup extends Base
             return $this->error(__('信息不存在'));
         }
         
+        $childInfo = AuthGroupModel::where(['parentid' => $id])
+            ->first();
+        if (!empty($childInfo)) {
+            return $this->error(__('还有子分组存在，请删除子分组后再操作'));
+        }
+        
         if ($info->is_system == 1) {
             return $this->error(__('系统信息不能删除'));
         }

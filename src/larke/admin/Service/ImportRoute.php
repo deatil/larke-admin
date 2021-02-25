@@ -164,10 +164,20 @@ class ImportRoute
             $ruleInfo = AuthRuleModel::where('slug', $route['name'])
                 ->where('method', $method)
                 ->first();
+            
             if (!empty($ruleInfo)) {
                 $data = array_merge($methodDocInfo, [
                         'url' => $route['uri'],
                     ]);
+                
+                unset($data['slug']);
+                
+                $data = collect($data)
+                    ->filter(function($item) {
+                        return !empty($item);
+                    })
+                    ->toArray();
+                
                 $ruleInfo->update($data);
             } else {
                 $data = array_merge($methodDocInfo, [

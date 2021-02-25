@@ -4,6 +4,7 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Extension;
 
+use Illuminate\Support\Traits\Macroable;
 use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
 
 use Larke\Admin\Traits\ExtensionServiceProvider as ExtensionServiceProviderTrait;
@@ -16,7 +17,8 @@ use Larke\Admin\Traits\ExtensionServiceProvider as ExtensionServiceProviderTrait
  */
 abstract class ServiceProvider extends LaravelServiceProvider
 {    
-    use ExtensionServiceProviderTrait;
+    use Macroable, 
+        ExtensionServiceProviderTrait;
     
     /**
      * 扩展信息
@@ -45,15 +47,14 @@ abstract class ServiceProvider extends LaravelServiceProvider
         'version' => '1.0.2',
         // 适配系统版本
         'adaptation' => '1.1.*',
-        
         // 依赖扩展[选填]
         'require' => [
-            // 'extension/extension' => '1.0.*',
+            // 'vendor/package' => '1.0.*'
         ], 
     ];
     
     /**
-     * 扩展配置，选填
+     * 扩展配置[选填]
      */
     public $config = [];
     

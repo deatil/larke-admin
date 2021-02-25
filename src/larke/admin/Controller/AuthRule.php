@@ -210,7 +210,7 @@ class AuthRule extends Base
         $childInfo = AuthRuleModel::where(['parentid' => $id])
             ->first();
         if (!empty($childInfo)) {
-            return $this->error(__('还有子权限链接存在，请删除子权限链接后再操作！'));
+            return $this->error(__('还有子权限链接存在，请删除子权限链接后再操作'));
         }
         
         if ($info->is_system == 1) {
@@ -351,7 +351,7 @@ class AuthRule extends Base
     public function update(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->error(__('账号ID不能为空'));
+            return $this->error(__('ID不能为空'));
         }
         
         $info = AuthRuleModel::with('children')

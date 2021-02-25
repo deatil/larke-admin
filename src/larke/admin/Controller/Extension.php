@@ -168,7 +168,7 @@ class Extension extends Base
     {
         AdminExtension::refresh();
         
-        return $this->success(__('刷新成功'));
+        return $this->success(__('扩展刷新成功'));
     }
     
     /**
@@ -327,7 +327,7 @@ class Extension extends Base
         $info = ExtensionModel::where(['name' => $name])
             ->first();
         if (empty($info)) {
-            return $this->error(__('扩展还没有安装'));
+            return $this->error(__('扩展未安装'));
         }
         
         $deleteStatus = $info->delete();
@@ -366,7 +366,7 @@ class Extension extends Base
         $installInfo = ExtensionModel::where(['name' => $name])
             ->first();
         if (empty($installInfo)) {
-            return $this->error(__('扩展还没有安装'));
+            return $this->error(__('扩展未安装'));
         }
         
         AdminExtension::loadExtension();
@@ -377,7 +377,7 @@ class Extension extends Base
         
         $checkInfo = AdminExtension::validateInfo($info);
         if (!$checkInfo) {
-            return $this->error(__('扩展信息不正确'));
+            return $this->error(__('扩展信息错误'));
         }
         
         $adminVersion = config('larkeadmin.admin.version');
@@ -465,7 +465,7 @@ class Extension extends Base
         $info = ExtensionModel::where(['name' => $name])
             ->first();
         if (empty($info)) {
-            return $this->error(__('扩展还没有安装'));
+            return $this->error(__('扩展未安装'));
         }
         
         $listorder = $request->input('listorder', 100);
@@ -498,7 +498,7 @@ class Extension extends Base
         $installInfo = ExtensionModel::where(['name' => $name])
             ->first();
         if (empty($installInfo)) {
-            return $this->error(__('扩展还没有安装'));
+            return $this->error(__('扩展未安装'));
         }
         
         if ($installInfo['status'] == 1) {
@@ -539,7 +539,7 @@ class Extension extends Base
         $installInfo = ExtensionModel::where(['name' => $name])
             ->first();
         if (empty($installInfo)) {
-            return $this->error(__('扩展还没有安装'));
+            return $this->error(__('扩展未安装'));
         }
         
         if ($installInfo['status'] == 0) {
@@ -584,7 +584,7 @@ class Extension extends Base
         $info = ExtensionModel::where(['name' => $name])
             ->first();
         if (empty($info)) {
-            return $this->error(__('扩展还没有安装'));
+            return $this->error(__('扩展未安装'));
         }
         
         if (empty(json_decode($config))) {
@@ -618,13 +618,13 @@ class Extension extends Base
     {
         $requestFile = $request->file('file');
         if (empty($requestFile)) {
-            return $this->error(__('上传文件不能为空'));
+            return $this->error(__('上传扩展文件不能为空'));
         }
         
         // 扩展名
         $extension = $requestFile->extension();
         if ($extension != 'zip') {
-            return $this->error(__('上传的文件格式有误'));
+            return $this->error(__('上传的扩展文件格式有误'));
         }
         
         // 缓存目录
@@ -638,7 +638,7 @@ class Extension extends Base
         
         $list = $zip->listContent();
         if ($list == 0) {
-            return $this->error(__('上传的文件错误'));
+            return $this->error(__('上传的扩展文件错误'));
         }
         
         $composer = collect($list)
@@ -663,7 +663,7 @@ class Extension extends Base
         
         $data = $zip->extractByIndex($composer[0]['index'], PCLZIP_OPT_EXTRACT_AS_STRING);
         if ($data == 0) {
-            return $this->error(__('上传的文件错误'));
+            return $this->error(__('上传的扩展文件错误'));
         }
         
         try {
@@ -689,7 +689,9 @@ class Extension extends Base
         
         // 检查扩展目录是否存在
         if (file_exists($extensionPath) && !$force) {
-            return $this->error(__('扩展('.$composerInfo['name'].')已经存在'), \ResponseCode::EXTENSION_EXISTS);
+            return $this->error(__('扩展(:extension)已经存在', [
+                'extension' => $composerInfo['name'],
+            ]), \ResponseCode::EXTENSION_EXISTS);
         }
         
         $extensionRemovePath = Str::replaceLast('composer.json', '', $composer[0]['filename']);
@@ -705,13 +707,17 @@ class Extension extends Base
         );
         
         if ($list == 0) {
-            return $this->error(__('扩展('.$composerInfo['name'].')解压失败'));
+            return $this->error(__('扩展(:extension)解压失败', [
+                'extension' => $composerInfo['name'],
+            ]));
         }
         
         // 上传后刷新本地缓存
         AdminExtension::refresh();
         
-        return $this->success(__('扩展('.$composerInfo['name'].')上传成功'));
+        return $this->success(__('扩展(:extension)上传成功', [
+                'extension' => $composerInfo['name'],
+            ]));
     }
     
     /**

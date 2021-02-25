@@ -28,8 +28,8 @@ return [
         'nbf' => env('LARKE_ADMIN_JWT_NBF', 0),
         'leeway' => env('LARKE_ADMIN_JWT_LEEWAY', 0),
         
-        // 载荷加密秘钥，为空不加密
-        'passphrase' => env('LARKE_ADMIN_JWT_PASSPHRASE', '7edc4a3bf1deb072bc99ac5a4785053c'),
+        // 载荷加密秘钥，为空不加密，base64编码后
+        'passphrase' => env('LARKE_ADMIN_JWT_PASSPHRASE', 'YTY5YmNiZTgxMzVhMWY2MTA3Njc3NGY1YTE3MWI2MjQ='),
         
         'signer' => [
             'algorithm' => [
