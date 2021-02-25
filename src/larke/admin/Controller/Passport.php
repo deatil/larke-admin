@@ -117,6 +117,8 @@ class Passport extends Base
         }
         
         if ($adminInfo['status'] == 0) {
+            event(new Event\PassportLoginInactive($admin));
+            
             return $this->error(__('用户已被禁用或者不存在'), \ResponseCode::LOGIN_ERROR);
         }
         

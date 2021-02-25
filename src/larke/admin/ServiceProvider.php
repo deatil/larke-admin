@@ -83,6 +83,15 @@ class ServiceProvider extends BaseServiceProvider
             'larke-admin.log',
         ],
     ];
+
+    /**
+     * 服务提供者
+     *
+     * @var array
+     */
+    protected $providers = [
+        Provider\EventServiceProvider::class,
+    ];
     
     /**
      * {@inheritdoc}
@@ -154,7 +163,9 @@ class ServiceProvider extends BaseServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../resource/config/larkeadmin.php', 'larkeadmin');
         
         // 语言包
-        $this->loadJsonTranslationsFrom(__DIR__ . '/../resource/lang');
+        $langPath = __DIR__ . '/../resource/lang';
+        $this->loadTranslationsFrom($langPath, 'larke-admin');
+        $this->loadJsonTranslationsFrom($langPath);
         
         // 路由
         $this->loadRoutesFrom(__DIR__ . '/../resource/routes/admin.php');
@@ -204,7 +215,10 @@ class ServiceProvider extends BaseServiceProvider
         });
         
         // 管理员登陆信息
-        $this->app->singleton('larke-admin.admin', Admin::class);
+        $this->app->singleton('larke-admin.admin', function() {
+            $admin = new Admin();
+            return $admin;
+        });
         
         // jwt
         $this->app->bind('larke-admin.jwt', JwtContract::class);
@@ -229,7 +243,10 @@ class ServiceProvider extends BaseServiceProvider
         });
         
         // 扩展
-        $this->app->singleton('larke-admin.extension', Extension::class);
+        $this->app->singleton('larke-admin.extension', function() {
+            $extension = new Extension();
+            return $extension;
+        });
         
         // response()->success('success');
         Response::macro('success', function($message = null, $data = null, $code = 0, $header = []) {
@@ -281,7 +298,9 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function registerProviders()
     {
-        $this->app->register(Provider\EventServiceProvider::class);
+        foreach ($this->providers as $provider) {
+            $this->app->register($provider);
+        }
     }
 
     /**
@@ -296,6 +315,7 @@ class ServiceProvider extends BaseServiceProvider
             ->make(HttpKernel::class)
             ->prependMiddleware(Middleware\JsonExceptionHandler::class);
         
+        // 跨域处理
         $this->app
             ->make(HttpKernel::class)
             ->pushMiddleware(Middleware\RequestOptions::class);

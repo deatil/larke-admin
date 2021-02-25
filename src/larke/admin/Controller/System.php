@@ -149,7 +149,7 @@ class System extends Base
             $langs = $translator->getLoader()->load($locale, $group);
         }
         
-        return $this->success(__('查询成功'), [
+        return $this->success(__('获取成功'), [
             'list' => $langs,
         ]);
     }
