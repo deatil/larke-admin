@@ -190,8 +190,8 @@ class ServiceProvider extends BaseServiceProvider
             return $captcha;
         });
         
-        // json响应
-        $this->app->bind('larke-admin.json', ResponseContract::class);
+        // 响应
+        $this->app->bind('larke-admin.response', ResponseContract::class);
         $this->app->bind(ResponseContract::class, function() {
             $httpResponse = new HttpResponse();
             
@@ -250,12 +250,12 @@ class ServiceProvider extends BaseServiceProvider
         
         // response()->success('success');
         Response::macro('success', function($message = null, $data = null, $code = 0, $header = []) {
-            return app('larke-admin.json')->json(true, $code, $message, $data, $header);
+            return app('larke-admin.response')->json(true, $code, $message, $data, $header);
         });
         
         // response()->error('error');
         Response::macro('error', function($message = null, $code = 1, $data = [], $header = []) {
-            return app('larke-admin.json')->json(false, $code, $message, $data, $header);
+            return app('larke-admin.response')->json(false, $code, $message, $data, $header);
         });
     }
     

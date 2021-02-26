@@ -7,15 +7,15 @@ namespace Larke\Admin\Facade;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * Json
+ * Response
  *
  * @create 2020-10-26
  * @author deatil
  */
-class Json extends Facade
+class Response extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'larke-admin.json';
+        return 'larke-admin.response';
     }
 }

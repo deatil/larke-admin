@@ -4,6 +4,7 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Http;
 
+use Illuminate\Support\Traits\Macroable;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 use Larke\Admin\Contracts\Response as ResponseContract;
@@ -16,6 +17,8 @@ use Larke\Admin\Contracts\Response as ResponseContract;
  */
 class Response implements ResponseContract
 {
+    use Macroable;
+    
     // 输出头信息列表
     protected $headers = [];
     
