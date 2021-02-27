@@ -6,6 +6,7 @@ use Larke\Admin\Model\Config as ConfigModel;
 use Larke\Admin\Model\Attachment as AttachmentModel;
 use Larke\Admin\Model\Extension as ExtensionModel;
 use Larke\Admin\Traits\ResponseJson as ResponseJsonTrait;
+use Larke\Admin\Service\Route as RouteService;
 
 if (! function_exists('larke_success')) {
     /**
@@ -87,5 +88,30 @@ if (! function_exists('larke_attachment_url')) {
      */
     function larke_attachment_url($id, $default = null) {
         return AttachmentModel::path($id, $default);
+    }
+}
+
+if (! function_exists('larke_admin_route')) {
+    /**
+     * 后台路由
+     *
+     * @create 2021-2-27
+     * @author deatil
+     */
+    function larke_admin_route(?string $route, array $params = [], $absolute = true) {
+        return route(RouteService::formatRouteSlug($route), $params, $absolute);
+    }
+}
+
+if (! function_exists('larke_admin_route_name')) {
+    /**
+     * 获取后台路由别名
+     *
+     * @create 2021-2-27
+     * @author deatil
+     */
+    function larke_admin_route_name(?string $route)
+    {
+        return RouteService::formatRouteSlug($route);
     }
 }
