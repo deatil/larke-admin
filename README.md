@@ -110,6 +110,7 @@ php artisan larke-admin:import-route
 | --- | --- |
 | [demo](https://github.com/deatil/larke-admin-demo) | 扩展示例 |
 | [签名证书](https://github.com/deatil/larke-admin-signcert) | 生成RSA,EDDSA,ECDSA等非对称签名证书 |
+| [日志查看器](https://github.com/deatil/larke-admin-logviewer) | laravel日志查看扩展 |
 
 注：扩展目录默认为 `/extension` 目录
 
