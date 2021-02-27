@@ -134,6 +134,20 @@ class ImportRoute
             $oldParent = AuthRuleModel::where('slug', $classDocInfo['slug'])
                 ->first();
             if (! empty($oldParent)) {
+                $newData = array_merge([
+                    'method' => 'OPTIONS',
+                ], $classDocInfo);
+                
+                unset($newData['slug']);
+                
+                $newData = collect($newData)
+                    ->filter(function($item) {
+                        return !empty($item);
+                    })
+                    ->toArray();
+                
+                $oldParent->update($newData);
+                
                 $parentid = $oldParent->id;
             } else {
                 $parentData = array_merge([
