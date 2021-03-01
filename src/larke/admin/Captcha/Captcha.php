@@ -21,7 +21,7 @@ class Captcha
     private $uniqid = ''; 
     
     // 随机因子
-    private $charset = 'ABCDEFGHKMNPRSTUVWXYZ23456789'; 
+    private $charset = 'abcdefghkmnprstuvwxyzABCDEFGHKMNPRSTUVWXYZ23456789'; 
     
     // 验证码长度
     private $codelen = 4; 

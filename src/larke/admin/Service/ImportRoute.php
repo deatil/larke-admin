@@ -7,6 +7,7 @@ namespace Larke\Admin\Service;
 use ReflectionClass;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 use Larke\Admin\Support\Doc;
 use Larke\Admin\Service\Route as RouteService;
@@ -259,6 +260,10 @@ class ImportRoute
             $commentInfo['is_need_auth'] = 0;
         }
         
+        // 格式化
+        $commentInfo['parent'] = $this->formatSlug($commentInfo['parent']);
+        $commentInfo['slug'] = $this->formatSlug($commentInfo['slug']);
+        
         return $commentInfo;
         
     }
@@ -294,6 +299,10 @@ class ImportRoute
             $commentInfo['is_need_auth'] = 0;
         }
         
+        // 格式化
+        $commentInfo['parent'] = $this->formatSlug($commentInfo['parent']);
+        $commentInfo['slug'] = $this->formatSlug($commentInfo['slug']);
+        
         return $commentInfo;
     }
     
@@ -304,6 +313,19 @@ class ImportRoute
     {
         $doc = new Doc();
         return $doc->parse($text);
+    }
+    
+    /**
+     * 格式化 slug
+     */
+    public function formatSlug($slug = null)
+    {
+        $as = config('larkeadmin.route.as', '');
+        if (empty($as)) {
+            return $slug;
+        }
+        
+        return Str::replaceFirst('{prefixAs}', $as, $slug);
     }
     
 }
