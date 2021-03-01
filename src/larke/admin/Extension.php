@@ -10,6 +10,7 @@ use RecursiveIteratorIterator;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
@@ -228,6 +229,13 @@ class Extension
      */
     public function bootExtension()
     {
+        // 数据库配置错误
+        try {
+            Db::select("show databases");
+        } catch(\Exception $e) {
+            return ;
+        }
+        
         if (! Schema::hasTable((new ExtensionModel)->getTable())) {
             return ;
         }

@@ -181,7 +181,7 @@ class System extends Base
         $sysInfo['now_time'] = gmdate("Y-m-d H:i:s", time() + 8 * 3600); //北京时间
         $sysInfo['time'] = date("Y-m-d H:i:s"); // 服务器时间
         if (function_exists("gd_info")) {
-            //GD库版本
+            // GD库版本
             $gd = gd_info();
             $sysInfo['gdinfo'] = $gd['GD Version'];
         } else {

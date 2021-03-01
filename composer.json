@@ -20,7 +20,7 @@
     ],
     "require": {
         "php": "^7.3",
-        "laravel/framework": "8.25.*",
+        "laravel/framework": "8.29.*",
         "composer/semver": "3.2.*",
         "phpseclib/phpseclib": "3.0.*",
         "lake/larke-jwt": "^1.0",
