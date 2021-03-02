@@ -16,6 +16,7 @@ use Larke\Admin\Http\ResponseCode;
 use Larke\Admin\Service\Cache;
 use Larke\Admin\Support\Loader;
 use Larke\Admin\Auth\Admin;
+use Larke\Admin\Auth\JWT as AuthJWT;
 use Larke\Admin\Captcha\Captcha;
 
 // 文件夹引用
@@ -218,6 +219,12 @@ class ServiceProvider extends BaseServiceProvider
         $this->app->singleton('larke-admin.admin', function() {
             $admin = new Admin();
             return $admin;
+        });
+        
+        // 权限相关jwt
+        $this->app->bind('larke-admin.auth.jwt', function() {
+            $authJWT = new AuthJWT();
+            return $authJWT;
         });
         
         // jwt
