@@ -223,6 +223,52 @@ class Extension
     }
     
     /**
+     * 添加授权过滤
+     *
+     * @param array $excepts
+     * 
+     * @return void
+     */
+    public function authenticateExcepts(array $excepts = [])
+    {
+        if (empty($excepts)) {
+            return ;
+        }
+        
+        $authenticateExcepts = config('larkeadmin.auth.authenticate_excepts', []);
+        foreach ($excepts as $except) {
+            $authenticateExcepts[] = $except;
+        }
+        
+        config([
+            'larkeadmin.auth.authenticate_excepts' => $authenticateExcepts,
+        ]);
+    }
+    
+    /**
+     * 添加权限过滤
+     *
+     * @param array $excepts
+     * 
+     * @return void
+     */
+    public function permissionExcepts(array $excepts = [])
+    {
+        if (empty($excepts)) {
+            return ;
+        }
+        
+        $permissionExcepts = config('larkeadmin.auth.permission_excepts', []);
+        foreach ($excepts as $except) {
+            $permissionExcepts[] = $except;
+        }
+        
+        config([
+            'larkeadmin.auth.permission_excepts' => $permissionExcepts,
+        ]);
+    }
+    
+    /**
      * 加载扩展
      *
      * @return void
@@ -602,7 +648,7 @@ class Extension
     public function getIcon($icon = '')
     {
         if (! File::exists($icon) || ! File::isFile($icon)) {
-            $icon = __DIR__ . '/../resource/icon/larke.png';
+            $icon = __DIR__ . '/../resources/icon/larke.png';
         }
         
         $data = File::get($icon);

@@ -56,7 +56,7 @@ class Install extends Command
     protected function runSql()
     {
         // 执行数据库
-        $installSqlFile = __DIR__.'/../../resource/database/install.sql';
+        $installSqlFile = __DIR__.'/../../resources/database/install.sql';
         
         $sqlData = File::get($installSqlFile);
         if (empty($sqlData)) {

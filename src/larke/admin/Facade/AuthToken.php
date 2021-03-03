@@ -7,15 +7,15 @@ namespace Larke\Admin\Facade;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * 当前管理员信息
+ * 权限token
  *
- * @create 2020-10-26
+ * @create 2021-3-3
  * @author deatil
  */
-class AuthAdmin extends Facade
+class AuthToken extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'larke-admin.auth.admin';
+        return 'larke-admin.auth.token';
     }
 }

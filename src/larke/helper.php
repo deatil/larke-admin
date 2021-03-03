@@ -7,6 +7,7 @@ use Larke\Admin\Model\Attachment as AttachmentModel;
 use Larke\Admin\Model\Extension as ExtensionModel;
 use Larke\Admin\Traits\ResponseJson as ResponseJsonTrait;
 use Larke\Admin\Service\Route as RouteService;
+use Larke\Admin\Facade\Extension;
 
 if (! function_exists('larke_success')) {
     /**
@@ -15,13 +16,13 @@ if (! function_exists('larke_success')) {
      * @create 2020-10-19
      * @author deatil
      */
-    function larke_success($message = null, $data = null, $code = 0, $header = []) {
+    function larke_success($message = null, $data = null, $header = [], $code = 0) {
         return (new class {
             use ResponseJsonTrait;
             
-            public function json($message = null, $data = null, $code = 0, $header = [])
+            public function json($message = null, $data = null, $header = [], $code = 0)
             {
-                return $this->success($message, $data, $code, $header);
+                return $this->success($message, $data, $header, $code);
             }
         })->json($message, $data, $code, $header);
     }
@@ -113,5 +114,31 @@ if (! function_exists('larke_admin_route_name')) {
     function larke_admin_route_name(?string $route)
     {
         return RouteService::formatRouteSlug($route);
+    }
+}
+
+if (! function_exists('larke_admin_authenticate_excepts')) {
+    /**
+     * 添加权限过滤
+     *
+     * @create 2021-3-3
+     * @author deatil
+     */
+    function larke_admin_authenticate_excepts(array $excepts)
+    {
+        return Extension::authenticateExcepts($excepts);
+    }
+}
+
+if (! function_exists('larke_admin_permission_excepts')) {
+    /**
+     * 添加权限过滤
+     *
+     * @create 2021-3-3
+     * @author deatil
+     */
+    function larke_admin_permission_excepts(array $excepts)
+    {
+        return Extension::permissionExcepts($excepts);
     }
 }

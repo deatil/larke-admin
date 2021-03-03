@@ -20,8 +20,8 @@ trait ResponseJson
     protected function success(
         $message = null, 
         $data = null, 
-        $code = 0, 
-        $header = []
+        $header = [],
+        $code = 0
     ) {
         return Response::json(true, $code, $message, $data, $header);
     }

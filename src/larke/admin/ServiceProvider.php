@@ -15,8 +15,8 @@ use Larke\Admin\Http\Response as HttpResponse;
 use Larke\Admin\Http\ResponseCode;
 use Larke\Admin\Service\Cache;
 use Larke\Admin\Support\Loader;
-use Larke\Admin\Auth\Admin;
-use Larke\Admin\Auth\JWT as AuthJWT;
+use Larke\Admin\Auth\Admin as AuthAdmin;
+use Larke\Admin\Auth\Token as AuthToken;
 use Larke\Admin\Captcha\Captcha;
 
 // 文件夹引用
@@ -161,15 +161,15 @@ class ServiceProvider extends BaseServiceProvider
     protected function registerConfig()
     {
         // 配置
-        $this->mergeConfigFrom(__DIR__ . '/../resource/config/larkeadmin.php', 'larkeadmin');
+        $this->mergeConfigFrom(__DIR__ . '/../resources/config/larkeadmin.php', 'larkeadmin');
         
         // 语言包
-        $langPath = __DIR__ . '/../resource/lang';
+        $langPath = __DIR__ . '/../resources/lang';
         $this->loadTranslationsFrom($langPath, 'larke-admin');
         $this->loadJsonTranslationsFrom($langPath);
         
         // 路由
-        $this->loadRoutesFrom(__DIR__ . '/../resource/routes/admin.php');
+        $this->loadRoutesFrom(__DIR__ . '/../resources/routes/admin.php');
     }
     
     /**
@@ -180,16 +180,10 @@ class ServiceProvider extends BaseServiceProvider
     protected function registerBind()
     {
         // 加载器
-        $this->app->bind('larke-admin.loader', function() {
-            $loader = new Loader();
-            return $loader;
-        });
+        $this->app->bind('larke-admin.loader', Loader::class);
         
         // 验证码
-        $this->app->bind('larke-admin.captcha', function() {
-            $captcha = new Captcha();
-            return $captcha;
-        });
+        $this->app->bind('larke-admin.captcha', Captcha::class);
         
         // 响应
         $this->app->bind('larke-admin.response', ResponseContract::class);
@@ -215,18 +209,6 @@ class ServiceProvider extends BaseServiceProvider
             return $cache->store();
         });
         
-        // 管理员登陆信息
-        $this->app->singleton('larke-admin.admin', function() {
-            $admin = new Admin();
-            return $admin;
-        });
-        
-        // 权限相关jwt
-        $this->app->bind('larke-admin.auth.jwt', function() {
-            $authJWT = new AuthJWT();
-            return $authJWT;
-        });
-        
         // jwt
         $this->app->bind('larke-admin.jwt', JwtContract::class);
         $this->app->bind(JwtContract::class, function() {
@@ -250,13 +232,16 @@ class ServiceProvider extends BaseServiceProvider
         });
         
         // 扩展
-        $this->app->singleton('larke-admin.extension', function() {
-            $extension = new Extension();
-            return $extension;
-        });
+        $this->app->singleton('larke-admin.extension', Extension::class);
+        
+        // 管理员登陆信息
+        $this->app->singleton('larke-admin.auth.admin', AuthAdmin::class);
+        
+        // 权限token
+        $this->app->singleton('larke-admin.auth.token', AuthToken::class);
         
         // response()->success('success');
-        Response::macro('success', function($message = null, $data = null, $code = 0, $header = []) {
+        Response::macro('success', function($message = null, $data = null, $header = [], $code = 0) {
             return app('larke-admin.response')->json(true, $code, $message, $data, $header);
         });
         
@@ -275,7 +260,7 @@ class ServiceProvider extends BaseServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__.'/../resource/config' => config_path(),
+                __DIR__.'/../resources/config' => config_path(),
             ], 'larke-admin-config');
         }
     }

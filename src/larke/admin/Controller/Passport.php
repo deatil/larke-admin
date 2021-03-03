@@ -51,7 +51,7 @@ class Passport extends Base
         $captchaKey = config('larkeadmin.passport.header_captcha_key');
         return $this->success(__('获取成功'), [
             'captcha' => $captchaImage,
-        ], 0, [
+        ], [
             $captchaKey => $captchaUniqid,
         ]);
     }
@@ -267,12 +267,12 @@ class Passport extends Base
             return $this->error($e->getMessage(), \ResponseCode::LOGOUT_ERROR);
         }
         
-        $accessAdminid = app('larke-admin.admin')->getId();
+        $accessAdminid = app('larke-admin.auth.admin')->getId();
         if ($accessAdminid != $refreshAdminid) {
             return $this->error(__('退出失败'), \ResponseCode::LOGOUT_ERROR);
         }
         
-        $accessToken = app('larke-admin.admin')->getAccessToken();
+        $accessToken = app('larke-admin.auth.admin')->getAccessToken();
         
         // 添加缓存黑名单
         app('larke-admin.cache')->add(md5($accessToken), time(), $refreshTokenExpiresIn);

@@ -7,12 +7,12 @@ namespace Larke\Admin\Auth;
 use Larke\Admin\Exception\JWTException;
 
 /*
- * jwt
+ * Token
  *
  * @create 2021-3-2
  * @author deatil
  */
-class JWT
+class Token
 {
     /**
      * 生成鉴权token

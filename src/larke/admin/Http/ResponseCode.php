@@ -55,5 +55,5 @@ class ResponseCode
     const RECORD_NOT_FOUND = 501; // 记录未找到
     const DELETE_FAILED = 502; // 删除失败
     const CREATE_FAILED = 503; // 添加记录失败 
-    const UPDATE_FAILED = 504; // 添加记录失败
+    const UPDATE_FAILED = 504; // 修改记录失败
 }
