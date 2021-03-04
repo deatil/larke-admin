@@ -18,7 +18,7 @@ class Log
 {
     public function handle($request, Closure $next)
     {
-        $adminInfo = app('larke-admin.auth.admin')->getProfile();
+        $adminInfo = app('larke-admin.auth-admin')->getProfile();
         
         $response = $next($request);
         

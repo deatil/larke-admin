@@ -66,7 +66,7 @@ class ServiceProvider extends BaseServiceProvider
     protected $routeMiddleware = [
         'larke-admin.lang' => Middleware\CheckLang::class,
         'larke-admin.auth' => Middleware\Authenticate::class,
-        'larke-admin.auth.admin' => Middleware\AdminCheck::class,
+        'larke-admin.admin-auth' => Middleware\AdminCheck::class,
         'larke-admin.permission' => Middleware\Permission::class,
         'larke-admin.log' => Middleware\Log::class,
     ];
@@ -235,10 +235,10 @@ class ServiceProvider extends BaseServiceProvider
         $this->app->singleton('larke-admin.extension', Extension::class);
         
         // 管理员登陆信息
-        $this->app->singleton('larke-admin.auth.admin', AuthAdmin::class);
+        $this->app->singleton('larke-admin.auth-admin', AuthAdmin::class);
         
         // 权限token
-        $this->app->singleton('larke-admin.auth.token', AuthToken::class);
+        $this->app->singleton('larke-admin.auth-token', AuthToken::class);
         
         // response()->success('success');
         Response::macro('success', function($message = null, $data = null, $header = [], $code = 0) {

@@ -35,11 +35,11 @@ class Permission
      */
     public function permissionCheck()
     {
-        if (app('larke-admin.auth.admin')->isAdministrator()) {
+        if (app('larke-admin.auth-admin')->isAdministrator()) {
             return;
         }
         
-        $adminId = app('larke-admin.auth.admin')->getId();
+        $adminId = app('larke-admin.auth-admin')->getId();
         $requestUrl = \Route::currentRouteName();
         $requestMethod = request()->getMethod();
         

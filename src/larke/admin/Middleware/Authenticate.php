@@ -61,10 +61,8 @@ class Authenticate
         }
         
         try {
-            $jwtAuth = app('larke-admin.jwt')
-                ->withJti(config('larkeadmin.passport.access_token_id'))
-                ->withToken($accessToken)
-                ->decode();
+            $jwtAuth = app('larke-admin.auth-token')
+                ->decodeAccessToken($accessToken);
             
             if (! ($jwtAuth->validate() && $jwtAuth->verify())) {
                 $this->error(__('token已过期'), \ResponseCode::ACCESS_TOKEN_TIMEOUT);
@@ -84,16 +82,16 @@ class Authenticate
         
         $adminInfo = $adminInfo->toArray();
         
-        app('larke-admin.auth.admin')
+        app('larke-admin.auth-admin')
             ->withAccessToken($accessToken)
             ->withId($adminid)
             ->withData($adminInfo);
         
-        if (! app('larke-admin.auth.admin')->isActive()) {
+        if (! app('larke-admin.auth-admin')->isActive()) {
             $this->error(__('帐号不存在或者已被锁定'), \ResponseCode::AUTH_ERROR);
         }
         
-        if (! app('larke-admin.auth.admin')->isGroupActive()) {
+        if (! app('larke-admin.auth-admin')->isGroupActive()) {
             $this->error(__('帐号用户组不存在或者已被锁定'), \ResponseCode::AUTH_ERROR);
         }
     }

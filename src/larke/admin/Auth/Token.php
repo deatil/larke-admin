@@ -15,6 +15,26 @@ use Larke\Admin\Exception\JWTException;
 class Token
 {
     /**
+     * 鉴权token过期时间
+     */
+    public function getAccessTokenExpiresIn()
+    {
+        $expiresIn = config('larkeadmin.passport.access_expires_in', 86400);
+        
+        return $expiresIn;
+    }
+    
+    /**
+     * 刷新token过期时间
+     */
+    public function getRefreshTokenExpiresIn()
+    {
+        $expiresIn = config('larkeadmin.passport.access_expires_in', 86400);
+        
+        return $expiresIn;
+    }
+    
+    /**
      * 生成鉴权token
      */
     public function buildAccessToken(array $data)
@@ -31,7 +51,7 @@ class Token
     }
     
     /**
-     * 生成鉴权token
+     * 生成刷新token
      */
     public function buildRefreshToken(array $data)
     {

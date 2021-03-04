@@ -37,7 +37,7 @@ class Profile extends Base
      */
     public function index()
     {
-        $data = app('larke-admin.auth.admin')->getProfile();
+        $data = app('larke-admin.auth-admin')->getProfile();
         
         return $this->success(__('获取成功'), $data);
     }
@@ -82,7 +82,7 @@ class Profile extends Base
         ];
         
         // 更新信息
-        $adminid = app('larke-admin.auth.admin')->getId();
+        $adminid = app('larke-admin.auth-admin')->getId();
         $status = AdminModel::where('id', $adminid)
             ->update($updateData);
         if ($status === false) {
@@ -118,7 +118,7 @@ class Profile extends Base
             return $this->error($validator->errors()->first());
         }
         
-        $adminid = app('larke-admin.auth.admin')->getId();
+        $adminid = app('larke-admin.auth-admin')->getId();
         $status = AdminModel::where('id', $adminid)
             ->first()
             ->updateAvatar($data['avatar']);
@@ -163,7 +163,7 @@ class Profile extends Base
             return $this->error(__('两次密码输入不一致'));
         }
 
-        $adminid = app('larke-admin.auth.admin')->getId();
+        $adminid = app('larke-admin.auth-admin')->getId();
         $adminInfo = AdminModel::where('id', $adminid)
             ->first();
         if (empty($adminInfo)) {
@@ -206,7 +206,7 @@ class Profile extends Base
      */
     public function rules()
     {
-        $rules = app('larke-admin.auth.admin')->getRules();
+        $rules = app('larke-admin.auth-admin')->getRules();
         
         return $this->success(__('获取成功'), [
             'list' => $rules,

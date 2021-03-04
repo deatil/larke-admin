@@ -223,7 +223,7 @@ class Extension
     }
     
     /**
-     * 添加授权过滤
+     * 添加登陆过滤
      *
      * @param array $excepts
      * 

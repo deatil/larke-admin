@@ -68,10 +68,8 @@ class PassportLogout extends Command
         }
         
         try {
-            $refreshJwt = app('larke-admin.jwt')
-                ->withJti(config('larkeadmin.passport.refresh_token_id'))
-                ->withToken($refreshToken)
-                ->decode();
+            $refreshJwt = app('larke-admin.auth-token')
+                ->decodeRefreshToken($refreshToken);
             
             if (!($refreshJwt->validate() && $refreshJwt->verify())) {
                 $this->line("<error>RefreshToken'verify is error !</error> ");

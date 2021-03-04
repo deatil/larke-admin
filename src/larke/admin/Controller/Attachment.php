@@ -310,7 +310,7 @@ class Attachment extends Base
         
         $data = [
             'belong_type' => AdminModel::class,
-            'belong_id' => app('larke-admin.auth.admin')->getId(),
+            'belong_id' => app('larke-admin.auth-admin')->getId(),
             'name' => $name,
             'path' => $path,
             'mime' => $mimeType,

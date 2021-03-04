@@ -16,6 +16,6 @@ class AuthToken extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'larke-admin.auth.token';
+        return 'larke-admin.auth-token';
     }
 }

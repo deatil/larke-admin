@@ -24,7 +24,7 @@ if (! function_exists('larke_success')) {
             {
                 return $this->success($message, $data, $header, $code);
             }
-        })->json($message, $data, $code, $header);
+        })->json($message, $data, $header, $code);
     }
 }
 
@@ -119,7 +119,7 @@ if (! function_exists('larke_admin_route_name')) {
 
 if (! function_exists('larke_admin_authenticate_excepts')) {
     /**
-     * 添加权限过滤
+     * 添加登陆过滤
      *
      * @create 2021-3-3
      * @author deatil

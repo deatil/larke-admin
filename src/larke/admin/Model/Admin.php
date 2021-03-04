@@ -52,8 +52,8 @@ class Admin extends Base
     public function scopeWithAccess($query, Array $ids = [])
     {
         return $query->with(['groupAccesses' => function ($query) use ($ids) {
-            if (! app('larke-admin.auth.admin')->isAdministrator()) {
-                $groupids = app('larke-admin.auth.admin')->getGroupChildrenIds();
+            if (! app('larke-admin.auth-admin')->isAdministrator()) {
+                $groupids = app('larke-admin.auth-admin')->getGroupChildrenIds();
                 $query->whereIn('group_id', $groupids);
                 
                 if (! empty($ids)) {

@@ -20,7 +20,7 @@ class AdminCheck
     
     public function handle($request, Closure $next)
     {
-        $isAdministrator = app('larke-admin.auth.admin')->isAdministrator();
+        $isAdministrator = app('larke-admin.auth-admin')->isAdministrator();
         if (!$isAdministrator) {
             $this->error(__('你没有权限进行该操作'), \ResponseCode::AUTH_ERROR);
         }

@@ -213,7 +213,7 @@ class Admin extends Base
             return $this->error(__('账号ID不能为空'));
         }
         
-        $adminid = app('larke-admin.auth.admin')->getId();
+        $adminid = app('larke-admin.auth-admin')->getId();
         if ($id == $adminid) {
             return $this->error(__('你不能删除自己的账号'));
         }
@@ -303,7 +303,7 @@ class Admin extends Base
         }
         
         // 用户组默认取当前用户的用户组的其中之一
-        $groupIds = app('larke-admin.auth.admin')->getGroupids();
+        $groupIds = app('larke-admin.auth-admin')->getGroupids();
         if (count($groupIds) > 0) {
             AuthGroupAccessModel::create([
                 'admin_id' => $admin->id,
@@ -334,7 +334,7 @@ class Admin extends Base
             return $this->error(__('账号ID不能为空'));
         }
         
-        $adminid = app('larke-admin.auth.admin')->getId();
+        $adminid = app('larke-admin.auth-admin')->getId();
         if ($id == $adminid) {
             return $this->error(__('你不能修改自己的账号'));
         }
@@ -431,7 +431,7 @@ class Admin extends Base
             return $this->error(__('账号ID不能为空'));
         }
         
-        $adminid = app('larke-admin.auth.admin')->getId();
+        $adminid = app('larke-admin.auth-admin')->getId();
         if ($id == $adminid) {
             return $this->error(__('你不能修改自己的账号'));
         }
@@ -482,7 +482,7 @@ class Admin extends Base
             return $this->error(__('账号ID不能为空'));
         }
         
-        $adminid = app('larke-admin.auth.admin')->getId();
+        $adminid = app('larke-admin.auth-admin')->getId();
         if ($id == $adminid) {
             return $this->error(__('你不能修改自己的账号'));
         }
@@ -534,7 +534,7 @@ class Admin extends Base
             return $this->error(__('账号ID不能为空'));
         }
         
-        $adminid = app('larke-admin.auth.admin')->getId();
+        $adminid = app('larke-admin.auth-admin')->getId();
         if ($id == $adminid) {
             return $this->error(__('你不能修改自己的账号'));
         }
@@ -575,7 +575,7 @@ class Admin extends Base
             return $this->error(__('账号ID不能为空'));
         }
         
-        $adminid = app('larke-admin.auth.admin')->getId();
+        $adminid = app('larke-admin.auth-admin')->getId();
         if ($id == $adminid) {
             return $this->error(__('你不能修改自己的账号'));
         }
@@ -621,10 +621,8 @@ class Admin extends Base
         }
         
         try {
-            $refreshJwt = app('larke-admin.jwt')
-                ->withJti(config('larkeadmin.passport.refresh_token_id'))
-                ->withToken($refreshToken)
-                ->decode();
+            $refreshJwt = app('larke-admin.auth-token')
+                ->decodeRefreshToken($refreshToken);
             
             if (! ($refreshJwt->validate() && $refreshJwt->verify())) {
                 return $this->error(__('refreshToken已过期'));
@@ -638,7 +636,7 @@ class Admin extends Base
             return $this->error($e->getMessage());
         }
         
-        $adminid = app('larke-admin.auth.admin')->getId();
+        $adminid = app('larke-admin.auth-admin')->getId();
         if ($refreshAdminid == $adminid) {
             return $this->error(__('你不能退出你的账号'));
         }
@@ -681,12 +679,12 @@ class Admin extends Base
         
         $access = $request->input('access');
         if (!empty($access)) {
-            $groupIds = app('larke-admin.auth.admin')->getGroupChildrenIds();
+            $groupIds = app('larke-admin.auth-admin')->getGroupChildrenIds();
             $accessIds = explode(',', $access);
             $accessIds = collect($accessIds)->unique();
             
             // 取交集
-            if (!app('larke-admin.auth.admin')->isAdministrator()) {
+            if (!app('larke-admin.auth-admin')->isAdministrator()) {
                 $intersectAccess = array_intersect_assoc($groupIds, $accessIds);
             } else {
                 $intersectAccess = $accessIds;
