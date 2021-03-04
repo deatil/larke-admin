@@ -39,7 +39,7 @@ class Token
      */
     public function buildAccessToken(array $data)
     {
-        $expiresIn = config('larkeadmin.passport.access_expires_in', 86400);
+        $expiresIn = $this->getAccessTokenExpiresIn();
         $token = app('larke-admin.jwt')
             ->withData($data)
             ->withExp($expiresIn)
@@ -55,10 +55,10 @@ class Token
      */
     public function buildRefreshToken(array $data)
     {
-        $refreshExpiresIn = config('larkeadmin.passport.refresh_expires_in', 300);
+        $expiresIn = $this->getRefreshTokenExpiresIn();
         $token = app('larke-admin.jwt')
             ->withData($data)
-            ->withExp($refreshExpiresIn)
+            ->withExp($expiresIn)
             ->withJti(config('larkeadmin.passport.refresh_token_id'))
             ->encode()
             ->getToken();
