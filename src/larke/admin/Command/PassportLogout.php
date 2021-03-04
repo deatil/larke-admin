@@ -7,7 +7,7 @@ namespace Larke\Admin\Command;
 use Illuminate\Console\Command;
 
 /**
- * 强制 jwt 的 refreshToken 放入黑名单
+ * 强制将 jwt 的 refreshToken 放入黑名单
  *
  * php artisan larke-admin:passport-logout
  *
@@ -72,7 +72,7 @@ class PassportLogout extends Command
                 ->decodeRefreshToken($refreshToken);
             
             if (!($refreshJwt->validate() && $refreshJwt->verify())) {
-                $this->line("<error>RefreshToken'verify is error !</error> ");
+                $this->line("<error>RefreshToken verify error !</error> ");
 
                 return;
             }
