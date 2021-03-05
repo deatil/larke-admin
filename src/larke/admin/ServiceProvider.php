@@ -5,6 +5,7 @@ declare (strict_types = 1);
 namespace Larke\Admin;
 
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
+use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
@@ -149,7 +150,7 @@ class ServiceProvider extends BaseServiceProvider
     protected function registerAlias()
     {
         foreach ($this->alias as $alias => $class) {
-            class_alias($class, $alias);
+            AliasLoader::getInstance()->alias($alias, $class);
         }
     }
     

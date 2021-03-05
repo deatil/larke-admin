@@ -29,7 +29,7 @@ class Token
      */
     public function getRefreshTokenExpiresIn()
     {
-        $expiresIn = config('larkeadmin.passport.refresh_expires_in', 86400);
+        $expiresIn = config('larkeadmin.passport.refresh_expires_in', 604800);
         
         return $expiresIn;
     }
