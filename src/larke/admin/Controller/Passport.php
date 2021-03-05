@@ -152,7 +152,7 @@ class Passport extends Base
         
         return $this->success(__('登录成功'), [
             'access_token' => $accessToken,
-            'expires_in' => $expiresIn, // 过期时间
+            'expires_in' => $expiresIn,
             'refresh_token' => $refreshToken,
         ]);
     }
@@ -205,6 +205,9 @@ class Passport extends Base
         
         // 监听事件
         event(new Event\PassportRefreshTokenAfter());
+        
+        // 过期时间
+        $expiresIn = app('larke-admin.auth-token')->getAccessTokenExpiresIn();
         
         return $this->success(__('刷新Token成功'), [
             'access_token' => $newAccessToken,
