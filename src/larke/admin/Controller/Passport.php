@@ -186,7 +186,7 @@ class Passport extends Base
                 ->decodeRefreshToken($refreshToken);
             
             if (! ($refreshJwt->validate() && $refreshJwt->verify())) {
-                return $this->error(__('refreshToken已过期'), \ResponseCode::REFRESH_TOKEN_ERROR);
+                return $this->error(__('refreshToken已过期'), \ResponseCode::REFRESH_TOKEN_TIMEOUT);
             }
             
             $refreshAdminid = $refreshJwt->getData('adminid');
