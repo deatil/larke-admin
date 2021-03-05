@@ -49,6 +49,7 @@ class Passport extends Base
         $captchaUniqid = Arr::get($captchaAttr, 'uniq', '');
         
         $captchaKey = config('larkeadmin.passport.header_captcha_key');
+        
         return $this->success(__('获取成功'), [
             'captcha' => $captchaImage,
         ], [
@@ -184,8 +185,8 @@ class Passport extends Base
             $refreshJwt = app('larke-admin.auth-token')
                 ->decodeRefreshToken($refreshToken);
             
-            if (!($refreshJwt->validate() && $refreshJwt->verify())) {
-                return $this->error(__('refreshToken已过期'), \ResponseCode::REFRESH_TOKEN_TIMEOUT);
+            if (! ($refreshJwt->validate() && $refreshJwt->verify())) {
+                return $this->error(__('refreshToken已过期'), \ResponseCode::REFRESH_TOKEN_ERROR);
             }
             
             $refreshAdminid = $refreshJwt->getData('adminid');
