@@ -179,6 +179,9 @@ class System extends Base
             return $this->error($validator->errors()->first());
         }
         
+        // 设置语言缓存
+        Cache::put('locale-language', $locale);
+        
         return $this->success(__('设置默认语言成功'));
     }
 
