@@ -8,7 +8,7 @@ use Closure;
 
 use Larke\Admin\Model\AdminLog as AdminLogModel;
 
-/*
+/**
  * 日志
  *
  * @create 2020-10-21

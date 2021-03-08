@@ -23,22 +23,27 @@ class JsonHandler extends ExceptionHandler
     
     public function render($request, $exception)
     {
-        $message = $exception->getMessage();
-        if (empty($message)) {
-            return parent::render($request, $exception);
+        if ($this->isHttpException($exception)) {
+            if ($exception->getStatusCode() != 200) {
+                if ($exception->getStatusCode() == 404) {
+                    $message = __('没有发现页面');
+                } else {
+                    $message = $exception->getMessage();
+                }
+                
+                if (config('app.debug')) {
+                    $data = [
+                        'exception' => $this->renderException($exception),
+                    ];
+                } else {
+                    $data = '';
+                }
+                
+                return $this->error($message, \ResponseCode::EXCEPTION, $data);
+            }
         }
         
-        parent::render($request, $exception);
-        
-        if (config('app.debug')) {
-            $data = [
-                'exception' => $this->renderException($exception),
-            ];
-        } else {
-            $data = '';
-        }
-        
-        return $this->error($message, \ResponseCode::EXCEPTION, $data);
+        return parent::render($request, $exception);
     }
 
     /**

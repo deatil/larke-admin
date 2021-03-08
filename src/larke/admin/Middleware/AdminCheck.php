@@ -8,7 +8,7 @@ use Closure;
 
 use Larke\Admin\Traits\ResponseJson as ResponseJsonTrait;
 
-/*
+/**
  * 超级管理员检测
  *
  * @create 2020-10-28

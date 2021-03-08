@@ -98,11 +98,12 @@ Route::group([
     $router->put('/extension/{name}/config', 'Extension@config')->name('extension.config')->where('name', '[A-Za-z0-9\-\_\.\/]+');
     $router->patch('/extension/{name}/enable', 'Extension@enable')->name('extension.enable')->where('name', '[A-Za-z0-9\-\_\.\/]+');
     $router->patch('/extension/{name}/disable', 'Extension@disable')->name('extension.disable')->where('name', '[A-Za-z0-9\-\_\.\/]+');
-    $router->patch('/extension/{id}/sort', 'Extension@listorder')->name('extension.listorder')->where('id', '[A-Za-z0-9\-\_\.\/]+');
+    $router->patch('/extension/{name}/sort', 'Extension@listorder')->name('extension.listorder')->where('name', '[A-Za-z0-9\-\_\.\/]+');
     $router->post('/extension/upload', 'Extension@upload')->name('extension.upload');
     
     $router->get('/system/info', 'System@info')->name('system.info');
     $router->get('/system/lang', 'System@lang')->name('system.lang');
+    $router->patch('/system/lang/{locale}', 'System@setLang')->name('system.set-lang')->where('locale', '[A-Za-z0-9\-\_]+');
     $router->post('/system/cache', 'System@cache')->name('system.cache');
     $router->post('/system/clear-cache', 'System@clearCache')->name('system.clear-cache');
 });

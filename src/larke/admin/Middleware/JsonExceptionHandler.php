@@ -10,7 +10,7 @@ use Illuminate\Contracts\Debug\ExceptionHandler;
 
 use Larke\Admin\Exception\JsonHandler;
 
-/*
+/**
  * 绑定自定义错误处理
  *
  * @create 2021-1-13

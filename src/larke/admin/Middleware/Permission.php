@@ -11,7 +11,7 @@ use Larke\Admin\Service\Route as RouteService;
 use Larke\Admin\Traits\ResponseJson as ResponseJsonTrait;
 use Larke\Admin\Model\AuthRule as AuthRuleModel;
 
-/*
+/**
  * 权限检测
  *
  * @create 2020-10-28

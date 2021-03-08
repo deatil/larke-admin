@@ -6,6 +6,7 @@ namespace Larke\Admin\Controller;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Validator;
 
@@ -152,6 +153,33 @@ class System extends Base
         return $this->success(__('获取成功'), [
             'list' => $langs,
         ]);
+    }
+    
+    /**
+     * 设置默认语言
+     *
+     * @title 语言设置
+     * @desc 设置系统默认语言
+     * @order 205
+     * @auth true
+     *
+     * @return Response
+     */
+    public function setLang(string $locale)
+    {
+        $validator = Validator::make([
+            'locale' => $locale,
+        ], [
+            'locale' => 'required',
+        ], [
+            'locale.required' => __('设置的语言不能为空'),
+        ]);
+
+        if ($validator->fails()) {
+            return $this->error($validator->errors()->first());
+        }
+        
+        return $this->success(__('设置默认语言成功'));
     }
 
     /**

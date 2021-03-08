@@ -4,7 +4,7 @@
     "JWT载荷解析失败": "JWT claim parse error",
     
     "你没有权限进行该操作": "no permission",
-    "token不能为空": "token empty",
+    "token不能为空": "token dont empty",
     "token格式错误": "token error",
     "token已失效": "token no use",
     "token已过期": "token timeout",
@@ -12,9 +12,10 @@
     "帐号用户组不存在或者已被锁定": "group error",
     "你没有访问权限": "canot use",
     
+    "没有发现页面": "not find",
     "获取成功": "get successfully",
     
-    "账号ID不能为空": "userid not empty",
+    "账号ID不能为空": "userid dont empty",
     "账号不存在": "user empty",
     "你不能修改自己的账号": "not change your passport",
     
@@ -216,5 +217,7 @@
     "请选择要查询的语言分组": "lang group dont empty",
     "语言分组名称格式错误": "lang group error",
     "请选择要查询的语言": "lang locale dont empty",
-    "语言名称格式错误": "lang locale error"
+    "语言名称格式错误": "lang locale error",
+    "设置的语言不能为空": "lang locale dont empty",
+    "设置默认语言成功": "set lang locale success"
 }

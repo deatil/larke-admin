@@ -8,7 +8,7 @@ use Closure;
 
 use Larke\Admin\Traits\ResponseJson as ResponseJsonTrait;
 
-/*
+/**
  * 请求options过滤
  *
  * 对于 options 请求，需要在

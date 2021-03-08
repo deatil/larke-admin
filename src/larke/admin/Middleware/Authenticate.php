@@ -10,7 +10,7 @@ use Larke\Admin\Service\Route as RouteService;
 use Larke\Admin\Model\Admin as AdminModel;
 use Larke\Admin\Traits\ResponseJson as ResponseJsonTrait;
 
-/*
+/**
  * jwt 验证
  *
  * @create 2020-10-19
