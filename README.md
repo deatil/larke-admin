@@ -128,6 +128,8 @@ php artisan larke-admin:import-route
  - composer/semver
 
  - phpseclib/phpseclib
+ 
+ - PclZip
 
 
 ### 开源协议
