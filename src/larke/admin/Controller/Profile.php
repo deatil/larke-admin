@@ -18,7 +18,7 @@ use Larke\Admin\Model\Admin as AdminModel;
  * @desc 个人信息管理
  * @order 150
  * @auth true
- * @slug {prefixAs}profile
+ * @slug {prefix}profile
  *
  * @create 2020-10-20
  * @author deatil

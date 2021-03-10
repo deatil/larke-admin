@@ -21,7 +21,7 @@ use Larke\Admin\Event\SystemCache as SystemCacheEvent;
  * @desc 系统管理
  * @order 200
  * @auth true
- * @slug {prefixAs}system
+ * @slug {prefix}system
  *
  * @create 2020-10-25
  * @author deatil

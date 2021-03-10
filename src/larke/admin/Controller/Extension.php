@@ -26,7 +26,7 @@ use Larke\Admin\Model\Extension as ExtensionModel;
  * @desc 系统扩展管理
  * @order 350
  * @auth true
- * @slug {prefixAs}extension
+ * @slug {prefix}extension
  *
  * @create 2020-10-30
  * @author deatil

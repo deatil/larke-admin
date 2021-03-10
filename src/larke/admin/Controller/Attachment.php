@@ -20,7 +20,7 @@ use Larke\Admin\Service\Upload as UploadService;
  * @desc 系统附件管理
  * @order 500
  * @auth true
- * @slug {prefixAs}attachment
+ * @slug {prefix}attachment
  *
  * @create 2020-10-22
  * @author deatil

@@ -325,7 +325,7 @@ class ImportRoute
             return $slug;
         }
         
-        return Str::replaceFirst('{prefixAs}', $as, $slug);
+        return Str::replaceFirst('{prefix}', $as, $slug);
     }
     
 }

@@ -21,7 +21,7 @@ use Larke\Admin\Event;
  * @desc 系统登陆管理
  * @order 100
  * @auth false
- * @slug {prefixAs}passport
+ * @slug {prefix}passport
  *
  * @create 2020-10-19
  * @author deatil
@@ -129,20 +129,26 @@ class Passport extends Base
                 ->buildAccessToken([
                     'adminid' => $adminInfo['id'],
                 ]);
-            if (empty($accessToken)) {
-                return $this->error(__('登陆失败'), \ResponseCode::LOGIN_ERROR);
-            }
-            
+        } catch(\Exception $e) {
+            return $this->error($e->getMessage(), \ResponseCode::LOGIN_ERROR);
+        }
+        
+        if (empty($accessToken)) {
+            return $this->error(__('登陆失败'), \ResponseCode::LOGIN_ERROR);
+        }
+        
+        try {
             // 刷新token
             $refreshToken = app('larke-admin.auth-token')
                 ->buildRefreshToken([
                     'adminid' => $adminInfo['id'],
                 ]);
-            if (empty($refreshToken)) {
-                return $this->error(__('登陆失败'), \ResponseCode::LOGIN_ERROR);
-            }
         } catch(\Exception $e) {
             return $this->error($e->getMessage(), \ResponseCode::LOGIN_ERROR);
+        }
+        
+        if (empty($refreshToken)) {
+            return $this->error(__('登陆失败'), \ResponseCode::LOGIN_ERROR);
         }
         
         // 监听事件
