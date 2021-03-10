@@ -182,14 +182,16 @@ class Passport extends Base
         
         try {
             // 旧的刷新token
-            $refreshJwt = app('larke-admin.auth-token')
+            $decodeRefreshToken = app('larke-admin.auth-token')
                 ->decodeRefreshToken($refreshToken);
             
-            if (! ($refreshJwt->validate() && $refreshJwt->verify())) {
-                return $this->error(__('refreshToken已过期'), \ResponseCode::REFRESH_TOKEN_TIMEOUT);
-            }
+            // 验证
+            app('larke-admin.auth-token')->validate($decodeRefreshToken);
             
-            $refreshAdminid = $refreshJwt->getData('adminid');
+            // 签名
+            app('larke-admin.auth-token')->verify($decodeRefreshToken);
+            
+            $refreshAdminid = $decodeRefreshToken->getData('adminid');
             
             // 新建access_token
             $newAccessToken = app('larke-admin.auth-token')
@@ -240,17 +242,19 @@ class Passport extends Base
         
         try {
             // 刷新Token
-            $refreshJwt = app('larke-admin.auth-token')
+            $decodeRefreshToken = app('larke-admin.auth-token')
                 ->decodeRefreshToken($refreshToken);
             
-            if (! ($refreshJwt->validate() && $refreshJwt->verify())) {
-                return $this->error(__('refreshToken已过期'), \ResponseCode::LOGOUT_ERROR);
-            }
+            // 验证
+            app('larke-admin.auth-token')->validate($decodeRefreshToken);
             
-            $refreshAdminid = $refreshJwt->getData('adminid');
+            // 签名
+            app('larke-admin.auth-token')->verify($decodeRefreshToken);
+            
+            $refreshAdminid = $decodeRefreshToken->getData('adminid');
             
             // 过期时间
-            $refreshTokenExpiresIn = $refreshJwt->getClaim('exp') - $refreshJwt->getClaim('iat');
+            $refreshTokenExpiresIn = $decodeRefreshToken->getClaim('exp') - $decodeRefreshToken->getClaim('iat');
         } catch(\Exception $e) {
             return $this->error($e->getMessage(), \ResponseCode::LOGOUT_ERROR);
         }

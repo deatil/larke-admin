@@ -8,6 +8,8 @@
     "token格式错误": "token error",
     "token已失效": "token no use",
     "token已过期": "token timeout",
+    "token数据错误": "token validate error",
+    "token验证失败": "token verify error",
     "帐号不存在或者已被锁定": "passport error",
     "帐号用户组不存在或者已被锁定": "group error",
     "你没有访问权限": "canot use",
@@ -219,5 +221,6 @@
     "请选择要查询的语言": "lang locale dont empty",
     "语言名称格式错误": "lang locale error",
     "设置的语言不能为空": "lang locale dont empty",
+    "设置的语言格式错误": "set lang locale error",
     "设置默认语言成功": "set lang locale success"
 }

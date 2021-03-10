@@ -68,19 +68,19 @@ class PassportLogout extends Command
         }
         
         try {
-            $refreshJwt = app('larke-admin.auth-token')
+            $decodeRefreshToken = app('larke-admin.auth-token')
                 ->decodeRefreshToken($refreshToken);
             
-            if (!($refreshJwt->validate() && $refreshJwt->verify())) {
-                $this->line("<error>RefreshToken verify error !</error> ");
-
-                return;
-            }
+            // 验证
+            app('larke-admin.auth-token')->validate($decodeRefreshToken);
             
-            $refreshAdminid = $refreshJwt->getData('adminid');
+            // 签名
+            app('larke-admin.auth-token')->verify($decodeRefreshToken);
+            
+            $refreshAdminid = $decodeRefreshToken->getData('adminid');
             
             // 过期时间
-            $refreshTokenExpiresIn = $refreshJwt->getClaim('exp') - $refreshJwt->getClaim('iat');
+            $refreshTokenExpiresIn = $decodeRefreshToken->getClaim('exp') - $decodeRefreshToken->getClaim('iat');
        } catch(\Exception $e) {
             $this->line("<error>".$e->getMessage()."</error> ");
 

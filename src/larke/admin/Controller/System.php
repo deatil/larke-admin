@@ -170,9 +170,10 @@ class System extends Base
         $validator = Validator::make([
             'locale' => $locale,
         ], [
-            'locale' => 'required',
+            'locale' => 'required|alpha_dash',
         ], [
             'locale.required' => __('设置的语言不能为空'),
+            'locale.alpha_dash' => __('设置的语言格式错误'),
         ]);
 
         if ($validator->fails()) {

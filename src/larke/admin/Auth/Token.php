@@ -97,6 +97,26 @@ class Token
     }
     
     /**
+     * 验证格式
+     */
+    public function validate($decodeToken) 
+    {
+        if (! $decodeToken->validate()) {
+            throw new JWTException(__('token数据错误'));
+        }
+    }
+    
+    /**
+     * 验证签名
+     */
+    public function verify($decodeToken) 
+    {
+        if (! $decodeToken->verify()) {
+            throw new JWTException(__('token验证失败'));
+        }
+    }
+    
+    /**
      * 检测token
      */
     public function checkToken(string $token) 

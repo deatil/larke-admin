@@ -61,16 +61,26 @@ class Authenticate
         }
         
         try {
-            $jwtAuth = app('larke-admin.auth-token')
+            $decodeAccessToken = app('larke-admin.auth-token')
                 ->decodeAccessToken($accessToken);
-            
-            if (! ($jwtAuth->validate() && $jwtAuth->verify())) {
-                $this->error(__('token已过期'), \ResponseCode::ACCESS_TOKEN_TIMEOUT);
-            }
-            
-            $adminid = $jwtAuth->getData('adminid');
         } catch(\Exception $e) {
-            $this->error($e->getMessage(), \ResponseCode::ACCESS_TOKEN_ERROR);
+            $this->error(__('token格式错误'), \ResponseCode::ACCESS_TOKEN_ERROR);
+        }
+        
+        try {
+            // 验证
+            app('larke-admin.auth-token')->validate($decodeAccessToken);
+            
+            // 签名
+            app('larke-admin.auth-token')->verify($decodeAccessToken);
+        } catch(\Exception $e) {
+            $this->error(__('token已过期'), \ResponseCode::ACCESS_TOKEN_TIMEOUT);
+        }
+        
+        try {
+            $adminid = $decodeAccessToken->getData('adminid');
+        } catch(\Exception $e) {
+            $this->error(__('token已失效'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
         $adminInfo = AdminModel::where('id', $adminid)
