@@ -1,9 +1,19 @@
 <?php
 
+declare (strict_types = 1);
+
 namespace Larke\Admin\Command;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
+/**
+ * 安装
+ *
+ * php artisan larke-admin:install [--force]
+ *
+ */
 class Install extends Command
 {
     /**
@@ -27,12 +37,41 @@ class Install extends Command
      */
     public function handle()
     {
-        $this->call('vendor:publish', ['--tag' => 'larke-admin', '--force' => true]);
-
         if ($this->option('force')) {
-            
+            $this->call('vendor:publish', [
+                '--tag' => 'larke-admin-config', 
+                '--force' => true,
+            ]);
+        } else {
+            $this->call('vendor:publish', [
+                '--tag' => 'larke-admin-config',
+            ]);
         }
-
-        $this->info('Larke-admin install success.');
+        
+        $this->runSql();
+        
+        $this->info('Larke-admin install successfully.');
+    }
+    
+    /**
+     * Execute Sql.
+     *
+     * @return mixed
+     */
+    protected function runSql()
+    {
+        // 执行数据库
+        $installSqlFile = __DIR__.'/../../resources/database/install.sql';
+        
+        $sqlData = File::get($installSqlFile);
+        if (empty($sqlData)) {
+            $this->line("<error>Sql file is empty !</error> ");
+            return;
+        }
+        
+        $dbPrefix = DB::getConfig('prefix');
+        $sqlContent = str_replace('pre__', $dbPrefix, $sqlData);
+        
+        DB::unprepared($sqlContent);
     }
 }

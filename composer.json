@@ -1,27 +1,32 @@
 {
     "name": "lake/larke-admin",
-    "description": "The Library is admin Package",
-    "license": "Apache-2.0",
-    "type": "library",
+    "description": "An admin api library with jwt and rabc.",
     "keywords": [
+        "laravel",
         "lake",
         "larke",
         "admin",
         "larke-admin"
     ],
     "homepage": "https://github.com/deatil/larke-admin",
+    "type": "library",
+    "license": "Apache-2.0",
     "authors": [
         {
             "name": "deatil",
             "email": "deatil@github.com",
-            "homepage": "https://github.com/deatil"
+            "homepage": "https://github.com/deatil",
+            "role": "Developer"
         }
     ],
     "require": {
-        "php": "^7.3",
+        "php": "^7.3|^8.0",
         "laravel/framework": "^8.0",
-        "lcobucci/jwt": "^3.3",
-        "casbin/laravel-authz": "^1.4"
+        "composer/semver": "^3.2",
+        "phpseclib/phpseclib": "^3.0",
+        "lake/larke-pclzip": "^1.0",
+        "lake/larke-jwt": "^1.0",
+        "lake/larke-auth": "^1.0"
     },
     "autoload": {
         "psr-4": {

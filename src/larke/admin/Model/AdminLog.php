@@ -1,5 +1,7 @@
 <?php
 
+declare (strict_types = 1);
+
 namespace Larke\Admin\Model;
 
 /*
@@ -13,6 +15,8 @@ class AdminLog extends Base
     protected $table = 'larke_admin_log';
     protected $keyType = 'string';
     protected $primaryKey = 'id';
+    
+    protected $guarded = [];
     
     public $incrementing = false;
     public $timestamps = false;
@@ -42,15 +46,12 @@ class AdminLog extends Base
     public static function record($data = [])
     {
         $data = array_merge([
-            'id' => md5(mt_rand(100000, 999999).microtime()),
             'method' => app()->request->method(),
             'url' => urldecode(request()->getUri()),
             'ip' => request()->ip(),
             'useragent' => request()->server('HTTP_USER_AGENT'),
-            'create_time' => time(),
-            'create_ip' => request()->ip(),
         ], $data);
-        self::insert($data);
+        self::create($data);
     }
 
 }

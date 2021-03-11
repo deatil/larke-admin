@@ -1,5 +1,7 @@
 <?php
 
+declare (strict_types = 1);
+
 namespace Larke\Admin\Model;
 
 /*
@@ -14,6 +16,16 @@ class AuthRuleAccess extends Base
     protected $keyType = 'string';
     protected $primaryKey = 'id';
     
+    protected $guarded = [];
+    
     public $incrementing = false;
     public $timestamps = false;
+    
+    /**
+     * 规则
+     */
+    public function rule()
+    {
+        return $this->hasOne(AuthRule::class, 'id', 'rule_id');
+    }
 }

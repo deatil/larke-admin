@@ -1,14 +1,16 @@
 <?php
 
+declare (strict_types = 1);
+
 namespace Larke\Admin\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\Cache;
 
-use Larke\Admin\Traits\Json as JsonTrait;
+use Larke\Admin\Service\Route as RouteService;
 use Larke\Admin\Model\Admin as AdminModel;
+use Larke\Admin\Traits\ResponseJson as ResponseJsonTrait;
 
-/*
+/**
  * jwt 验证
  *
  * @create 2020-10-19
@@ -16,11 +18,11 @@ use Larke\Admin\Model\Admin as AdminModel;
  */
 class Authenticate
 {
-    use JsonTrait;
+    use ResponseJsonTrait;
     
     public function handle($request, Closure $next)
     {
-        if (!$this->shouldPassThrough($request)) {
+        if (! $this->shouldPassThrough($request)) {
             $this->jwtCheck();
         }
         
@@ -32,58 +34,76 @@ class Authenticate
      */
     protected function jwtCheck()
     {
-        $token = request()->header('token');
-        if (!$token) {
-            $this->errorJson(__('token不能为空'));
+        $authorization = request()->header('Authorization');
+        if (!$authorization) {
+            $this->error(__('token不能为空'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
-        if (count(explode('.', $token)) <> 3) {
-            $this->errorJson(__('token格式错误'));
+        $authorizationArr = explode(' ', $authorization);
+        if (count($authorizationArr) != 2) {
+            $this->error(__('token不能为空'), \ResponseCode::ACCESS_TOKEN_ERROR);
+        }
+        if ($authorizationArr[0] != 'Bearer') {
+            $this->error(__('token格式错误'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
-        if (Cache::has(md5($token))) {
-            $this->errorJson(__('token已失效'));
+        $accessToken = $authorizationArr[1];
+        if (!$accessToken) {
+            $this->error(__('token不能为空'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
-        $jwtAuth = app('larke.jwt')
-            ->withJti(config('larke.passport.access_token_id'));
-        
-        try {
-            $jwtAuth->withToken($token)->decode();
-        } catch(\Exception $e) {
-            $this->errorJson(__("JWT解析错误：:message", [
-                'message' => $e->getMessage(),
-            ]));
+        if (count(explode('.', $accessToken)) <> 3) {
+            $this->error(__('token格式错误'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
-        if (!($jwtAuth->validate() && $jwtAuth->verify())) {
-            $this->errorJson(__('token已过期'));
+        if (app('larke-admin.cache')->has(md5($accessToken))) {
+            $this->error(__('token已失效'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
         try {
-            $adminid = $jwtAuth->getClaim('adminid');
+            $decodeAccessToken = app('larke-admin.auth-token')
+                ->decodeAccessToken($accessToken);
         } catch(\Exception $e) {
-            $this->errorJson(__("JWT解析错误：:message", [
-                'message' => $e->getMessage(),
-            ]));
+            $this->error(__('token格式错误'), \ResponseCode::ACCESS_TOKEN_ERROR);
+        }
+        
+        try {
+            // 验证
+            app('larke-admin.auth-token')->validate($decodeAccessToken);
+            
+            // 签名
+            app('larke-admin.auth-token')->verify($decodeAccessToken);
+        } catch(\Exception $e) {
+            $this->error(__('token已过期'), \ResponseCode::ACCESS_TOKEN_TIMEOUT);
+        }
+        
+        try {
+            $adminid = $decodeAccessToken->getData('adminid');
+        } catch(\Exception $e) {
+            $this->error(__('token已失效'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
         $adminInfo = AdminModel::where('id', $adminid)
+            ->with(['groups'])
             ->first();
         if (empty($adminInfo)) {
-            $this->errorJson(__('帐号不存在或者已被锁定'));
-        }
-        $adminInfo = $adminInfo->toArray();
-        if ($adminInfo['status'] != 1) {
-            $this->errorJson(__('帐号不存在或者已被锁定'));
+            $this->error(__('帐号不存在或者已被锁定'), \ResponseCode::AUTH_ERROR);
         }
         
-        config([
-            'larke.auth' => [
-                'adminid' => $adminid,
-                'admininfo' => $adminInfo,
-            ],
-        ]);
+        $adminInfo = $adminInfo->toArray();
+        
+        app('larke-admin.auth-admin')
+            ->withAccessToken($accessToken)
+            ->withId($adminid)
+            ->withData($adminInfo);
+        
+        if (! app('larke-admin.auth-admin')->isActive()) {
+            $this->error(__('帐号不存在或者已被锁定'), \ResponseCode::AUTH_ERROR);
+        }
+        
+        if (! app('larke-admin.auth-admin')->isGroupActive()) {
+            $this->error(__('帐号用户组不存在或者已被锁定'), \ResponseCode::AUTH_ERROR);
+        }
     }
 
     /**
@@ -95,17 +115,26 @@ class Authenticate
      */
     protected function shouldPassThrough($request)
     {
-        $excepts = array_merge(config('larke.auth.excepts', []), [
-            'larke-admin-passport-login',
-            'larke-admin-passport-refresh-token',
-            'larke-admin-attachment-download',
+        $excepts = array_merge(config('larkeadmin.auth.authenticate_excepts', []), [
+            $this->formatRouteSlug('passport.captcha'),
+            $this->formatRouteSlug('passport.login'),
+            $this->formatRouteSlug('passport.refresh-token'),
+            $this->formatRouteSlug('attachment.download'),
         ]);
-
+        
         return collect($excepts)
             ->contains(function ($except) {
                 $requestUrl = \Route::currentRouteName();
                 return ($except == $requestUrl);
             });
+    }
+    
+    /**
+     * 格式化路由标识
+     */
+    protected function formatRouteSlug($slug = '')
+    {
+        return RouteService::formatRouteSlug($slug);
     }
 
 }

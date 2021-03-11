@@ -1,5 +1,7 @@
 <?php
 
+declare (strict_types = 1);
+
 namespace Larke\Admin\Captcha;
 
 use Illuminate\Support\Facades\Cache;
@@ -12,31 +14,71 @@ use Illuminate\Support\Facades\Cache;
  */
 class Captcha
 {
-    private $code = ''; // 验证码
-    private $uniqid = ''; // 唯一序号
-    private $charset = 'ABCDEFGHKMNPRSTUVWXYZ23456789'; // 随机因子
-    private $codelen = 4; // 验证码长度
-    private $width = 130; // 宽度
-    private $height = 50; // 高度
-    private $img = ''; // 图形资源句柄
-    private $font = ''; // 指定的字体
-    private $fontsize = 20; // 指定字体大小
-    private $fontcolor = ''; // 指定字体颜色
-
+    // 验证码
+    private $code = ''; 
+    
+    // 唯一序号
+    private $uniqid = ''; 
+    
+    // 随机因子
+    private $charset = 'abcdefghkmnprstuvwxyzABCDEFGHKMNPRSTUVWXYZ23456789'; 
+    
+    // 验证码长度
+    private $codelen = 4; 
+    
+    // 宽度
+    private $width = 130; 
+    
+    // 高度
+    private $height = 50; 
+    
+    // 图形资源句柄
+    private $img = ''; 
+    
+    // 指定的字体
+    private $font = ''; 
+    
+    // 指定字体大小
+    private $fontsize = 20; 
+    
+    // 指定字体颜色
+    private $fontcolor = ''; 
+    
+    // 验证码缓存时间
+    private $cachetime = 300; 
+    
     /**
-     * 构造方法初始化
-     * CaptchaService constructor.
-     * @param array $config
+     * 设置配置
+     * 
+     * @param string|array $name
+     * @return string $value
+     *
+     * @return object
      */
-    public function __construct($config = [])
+    public function withConfig($name, $value = null)
     {
-        // 动态配置属性
-        foreach ($config as $k => $v) {
-            if (isset($this->{$k})) {
-                $this->{$k} = $v;
+        if (is_array($name)) {
+            foreach ($name as $k => $v) {
+                $this->withConfig($k, $v);
             }
+            
+            return $this;
         }
         
+        if (isset($this->{$name})) {
+            $this->{$name} = $value;
+        }
+        
+        return $this;
+    }
+
+    /**
+     * 生成验证码信息
+     *
+     * @return object
+     */
+    public function makeCode()
+    {
         // 生成验证码序号
         if (empty($this->uniqid)) {
             $this->uniqid = md5(uniqid('larke.captcha') . mt_rand(10000, 99999));
@@ -49,10 +91,12 @@ class Captcha
         }
         
         // 缓存验证码字符串
-        Cache::put($this->uniqid, $this->code, 300);
+        Cache::put($this->uniqid, $this->code, $this->cachetime);
         
         // 设置字体文件路径
         $this->font = __DIR__ . '/font/icon.ttf';
+        
+        return $this;
     }
 
     /**
@@ -82,7 +126,7 @@ class Captcha
         $_x = $this->width / $this->codelen;
         for ($i = 0; $i < $this->codelen; $i++) {
             $this->fontcolor = imagecolorallocate($this->img, mt_rand(0, 156), mt_rand(0, 156), mt_rand(0, 156));
-            imagettftext($this->img, $this->fontsize, mt_rand(-30, 30), $_x * $i + mt_rand(1, 5), $this->height / 1.4, $this->fontcolor, $this->font, $this->code[$i]);
+            imagettftext($this->img, $this->fontsize, mt_rand(-30, 30), intval($_x * $i + mt_rand(1, 5)), intval($this->height / 1.4), $this->fontcolor, $this->font, $this->code[$i]);
         }
         
         ob_start();
@@ -102,7 +146,7 @@ class Captcha
         return [
             'code' => $this->code,
             'uniq' => $this->uniqid,
-            'data' => $this->getData()
+            'data' => $this->getData(),
         ];
     }
 
@@ -116,15 +160,6 @@ class Captcha
     }
 
     /**
-     * 获取图片内容
-     * @return string
-     */
-    public function getData()
-    {
-        return "data:image/png;base64,{$this->createImage()}";
-    }
-
-    /**
      * 获取验证码编号
      * @return string
      */
@@ -134,17 +169,26 @@ class Captcha
     }
 
     /**
+     * 获取图片内容
+     * @return string
+     */
+    public function getData()
+    {
+        return "data:image/png;base64,{$this->createImage()}";
+    }
+
+    /**
      * 检查验证码是否正确
      * @param string $code 需要验证的值
      * @param string $uniqid 验证码编号
      * @return boolean
      */
-    public static function check($code, $uniqid = null)
+    public function check($code, $uniqid = null)
     {
         if (empty($uniqid)) {
             return false;
         }
-        $val = Cache::get($uniqid); // 获取并删除
+        $val = Cache::pull($uniqid); // 获取并删除
         return is_string($val) && strtolower($val) === strtolower($code);
     }
 }

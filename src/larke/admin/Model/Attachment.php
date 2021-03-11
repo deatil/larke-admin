@@ -1,8 +1,10 @@
 <?php
 
+declare (strict_types = 1);
+
 namespace Larke\Admin\Model;
 
-use Illuminate\Support\Facades\Storage;
+use Larke\Admin\Service\Upload;
 
 /**
  * 附件模型
@@ -16,36 +18,40 @@ class Attachment extends Base
     protected $keyType = 'string';
     protected $primaryKey = 'id';
     
+    protected $guarded = [];
+    
     protected $appends = [
-        'realpath',
+        'url',
     ];
     
     public $incrementing = false;
     public $timestamps = false;
     
-    public function getRealpathAttribute() 
+    public function getUrlAttribute() 
     {
         $value = $this->path;
         if (empty($value)) {
             return '';
         }
         
-        return Storage::url($value);
+        $upload = Upload::driver($this->driver);
+        if ($upload === false) {
+            return '';
+        }
+        
+        return $upload->objectUrl($value);
     }
     
     public function attachmentable()
     {
-        return $this->morphTo(__FUNCTION__, 'type', 'type_id');
+        return $this->morphTo(__FUNCTION__, 'belong_type', 'belong_id');
     }
     
-    public static function path($id)
+    public static function path($id, $default = null)
     {
-        $path = self::where('id', $id)->value('path');
-        if (empty($path)) {
-            return '';
-        }
-        
-        return Storage::url($path);
+        return static::where('id', $id)
+            ->first()
+            ->url ?? $default;
     }
 
 }

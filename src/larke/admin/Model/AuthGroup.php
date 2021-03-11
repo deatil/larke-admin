@@ -1,5 +1,7 @@
 <?php
 
+declare (strict_types = 1);
+
 namespace Larke\Admin\Model;
 
 /*
@@ -13,6 +15,13 @@ class AuthGroup extends Base
     protected $table = 'larke_auth_group';
     protected $keyType = 'string';
     protected $primaryKey = 'id';
+    
+    protected $guarded = [];
+    
+    protected $casts = [
+        'id' => 'string',
+        'parentid' => 'string',
+    ];
     
     public $incrementing = false;
     public $timestamps = false;
@@ -30,7 +39,7 @@ class AuthGroup extends Base
      */
     public function rules()
     {
-        return $this->belongsToMany(AuthRule::class, AuthRuleAccess::class, 'rule_id', 'group_id');
+        return $this->belongsToMany(AuthRule::class, AuthRuleAccess::class, 'group_id', 'rule_id');
     }
     
     /**
@@ -48,4 +57,21 @@ class AuthGroup extends Base
     {
         return $this->belongsToMany(Admin::class, AuthGroupAccess::class, 'admin_id', 'group_id');
     }
+    
+    /**
+     * 获取子模块
+     */
+    public function childrenModule()
+    {
+        return $this->hasMany($this, 'parentid', 'id');
+    }
+    
+    /**
+     * 递归获取子模块
+     */
+    public function children()
+    {
+        return $this->childrenModule()->with('children');
+    }
+    
 }
