@@ -5,6 +5,7 @@ declare (strict_types = 1);
 namespace Larke\Admin\Model;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Model;
 
 /*
@@ -15,13 +16,55 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Base extends Model
 {
+    /**
+     * 白名单
+     */
+    protected $fillable = [];
+    
+    /**
+     * 隐藏字段
+     */
+    protected $hidden = [];
+    
+    /**
+     * 显示字段
+     */
+    protected $visible = [];
+    
     public function scopeWithCertain($query, $relation, array $columns)
     {
         return $query->with([$relation => function ($query) use ($columns) {
             $query->select(array_merge(['id'], $columns));
         }]);
     }
-    
+
+    /**
+     * 查询时去掉不必要的字段
+     * 
+     * $param string|array $field 
+     */
+    public function scopeFieldByHidden($query, $field)
+    {
+        if (empty($field)) {
+            return $query;
+        }
+        
+        $columns = Schema::getColumnListing($this->table);
+        foreach ($columns as $key => $val) {
+            if (is_array($field)) {
+                if (in_array($val, $field)) {
+                    unset($columns[$key]);
+                }
+            } else {
+                if ($val == $field) {
+                    unset($columns[$key]);
+                }
+            }
+        }
+        
+        return $query->select($columns);
+    }
+
     public function scopeWheres($query, array $columns)
     {
         if (empty($columns)) {
