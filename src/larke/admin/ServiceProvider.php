@@ -184,7 +184,19 @@ class ServiceProvider extends BaseServiceProvider
         $this->app->bind('larke-admin.loader', Loader::class);
         
         // 验证码
-        $this->app->bind('larke-admin.captcha', Captcha::class);
+        $this->app->bind('larke-admin.captcha', function() {
+            $captcha = new Captcha();
+            
+            $config = config('larkeadmin.captcha');
+            $config = collect($config)
+                ->filter(function($data) {
+                    return !empty($data);
+                })
+                ->toArray();
+            $captcha->withConfig($config);
+            
+            return $captcha;
+        });
         
         // 响应
         $this->app->bind('larke-admin.response', ResponseContract::class);
