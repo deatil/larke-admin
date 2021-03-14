@@ -281,7 +281,8 @@ class Tree
 
     /**
      * 将 build 的结果返回为二维数组
-     * @param array     $data 数据
+     * @param array $data 数据
+     * @param int $parentid 父级ID
      * @return array
      */
     public function buildFormatList($data = [], $parentid = 0)
@@ -301,13 +302,13 @@ class Tree
                 $v[$this->haschildKey] = $child ? 1 : 0;
                 unset($v[$this->buildChildKey]);
                 
-                if (!isset($v[$this->parentidKey])) {
+                if (! isset($v[$this->parentidKey])) {
                     $v[$this->parentidKey] = $parentid;
                 }
                 
                 $list[] = $v;
 
-                if (!empty($child)) {
+                if (! empty($child)) {
                     $list = array_merge($list, $this->buildFormatList($child, $v[$this->idKey]));
                 }
             }

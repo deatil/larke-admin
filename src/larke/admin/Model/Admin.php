@@ -16,10 +16,27 @@ class Admin extends Base
     protected $keyType = 'string';
     protected $primaryKey = 'id';
     
-    protected $guarded = [];
-    
     public $incrementing = false;
     public $timestamps = false;
+    
+    /**
+     * 黑名单
+     *
+     * @var array
+     */
+    protected $guarded = [
+        'is_root'
+    ];
+    
+    /**
+     * 隐藏
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'password',
+        'password_salt',
+    ];
     
     /**
      * 授权

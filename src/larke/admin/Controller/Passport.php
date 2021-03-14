@@ -105,7 +105,9 @@ class Passport extends Base
             return $this->error(__('帐号错误'), \ResponseCode::LOGIN_ERROR);
         }
         
-        $adminInfo = $admin->toArray();
+        $adminInfo = $admin
+            ->makeVisible(['password', 'password_salt'])
+            ->toArray();
         $password = $request->input('password');
         
         $encryptPassword = (new Password())

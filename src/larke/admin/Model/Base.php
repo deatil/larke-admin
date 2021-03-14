@@ -18,16 +18,29 @@ class Base extends Model
 {
     /**
      * 白名单
+     *
+     * @var array
      */
     protected $fillable = [];
     
     /**
-     * 隐藏字段
+     * 黑名单
+     *
+     * @var array
+     */
+    protected $guarded = [];
+    
+    /**
+     * 隐藏
+     *
+     * @var array
      */
     protected $hidden = [];
     
     /**
-     * 显示字段
+     * 显示
+     *
+     * @var array
      */
     protected $visible = [];
     

@@ -32,7 +32,7 @@ Class Doc
         
         $comment = trim($comment[1]);
         
-        if (preg_match_all ( '#^\s*\*(.*)#m', $comment, $lines) === false) {
+        if (preg_match_all('#^\s*\*(.*)#m', $comment, $lines) === false) {
             return $this->params;
         }
         
@@ -153,7 +153,7 @@ Class Doc
             
             parse_str($r[1], $value);
             
-            foreach ($value as $key => $val) {
+            foreach($value as $key => $val) {
                 $val = explode(',', $val);
                 
                 if (count($val ) > 1) {
@@ -201,15 +201,15 @@ Class Doc
     protected function getParamType(string $type): string
     {
         $typeMaps = [
-            'string' => '字符串',
-            'int' => '整型',
-            'float' => '浮点型',
-            'boolean' => '布尔型',
-            'date' => '日期',
-            'array' => '数组',
-            'fixed' => '固定值',
-            'enum' => '枚举类型',
-            'object' => '对象',
+            'string' => 'String', // 字符串
+            'int' => 'Int', // 整型
+            'float' => 'Float', // 浮点型
+            'boolean' => 'Boolean', // 布尔型
+            'date' => 'Date', // 日期
+            'array' => 'Array', // 数组
+            'fixed' => 'Fixed', // 固定值
+            'enum' => 'Enum', // 枚举类型
+            'object' => 'Object', // 对象
         ];
         return array_key_exists($type, $typeMaps) 
             ? $typeMaps[$type] 

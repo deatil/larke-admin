@@ -170,6 +170,7 @@ class Profile extends Base
             return $this->error(__('帐号错误'));
         }
         
+        $adminInfo = $adminInfo->makeVisible(['password', 'password_salt']);
         $encryptPassword = (new Password())
             ->withSalt(config('larkeadmin.passport.password_salt'))
             ->encrypt($oldPassword, $adminInfo['password_salt']); 
