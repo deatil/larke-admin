@@ -6,13 +6,15 @@ namespace Larke\Admin\Captcha;
 
 use Illuminate\Support\Facades\Cache;
 
+use Larke\Admin\Contracts\Captcha as CaptchaContract;
+
 /**
  * 图形验证码
  *
  * @create 2020-10-25
  * @author deatil
  */
-class Captcha
+class Captcha implements CaptchaContract
 {
     // 验证码
     private $code = ''; 
@@ -137,6 +139,7 @@ class Captcha
 
     /**
      * 获取验证码
+     *
      * @return array
      */
     public function getAttr()
@@ -150,6 +153,7 @@ class Captcha
 
     /**
      * 获取验证码值
+     *
      * @return string
      */
     public function getCode()
@@ -159,6 +163,7 @@ class Captcha
 
     /**
      * 获取验证码编号
+     *
      * @return string
      */
     public function getUniqid()
@@ -168,6 +173,7 @@ class Captcha
 
     /**
      * 获取图片内容
+     *
      * @return string
      */
     public function getData()
@@ -177,8 +183,10 @@ class Captcha
 
     /**
      * 检查验证码是否正确
+     *
      * @param string $code 需要验证的值
      * @param string $uniqid 验证码编号
+     *
      * @return boolean
      */
     public function check($code, $uniqid = null)
@@ -186,7 +194,9 @@ class Captcha
         if (empty($uniqid)) {
             return false;
         }
+        
         $val = Cache::pull($uniqid); // 获取并删除
+        
         return is_string($val) && strtolower($val) === strtolower($code);
     }
 }

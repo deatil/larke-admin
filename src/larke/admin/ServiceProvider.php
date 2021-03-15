@@ -11,6 +11,7 @@ use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 use Larke\Admin\Contracts\Response as ResponseContract;
 use Larke\Admin\Contracts\Jwt as JwtContract;
+use Larke\Admin\Contracts\Captcha as CaptchaContract;
 use Larke\Admin\Jwt\Jwt;
 use Larke\Admin\Http\Response as HttpResponse;
 use Larke\Admin\Http\ResponseCode;
@@ -185,7 +186,8 @@ class ServiceProvider extends BaseServiceProvider
         $this->app->bind('larke-admin.loader', Loader::class);
         
         // 验证码
-        $this->app->bind('larke-admin.captcha', function() {
+        $this->app->bind('larke-admin.captcha', CaptchaContract::class);
+        $this->app->bind(CaptchaContract::class, function() {
             $captcha = new Captcha();
             
             $config = config('larkeadmin.captcha');
