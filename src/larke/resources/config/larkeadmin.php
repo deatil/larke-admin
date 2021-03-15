@@ -20,7 +20,7 @@ return [
     ],
     
     'jwt' => [
-        'iss' => env('LARKE_ADMIN_JWT_ISS', 'admin-api.domain.com'),
+        'iss' => env('LARKE_ADMIN_JWT_ISS', 'admin-api.yourdomain.com'),
         'aud' => env('LARKE_ADMIN_JWT_AUD', !app()->runningInConsole() ? md5(request()->ip().request()->server('HTTP_USER_AGENT')) : ''),
         'sub' => env('LARKE_ADMIN_JWT_SUB', 'larke-admin-passport'),
         'jti' => env('LARKE_ADMIN_JWT_JTI', 'larke-admin-jid'),

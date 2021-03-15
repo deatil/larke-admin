@@ -10,7 +10,6 @@ use Illuminate\Console\Command;
  * 清空缓存
  *
  * php artisan larke-admin:clear-cache
- *
  */
 class ClearCache extends Command
 {

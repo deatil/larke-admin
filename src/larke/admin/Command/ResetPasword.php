@@ -13,7 +13,6 @@ use Larke\Admin\Model\Admin as AdminModel;
  * 重置密码
  *
  * php artisan larke-admin:reset-pasword
- *
  */
 class ResetPasword extends Command
 {

@@ -57,6 +57,7 @@ class ServiceProvider extends BaseServiceProvider
         Command\ResetPermission::class,
         Command\ClearCache::class,
         Command\Extension::class,
+        Command\JWTGenerateSecret::class,
     ];
 
     /**

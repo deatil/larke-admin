@@ -124,7 +124,7 @@ class Admin
     /**
      * 是否为超级管理员
      */
-    public function isAdministrator()
+    public function isSuperAdministrator()
     {
         if (empty($this->data)) {
             return false;
@@ -144,7 +144,7 @@ class Admin
      */
     public function isActive()
     {
-        if ($this->isAdministrator()) {
+        if ($this->isSuperAdministrator()) {
             return true;
         }
         
@@ -156,7 +156,7 @@ class Admin
      */
     public function isGroupActive()
     {
-        if ($this->isAdministrator()) {
+        if ($this->isSuperAdministrator()) {
             return true;
         }
         
@@ -172,7 +172,7 @@ class Admin
      */
     public function hasAccess($slug, $method = 'GET')
     {
-        if ($this->isAdministrator()) {
+        if ($this->isSuperAdministrator()) {
             return true;
         }
         
@@ -245,7 +245,7 @@ class Admin
      */
     public function getRules()
     {
-        if ($this->isAdministrator()) {
+        if ($this->isSuperAdministrator()) {
             $rules = AdminRepository::getAllRules();
         } else {
             $groupids = $this->getGroupids();

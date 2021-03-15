@@ -35,7 +35,7 @@ class Permission
      */
     public function permissionCheck()
     {
-        if (app('larke-admin.auth-admin')->isAdministrator()) {
+        if (app('larke-admin.auth-admin')->isSuperAdministrator()) {
             return;
         }
         

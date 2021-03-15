@@ -10,7 +10,6 @@ use Illuminate\Console\Command;
  * 强制将 jwt 的 refreshToken 放入黑名单
  *
  * php artisan larke-admin:passport-logout
- *
  */
 class PassportLogout extends Command
 {

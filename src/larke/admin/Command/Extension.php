@@ -19,7 +19,6 @@ use Larke\Admin\Model\Extension as ExtensionModel;
  * 扩展
  *
  * php artisan larke-admin:extension
- *
  */
 class Extension extends Command
 {

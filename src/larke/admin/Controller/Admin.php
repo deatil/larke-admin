@@ -686,7 +686,7 @@ class Admin extends Base
             $accessIds = collect($accessIds)->unique();
             
             // 取交集
-            if (!app('larke-admin.auth-admin')->isAdministrator()) {
+            if (!app('larke-admin.auth-admin')->isSuperAdministrator()) {
                 $intersectAccess = array_intersect_assoc($groupIds, $accessIds);
             } else {
                 $intersectAccess = $accessIds;

@@ -15,7 +15,6 @@ use Larke\Admin\Model\AuthRuleAccess as AuthRuleAccessModel;
  * 重设权限缓存
  *
  * php artisan larke-admin:reset-permission
- *
  */
 class ResetPermission extends Command
 {
