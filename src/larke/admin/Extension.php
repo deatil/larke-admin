@@ -217,7 +217,9 @@ class Extension
      */
     public function namespaces($prefix, $paths = [])
     {
-        app('larke-admin.loader')->setPsr4($prefix, $paths)->register();
+        app('larke-admin.loader')
+            ->setPsr4($prefix, $paths)
+            ->register();
         
         return $this;
     }

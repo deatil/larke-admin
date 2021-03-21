@@ -112,8 +112,6 @@ class ServiceProvider extends BaseServiceProvider
         
         $this->registerRouteMiddleware();
         
-        $this->commands($this->commands);
-        
         $this->registerProviders();
     }
     
@@ -129,6 +127,8 @@ class ServiceProvider extends BaseServiceProvider
         $this->bootObserver();
         
         $this->bootExtension();
+        
+        $this->bootCommand();
     }
 
     /**
@@ -355,6 +355,18 @@ class ServiceProvider extends BaseServiceProvider
     protected function bootExtension()
     {
         app('larke-admin.extension')->bootExtension();
+    }
+
+    /**
+     * 脚本
+     *
+     * @return void
+     */
+    protected function bootCommand()
+    {
+        if ($this->app->runningInConsole()) {
+            $this->commands($this->commands);
+        }
     }
     
 }
