@@ -8,6 +8,7 @@ use Larke\Admin\Model\Extension as ExtensionModel;
 use Larke\Admin\Traits\ResponseJson as ResponseJsonTrait;
 use Larke\Admin\Service\Route as RouteService;
 use Larke\Admin\Facade\Extension;
+use Larke\Admin\Facade\AuthAdmin;
 
 if (! function_exists('larke_success')) {
     /**
@@ -140,5 +141,21 @@ if (! function_exists('larke_admin_permission_excepts')) {
     function larke_admin_permission_excepts(array $excepts)
     {
         return Extension::permissionExcepts($excepts);
+    }
+}
+
+if (! function_exists('larke_admin_check_permission')) {
+    /**
+     * 权限检测
+     *
+     * @param string $slug 路由name
+     * @param string $method 请求方式
+     *
+     * @create 2021-3-22
+     * @author deatil
+     */
+    function larke_admin_check_permission($slug, $method = 'GET')
+    {
+        return AuthAdmin::hasAccess($slug, $method);
     }
 }
