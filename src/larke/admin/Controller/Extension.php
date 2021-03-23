@@ -330,6 +330,10 @@ class Extension extends Base
             return $this->error(__('扩展未安装'));
         }
         
+        if ($info->status == 1) {
+            return $this->error(__('扩展需要禁用后才能卸载'));
+        }
+
         $deleteStatus = $info->delete();
         if ($deleteStatus === false) {
             return $this->error(__('扩展卸载失败'));
@@ -369,6 +373,10 @@ class Extension extends Base
             return $this->error(__('扩展未安装'));
         }
         
+        if ($installInfo->status == 1) {
+            return $this->error(__('扩展需要禁用后才能更新'));
+        }
+
         AdminExtension::loadExtension();
         $info = AdminExtension::getExtension($name);
         if (empty($info)) {
