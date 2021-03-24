@@ -56,15 +56,16 @@ if (! function_exists('larke_extension_config')) {
      * @author deatil
      */
     function larke_extension_config($name, $key = null, $default = null) {
-        $data = ExtensionModel::where('name', '=', $name)
-            ->first()
-            ->config_datas;
-            
+        $extensions = ExtensionModel::getExtensions();
+        
+        $data = Arr::get($extensions, $name, []);
+        $config = Arr::get($data, 'config_datas', []);
+        
         if (! empty($key)) {
-            return Arr::get($data, $key, $default);
+            return Arr::get($config, $key, $default);
         }
         
-        return $data;
+        return $config;
     }
 }
 

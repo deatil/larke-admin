@@ -608,6 +608,9 @@ class Extension extends Base
         
         event(new Event\ExtensionConfigAfter($info));
         
+        // 清除缓存
+        AdminExtension::forgetExtensionCache($name);
+        
         return $this->success(__('更新扩展配置成功'));
     }
     
