@@ -51,8 +51,12 @@ if (! function_exists('larke_error')) {
 if (! function_exists('larke_extension_config')) {
     /**
      * 扩展配置信息
+     * @param string $name 扩展包名
+     * @param string $key 配置关键字
+     * @param string $default 默认值
+     * @return mix
      *
-     * @create 2020-12-15
+     * @create 2021-3-24
      * @author deatil
      */
     function larke_extension_config($name, $key = null, $default = null) {
