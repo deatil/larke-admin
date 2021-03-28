@@ -327,12 +327,12 @@ class Attachment extends Base
             return $this->error(__('上传文件失败'));
         }
         
-        $url = $uploadService->objectUrl($path);
-        
         $res = [
             'id' => $attachment->id,
         ];
         if (in_array($filetype, ['image', 'video', 'audio'])) {
+            $url = $uploadService->objectUrl($path);
+            
             $res['url'] = $url;
         }
         
