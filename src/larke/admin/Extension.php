@@ -393,11 +393,6 @@ class Extension
         $composer = ComposerResolve::create();
         collect($extensions)->each(function($extension) use($composer) {
             $providers = Arr::get($extension, 'providers', []);
-            if (! empty($providers) 
-                && class_exists($providers[0])
-            ) {
-                return;
-            }
             
             $composer->registerAutoload(Arr::get($extension, 'autoload', []));
             

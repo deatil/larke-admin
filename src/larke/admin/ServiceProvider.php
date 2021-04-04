@@ -113,6 +113,10 @@ class ServiceProvider extends BaseServiceProvider
         $this->registerRouteMiddleware();
         
         $this->registerProviders();
+        
+        $this->registerGlobalMiddleware();
+        
+        $this->ensureHttps();
     }
     
     /**
@@ -120,10 +124,6 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function boot()
     {
-        $this->ensureHttps();
-        
-        $this->bootGlobalMiddleware();
-        
         $this->bootObserver();
         
         $this->bootExtension();
@@ -316,7 +316,7 @@ class ServiceProvider extends BaseServiceProvider
      *
      * @return void
      */
-    protected function bootGlobalMiddleware()
+    protected function registerGlobalMiddleware()
     {
         // 错误返回json
         $this->app
