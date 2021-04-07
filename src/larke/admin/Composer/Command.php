@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Log;
 class Command
 {
     /**
-     * Base path for packages.
+     * 根路径
      *
      * @var string
      */

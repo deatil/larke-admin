@@ -13,6 +13,9 @@ use Larke\Admin\Model\Admin as AdminModel;
  * 重置密码
  *
  * php artisan larke-admin:reset-pasword
+ *
+ * @create 2021-1-25
+ * @author deatil
  */
 class ResetPasword extends Command
 {

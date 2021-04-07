@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\File;
  * 安装
  *
  * php artisan larke-admin:install [--force]
+ *
+ * @create 2021-1-25
+ * @author deatil
  */
 class Install extends Command
 {

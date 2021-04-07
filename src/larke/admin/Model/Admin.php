@@ -4,6 +4,8 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Model;
 
+use Larke\Admin\Support\Password;
+
 /*
  * Admin 模型
  *
@@ -88,6 +90,31 @@ class Admin extends Base
         return $this->update([
             'avatar' => $data,
         ]);
+    }
+    
+    /**
+     * 登陆验证
+     */
+    public static function attempt(array $credentials = [])
+    {
+        $admin = AdminModel::where('name', $credentials['name'])
+            ->first();
+        if (empty($admin)) {
+            return false;
+        }
+        
+        $adminInfo = $admin
+            ->makeVisible(['password', 'password_salt'])
+            ->toArray();
+        
+        $encryptPassword = (new Password())
+            ->withSalt(config('larkeadmin.passport.password_salt'))
+            ->encrypt($password, $adminInfo['password_salt']); 
+        if ($encryptPassword != $adminInfo['password']) {
+            return false;
+        }
+        
+        return true;
     }
     
 }

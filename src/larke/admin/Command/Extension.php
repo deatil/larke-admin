@@ -18,7 +18,10 @@ use Larke\Admin\Model\Extension as ExtensionModel;
 /**
  * 扩展
  *
- * php artisan larke-admin:extension
+ * php artisan larke-admin:extension [--package=package] [--action=install]
+ *
+ * @create 2021-1-25
+ * @author deatil
  */
 class Extension extends Command
 {
@@ -27,7 +30,9 @@ class Extension extends Command
      *
      * @var string
      */
-    protected $signature = 'larke-admin:extension';
+    protected $signature = 'larke-admin:extension
+        {--p|package= : Extension package name.}
+        {--a|action= : Extension action.}';
 
     /**
      * The console command description.
@@ -43,31 +48,37 @@ class Extension extends Command
      */
     public function handle()
     {
-        $name = $this->ask('Please enter an extension name');
+        $name = $this->option('package');
         if (empty($name)) {
-            $this->line("<error>Enter extension is empty !</error> ");
-            return;
+            $name = $this->ask('Please enter an extension name');
+            if (empty($name)) {
+                $this->line("<error>Enter extension is empty !</error> ");
+                return;
+            }
         }
         
-        $this->line("<info>Extension action list: </info> ");
-        
-        $actions = [
-            '[1]' => 'Install',
-            '[2]' => 'Uninstall',
-            '[3]' => 'Upgrade',
-            '[4]' => 'Enable',
-            '[5]' => 'Disable',
-        ];
-        $headers = ['No.', 'Action'];
-        $rows = [];
-        foreach ($actions as $no => $action) {
-            $rows[] = [$no, $action];
-        }
-        $this->table($headers, $rows, 'default');
-        
-        $action = $this->ask('Please enter an action or action line');
+        $action = $this->option('action');
         if (empty($action)) {
-            $action = 'install';
+            $this->line("<info>Extension action list: </info> ");
+            
+            $actions = [
+                '[1]' => 'Install',
+                '[2]' => 'Uninstall',
+                '[3]' => 'Upgrade',
+                '[4]' => 'Enable',
+                '[5]' => 'Disable',
+            ];
+            $headers = ['No.', 'Action'];
+            $rows = [];
+            foreach ($actions as $no => $action) {
+                $rows[] = [$no, $action];
+            }
+            $this->table($headers, $rows, 'default');
+            
+            $action = $this->ask('Please enter an action or action line');
+            if (empty($action)) {
+                $action = 'install';
+            }
         }
         
         $actions = [
@@ -210,6 +221,11 @@ class Extension extends Command
             return false;
         }
         
+        if ($info->status == 1) {
+            $this->line("<error>Extension need disable before uninstall !</error> ");
+            return false;
+        }
+        
         $deleteStatus = $info->delete();
         if ($deleteStatus === false) {
             $this->line("<error>Extension uninstall error !</error> ");
@@ -232,6 +248,11 @@ class Extension extends Command
             ->first();
         if (empty($installInfo)) {
             $this->line("<error>Extension is not install !</error> ");
+            return false;
+        }
+        
+        if ($installInfo->status == 1) {
+            $this->line("<error>Extension need disable before upgrade !</error> ");
             return false;
         }
         
