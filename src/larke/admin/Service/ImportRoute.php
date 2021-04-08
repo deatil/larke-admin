@@ -74,7 +74,7 @@ class ImportRoute
                     'url' => $route['uri'],
                     'method' => $method,
                     'slug' => $route['name'],
-                    'listorder' => 100,
+                    'listorder' => 10000,
                     'is_need_auth' => 1,
                     'is_system' => 0,
                     'status' => 1,
@@ -94,7 +94,7 @@ class ImportRoute
             'slug' => '',
             'title' => '',
             'description' => '',
-            'listorder' => 100,
+            'listorder' => 10000,
             'is_need_auth' => 1,
         ];
         $classDocInfo = array_merge($classDocInfo, $classDoc);
@@ -106,7 +106,7 @@ class ImportRoute
             'slug' => '',
             'title' => '',
             'description' => '',
-            'listorder' => 100,
+            'listorder' => 10000,
             'is_need_auth' => 1,
         ];
         $methodDocInfo = array_merge($methodDocInfo, $methodDoc);
@@ -250,7 +250,7 @@ class ImportRoute
             'slug' => Arr::get($docComment, 'slug'),
             'title' => Arr::get($docComment, 'title'),
             'description' => Arr::get($docComment, 'desc'),
-            'listorder' => Arr::get($docComment, 'order', 100),
+            'listorder' => Arr::get($docComment, 'order', 10000),
             'is_need_auth' => Arr::get($docComment, 'auth', 'true'),
         ];
         
@@ -289,7 +289,7 @@ class ImportRoute
             'slug' => Arr::get($docComment, 'slug'),
             'title' => Arr::get($docComment, 'title'),
             'description' => Arr::get($docComment, 'desc'),
-            'listorder' => Arr::get($docComment, 'order', 100),
+            'listorder' => Arr::get($docComment, 'order', 10000),
             'is_need_auth' => Arr::get($docComment, 'auth', 'true'),
         ];
         

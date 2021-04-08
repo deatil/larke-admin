@@ -18,7 +18,7 @@ use Larke\Admin\Service\Upload as UploadService;
  *
  * @title 附件
  * @desc 系统附件管理
- * @order 500
+ * @order 570
  * @auth true
  * @slug {prefix}attachment
  *
