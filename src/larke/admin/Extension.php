@@ -556,21 +556,21 @@ class Extension
             return [];
         }
         
-        if (! isset($newClass->info)) {
+        if (empty($newClass->info)) {
             return [];
         }
         
-        $info = $newClass->info;
+        $info = (array) $newClass->info;
         
         // 配置
         $config = [];
-        if (isset($newClass->config)) {
+        if (! empty($newClass->config)) {
             $config = (array) $newClass->config;
         }
         
         // 扩展icon
         $icon = '';
-        if (isset($newClass->icon)) {
+        if (! empty($newClass->icon)) {
             $icon = $newClass->icon;
         }
         $icon = $this->getIcon($icon);
@@ -721,13 +721,17 @@ class Extension
     /**
      * 根据类名获取类所在文件夹
      *
-     * @param string|null $class
+     * @param string|object|null $class
      *
      * @return string|bool
      */
-    public function getPathFromClass(?string $class = null)
+    public function getPathFromClass($class = null)
     {
-        $reflection = new ReflectionClass(get_class($class));
+        if (is_object($class)) {
+            $class = get_class($class);
+        }
+        
+        $reflection = new ReflectionClass($class);
         $filePath = dirname($reflection->getFileName());
 
         return $filePath;
