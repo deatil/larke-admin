@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::group([
+    'domain' => config('larkeadmin.route.domain'),
     'prefix' => config('larkeadmin.route.prefix'),
     'middleware' => config('larkeadmin.route.middleware'),
     'namespace' => config('larkeadmin.route.namespace'),

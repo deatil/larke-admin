@@ -5,13 +5,14 @@ return [
         'name' => "LarkeAdmin",
         'name_mini' => "Larke",
         'logo' => '<b>Larke</b> admin',
-        'release' => 20210313,
-        'version' => "1.1.9",
+        'release' => 20210413,
+        'version' => "1.1.10",
     ],
     
     'https' => env('LARKE_ADMIN_HTTPS', false),
     
     'route' => [
+        'domain' => env('LARKE_ADMIN_ROUTE_DOMAIN', null),
         'prefix' => env('LARKE_ADMIN_ROUTE_PREFIX', 'admin-api'),
         'namespace' => env('LARKE_ADMIN_ROUTE_NAMESPACE', 'Larke\\Admin\\Controller'),
         'middleware' => env('LARKE_ADMIN_ROUTE_MIDDLEWARE') ? explode(',', env('LARKE_ADMIN_ROUTE_MIDDLEWARE')) : ['larke-admin'],
