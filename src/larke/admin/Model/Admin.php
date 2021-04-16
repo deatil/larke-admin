@@ -4,6 +4,8 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Model;
 
+use Illuminate\Support\Arr;
+
 use Larke\Admin\Support\Password;
 
 /*
@@ -93,9 +95,27 @@ class Admin extends Base
     }
     
     /**
-     * 登陆验证
+     * 检测密码
      */
-    public static function attempt(array $credentials = [])
+    public static function checkPassword(array $adminInfo = [], string $password = '')
+    {
+        $encryptPassword = (new Password())
+            ->withSalt(config('larkeadmin.passport.password_salt'))
+            ->encrypt($password, $adminInfo['password_salt']); 
+        if ($encryptPassword == $adminInfo['password']) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * 登陆验证并返回数据
+     * 
+     * @param $credentials = ['name', 'password']
+     * @return boolen|array
+     */
+    public static function login(array $credentials = [])
     {
         $admin = AdminModel::where('name', $credentials['name'])
             ->first();
@@ -107,10 +127,30 @@ class Admin extends Base
             ->makeVisible(['password', 'password_salt'])
             ->toArray();
         
-        $encryptPassword = (new Password())
-            ->withSalt(config('larkeadmin.passport.password_salt'))
-            ->encrypt($password, $adminInfo['password_salt']); 
-        if ($encryptPassword != $adminInfo['password']) {
+        if (! $this->checkPassword([
+            'password' => $adminInfo['password'],
+            'password_salt' => $adminInfo['password_salt'],
+        ], $credentials['password'])) {
+            return false;
+        }
+        
+        Arr::forget($adminInfo, [
+            'password', 
+            'password_salt'
+        ]);
+        
+        return $adminInfo;
+    }
+    
+    /**
+     * 登陆验证
+     * 
+     * @param $credentials = ['name', 'password']
+     * @return boolen
+     */
+    public static function attempt(array $credentials = [])
+    {
+        if ($this->login($credentials) === false) {
             return false;
         }
         
