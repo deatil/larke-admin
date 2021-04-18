@@ -1,0 +1,141 @@
+<?php
+
+declare (strict_types = 1);
+
+namespace Larke\Admin\Controller;
+
+use Illuminate\Http\Request;
+
+use Larke\Admin\Model\Admin as AdminModel;
+use Larke\Admin\Model\Attachment as AttachmentModel;
+use Larke\Admin\Service\Upload as UploadService;
+
+/**
+ * 上传
+ *
+ * @title 附件上传
+ * @desc 附件上传
+ * @order 571
+ * @auth true
+ * @slug {prefix}upload
+ *
+ * @create 2021-4-18
+ * @author deatil
+ */
+class Upload extends Base
+{
+    
+    /**
+     * 上传文件
+     *
+     * @title 上传文件
+     * @desc 上传附件文件
+     * @order 572
+     * @auth true
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function file(Request $request)
+    {
+        $requestFile = $request->file('file');
+        if (empty($requestFile)) {
+            return $this->error(__('上传文件不能为空'));
+        }
+        
+        // Pathname
+        $pathname = $requestFile->getPathname();
+        
+        // 原始名称
+        $name = $requestFile->getClientOriginalName();
+        
+        // mimeType
+        $mimeType = $requestFile->getClientMimeType();
+        
+        // 扩展名
+        $extension = $requestFile->extension();
+        
+        // 大小
+        $size = $requestFile->getSize();
+        
+        $md5 = hash_file('md5', $pathname);
+        
+        $sha1 = hash_file('sha1', $pathname);
+        
+        $uploadService = UploadService::create();
+        if ($uploadService === false) {
+            return $this->error(__('上传文件失败'));
+        }
+        
+        $uploadDisk = config('larkeadmin.upload.disk');
+        
+        $driver = $uploadDisk ?: 'local';
+        
+        $mimeType = $uploadService->getMimeType($requestFile);
+        
+        $filetype = $uploadService->getFileType($requestFile);
+        
+        $fileInfo = AttachmentModel::where([
+            'md5' => $md5
+        ])->first();
+        if (!empty($fileInfo)) {
+            @unlink($pathname);
+            
+            $fileInfo->update([
+                'update_time' => time(), 
+                'update_ip' => $request->ip(),
+            ]);
+            
+            $res = [
+                'id' => $fileInfo['id'],
+            ];
+            if (in_array($filetype, ['image', 'video', 'audio'])) {
+                $res['url'] = $fileInfo['url'];
+            }
+            
+            return $this->success(__('上传文件成功'), $res);
+        }
+        
+        if ($filetype == 'image') {
+            $uploadDir = config('larkeadmin.upload.directory.image');
+        } elseif ($filetype == 'video' || $filetype == 'audio') {
+            $uploadDir = config('larkeadmin.upload.directory.media');
+        } else {
+            $uploadDir = config('larkeadmin.upload.directory.file');
+        }
+        
+        $path = $uploadService->dir($uploadDir)
+            ->uniqueName()
+            ->upload($requestFile);
+        
+        $data = [
+            'belong_type' => AdminModel::class,
+            'belong_id' => app('larke-admin.auth-admin')->getId(),
+            'name' => $name,
+            'path' => $path,
+            'mime' => $mimeType,
+            'extension' => $extension,
+            'size' => $size,
+            'md5' => $md5,
+            'sha1' => $sha1,
+            'driver' => $driver,
+            'status' => 1,
+        ];
+        $attachment = AttachmentModel::create($data);
+        if ($attachment === false) {
+            $uploadService->destroy($path);
+            return $this->error(__('上传文件失败'));
+        }
+        
+        $res = [
+            'id' => $attachment->id,
+        ];
+        if (in_array($filetype, ['image', 'video', 'audio'])) {
+            $url = $uploadService->objectUrl($path);
+            
+            $res['url'] = $url;
+        }
+        
+        return $this->success(__('上传文件成功'), $res);
+    }
+}

@@ -12,6 +12,7 @@ Route::group([
     $router->group([
         'middleware' => config('larkeadmin.route.admin_middleware'),
     ], function ($router) {
+        // 权限菜单
         $router->get('/auth/rule', 'AuthRule@index')->name('auth-rule.index');
         $router->get('/auth/rule/tree', 'AuthRule@indexTree')->name('auth-rule.index-tree');
         $router->get('/auth/rule/children', 'AuthRule@indexChildren')->name('auth-rule.index-children');
@@ -24,6 +25,7 @@ Route::group([
         $router->patch('/auth/rule/{id}/enable', 'AuthRule@enable')->name('auth-rule.enable')->where('id', '[A-Za-z0-9]+');
         $router->patch('/auth/rule/{id}/disable', 'AuthRule@disable')->name('auth-rule.disable')->where('id', '[A-Za-z0-9]+');
         
+        // 管理分组
         $router->get('/auth/group', 'AuthGroup@index')->name('auth-group.index');
         $router->get('/auth/group/tree', 'AuthGroup@indexTree')->name('auth-group.index-tree');
         $router->get('/auth/group/children', 'AuthGroup@indexChildren')->name('auth-group.index-children');
@@ -37,26 +39,32 @@ Route::group([
         $router->patch('/auth/group/{id}/access', 'AuthGroup@access')->name('auth-group.access')->where('id', '[A-Za-z0-9]+');
     });
     
+    // 登陆
     $router->get('/passport/captcha', 'Passport@captcha')->name('passport.captcha');
     $router->post('/passport/login', 'Passport@login')->name('passport.login');
     $router->delete('/passport/logout', 'Passport@logout')->name('passport.logout');
     $router->put('/passport/refresh-token', 'Passport@refreshToken')->name('passport.refresh-token');
     
+    // 个人信息
     $router->get('/profile', 'Profile@index')->name('profile');
     $router->put('/profile/update', 'Profile@update')->name('profile.update');
     $router->patch('/profile/avatar', 'Profile@updateAvatar')->name('profile.avatar');
     $router->patch('/profile/password', 'Profile@updatePasssword')->name('profile.password');
     $router->get('/profile/rules', 'Profile@rules')->name('profile.rules');
     
+    // 附件
     $router->get('/attachment', 'Attachment@index')->name('attachment.index');
     $router->get('/attachment/{id}', 'Attachment@detail')->name('attachment.detail')->where('id', '[A-Za-z0-9]+');
     $router->patch('/attachment/{id}/enable', 'Attachment@enable')->name('attachment.enable')->where('id', '[A-Za-z0-9]+');
     $router->patch('/attachment/{id}/disable', 'Attachment@disable')->name('attachment.disable')->where('id', '[A-Za-z0-9]+');
     $router->delete('/attachment/{id}', 'Attachment@delete')->name('attachment.delete')->where('id', '[A-Za-z0-9]+');
-    $router->post('/attachment', 'Attachment@upload')->name('attachment.upload');
     $router->get('/attachment/downcode/{id}', 'Attachment@downloadCode')->name('attachment.download-code')->where('id', '[A-Za-z0-9]+');
     $router->get('/attachment/download/{code}', 'Attachment@download')->name('attachment.download')->where('code', '[A-Za-z0-9]+');
     
+    // 上传
+    $router->post('/upload/file', 'Upload@file')->name('upload.file');
+    
+    // 管理员
     $router->get('/admin', 'Admin@index')->name('admin.index');
     $router->get('/admin/{id}', 'Admin@detail')->name('admin.detail')->where('id', '[A-Za-z0-9]+');
     $router->get('/admin/{id}/rules', 'Admin@rules')->name('admin.rules')->where('id', '[A-Za-z0-9]+');
@@ -70,6 +78,7 @@ Route::group([
     $router->patch('/admin/{id}/access', 'Admin@access')->name('admin.access')->where('id', '[A-Za-z0-9]+');
     $router->delete('/admin/logout/{refreshToken}', 'Admin@logout')->name('admin.logout');
     
+    // 配置
     $router->get('/config/settings', 'Config@settings')->name('config.settings');
     $router->get('/config/list', 'Config@lists')->name('config.lists');
     $router->get('/config', 'Config@index')->name('config.index');
@@ -82,11 +91,13 @@ Route::group([
     $router->patch('/config/{id}/enable', 'Config@enable')->name('config.enable')->where('id', '[A-Za-z0-9]+');
     $router->patch('/config/{id}/disable', 'Config@disable')->name('config.disable')->where('id', '[A-Za-z0-9]+');
     
+    // 日志
     $router->get('/log', 'AdminLog@index')->name('log.index');
     $router->get('/log/{id}', 'AdminLog@detail')->name('log.detail')->where('id', '[A-Za-z0-9]+');
     $router->delete('/log/clear', 'AdminLog@clear')->name('log.clear');
     $router->delete('/log/{id}', 'AdminLog@delete')->name('log.delete')->where('id', '[A-Za-z0-9]+');
     
+    // 扩展
     $router->get('/extension/index', 'Extension@index')->name('extension.index');
     $router->get('/extension/local', 'Extension@local')->name('extension.local');
     $router->put('/extension/refresh', 'Extension@refreshLocal')->name('extension.refresh');
@@ -102,6 +113,7 @@ Route::group([
     $router->patch('/extension/{name}/sort', 'Extension@listorder')->name('extension.listorder')->where('name', '[A-Za-z0-9\-\_\.\/]+');
     $router->post('/extension/upload', 'Extension@upload')->name('extension.upload');
     
+    // 系统
     $router->get('/system/info', 'System@info')->name('system.info');
     $router->get('/system/lang', 'System@lang')->name('system.lang');
     $router->patch('/system/lang/{locale}', 'System@setLang')->name('system.set-lang')->where('locale', '[A-Za-z0-9\-\_]+');
