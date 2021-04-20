@@ -108,9 +108,9 @@ class Upload extends Base
             ->uniqueName()
             ->upload($requestFile);
         
-        $data = [
-            'belong_type' => AdminModel::class,
-            'belong_id' => app('larke-admin.auth-admin')->getId(),
+        $adminId = app('larke-admin.auth-admin')->getId();
+        $attachmentModel = AdminModel::where('id', $adminId)->first()->attachments();
+        $attachment = $attachmentModel->create([
             'name' => $name,
             'path' => $path,
             'mime' => $mimeType,
@@ -120,8 +120,7 @@ class Upload extends Base
             'sha1' => $sha1,
             'driver' => $driver,
             'status' => 1,
-        ];
-        $attachment = AttachmentModel::create($data);
+        ]);
         if ($attachment === false) {
             $uploadService->destroy($path);
             return $this->error(__('上传文件失败'));

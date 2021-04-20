@@ -7,6 +7,7 @@ namespace Larke\Admin;
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 use Larke\Admin\Contracts\Response as ResponseContract;
@@ -125,6 +126,8 @@ class ServiceProvider extends BaseServiceProvider
     public function boot()
     {
         $this->bootObserver();
+        
+        $this->bootRelationMorphMap();
         
         $this->bootExtension();
         
@@ -345,6 +348,18 @@ class ServiceProvider extends BaseServiceProvider
         Model\AuthRuleAccess::observe(new Observer\AuthRuleAccess());
         Model\Config::observe(new Observer\Config());
         Model\Extension::observe(new Observer\Extension());
+    }
+
+    /**
+     * 自定义多态类型
+     *
+     * @return void
+     */
+    protected function bootRelationMorphMap()
+    {
+        Relation::morphMap([
+            'admins' => 'Larke\\Admin\\Model\\Admin',
+        ]);
     }
 
     /**
