@@ -475,7 +475,6 @@ class AuthGroup extends Base
         
         $access = $request->input('access');
         if (!empty($access)) {
-            $accessData = [];
             $accessArr = explode(',', $access);
             $accessArr = collect($accessArr)->unique();
             foreach ($accessArr as $value) {

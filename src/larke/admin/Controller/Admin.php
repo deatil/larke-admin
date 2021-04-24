@@ -692,7 +692,6 @@ class Admin extends Base
                 $intersectAccess = $accessIds;
             }
             
-            $accessData = [];
             foreach ($intersectAccess as $value) {
                 AuthGroupAccessModel::create([
                     'admin_id' => $id,
