@@ -170,7 +170,7 @@ class Profile extends Base
         }
         
         $adminInfo = $adminInfo->makeVisible(['password', 'password_salt']);
-        $encryptPassword = AdminModel::checkPassword($adminInfo, $oldPassword); 
+        $encryptPassword = AdminModel::checkPassword($adminInfo->toArray(), $oldPassword); 
         if (! $encryptPassword) {
             return $this->error(__('用户密码错误'));
         }

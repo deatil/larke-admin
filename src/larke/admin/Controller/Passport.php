@@ -109,7 +109,7 @@ class Passport extends Base
             ->toArray();
         $password = $request->input('password');
         
-        $encryptPassword = AdminModel::checkPassword($adminInfo, $password); 
+        $encryptPassword = AdminModel::checkPassword($adminInfo->toArray(), $password); 
         if (! $encryptPassword) {
             event(new Event\PassportLoginPasswordError($admin));
             
