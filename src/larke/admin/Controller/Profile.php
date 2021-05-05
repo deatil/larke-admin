@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 
-use Larke\Admin\Support\Password;
 use Larke\Admin\Model\Admin as AdminModel;
 
 /**
@@ -171,17 +170,13 @@ class Profile extends Base
         }
         
         $adminInfo = $adminInfo->makeVisible(['password', 'password_salt']);
-        $encryptPassword = (new Password())
-            ->withSalt(config('larkeadmin.passport.password_salt'))
-            ->encrypt($oldPassword, $adminInfo['password_salt']); 
-        if ($encryptPassword != $adminInfo['password']) {
+        $encryptPassword = AdminModel::checkPassword($adminInfo, $oldPassword); 
+        if (! $encryptPassword) {
             return $this->error(__('用户密码错误'));
         }
 
         // 新密码
-        $newPasswordInfo = (new Password())
-            ->withSalt(config('larkeadmin.passport.password_salt'))
-            ->encrypt($newPassword); 
+        $newPasswordInfo = AdminModel::makePassword($newPassword); 
 
         // 更新信息
         $status = $adminInfo->update([

@@ -62,7 +62,7 @@ class Crypt
             return $plaintext;
         }
         
-        $plaintext = bin2hex(time() . '_' . $plaintext);
+        $plaintext = time() . '_' . $plaintext;
         $aes = new AES($this->mode);
         $aes->setIV($this->iv);
         $aes->setKey($key);
@@ -90,7 +90,7 @@ class Crypt
         $decodeData = $aes->decrypt(hex2bin($plaintext));
         
         // hex2bin = pack("H*", $hex_string)
-        $decodeData = trim(hex2bin($decodeData));
+        $decodeData = trim($decodeData);
         if (preg_match("/\d{10}_/s", substr($decodeData, 0, 11))) {
             if ($ttl > 0 && (time() - substr($decodeData, 0, 10) > $ttl)) {
                 $decodeData = null;

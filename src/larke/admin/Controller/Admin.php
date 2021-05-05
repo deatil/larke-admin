@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Validator;
 
 use Larke\Admin\Model\Admin as AdminModel;
 use Larke\Admin\Model\AuthGroupAccess as AuthGroupAccessModel;
-use Larke\Admin\Support\Password as PasswordService;
 use Larke\Admin\Repository\Admin as AdminRepository;
 
 /**
@@ -302,14 +301,16 @@ class Admin extends Base
             return $this->error(__('添加账号失败'));
         }
         
-        // 用户组默认取当前用户的用户组的其中之一
-        $groupIds = app('larke-admin.auth-admin')->getGroupids();
-        if (count($groupIds) > 0) {
-            AuthGroupAccessModel::create([
-                'admin_id' => $admin->id,
-                'group_id' => $groupIds[0],
-            ]);
+        // 用户组默认取当前用户的子用户组的其中之一
+        $groupChildrenIds = app('larke-admin.auth-admin')->getGroupChildrenIds();
+        if (empty($groupChildrenIds)) {
+            return $this->error(__('当前账号不能创建子账号'));
         }
+        
+        AuthGroupAccessModel::create([
+            'admin_id' => $admin->id,
+            'group_id' => $groupChildrenIds[0],
+        ]);
         
         return $this->success(__('添加账号成功'), [
             'id' => $admin->id,
@@ -501,9 +502,7 @@ class Admin extends Base
         }
 
         // 新密码
-        $newPasswordInfo = (new PasswordService())
-            ->withSalt(config('larkeadmin.passport.password_salt'))
-            ->encrypt($password); 
+        $newPasswordInfo = AdminModel::makePassword($password); 
 
         // 更新信息
         $status = $adminInfo->update([

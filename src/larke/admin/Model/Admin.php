@@ -95,6 +95,18 @@ class Admin extends Base
     }
     
     /**
+     * 生成密码
+     */
+    public static function makePassword(string $password = '')
+    {
+        $encryptPassword = (new Password())
+            ->withSalt(config('larkeadmin.passport.password_salt'))
+            ->encrypt($password); 
+        
+        return $encryptPassword;
+    }
+    
+    /**
      * 检测密码
      */
     public static function checkPassword(array $adminInfo = [], string $password = '')

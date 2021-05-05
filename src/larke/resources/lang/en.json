@@ -54,6 +54,7 @@
     "头像数据不能为空": "avatar dont empty",
     "头像数据错误": "avatar error",
     "添加账号失败": "create passport error",
+    "当前账号不能创建子账号": "don't create passport",
     "添加账号成功": "create passport success",
     
     "管理员不能为空": "admin dont empty",

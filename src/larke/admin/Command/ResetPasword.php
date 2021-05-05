@@ -6,7 +6,6 @@ namespace Larke\Admin\Command;
 
 use Illuminate\Console\Command;
 
-use Larke\Admin\Support\Password as PasswordService;
 use Larke\Admin\Model\Admin as AdminModel;
 
 /**
@@ -57,9 +56,7 @@ class ResetPasword extends Command
         }
         
         // 新密码
-        $newPasswordInfo = (new PasswordService())
-            ->withSalt(config('larkeadmin.passport.password_salt'))
-            ->encrypt(md5($newPassword)); 
+        $newPasswordInfo = AdminModel::makePassword(md5($newPassword)); 
 
         // 更新信息
         $status = $admin->update([

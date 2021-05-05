@@ -20,7 +20,7 @@ class JsonExceptionHandler
 {
     public function handle($request, Closure $next)
     {
-        if ($this->isLakeAdminRequest($request)) {
+        if ($this->isLarkeAdminRequest($request)) {
             app()->singleton(
                 ExceptionHandler::class,
                 JsonHandler::class
@@ -36,7 +36,7 @@ class JsonExceptionHandler
      * @param  \Illuminate\Http\Request  $request
      * @return bool
      */
-    protected function isLakeAdminRequest($request)
+    protected function isLarkeAdminRequest($request)
     {
         $path = trim(config('larkeadmin.route.prefix'), '/') ?: '/';
 

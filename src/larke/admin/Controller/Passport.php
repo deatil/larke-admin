@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 
-use Larke\Admin\Support\Password;
 use Larke\Admin\Model\Admin as AdminModel;
 
 // 文件夹引入
@@ -110,10 +109,8 @@ class Passport extends Base
             ->toArray();
         $password = $request->input('password');
         
-        $encryptPassword = (new Password())
-            ->withSalt(config('larkeadmin.passport.password_salt'))
-            ->encrypt($password, $adminInfo['password_salt']); 
-        if ($encryptPassword != $adminInfo['password']) {
+        $encryptPassword = AdminModel::checkPassword($adminInfo, $password); 
+        if (! $encryptPassword) {
             event(new Event\PassportLoginPasswordError($admin));
             
             return $this->error(__('账号密码错误'), \ResponseCode::LOGIN_ERROR);
