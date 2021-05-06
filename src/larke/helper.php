@@ -123,6 +123,19 @@ if (! function_exists('larke_admin_route_name')) {
     }
 }
 
+if (! function_exists('larke_admin_can')) {
+    /**
+     * 权限判断
+     *
+     * @create 2021-5-6
+     * @author deatil
+     */
+    function larke_admin_can($slug, $method = 'GET')
+    {
+        return app('larke-admin.auth-admin')->hasAccess($slug, $method);
+    }
+}
+
 if (! function_exists('larke_admin_authenticate_excepts')) {
     /**
      * 添加登陆过滤

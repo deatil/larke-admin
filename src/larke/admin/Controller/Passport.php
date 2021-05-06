@@ -109,14 +109,14 @@ class Passport extends Base
             ->toArray();
         $password = $request->input('password');
         
-        $encryptPassword = AdminModel::checkPassword($adminInfo->toArray(), $password); 
+        $encryptPassword = AdminModel::checkPassword($adminInfo, $password); 
         if (! $encryptPassword) {
             event(new Event\PassportLoginPasswordError($admin));
             
             return $this->error(__('账号密码错误'), \ResponseCode::LOGIN_ERROR);
         }
         
-        if ($adminInfo['status'] == 0) {
+        if ($adminInfo['status'] != 1) {
             event(new Event\PassportLoginInactive($admin));
             
             return $this->error(__('用户已被禁用或者不存在'), \ResponseCode::LOGIN_ERROR);
@@ -227,7 +227,7 @@ class Passport extends Base
      * 退出
      *
      * @title 退出
-     * @desc 退出
+     * @desc 账号退出
      * @order 104
      * @auth true
      *

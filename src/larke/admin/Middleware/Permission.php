@@ -5,8 +5,8 @@ declare (strict_types = 1);
 namespace Larke\Admin\Middleware;
 
 use Closure;
+use Route;
 
-use Larke\Admin\Auth\Permission as AuthPermission;
 use Larke\Admin\Service\Route as RouteService;
 use Larke\Admin\Traits\ResponseJson as ResponseJsonTrait;
 use Larke\Admin\Model\AuthRule as AuthRuleModel;
@@ -35,15 +35,10 @@ class Permission
      */
     public function permissionCheck()
     {
-        if (app('larke-admin.auth-admin')->isSuperAdministrator()) {
-            return;
-        }
-        
-        $adminId = app('larke-admin.auth-admin')->getId();
-        $requestUrl = \Route::currentRouteName();
+        $requestUrl = Route::currentRouteName();
         $requestMethod = request()->getMethod();
         
-        if (! AuthPermission::enforce($adminId, $requestUrl, $requestMethod)) {
+        if (! app('larke-admin.auth-admin')->hasAccess($requestUrl, $requestMethod)) {
             $this->error(__('你没有访问权限'), \ResponseCode::AUTH_ERROR);
         }
     }
@@ -68,7 +63,7 @@ class Permission
         
         return collect($excepts)
             ->contains(function ($except) {
-                $requestUrl = \Route::currentRouteName();
+                $requestUrl = Route::currentRouteName();
                 return ($except == $requestUrl);
             });
     }
