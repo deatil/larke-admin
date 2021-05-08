@@ -40,7 +40,7 @@ class Extension
     /**
      * @var string 本地扩展缓存id
      */
-    public $extensionsCacheId = 'local-extensions';
+    public $extensionsCacheId = 'larke-admin-local-extensions';
 
     /**
      * 添加扩展
