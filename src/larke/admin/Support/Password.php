@@ -16,6 +16,7 @@ class Password
     
     /**
      * 设置盐
+     *
      * @param $salt 加密盐
      * @return $this
      */
@@ -42,6 +43,7 @@ class Password
     
     /**
      * 随机字符串
+     *
      * @param type $len 字符长度
      * @return string 随机字符串
      */

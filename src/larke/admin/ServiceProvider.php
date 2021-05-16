@@ -154,8 +154,9 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function registerAlias()
     {
+        $aliasLoader = AliasLoader::getInstance();
         foreach ($this->alias as $alias => $class) {
-            AliasLoader::getInstance()->alias($alias, $class);
+            $aliasLoader->alias($alias, $class);
         }
     }
     

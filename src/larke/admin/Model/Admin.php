@@ -129,7 +129,7 @@ class Admin extends Base
      */
     public static function login(array $credentials = [])
     {
-        $admin = AdminModel::where('name', $credentials['name'])
+        $admin = static::where('name', $credentials['name'])
             ->first();
         if (empty($admin)) {
             return false;

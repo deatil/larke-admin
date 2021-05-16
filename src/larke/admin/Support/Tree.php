@@ -14,12 +14,14 @@ class Tree
 {
     /**
      * 生成树型结构所需要的2维数组
+     *
      * @var array
      */
     public $data = [];
 
     /**
      * 生成树型结构所需修饰符号，可以换成图片
+     *
      * @var array
      */
     public $icon = ['│', '├', '└'];
@@ -45,8 +47,9 @@ class Tree
 
     /**
      * 设置配置
-     * @param  array  $key 键值
-     * @param  string $value 内容
+     *
+     * @param array  $key 键值
+     * @param string $value 内容
      * @return array
      */
     public function withConfig($key, $value)
@@ -59,6 +62,7 @@ class Tree
 
     /**
      * 构造函数，初始化类
+     *
      * @param array 2维数组，例如：
      * array(
      *      1 => array('id'=>'1','parentid'=>0,'title'=>'一级栏目一'),
@@ -77,10 +81,10 @@ class Tree
     }
 
     /**
-     *
      * 构建数组
-     * @param string    $id 要查询的ID
-     * @param string    $itemprefix 前缀
+     *
+     * @param string $id 要查询的ID
+     * @param string $itemprefix 前缀
      * @return string
      */
     public function build($id = 0, $itemprefix = '', $depth = 0)
@@ -129,9 +133,10 @@ class Tree
 
     /**
      * 所有父节点
-     * @param  array        $list 数据集
-     * @param  string|int   $parentid 节点的parentid
-     * @param  string       $sort 排序
+     *
+     * @param array $list 数据集
+     * @param string|int $parentid 节点的parentid
+     * @param string $sort 排序
      * @return array
      */
     public function getListParents($list = [], $parentid = '', $sort = 'desc')
@@ -161,8 +166,9 @@ class Tree
 
     /**
      * 所有父节点的ID列表
-     * @param  array        $list 数据集
-     * @param  string|int   $parentid 节点的parentid
+     *
+     * @param array $list 数据集
+     * @param string|int $parentid 节点的parentid
      * @return array
      */
     public function getListParentsId($list = [], $parentid = '')
@@ -182,9 +188,10 @@ class Tree
 
     /**
      * 获取当前ID的所有子节点
-     * @param array         $list 数据集
-     * @param string|int    $id 当前id
-     * @param string        $sort 排序
+     *
+     * @param array $list 数据集
+     * @param string|int $id 当前id
+     * @param string $sort 排序
      * @return array
      */
     public function getListChildren($list = [], $id = '', $sort = 'desc')
@@ -213,8 +220,9 @@ class Tree
 
     /**
      * 获取当前ID的所有子节点id
-     * @param array         $list 数据集
-     * @param string|int    $id 当前id
+     *
+     * @param array $list 数据集
+     * @param string|int $id 当前id
      * @return array
      */
     public function getListChildrenId($list = [], $id = '')
@@ -234,8 +242,9 @@ class Tree
 
     /**
      * 得到子级第一级数组
-     * @param array         $list 数据集
-     * @param string|int    $id 当前id
+     *
+     * @param array $list 数据集
+     * @param string|int $id 当前id
      * @return array
      */
     public function getListChild($list = [], $id)
@@ -258,8 +267,9 @@ class Tree
 
     /**
      * 获取ID自己的数据
-     * @param array         $list 数据集
-     * @param string|int    $id 当前id
+     *
+     * @param array $list 数据集
+     * @param string|int $id 当前id
      * @return array
      */
     public function getListSelf($list = [], $id)
@@ -281,6 +291,7 @@ class Tree
 
     /**
      * 将 build 的结果返回为二维数组
+     *
      * @param array $data 数据
      * @param int $parentid 父级ID
      * @return array
