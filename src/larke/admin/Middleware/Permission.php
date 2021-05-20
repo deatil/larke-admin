@@ -55,6 +55,7 @@ class Permission
         $excepts = array_merge(config('larkeadmin.auth.permission_excepts', []), [
             $this->formatRouteSlug('passport.captcha'),
             $this->formatRouteSlug('passport.login'),
+            $this->formatRouteSlug('passport.logout'),
             $this->formatRouteSlug('passport.refresh-token'),
             $this->formatRouteSlug('attachment.download'),
         ]);
