@@ -16,17 +16,17 @@ use Larke\Admin\Contracts\Captcha as CaptchaContract;
  */
 class Captcha implements CaptchaContract
 {
+    // 图形资源句柄
+    protected $img = ''; 
+    
     // 验证码
-    private $code = ''; 
+    protected $code = ''; 
     
     // 唯一序号
-    private $uniqid = ''; 
-    
-    // 图形资源句柄
-    private $img = ''; 
+    protected $uniqid = ''; 
     
     // 设置
-    private $config = [
+    protected $config = [
         // 随机因子
         'charset' => 'abcdefghkmnprstuvwxyzABCDEFGHKMNPRSTUVWXYZ23456789',
         
@@ -50,12 +50,40 @@ class Captcha implements CaptchaContract
     ];
     
     /**
+     * 设置验证码
+     * 
+     * @return string $code
+     *
+     * @return object $this
+     */
+    public function withCode($code)
+    {
+        $this->code = $code;
+        
+        return $this;
+    }
+    
+    /**
+     * 设置唯一序号
+     * 
+     * @return string $uniqid
+     *
+     * @return object $this
+     */
+    public function withUniqid($uniqid)
+    {
+        $this->uniqid = $uniqid;
+        
+        return $this;
+    }
+    
+    /**
      * 设置配置
      * 
      * @param string|array $name
      * @return string $value
      *
-     * @return object
+     * @return object $this
      */
     public function withConfig($name, $value = null)
     {
