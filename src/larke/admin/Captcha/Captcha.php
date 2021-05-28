@@ -115,9 +115,11 @@ class Captcha implements CaptchaContract
         }
         
         // 生成验证码字符串
-        $length = strlen($this->config['charset']) - 1;
-        for ($i = 0; $i < $this->config['codelen']; $i++) {
-            $this->code .= $this->config['charset'][mt_rand(0, $length)];
+        if (empty($this->code)) {
+            $length = strlen($this->config['charset']) - 1;
+            for ($i = 0; $i < $this->config['codelen']; $i++) {
+                $this->code .= $this->config['charset'][mt_rand(0, $length)];
+            }
         }
         
         // 缓存验证码字符串
