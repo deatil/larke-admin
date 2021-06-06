@@ -120,6 +120,8 @@ class Captcha implements CaptchaContract
             for ($i = 0; $i < $this->config['codelen']; $i++) {
                 $this->code .= $this->config['charset'][mt_rand(0, $length)];
             }
+        } else {
+            $this->config['codelen'] = strlen($this->code);
         }
         
         // 缓存验证码字符串
