@@ -33,25 +33,27 @@ return [
         'passphrase' => env('LARKE_ADMIN_JWT_PASSPHRASE', 'YTY5YmNiZTgxMzVhMWY2MTA3Njc3NGY1YTE3MWI2MjQ='),
         
         'signer' => [
-            'algorithm' => [
-                'type' => env('LARKE_ADMIN_JWT_SIGNER_ALGORITHM_TYPE', 'hmac'),
-                'sha' => env('LARKE_ADMIN_JWT_SIGNER_ALGORITHM_SHA', 'Sha256'),
-            ],
+            'algorithm' => env('LARKE_ADMIN_JWT_SIGNER_ALGORITHM', 'HS256'),
+            
+            // HS256,HS384,HS512
             'hmac' => [
                 'secrect' => env('LARKE_ADMIN_JWT_SIGNER_HMAC_SECRECT', 's1fegdR'),
             ],
+            // RS256,RS384,RS512
             'rsa' => [
                 'private_key' => env('LARKE_ADMIN_JWT_SIGNER_RSA_PRIVATE_KEY', ''),
                 'public_key' => env('LARKE_ADMIN_JWT_SIGNER_RSA_PUBLIC_KEY', ''),
                 // 私钥密码，base64编码后
                 'passphrase' => env('LARKE_ADMIN_JWT_SIGNER_RSA_PASSPHRASE', ''),
             ],
+            // ES256,ES384,ES512
             'ecdsa' => [
                 'private_key' => env('LARKE_ADMIN_JWT_SIGNER_ECDSA_PRIVATE_KEY', ''),
                 'public_key' => env('LARKE_ADMIN_JWT_SIGNER_ECDSA_PUBLIC_KEY', ''),
                 // 私钥密码，base64编码后
                 'passphrase' => env('LARKE_ADMIN_JWT_SIGNER_ECDSA_PASSPHRASE', ''),
             ],
+            // EdDSA
             'eddsa' => [
                 'private_key' => env('LARKE_ADMIN_JWT_SIGNER_EDDSA_PRIVATE_KEY', ''),
                 'public_key' => env('LARKE_ADMIN_JWT_SIGNER_EDDSA_PUBLIC_KEY', ''),

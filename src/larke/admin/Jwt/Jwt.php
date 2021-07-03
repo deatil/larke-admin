@@ -12,6 +12,7 @@ use Larke\JWT\Parser;
 use Larke\JWT\Signer\Key\InMemory;
 use Larke\JWT\Signer\Key\LocalFileReference;
 use Larke\JWT\ValidationData;
+use Larke\JWT\Signer; // 文件夹
 
 use Larke\Admin\Exception\JWTException;
 use Larke\Admin\Support\Crypt;
@@ -84,6 +85,25 @@ class Jwt implements JwtContract
      * 配置
      */
     private $signerConfig = [];
+    
+    /**
+     * 类型列表
+     */
+    protected $algorithms = [
+        'HS256' => Signer\Hmac\Sha256::class,
+        'HS384' => Signer\Hmac\Sha384::class,
+        'HS512' => Signer\Hmac\Sha512::class,
+        
+        'RS256' => Signer\Rsa\Sha256::class,
+        'RS384' => Signer\Rsa\Sha384::class,
+        'RS512' => Signer\Rsa\Sha512::class,
+        
+        'ES256' => Signer\Ecdsa\Sha256::class,
+        'ES384' => Signer\Ecdsa\Sha384::class,
+        'ES512' => Signer\Ecdsa\Sha512::class,
+        
+        'EdDSA' => Signer\Eddsa::class,
+    ];
     
     /**
      * 设置 header
@@ -228,35 +248,36 @@ class Jwt implements JwtContract
     {
         $config = $this->signerConfig;
         
-        $algorithm = Arr::get($config, 'algorithm', []);
+        // 加密方式
+        $algorithm = Arr::get($config, 'algorithm', 'HS256');
         if (empty($algorithm)) {
             return false;
         }
         
-        $type = Arr::get($algorithm, 'type', '');
-        $sha = Arr::get($algorithm, 'sha', '');
-        if (empty($type) || empty($sha)) {
+        // 加密方式不存在
+        if (! array_key_exists($algorithm, $this->algorithms)) {
             return false;
         }
         
-        $signer = '';
+        // 加密方式
+        $signer = new $this->algorithms[$algorithm];
+        
         $secrect = '';
-        $signerNamespace = '\\Larke\\JWT\\Signer';
-        switch ($type) {
-            case 'hmac':
-                $class = $signerNamespace . '\\Hmac\\' . $sha;
-                $signer = new $class;
+        switch ($algorithm) {
+            case 'HS256':
+            case 'HS384':
+            case 'HS512':
                 $key = Arr::get($config, 'hmac.secrect', '');
                 $secrect = InMemory::plainText($key);
                 break;
-            case 'rsa':
-                $class = $signerNamespace . '\\Rsa\\' . $sha;
-                $signer = new $class;
+            case 'RS256':
+            case 'RS384':
+            case 'RS512':
                 if ($isPrivate) {
                     $privateKey = Arr::get($config, 'rsa.private_key', '');
                     
                     $passphrase = Arr::get($config, 'rsa.passphrase', null);
-                    if (!empty($passphrase)) {
+                    if (! empty($passphrase)) {
                         $passphrase = InMemory::base64Encoded($passphrase)->getContent();
                     }
                     
@@ -266,9 +287,9 @@ class Jwt implements JwtContract
                     $secrect = LocalFileReference::file($publicKey);
                 }
                 break;
-            case 'ecdsa':
-                $class = $signerNamespace . '\\Ecdsa\\' . $sha;
-                $signer = new $class;
+            case 'ES256':
+            case 'ES384':
+            case 'ES512':
                 if ($isPrivate) {
                     $privateKey = Arr::get($config, 'ecdsa.private_key', '');
                     
@@ -283,9 +304,7 @@ class Jwt implements JwtContract
                     $secrect = LocalFileReference::file($publicKey);
                 }
                 break;
-            case 'eddsa':
-                $class = $signerNamespace . '\\Eddsa';
-                $signer = new $class;
+            case 'EdDSA':
                 if ($isPrivate) {
                     $privateKey = Arr::get($config, 'eddsa.private_key', '');
                     $secrect = InMemory::file($privateKey);
