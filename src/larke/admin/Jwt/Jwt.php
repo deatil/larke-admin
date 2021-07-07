@@ -441,7 +441,7 @@ class Jwt implements JwtContract
         
         $data = [];
         foreach ($claims as $claim) {
-            $data[$claim->getName()] = $claimValue;
+            $data[$claim->getName()] = $claim->getValue();
         }
         
         return $data;
