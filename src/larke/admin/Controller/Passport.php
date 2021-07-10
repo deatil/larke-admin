@@ -129,7 +129,7 @@ class Passport extends Base
                     'adminid' => $adminInfo['id'],
                 ]);
         } catch(\Exception $e) {
-            return $this->error($e->getMessage(), \ResponseCode::LOGIN_ERROR);
+            return $this->error(__('登陆失败'), \ResponseCode::LOGIN_ERROR);
         }
         
         if (empty($accessToken)) {

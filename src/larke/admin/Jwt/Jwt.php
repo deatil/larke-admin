@@ -67,19 +67,24 @@ class Jwt implements JwtContract
     private $passphrase = '';
     
     /**
-     * decode token
-     */
-    private $decodeToken;
-    
-    /**
-     * jwt token
-     */
-    private $token = '';
-    
-    /**
      * jwt claims
      */
     private $claims = [];
+    
+    /**
+     * jwt enToken
+     */
+    private $enToken = '';
+    
+    /**
+     * jwt deToken
+     */
+    private $deToken = '';
+    
+    /**
+     * parseToken
+     */
+    private $parseToken;
     
     /**
      * 配置
@@ -90,18 +95,22 @@ class Jwt implements JwtContract
      * 类型列表
      */
     protected $algorithms = [
+        // Hmac 加密
         'HS256' => Signer\Hmac\Sha256::class,
         'HS384' => Signer\Hmac\Sha384::class,
         'HS512' => Signer\Hmac\Sha512::class,
         
+        // Rsa 加密
         'RS256' => Signer\Rsa\Sha256::class,
         'RS384' => Signer\Rsa\Sha384::class,
         'RS512' => Signer\Rsa\Sha512::class,
         
+        // Ecdsa 加密
         'ES256' => Signer\Ecdsa\Sha256::class,
         'ES384' => Signer\Ecdsa\Sha384::class,
         'ES512' => Signer\Ecdsa\Sha512::class,
         
+        // Eddsa 加密
         'EdDSA' => Signer\Eddsa::class,
     ];
     
@@ -199,20 +208,37 @@ class Jwt implements JwtContract
     }
     
     /**
-     * 设置token
+     * 设置 enToken
      */
-    public function withToken($token)
+    public function withEnToken($enToken)
     {
-        $this->token = $token;
+        $this->enToken = $enToken;
         return $this;
     }
     
     /**
-     * 获取token
+     * 获取 enToken
      */
-    public function getToken()
+    public function getEnToken()
     {
-        return (string) $this->token;
+        return (string) $this->enToken;
+    }
+    
+    /**
+     * 设置 deToken
+     */
+    public function withDeToken($deToken)
+    {
+        $this->deToken = $deToken;
+        return $this;
+    }
+    
+    /**
+     * 获取 deToken
+     */
+    public function getDeToken()
+    {
+        return (string) $this->deToken;
     }
     
     /**
@@ -251,17 +277,22 @@ class Jwt implements JwtContract
         // 加密方式
         $algorithm = Arr::get($config, 'algorithm', 'HS256');
         if (empty($algorithm)) {
-            return false;
+            Log::error('larke-admin-jwt-signer: 加密方式为空');
+            
+            throw new JWTException(__('JWT编码失败'));
         }
         
         // 加密方式不存在
         if (! array_key_exists($algorithm, $this->algorithms)) {
-            return false;
+            Log::error('larke-admin-jwt-signer: ' . $algorithm . ' 加密方式不存在');
+            
+            throw new JWTException(__('JWT编码失败'));
         }
         
         // 加密方式
         $signer = new $this->algorithms[$algorithm];
         
+        // 加密秘钥
         $secrect = '';
         switch ($algorithm) {
             case 'HS256':
@@ -344,9 +375,9 @@ class Jwt implements JwtContract
         }
         
         try {
-            list($signer, $secrect) = $this->getSigner(true);
+            list ($signer, $secrect) = $this->getSigner(true);
             
-            $this->token = $builder->getToken($signer, $secrect);
+            $this->enToken = $builder->getToken($signer, $secrect);
         } catch(\Exception $e) {
             Log::error('larke-admin-jwt-encode: '.$e->getMessage());
             
@@ -362,7 +393,7 @@ class Jwt implements JwtContract
     public function decode()
     {
         try {
-            $this->decodeToken = (new Parser())->parse((string) $this->token); 
+            $this->parseToken = (new Parser())->parse((string) $this->deToken); 
         } catch(\Exception $e) {
             Log::error('larke-admin-jwt-decode: '.$e->getMessage());
             
@@ -383,7 +414,7 @@ class Jwt implements JwtContract
         $data->identifiedBy($this->jti);
         $data->relatedTo($this->subject);
         
-        return $this->decodeToken->validate($data);
+        return $this->parseToken->validate($data);
     }
 
     /**
@@ -393,15 +424,15 @@ class Jwt implements JwtContract
     {
         list ($signer, $secrect) = $this->getSigner(false);
     
-        return $this->decodeToken->verify($signer, $secrect);
+        return $this->parseToken->verify($signer, $secrect);
     }
 
     /**
-     * 获取 decodeToken
+     * 获取 parseToken
      */
-    public function getDecodeToken()
+    public function getParseToken()
     {
-        return $this->decodeToken;
+        return $this->parseToken;
     }
     
     /**
@@ -409,7 +440,7 @@ class Jwt implements JwtContract
      */
     public function getHeader($name)
     {
-        $header = $this->decodeToken->getHeader($name);
+        $header = $this->parseToken->getHeader($name);
         
         return $header;
     }
@@ -419,7 +450,7 @@ class Jwt implements JwtContract
      */
     public function getHeaders()
     {
-        return $this->decodeToken->getHeaders();
+        return $this->parseToken->getHeaders();
     }
 
     /**
@@ -427,7 +458,7 @@ class Jwt implements JwtContract
      */
     public function getClaim($name)
     {
-        $claim = $this->decodeToken->getClaim($name);
+        $claim = $this->parseToken->getClaim($name);
         
         return $claim;
     }
@@ -437,7 +468,7 @@ class Jwt implements JwtContract
      */
     public function getClaims()
     {
-        $claims = $this->decodeToken->getClaims();
+        $claims = $this->parseToken->getClaims();
         
         $data = [];
         foreach ($claims as $claim) {

@@ -5,7 +5,7 @@ return [
         'name' => "LarkeAdmin",
         'name_mini' => "Larke",
         'logo' => '<b>Larke</b> admin',
-        'release' => 20210413,
+        'release' => 20210710,
         'version' => "1.1.10",
     ],
     
