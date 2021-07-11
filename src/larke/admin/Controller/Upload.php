@@ -75,9 +75,7 @@ class Upload extends Base
         
         $filetype = $uploadService->getFileType($requestFile);
         
-        $fileInfo = AttachmentModel::where([
-            'md5' => $md5
-        ])->first();
+        $fileInfo = AttachmentModel::byMd5($md5)->first();
         if (!empty($fileInfo)) {
             @unlink($pathname);
             

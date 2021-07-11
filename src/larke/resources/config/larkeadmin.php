@@ -5,8 +5,8 @@ return [
         'name' => "LarkeAdmin",
         'name_mini' => "Larke",
         'logo' => '<b>Larke</b> admin',
-        'release' => 20210710,
-        'version' => "1.1.10",
+        'release' => 20210711,
+        'version' => "1.1.11",
     ],
     
     'https' => env('LARKE_ADMIN_HTTPS', false),

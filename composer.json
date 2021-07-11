@@ -33,7 +33,7 @@
             "Larke\\Admin\\": "src/larke/admin"
         },
         "files": [
-            "src/larke/helper.php"
+            "src/larke/admin/helper.php"
         ]
     },
     "extra" : {

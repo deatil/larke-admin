@@ -47,6 +47,25 @@ class Attachment extends Base
         return $this->morphTo(__FUNCTION__, 'belong_type', 'belong_id');
     }
     
+    /**
+     * md5
+     */
+    public function scopeByMd5($query, $md5)
+    {
+        return $query->where('md5', '=', $md5);
+    }
+    
+    /**
+     * sha1
+     */
+    public function scopeBySha1($query, $sha1)
+    {
+        return $query->where('sha1', '=', $sha1);
+    }
+    
+    /**
+     * 快捷查询地址
+     */
     public static function path($id, $default = null)
     {
         return static::where('id', $id)
