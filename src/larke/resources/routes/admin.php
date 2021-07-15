@@ -42,8 +42,8 @@ Route::group([
     // 登陆
     $router->get('/passport/captcha', 'Passport@captcha')->name('passport.captcha');
     $router->post('/passport/login', 'Passport@login')->name('passport.login');
-    $router->delete('/passport/logout', 'Passport@logout')->name('passport.logout');
     $router->put('/passport/refresh-token', 'Passport@refreshToken')->name('passport.refresh-token');
+    $router->delete('/passport/logout', 'Passport@logout')->name('passport.logout');
     
     // 个人信息
     $router->get('/profile', 'Profile@index')->name('profile');

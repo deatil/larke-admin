@@ -277,18 +277,13 @@ class Extension
      */
     public function bootExtension()
     {
-        // 数据库配置错误
+        // 数据库检测
         try {
-            Db::select("show databases");
+            $list = ExtensionModel::getExtensions();
         } catch(\Exception $e) {
             return ;
         }
         
-        if (! Schema::hasTable((new ExtensionModel)->getTable())) {
-            return ;
-        }
-        
-        $list = ExtensionModel::getExtensions();
         $extensionDirectory = $this->getExtensionPath();
         
         $services = collect($list)->map(function($data) use($extensionDirectory) {
