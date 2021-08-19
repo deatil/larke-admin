@@ -150,17 +150,20 @@ class Passport extends Base
             return $this->error(__('登陆失败'), \ResponseCode::LOGIN_ERROR);
         }
         
-        // 监听事件
-        event(new Event\PassportLoginAfter($admin));
-        
         // 过期时间
         $expiresIn = app('larke-admin.auth-token')->getAccessTokenExpiresIn();
         
-        return $this->success(__('登录成功'), [
+        // 返回数据
+        $data = [
             'access_token' => $accessToken,
             'expires_in' => $expiresIn,
             'refresh_token' => $refreshToken,
-        ]);
+        ]
+        
+        // 监听事件
+        event(new Event\PassportLoginAfter($admin, $data));
+        
+        return $this->success(__('登录成功'), $data);
     }
     
     /**
@@ -211,16 +214,19 @@ class Passport extends Base
             return $this->error(__('刷新Token失败'), \ResponseCode::REFRESH_TOKEN_ERROR);
         }
         
-        // 监听事件
-        event(new Event\PassportRefreshTokenAfter());
-        
         // 过期时间
         $expiresIn = app('larke-admin.auth-token')->getAccessTokenExpiresIn();
         
-        return $this->success(__('刷新Token成功'), [
+        // 返回数据
+        $data = [
             'access_token' => $newAccessToken,
             'expires_in' => $expiresIn,
-        ]);
+        ];
+        
+        // 监听事件
+        event(new Event\PassportRefreshTokenAfter($data));
+        
+        return $this->success(__('刷新Token成功'), $data);
     }
     
     /**

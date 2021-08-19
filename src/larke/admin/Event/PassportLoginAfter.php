@@ -21,13 +21,22 @@ class PassportLoginAfter
     public $admin;
     
     /**
+     * 存储登陆成功生成的 access_token, expires_in, refresh_token
+     * @var array
+     */
+    public $jwt;
+    
+    /**
      * 构造方法
      * @access public
      * @param  \Larke\Admin\Model\Admin  $admin
      */
-    public function __construct(AdminModel $admin)
+    public function __construct(AdminModel $admin, array $jwt)
     {
         $this->admin = $admin;
+        
+        // jwt 数据
+        $this->jwt = $jwt;
     }
     
 }

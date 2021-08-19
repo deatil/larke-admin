@@ -119,7 +119,7 @@ class Tree
             // 深度
             $info[$this->depthKey] = $depth;
             
-            $childList = $this->build($value[$this->idKey], $itemprefix . $k . $this->blankspace, $depth+1);
+            $childList = $this->build($value[$this->idKey], $itemprefix . $k . $this->blankspace, $depth + 1);
             if (!empty($childList)) {
                 $info[$this->buildChildKey] = $childList;
             }
@@ -262,7 +262,7 @@ class Tree
             }
         }
         
-        return $newData ?: [];
+        return $newData;
     }
 
     /**

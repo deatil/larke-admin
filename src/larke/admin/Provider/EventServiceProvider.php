@@ -18,8 +18,14 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
+        // 登陆
         Event\PassportLoginAfter::class => [
             Listener\PassportLoginAfter::class
+        ],
+        
+        // 刷新 token
+        Event\PassportRefreshTokenAfter::class => [
+            Listener\PassportRefreshTokenAfter::class
         ],
     ];
     

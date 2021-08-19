@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * Upload
+ * 上传
  *
  * @create 2020-10-29
  * @author deatil
@@ -19,44 +19,44 @@ use Illuminate\Support\Facades\Storage;
 class Upload
 {
     /**
-     * Upload directory.
+     * 文件夹
      *
      * @var string
      */
     protected $directory = '';
 
     /**
-     * File name.
+     * 最后命名
      *
      * @var null
      */
     protected $name = null;
     
     /**
-     * Storage instance.
+     * 文件系统单例
      *
      * @var \Illuminate\Filesystem\Filesystem
      */
     protected $storage = '';
 
     /**
-     * Use (unique or datetime or sequence) name for store upload file.
+     * 命名方式 (unique or datetime or sequence)
      *
      * @var bool
      */
     protected $generateName = null;
 
     /**
-     * Controls the storage permission. Could be 'private' or 'public'.
+     * 权限 'private' or 'public'
      *
      * @var string
      */
     protected $storagePermission;
     
     /**
-     * Initialize the storage instance.
+     * 创建上传
      *
-     * @return $this.
+     * @return $this
      */
     public static function create()
     {
@@ -64,9 +64,9 @@ class Upload
     }
     
     /**
-     * Initialize the storage instance.
+     * 使用驱动
      *
-     * @return $this.
+     * @return $this
      */
     public static function driver($disk = null)
     {
@@ -74,7 +74,7 @@ class Upload
     }
 
     /**
-     * Default directory for file to upload.
+     * 默认文件夹
      *
      * @return mixed
      */
@@ -84,7 +84,7 @@ class Upload
     }
 
     /**
-     * Set disk for storage.
+     * 磁盘
      *
      * @param string $disk Disks defined in `config/filesystems.php`.
      *
@@ -102,7 +102,7 @@ class Upload
     }
 
     /**
-     * Specify the directory upload file.
+     * 根目录
      *
      * @param string $dir
      *
@@ -118,7 +118,7 @@ class Upload
     }
 
     /**
-     * Set name of store name.
+     * 自定义命名
      *
      * @param string|callable $name
      *
@@ -134,7 +134,7 @@ class Upload
     }
 
     /**
-     * Use unique name for store upload file.
+     * 唯一命名
      *
      * @return $this
      */
@@ -146,7 +146,7 @@ class Upload
     }
 
     /**
-     * Use datetime name for store upload file.
+     * 时间命名
      *
      * @return $this
      */
@@ -158,7 +158,7 @@ class Upload
     }
 
     /**
-     * Use sequence name for store upload file.
+     * sequence 命名
      *
      * @return $this
      */
@@ -170,7 +170,7 @@ class Upload
     }
 
     /**
-     * Get getStorage.
+     * 驱动
      *
      * @return object
      */
@@ -180,7 +180,7 @@ class Upload
     }
     
     /**
-     * Get store name of upload file.
+     * 获取最后文件夹
      *
      * @param UploadedFile $file
      *
@@ -208,7 +208,7 @@ class Upload
     }
 
     /**
-     * Get directory for store file.
+     * 设置的文件夹
      *
      * @return mixed|string
      */
@@ -222,7 +222,7 @@ class Upload
     }
     
     /**
-     * Get mimeType for store file.
+     * 文件大类
      *
      * @return mixed|string
      */
@@ -243,7 +243,7 @@ class Upload
     }
     
     /**
-     * Get mimeType for store file.
+     * 文件类型
      *
      * @return mixed|string
      */
@@ -265,7 +265,7 @@ class Upload
     }
 
     /**
-     * Upload file and delete original file.
+     * 上传文件并删除临时文件
      *
      * @param UploadedFile $file
      *
@@ -285,7 +285,7 @@ class Upload
     }
 
     /**
-     * If name already exists, rename it.
+     * 如果存在重命名
      *
      * @param $file
      *
@@ -299,7 +299,7 @@ class Upload
     }
 
     /**
-     * Get file visit url.
+     * 访问链接
      *
      * @param $path
      *
@@ -319,7 +319,7 @@ class Upload
     }
 
     /**
-     * Generate a unique name for uploaded file.
+     * 唯一命名
      *
      * @param UploadedFile $file
      *
@@ -331,7 +331,7 @@ class Upload
     }
     
     /**
-     * Generate a datetime name for uploaded file.
+     * 时间命名
      *
      * @param UploadedFile $file
      *
@@ -343,7 +343,7 @@ class Upload
     }
 
     /**
-     * Generate a sequence name for uploaded file.
+     * sequence 命名
      *
      * @param UploadedFile $file
      *
@@ -365,7 +365,7 @@ class Upload
     }
     
     /**
-     * Use file'oldname for uploaded file.
+     * 原始命名
      *
      * @param UploadedFile $file
      *
@@ -377,7 +377,7 @@ class Upload
     }
 
     /**
-     * Destroy original files.
+     * 删除文件
      *
      * @return void.
      */
@@ -389,7 +389,7 @@ class Upload
     }
 
     /**
-     * Set file permission when stored into storage.
+     * 设置权限
      *
      * @param string $permission
      *
