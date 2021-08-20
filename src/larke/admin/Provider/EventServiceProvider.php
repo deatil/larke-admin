@@ -27,6 +27,11 @@ class EventServiceProvider extends ServiceProvider
         Event\PassportRefreshTokenAfter::class => [
             Listener\PassportRefreshTokenAfter::class
         ],
+        
+        // 退出
+        Event\PassportLogoutAfter::class => [
+            Listener\PassportLogoutAfter::class
+        ],
     ];
     
     /**

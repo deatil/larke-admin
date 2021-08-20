@@ -10,6 +10,8 @@ CREATE TABLE `pre__larke_admin` (
   `introduce` mediumtext CHARACTER SET utf8mb4 COMMENT '简介',
   `is_root` tinyint(1) NOT NULL DEFAULT '0' COMMENT '1-超级管理',
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态',
+  `refresh_time` int(10) NOT NULL DEFAULT '0' COMMENT '刷新时间',
+  `refresh_ip` varchar(50) CHARACTER SET utf8mb4 NOT NULL DEFAULT '' COMMENT '刷新IP',
   `last_active` int(10) NOT NULL DEFAULT '0' COMMENT '最后登录时间',
   `last_ip` varchar(50) CHARACTER SET utf8mb4 NOT NULL DEFAULT '0' COMMENT '最后登录IP',
   `create_time` int(10) NOT NULL DEFAULT '0' COMMENT '创建时间',

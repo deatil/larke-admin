@@ -13,7 +13,7 @@ namespace Larke\Admin\Event;
 class PassportRefreshTokenAfter
 {
     /**
-     * 存储登陆成功生成的 access_token, expires_in, refresh_token
+     * 存储登陆成功生成的 access_token, expires_in
      * @var array
      */
     public $jwt;

@@ -68,6 +68,9 @@ return [
         'access_expires_in' => env('LARKE_ADMIN_PASSPORT_ACCESS_EXPIRED_IN', 86400),
         'refresh_token_id' => env('LARKE_ADMIN_PASSPORT_REFRESH_TOKEN_ID', 'larke-passport-refresh-token'),
         'refresh_expires_in' => env('LARKE_ADMIN_PASSPORT_REFRESH_EXPIRED_IN', 604800),
+        
+        // 登陆方式 single - 单点登陆, many - 多点登陆
+        'login_type' => env('LARKE_ADMIN_PASSPORT_LOGIN_TYPE', 'many'),
     ],
     
     'cache' => [

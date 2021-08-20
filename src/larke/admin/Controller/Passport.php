@@ -158,7 +158,7 @@ class Passport extends Base
             'access_token' => $accessToken,
             'expires_in' => $expiresIn,
             'refresh_token' => $refreshToken,
-        ]
+        ];
         
         // 监听事件
         event(new Event\PassportLoginAfter($admin, $data));
@@ -198,6 +198,18 @@ class Passport extends Base
             
             // 签名
             app('larke-admin.auth-token')->verify($decodeRefreshToken);
+            
+            // 单点登陆处理
+            $loginType = config('larkeadmin.passport.login_type', 'many');
+            if ($loginType == 'single') {
+                $iat = $decodeRefreshToken->getClaim('iat');
+                
+                // 判断是否是单点登陆
+                $adminInfo = app('larke-admin.auth-admin')->getData();
+                if ($adminInfo['last_active'] != $iat) {
+                    return $this->error(__('刷新Token失败'), \ResponseCode::REFRESH_TOKEN_ERROR);
+                }
+            }
             
             $refreshAdminid = $decodeRefreshToken->getData('adminid');
             
@@ -282,7 +294,11 @@ class Passport extends Base
         app('larke-admin.cache')->add(md5($refreshToken), time(), $refreshTokenExpiresIn);
         
         // 监听事件
-        event(new Event\PassportLogoutAfter());
+        event(new Event\PassportLogoutAfter([
+            'access_token' => $accessToken,
+            'expires_in' => $refreshTokenExpiresIn,
+            'refresh_token' => $refreshToken,
+        ]));
         
         return $this->success(__('退出成功'));
     }
