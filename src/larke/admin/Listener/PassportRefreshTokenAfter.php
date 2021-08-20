@@ -26,12 +26,12 @@ class PassportRefreshTokenAfter
         // 权限 token 签发时间
         $decodeAccessToken = app('larke-admin.auth-token')
                 ->decodeAccessToken($accessToken);
-        $decodeAccessTokenIat = $decodeAccessToken->getClaim('iat');
-        $refreshAdminid = $decodeRefreshToken->getData('adminid');
+        $iat = $decodeAccessToken->getClaim('iat');
+        $adminid = $decodeAccessToken->getData('adminid');
         
         // 更新信息
-        AdminModel::where('id', $refreshAdminid)->update([
-            'refresh_time' => $decodeAccessTokenIat, 
+        AdminModel::where('id', $adminid)->update([
+            'refresh_time' => $iat, 
             'refresh_ip' => request()->ip(),
         ]);
     }

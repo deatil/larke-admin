@@ -15,10 +15,12 @@ use Larke\Admin\Model\Admin as AdminModel;
  */
 class PassportLogoutAfter
 {
-    public function handle(Event\PassportLoginAfter $event)
+    public function handle(Event\PassportLogoutAfter $event)
     {
+        $adminid = app('larke-admin.auth-admin')->getId();
+        
         // 更新信息
-        AdminModel::where('id', $refreshAdminid)->update([
+        AdminModel::where('id', $adminid)->update([
             'refresh_time' => time(), 
             'refresh_ip' => request()->ip(),
         ]);
