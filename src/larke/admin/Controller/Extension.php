@@ -274,9 +274,9 @@ class Extension extends Base
                 return ($data['match'] === false);
             });
             if ($match) {
-                return $this->error(__('扩展依赖出现错误'), \ResponseCode::EXTENSION_NOT_MATCH, [
-                    'require' => $requireExtensions
-                ]);
+                return $this->error(__('扩展依赖出现错误，需要依赖版本: :require', [
+                    'require' => $requireExtensions[0]['name'] . '[' . $requireExtensions[0]['version'] . ']',
+                ]), \ResponseCode::EXTENSION_NOT_MATCH);
             }
         }
         
@@ -420,9 +420,9 @@ class Extension extends Base
                 return ($data['match'] === false);
             });
             if ($match) {
-                return $this->error(__('扩展依赖出现错误'), \ResponseCode::EXTENSION_NOT_MATCH, [
-                    'require' => $requireExtensions
-                ]);
+                return $this->error(__('扩展依赖出现错误，需要依赖版本: :require', [
+                    'require' => $requireExtensions[0]['name'] . '[' . $requireExtensions[0]['version'] . ']',
+                ]), \ResponseCode::EXTENSION_NOT_MATCH);
             }
         }
         

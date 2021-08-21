@@ -144,7 +144,7 @@
     "扩展版本信息错误": "extension version error",
     "扩展适配系统版本错误": "extension adaptation error",
     "扩展适配系统版本错误，当前系统版本：:version": "extension adaptation error, system version：:version",
-    "扩展依赖出现错误": "extension require error",
+    "扩展依赖出现错误，需要依赖版本: :require": "extension require error, need: :require",
     "安装扩展失败": "instell extension error",
     "安装扩展成功": "instell extension success",
     "扩展需要禁用后才能卸载": "uninstell extension need disable",
