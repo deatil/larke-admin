@@ -14,7 +14,7 @@ use Larke\Admin\Model\AuthRuleAccess as AuthRuleAccessModel;
 /**
  * 重设权限缓存
  *
- * php artisan larke-admin:reset-permission
+ * > php artisan larke-admin:reset-permission
  *
  * @create 2021-1-25
  * @author deatil

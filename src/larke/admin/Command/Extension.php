@@ -18,7 +18,7 @@ use Larke\Admin\Model\Extension as ExtensionModel;
 /**
  * 扩展
  *
- * php artisan larke-admin:extension [--package=package] [--action=install]
+ * > php artisan larke-admin:extension [--package=package] [--action=install]
  *
  * @create 2021-1-25
  * @author deatil

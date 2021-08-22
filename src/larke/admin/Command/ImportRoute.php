@@ -11,7 +11,7 @@ use Larke\Admin\Service\ImportRoute as ImportRouteService;
 /**
  * 导入路由信息
  *
- * php artisan larke-admin:import-route
+ * > php artisan larke-admin:import-route
  *
  * @create 2021-1-25
  * @author deatil

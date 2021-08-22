@@ -9,7 +9,7 @@ use Illuminate\Console\Command;
 /**
  * 清空缓存
  *
- * php artisan larke-admin:clear-cache
+ * > php artisan larke-admin:clear-cache
  *
  * @create 2021-1-25
  * @author deatil

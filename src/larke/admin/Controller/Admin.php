@@ -645,6 +645,12 @@ class Admin extends Base
         // 添加缓存黑名单
         app('larke-admin.cache')->add(md5($refreshToken), time(), $refreshTokenExpiresIn);
         
+        // 更新刷新时间
+        AdminModel::where('id', $refreshAdminid)->update([
+            'refresh_time' => time(), 
+            'refresh_ip' => request()->ip(),
+        ]);
+        
         return $this->success(__('账号退出成功'));
     }
     

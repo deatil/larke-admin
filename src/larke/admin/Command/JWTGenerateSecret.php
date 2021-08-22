@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 /**
  * JWT 生成秘钥
  *
- * php artisan larke-admin:jwt-secret -f
+ * > php artisan larke-admin:jwt-secret -f
  *
  * @create 2021-1-25
  * @author deatil

@@ -6,10 +6,12 @@ namespace Larke\Admin\Command;
 
 use Illuminate\Console\Command;
 
+use Larke\Admin\Model\Admin as AdminModel;
+
 /**
  * 强制将 jwt 的 refreshToken 放入黑名单
  *
- * php artisan larke-admin:passport-logout
+ * > php artisan larke-admin:passport-logout
  *
  * @create 2021-1-25
  * @author deatil
@@ -91,6 +93,12 @@ class PassportLogout extends Command
         
         // 添加进黑名单
         app('larke-admin.cache')->add(md5($refreshToken), time(), $refreshTokenExpiresIn);
+        
+        // 更新刷新时间
+        AdminModel::where('id', $refreshAdminid)->update([
+            'refresh_time' => time(), 
+            'refresh_ip' => request()->ip(),
+        ]);
         
         $this->info('Logout success and adminid is: '.$refreshAdminid);
     }
