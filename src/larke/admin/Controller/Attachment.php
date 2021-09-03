@@ -270,23 +270,23 @@ class Attachment extends Base
     public function download(string $code)
     {
         if (empty($code)) {
-            return $this->error(__('code值不能为空'));
+            return $this->returnString(__('code值不能为空'));
         }
         
         $fileId = Cache::pull($code);
         if (empty($fileId)) {
-            return $this->error(__('文件信息不存在'));
+            return $this->returnString(__('文件信息不存在'));
         }
         
         $fileInfo = AttachmentModel::where(['id' => $fileId])
             ->first();
         if (empty($fileInfo)) {
-            return $this->error(__('文件信息不存在'));
+            return $this->returnString(__('文件信息不存在'));
         }
         
         $uploadService = UploadService::create();
         if ($uploadService === false) {
-            return $this->error(__('下载文件失败'));
+            return $this->returnString(__('下载文件失败'));
         }
         
         return $uploadService->getStorage()->download($fileInfo['path'], $fileInfo['name']);

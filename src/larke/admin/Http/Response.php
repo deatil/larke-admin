@@ -203,5 +203,37 @@ class Response implements ResponseContract
         $response = response($result, 200, $header);
         throw new HttpResponseException($response);
     }
+    
+    /**
+     * 将json字符窜以标准json格式返回
+     * @param string|null $contents
+     * @param array $userHeader
+     * @return string json
+     */
+    public function returnJsonFromString($contents, $userHeader = []) 
+    {
+        $this->mergeCorsHeaders()->withHeader($userHeader);
+        
+        $header = $this->getHeaders();
+        $response = response($contents, 200, $header);
+        throw new HttpResponseException($response);
+    }
+    
+    /**
+     * 返回字符
+     * @param string|null $contents
+     * @param array $userHeader
+     * @return string json
+     */
+    public function returnString($contents, $userHeader = []) 
+    {
+        $this->mergeCorsHeaders()->withHeader($userHeader);
+        
+        $header = $this->getHeaders();
+        $header['Content-Type'] = 'text/html';
+        
+        $response = response($contents, 200, $header);
+        throw new HttpResponseException($response);
+    }
 
 }

@@ -38,4 +38,20 @@ trait ResponseJson
         return Response::json(false, $code, $message, $data, $header);
     }
     
+    /**
+     * 将json字符窜以标准json格式返回
+     */
+    protected function returnJsonFromString($contents, $header = [])
+    {
+        return Response::returnJsonFromString($contents, $header);
+    }
+    
+    /**
+     * 返回字符
+     */
+    protected function returnString($contents, $header = [])
+    {
+        return Response::returnString($contents, $header);
+    }
+    
 }
