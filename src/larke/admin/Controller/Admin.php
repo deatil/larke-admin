@@ -7,7 +7,9 @@ namespace Larke\Admin\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
+use Larke\Admin\Support\Tree;
 use Larke\Admin\Model\Admin as AdminModel;
+use Larke\Admin\Model\AuthGroup as AuthGroupModel;
 use Larke\Admin\Model\AuthGroupAccess as AuthGroupAccessModel;
 use Larke\Admin\Repository\Admin as AdminRepository;
 
@@ -221,7 +223,7 @@ class Admin extends Base
             ->where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('管理员信息不存在'));
+            return $this->error(__('账号信息不存在'));
         }
         
         if ($info['id'] == config('larkeadmin.auth.admin_id')) {
@@ -234,6 +236,53 @@ class Admin extends Base
         }
         
         return $this->success(__('账号删除成功'));
+    }
+    
+    /**
+     * 添加账号所需分组
+     *
+     * @title 获取分组
+     * @desc 添加账号所需分组
+     * @order 305
+     * @auth true
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function groups(Request $request)
+    {
+        $isSuperAdministrator = app('larke-admin.auth-admin')->isSuperAdministrator();
+        if ($isSuperAdministrator) {
+            $list = AuthGroupModel::orderBy('listorder', 'ASC')
+                ->orderBy('create_time', 'ASC')
+                ->get()
+                ->toArray();
+            
+            $list = collect($list)
+                ->map(function($data) {
+                    return [
+                        'id' => $data['id'],
+                        'parentid' => $data['parentid'],
+                        'title' => $data['title'],
+                        'description' => $data['description'],
+                    ];
+                })
+                ->toArray();
+                
+            $Tree = new Tree();
+            $list = $Tree
+                ->withConfig('buildChildKey', 'children')
+                ->withData($list)
+                ->build(0);
+            
+            $list = $Tree->buildFormatList($list);
+        } else {
+            $list = app('larke-admin.auth-admin')->getGroupChildren();
+        }
+        
+        return $this->success(__('获取成功'), [
+            'list' => $list,
+        ]);
     }
     
     /**
@@ -251,20 +300,28 @@ class Admin extends Base
     {
         $data = $request->all();
         $validator = Validator::make($data, [
-            'name' => 'required|max:20|unique:'.AdminModel::class,
-            'nickname' => 'required|max:150',
-            'email' => 'required|email|max:100|unique:'.AdminModel::class,
+            'group_id' => 'required',
+            'name' => 'required|min:2|max:20|unique:'.AdminModel::class,
+            'nickname' => 'required|min:2|max:150',
+            'email' => 'required|email|min:5|max:100|unique:'.AdminModel::class,
             'introduce' => 'required|max:500',
             'status' => 'required',
         ], [
+            'group_id.required' => __('账号所属分组不能为空'),
             'name.required' => __('账号不能为空'),
             'name.unique' => __('账号已经存在'),
+            'name.min' => __('账号最小字符需要2个'),
+            'name.max' => __('账号最大字符需要20个'),
             'nickname.required' => __('昵称不能为空'),
+            'nickname.min' => __('昵称最小字符需要2个'),
+            'nickname.max' => __('昵称最大字符需要150个'),
             'email.required' => __('邮箱不能为空'),
             'email.email' => __('邮箱格式错误'),
             'email.unique' => __('邮箱已经存在'),
+            'email.min' => __('邮箱最小字符需要5个'),
+            'email.max' => __('邮箱最大字符需要100个'),
             'introduce.required' => __('简介不能为空'),
-            'introduce.max' => __('简介字数超过了限制'),
+            'introduce.max' => __('简介字数最大字符需要500个'),
             'status.required' => __('状态选项不能为空'),
         ]);
 
@@ -279,37 +336,16 @@ class Admin extends Base
             'introduce' => $data['introduce'],
             'status' => ($data['status'] == 1) ? 1 : 0,
         ];
-        if (!empty($data['avatar'])) {
-            $validatorAvatar = Validator::make([
-                'avatar' => $data['avatar'],
-            ], [
-                'avatar' => 'required|size:32',
-            ], [
-                'avatar.required' => __('头像数据不能为空'),
-                'avatar.size' => __('头像数据错误'),
-            ]);
-
-            if ($validatorAvatar->fails()) {
-                return $this->error($validatorAvatar->errors()->first());
-            }
-            
-            $insertData['avatar'] = $data['avatar'];
-        }
         
         $admin = AdminModel::create($insertData);
         if ($admin === false) {
             return $this->error(__('添加账号失败'));
         }
         
-        // 用户组默认取当前用户的子用户组的其中之一
-        $groupChildrenIds = app('larke-admin.auth-admin')->getGroupChildrenIds();
-        if (empty($groupChildrenIds)) {
-            return $this->error(__('当前账号不能创建子账号'));
-        }
-        
+        // 添加关联
         AuthGroupAccessModel::create([
             'admin_id' => $admin->id,
-            'group_id' => $groupChildrenIds[0],
+            'group_id' => $data['group_id'],
         ]);
         
         return $this->success(__('添加账号成功'), [
@@ -388,22 +424,6 @@ class Admin extends Base
             'introduce' => $data['introduce'],
             'status' => ($data['status'] == 1) ? 1 : 0,
         ];
-        if (!empty($data['avatar'])) {
-            $validatorAvatar = Validator::make([
-                'avatar' => $data['avatar'],
-            ], [
-                'avatar' => 'required|size:32',
-            ], [
-                'avatar.required' => __('头像数据不能为空'),
-                'avatar.size' => __('头像数据错误'),
-            ]);
-
-            if ($validatorAvatar->fails()) {
-                return $this->error($validatorAvatar->errors()->first());
-            }
-            
-            $updateData['avatar'] = $data['avatar'];
-        }
         
         // 更新信息
         $status = $adminInfo->update($updateData);

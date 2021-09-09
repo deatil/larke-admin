@@ -15,7 +15,7 @@ use Larke\Admin\Model\Admin as AdminModel;
  */
 class PassportRefreshTokenAfter
 {
-    public function handle(Event\PassportLoginAfter $event)
+    public function handle(Event\PassportRefreshTokenAfter $event)
     {
         // jwt 数据
         $jwt = $event->jwt;

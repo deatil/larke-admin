@@ -9,7 +9,7 @@ use Arr;
 use Larke\Admin\Support\Tree;
 use Larke\Admin\Model\AuthGroup as AuthGroupModel;
 
-/*
+/**
  * AuthGroup
  *
  * @create 2020-10-27
@@ -18,7 +18,7 @@ use Larke\Admin\Model\AuthGroup as AuthGroupModel;
 class AuthGroup
 {
     
-    /*
+    /**
      * 获取 Children
      */
     public static function getChildren($groupid = null)
@@ -58,7 +58,7 @@ class AuthGroup
         }
     }
     
-    /*
+    /**
      * 获取 ChildrenIds
      */
     public static function getChildrenIds($groupid = null)
@@ -67,7 +67,7 @@ class AuthGroup
         return collect($list)->pluck('id')->toArray();
     }
     
-    /*
+    /**
      * 获取 Children
      */
     public static function getChildrenFromData($data = [], $parentid = '')
@@ -83,7 +83,7 @@ class AuthGroup
         return $list;
     }
     
-    /*
+    /**
      * 获取 ChildrenIds
      */
     public static function getChildrenIdsFromData($data = [], $parentid = '')

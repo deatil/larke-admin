@@ -18,6 +18,28 @@ use Larke\Admin\Model\AuthRule as AuthRuleModel;
 class AuthRule
 {
     /*
+     * 获取 AllRules
+     */
+    public static function getAllRules()
+    {
+        $rules = AuthRuleModel::select([
+            'id', 
+            'parentid', 
+            'title', 
+            'url',
+            'method',
+            'slug',
+            'description',
+        ])->where('status', 1)
+            ->orderBy('listorder', 'ASC')
+            ->orderBy('create_time', 'ASC')
+            ->get()
+            ->toArray();
+        
+        return $rules;
+    }
+
+    /*
      * 获取 Children
      */
     public static function getChildren($ruleid = null)

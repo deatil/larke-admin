@@ -66,6 +66,7 @@ Route::group([
     
     // 管理员
     $router->get('/admin', 'Admin@index')->name('admin.index');
+    $router->get('/admin/groups', 'Admin@groups')->name('admin.groups');
     $router->get('/admin/{id}', 'Admin@detail')->name('admin.detail')->where('id', '[A-Za-z0-9]+');
     $router->get('/admin/{id}/rules', 'Admin@rules')->name('admin.rules')->where('id', '[A-Za-z0-9]+');
     $router->post('/admin', 'Admin@create')->name('admin.create');

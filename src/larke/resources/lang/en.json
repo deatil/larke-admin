@@ -37,7 +37,7 @@
     "信息删除成功": "info delete success",
     
     "你不能删除自己的账号": "dont delete your passport",
-    "管理员信息不存在": "admin dont delete",
+    "账号信息不存在": "admin dont delete",
     "当前账号不能被删除": "the passport dont delete",
     "账号删除失败": "passport delete error",
     "账号删除成功": "passport delete success",
@@ -54,8 +54,8 @@
     "头像数据不能为空": "avatar dont empty",
     "头像数据错误": "avatar error",
     "添加账号失败": "create passport error",
-    "当前账号不能创建子账号": "don't create passport",
     "添加账号成功": "create passport success",
+    "账号所属分组不能为空": "passport group dont empty",
     
     "管理员不能为空": "admin dont empty",
     "管理员账号或者邮箱已经存在": "passport or email haved",
