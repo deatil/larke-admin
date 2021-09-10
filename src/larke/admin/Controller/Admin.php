@@ -336,6 +336,22 @@ class Admin extends Base
             'introduce' => $data['introduce'],
             'status' => ($data['status'] == 1) ? 1 : 0,
         ];
+        if (!empty($data['avatar'])) {
+            $validatorAvatar = Validator::make([
+                'avatar' => $data['avatar'],
+            ], [
+                'avatar' => 'required|size:32',
+            ], [
+                'avatar.required' => __('头像数据不能为空'),
+                'avatar.size' => __('头像数据错误'),
+            ]);
+
+            if ($validatorAvatar->fails()) {
+                return $this->error($validatorAvatar->errors()->first());
+            }
+
+            $insertData['avatar'] = $data['avatar'];
+        }
         
         $admin = AdminModel::create($insertData);
         if ($admin === false) {
@@ -399,6 +415,22 @@ class Admin extends Base
             'introduce.max' => __('简介字数超过了限制'),
             'status.required' => __('状态选项不能为空'),
         ]);
+        if (!empty($data['avatar'])) {
+            $validatorAvatar = Validator::make([
+                'avatar' => $data['avatar'],
+            ], [
+                'avatar' => 'required|size:32',
+            ], [
+                'avatar.required' => __('头像数据不能为空'),
+                'avatar.size' => __('头像数据错误'),
+            ]);
+
+            if ($validatorAvatar->fails()) {
+                return $this->error($validatorAvatar->errors()->first());
+            }
+
+            $updateData['avatar'] = $data['avatar'];
+        }
 
         if ($validator->fails()) {
             return $this->error($validator->errors()->first());
