@@ -11,26 +11,26 @@ use Larke\Admin\Model\Admin as AdminModel;
 /**
  * 重置密码
  *
- * > php artisan larke-admin:reset-pasword
+ * > php artisan larke-admin:reset-password
  *
  * @create 2021-1-25
  * @author deatil
  */
-class ResetPasword extends Command
+class ResetPassword extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'larke-admin:reset-pasword';
+    protected $signature = 'larke-admin:reset-password';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'larke-admin reset-pasword';
+    protected $description = 'larke-admin reset-password';
 
     /**
      * Execute the console command.

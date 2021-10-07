@@ -75,9 +75,6 @@ class PassportLogout extends Command
             $decodeRefreshToken = app('larke-admin.auth-token')
                 ->decodeRefreshToken($refreshToken);
             
-            // 验证
-            app('larke-admin.auth-token')->validate($decodeRefreshToken);
-            
             // 签名
             app('larke-admin.auth-token')->verify($decodeRefreshToken);
             
@@ -97,7 +94,7 @@ class PassportLogout extends Command
         // 更新刷新时间
         AdminModel::where('id', $refreshAdminid)->update([
             'refresh_time' => time(), 
-            'refresh_ip' => request()->ip(),
+            'refresh_ip' => "127.0.0.1",
         ]);
         
         $this->info('Logout success and adminid is: '.$refreshAdminid);

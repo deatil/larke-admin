@@ -38,9 +38,9 @@ class ClearCache extends Command
     public function handle()
     {
         $this->call('cache:clear');
-        $this->call('route:clear');
-        $this->call('config:clear');
         $this->call('view:clear');
+        // $this->call('route:clear');
+        // $this->call('config:clear');
         
         $this->info("Clear cache successfully!");
     }

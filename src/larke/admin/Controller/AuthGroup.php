@@ -133,7 +133,7 @@ class AuthGroup extends Base
     public function indexChildren(Request $request)
     {
         $id = $request->input('id', 0);
-        if (is_array($id)) {
+        if (! is_string($id)) {
             return $this->error(__('ID错误'));
         }
         
@@ -248,6 +248,7 @@ class AuthGroup extends Base
         ], [
             'parentid.required' => __('父级分类不能为空'),
             'title.required' => __('名称不能为空'),
+            'title.max' => __('名称最大字符需要50个'),
             'status.required' => __('状态选项不能为空'),
         ]);
         
@@ -263,9 +264,6 @@ class AuthGroup extends Base
             'is_system' => (isset($data['is_system']) && $data['is_system'] == 1) ? 1 : 0,
             'status' => ($data['status'] == 1) ? 1 : 0,
         ];
-        if (!empty($data['avatar'])) {
-            $insertData['avatar'] = $data['avatar'];
-        }
         
         $group = AuthGroupModel::create($insertData);
         if ($group === false) {
@@ -305,11 +303,12 @@ class AuthGroup extends Base
         $data = $request->all();
         $validator = Validator::make($data, [
             'parentid' => 'required',
-            'title' => 'required|max:20',
+            'title' => 'required|max:50',
             'status' => 'required',
         ], [
             'parentid.required' => __('父级分类不能为空'),
             'title.required' => __('名称不能为空'),
+            'title.max' => __('名称最大字符需要50个'),
             'status.required' => __('状态选项不能为空'),
         ]);
 
