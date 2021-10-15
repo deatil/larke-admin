@@ -9,9 +9,9 @@ use Larke\Admin\Model\AuthRuleAccess as AuthRuleAccessModel;
 
 class AuthRuleAccess
 {
-    public function creating(AuthRuleAccessModel $log)
+    public function creating(AuthRuleAccessModel $model)
     {
-        $log->id = md5(mt_rand(100000, 999999).microtime());
+        $model->id = md5(mt_rand(100000, 999999).microtime());
     }
     
     public function created(AuthRuleAccessModel $model)

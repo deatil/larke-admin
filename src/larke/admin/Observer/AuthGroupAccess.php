@@ -9,9 +9,9 @@ use Larke\Admin\Model\AuthGroupAccess as AuthGroupAccessModel;
 
 class AuthGroupAccess
 {
-    public function creating(AuthGroupAccessModel $log)
+    public function creating(AuthGroupAccessModel $model)
     {
-        $log->id = md5(mt_rand(100000, 999999).microtime());
+        $model->id = md5(mt_rand(100000, 999999).microtime());
     }
     
     public function created(AuthGroupAccessModel $model)
