@@ -1,25 +1,31 @@
 <?php
 
 return [
+    // 系统信息
     'admin' => [
         'name' => "LarkeAdmin",
         'name_mini' => "Larke",
-        'logo' => '<b>Larke</b> admin',
-        'release' => 20210822,
-        'version' => "1.1.12",
+        'logo' => "<b>Larke</b> admin",
+        'release' => 20211028,
+        'version' => "1.1.13",
     ],
     
+    // 是否使用 https 方式
     'https' => env('LARKE_ADMIN_HTTPS', false),
     
+    // 路由
     'route' => [
         'domain' => env('LARKE_ADMIN_ROUTE_DOMAIN', null),
         'prefix' => env('LARKE_ADMIN_ROUTE_PREFIX', 'admin-api'),
         'namespace' => env('LARKE_ADMIN_ROUTE_NAMESPACE', 'Larke\\Admin\\Controller'),
         'middleware' => env('LARKE_ADMIN_ROUTE_MIDDLEWARE') ? explode(',', env('LARKE_ADMIN_ROUTE_MIDDLEWARE')) : ['larke-admin'],
         'as' => env('LARKE_ADMIN_ROUTE_AS', 'larke-admin.'),
+        
+        // 只有超级管理员中间件
         'admin_middleware' => env('LARKE_ADMIN_ROUTE_ADMIN_MIDDLEWARE') ? explode(',', env('LARKE_ADMIN_ROUTE_ADMIN_MIDDLEWARE')) : ['larke-admin.admin-auth'],
     ],
     
+    // JWT
     'jwt' => [
         'iss' => env('LARKE_ADMIN_JWT_ISS', 'admin-api.yourdomain.com'),
         'aud' => env('LARKE_ADMIN_JWT_AUD', !app()->runningInConsole() ? md5(request()->ip().request()->server('HTTP_USER_AGENT')) : ''),
@@ -32,12 +38,15 @@ return [
         // 载荷加密秘钥，为空不加密，base64编码后
         'passphrase' => env('LARKE_ADMIN_JWT_PASSPHRASE', 'YTY5YmNiZTgxMzVhMWY2MTA3Njc3NGY1YTE3MWI2MjQ='),
         
+        // 签名
         'signer' => [
+            // jwt 签名方式, 包括: hmac | rsa | ecdsa | eddsa
             'algorithm' => env('LARKE_ADMIN_JWT_SIGNER_ALGORITHM', 'HS256'),
             
             // HS256,HS384,HS512
             'hmac' => [
-                'secrect' => env('LARKE_ADMIN_JWT_SIGNER_HMAC_SECRECT', 's1fegdR'),
+                // 密码，base64编码后
+                'secrect' => env('LARKE_ADMIN_JWT_SIGNER_HMAC_SECRECT', 'czFmZWdkUg=='),
             ],
             // RS256,RS384,RS512
             'rsa' => [
@@ -61,6 +70,7 @@ return [
         ],
     ],
     
+    // 登陆器
     'passport' => [
         'password_salt' => env('LARKE_ADMIN_PASSPORT_PASSWORD_SALT', 'e6c2ea864004a461e744b28a394df50c'),
         'header_captcha_key' => env('LARKE_ADMIN_PASSPORT_HEADER_CAPTCHA_KEY', 'Larke-Admin-Captcha-Id'),
@@ -73,6 +83,7 @@ return [
         'login_type' => env('LARKE_ADMIN_PASSPORT_LOGIN_TYPE', 'many'),
     ],
     
+    // 系统相关缓存配置
     'cache' => [
         'store' => env('LARKE_ADMIN_CACHE_STORE', 'default'),
         
@@ -83,6 +94,7 @@ return [
         ],
     ],
     
+    // 响应
     'response' => [
         'json' => [
             'is_allow_origin' => env('LARKE_ADMIN_RESPONSE_JSON_IS_ALLOW_ORIGIN', 1),
@@ -95,6 +107,7 @@ return [
         ],
     ],
     
+    // 权限
     'auth' => [
         // 登陆过滤
         'authenticate_excepts' => env('LARKE_ADMIN_AUTH_AUTHENTICATE_EXCEPTS') ? explode(',', env('LARKE_ADMIN_AUTH_AUTHENTICATE_EXCEPTS')) : [],
@@ -104,11 +117,13 @@ return [
         'admin_id' => env('LARKE_ADMIN_AUTH_ADMIN_ID', '04f65b19e5a2513fe5a89100309da9b7'),
     ],
     
+    // 扩展
     'extension' => [
         // 扩展存放文件夹
         'directory' => env('LARKE_ADMIN_EXTENSION_DIRECTORY', 'extension'),
     ],
     
+    // 上传
     'upload' => [
         // Disk in `config/filesystem.php`.
         'disk' => env('LARKE_ADMIN_UPLOAD_DISK', 'public'),
@@ -132,6 +147,7 @@ return [
         ],
     ],
     
+    // 验证码
     'captcha' => [
         'charset' => 'abcdefghkmnprstuvwxyzABCDEFGHKMNPRSTUVWXYZ23456789',
         'codelen' => 4,

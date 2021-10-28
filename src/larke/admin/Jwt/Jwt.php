@@ -298,8 +298,10 @@ class Jwt implements JwtContract
             case 'HS256':
             case 'HS384':
             case 'HS512':
-                $key = Arr::get($config, 'hmac.secrect', '');
-                $secrect = InMemory::plainText($key);
+                $secrect = Arr::get($config, 'hmac.secrect', '');
+                // base64 秘钥数据解码
+                $secrect = InMemory::base64Encoded($secrect)->getContent();
+                $secrect = InMemory::plainText($secrect);
                 break;
             case 'RS256':
             case 'RS384':
