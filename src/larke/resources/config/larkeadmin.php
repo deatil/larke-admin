@@ -21,7 +21,7 @@ return [
         'middleware' => env('LARKE_ADMIN_ROUTE_MIDDLEWARE') ? explode(',', env('LARKE_ADMIN_ROUTE_MIDDLEWARE')) : ['larke-admin'],
         'as' => env('LARKE_ADMIN_ROUTE_AS', 'larke-admin.'),
         
-        // 只有超级管理员中间件
+        // 超级管理员检测
         'admin_middleware' => env('LARKE_ADMIN_ROUTE_ADMIN_MIDDLEWARE') ? explode(',', env('LARKE_ADMIN_ROUTE_ADMIN_MIDDLEWARE')) : ['larke-admin.admin-auth'],
     ],
     
