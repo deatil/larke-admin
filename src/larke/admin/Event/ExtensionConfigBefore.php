@@ -16,12 +16,14 @@ class ExtensionConfigBefore
 {
     /**
      * 请求数据
+     * 
      * @var Request
      */
     public $request;
     
     /**
      * 构造方法
+     * 
      * @access public
      * @param Request $request 请求数据
      */

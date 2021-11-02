@@ -15,7 +15,7 @@ use Larke\Admin\Facade\Response;
 trait ResponseJson
 {
     /**
-     * 返回成功json
+     * 返回成功 json
      */
     protected function success(
         $message = null, 
@@ -27,7 +27,7 @@ trait ResponseJson
     }
     
     /**
-     * 返回错误json
+     * 返回错误 json
      */
     protected function error(
         $message = null, 
@@ -39,7 +39,7 @@ trait ResponseJson
     }
     
     /**
-     * 将json字符窜以标准json格式返回
+     * 将 json 字符窜以标准 json 格式返回
      */
     protected function returnJsonFromString($contents, $header = [])
     {

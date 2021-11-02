@@ -40,7 +40,7 @@ return [
         
         // 签名
         'signer' => [
-            // jwt 签名方式, 包括: hmac | rsa | ecdsa | eddsa
+            // jwt 签名方式, 包括: HS... | RS... | ES... | EdDSA
             'algorithm' => env('LARKE_ADMIN_JWT_SIGNER_ALGORITHM', 'HS256'),
             
             // HS256,HS384,HS512

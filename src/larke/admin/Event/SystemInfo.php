@@ -14,12 +14,14 @@ class SystemInfo
 {
     /**
      * info
+     * 
      * @var array
      */
     public $info;
     
     /**
      * 构造方法
+     * 
      * @access public
      */
     public function __construct($info)

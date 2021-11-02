@@ -206,6 +206,7 @@ class Response implements ResponseContract
     
     /**
      * 将json字符窜以标准json格式返回
+     * 
      * @param string|null $contents
      * @param array $userHeader
      * @return string json
@@ -221,6 +222,7 @@ class Response implements ResponseContract
     
     /**
      * 返回字符
+     * 
      * @param string|null $contents
      * @param array $userHeader
      * @return string json

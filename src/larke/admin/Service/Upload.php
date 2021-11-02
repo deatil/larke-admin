@@ -87,7 +87,6 @@ class Upload
      * 磁盘
      *
      * @param string $disk Disks defined in `config/filesystems.php`.
-     *
      * @return $this|bool
      */
     public function disk($disk)
@@ -105,7 +104,6 @@ class Upload
      * 根目录
      *
      * @param string $dir
-     *
      * @return $this
      */
     public function dir($dir)
@@ -121,7 +119,6 @@ class Upload
      * 自定义命名
      *
      * @param string|callable $name
-     *
      * @return $this
      */
     public function name($name)
@@ -183,7 +180,6 @@ class Upload
      * 获取最后文件夹
      *
      * @param UploadedFile $file
-     *
      * @return string
      */
     public function getStoreName(UploadedFile $file)
@@ -268,7 +264,6 @@ class Upload
      * 上传文件并删除临时文件
      *
      * @param UploadedFile $file
-     *
      * @return mixed
      */
     public function upload(UploadedFile $file)
@@ -288,7 +283,6 @@ class Upload
      * 如果存在重命名
      *
      * @param $file
-     *
      * @return void
      */
     public function renameIfExists(UploadedFile $file)
@@ -302,7 +296,6 @@ class Upload
      * 访问链接
      *
      * @param $path
-     *
      * @return string
      */
     public function objectUrl($path)
@@ -322,7 +315,6 @@ class Upload
      * 唯一命名
      *
      * @param UploadedFile $file
-     *
      * @return string
      */
     public function generateUniqueName(UploadedFile $file)
@@ -334,7 +326,6 @@ class Upload
      * 时间命名
      *
      * @param UploadedFile $file
-     *
      * @return string
      */
     public function generateDatetimeName(UploadedFile $file)
@@ -346,7 +337,6 @@ class Upload
      * sequence 命名
      *
      * @param UploadedFile $file
-     *
      * @return string
      */
     public function generateSequenceName(UploadedFile $file)
@@ -368,7 +358,6 @@ class Upload
      * 原始命名
      *
      * @param UploadedFile $file
-     *
      * @return string
      */
     public function generateClientName(UploadedFile $file)
@@ -392,7 +381,6 @@ class Upload
      * 设置权限
      *
      * @param string $permission
-     *
      * @return $this
      */
     public function storagePermission($permission)

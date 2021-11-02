@@ -14,6 +14,7 @@ class SystemClearCache
 {
     /**
      * 构造方法
+     * 
      * @access public
      */
     public function __construct()

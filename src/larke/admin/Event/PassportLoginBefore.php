@@ -16,12 +16,14 @@ class PassportLoginBefore
 {
     /**
      * Request 实例
+     * 
      * @var \Illuminate\Http\Request
      */
     public $request;
     
     /**
      * 构造方法
+     * 
      * @access public
      * @param  Illuminate\Http\Request  $data  请求数据
      */

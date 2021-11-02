@@ -28,9 +28,6 @@ class AdminLog extends Base
     
     /**
      * 日志用户
-     *
-     * @create 2020-10-19
-     * @author deatil
      */
     public function admin()
     {
@@ -39,9 +36,6 @@ class AdminLog extends Base
     
     /**
      * 记录日志
-     *
-     * @create 2020-10-19
-     * @author deatil
      */
     public static function record($data = [])
     {
@@ -51,6 +45,7 @@ class AdminLog extends Base
             'ip' => request()->ip(),
             'useragent' => request()->server('HTTP_USER_AGENT'),
         ], $data);
+        
         self::create($data);
     }
 

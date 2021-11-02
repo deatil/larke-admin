@@ -30,9 +30,6 @@ class AuthRule extends Base
     
     /**
      * 规则的分组列表
-     *
-     * @create 2020-10-20
-     * @author deatil
      */
     public function groups()
     {

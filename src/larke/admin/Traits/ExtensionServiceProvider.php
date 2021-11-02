@@ -75,9 +75,6 @@ trait ExtensionServiceProvider
      *
      * @param array $excepts 权限列表
      * @return mix
-     *
-     * @create 2021-6-28
-     * @author deatil
      */
     public function authenticateExcepts(array $excepts)
     {
@@ -89,9 +86,6 @@ trait ExtensionServiceProvider
      *
      * @param array $excepts 权限列表
      * @return mix
-     *
-     * @create 2021-6-28
-     * @author deatil
      */
     public function permissionExcepts(array $excepts)
     {

@@ -14,6 +14,7 @@ interface Response
 {
     /*
      * 响应json输出
+     * 
      * @param boolen $success
      * @param int $code
      * @param string|null $message

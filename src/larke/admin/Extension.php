@@ -47,7 +47,6 @@ class Extension
      *
      * @param string $name
      * @param string $class
-     *
      * @return self
      */
     public function extend($name, $class = null)
@@ -65,7 +64,6 @@ class Extension
      * 获取添加的扩展
      *
      * @param string|array $name
-     *
      * @return string|array
      */
     public function getExtend($name = null)
@@ -90,7 +88,6 @@ class Extension
      * 移除添加的扩展
      *
      * @param string|array $name
-     *
      * @return string|array|null
      */
     public function forget($name)
@@ -117,7 +114,6 @@ class Extension
      * 检测非compoer扩展是否存在
      *
      * @param string $name 扩展包名
-     *
      * @return bool
      */
     public function checkLocal($name)
@@ -132,10 +128,9 @@ class Extension
     }
     
     /**
-     * composer安装语句
+     * composer 安装语句
      *
      * @param string $name 扩展包名
-     *
      * @return string
      */
     public function composerRequireCommand($name)
@@ -159,10 +154,9 @@ class Extension
     }
     
     /**
-     * composer卸载语句
+     * composer 卸载语句
      *
      * @param string $name 扩展包名
-     *
      * @return string
      */
     public function composerRemoveCommand($name)
@@ -189,8 +183,7 @@ class Extension
      *
      * @param $callback
      * @param $config
-     * 
-     * @return self
+     * @return object $this
      */
     public function routes($callback, $config = [])
     {
@@ -212,8 +205,7 @@ class Extension
      *
      * @param $prefix
      * @param $paths
-     * 
-     * @return self
+     * @return object $this
      */
     public function namespaces($prefix, $paths = [])
     {
@@ -228,7 +220,6 @@ class Extension
      * 添加登陆过滤
      *
      * @param array $excepts
-     * 
      * @return void
      */
     public function authenticateExcepts(array $excepts = [])
@@ -251,7 +242,6 @@ class Extension
      * 添加权限过滤
      *
      * @param array $excepts
-     * 
      * @return void
      */
     public function permissionExcepts(array $excepts = [])
@@ -365,7 +355,7 @@ class Extension
     /**
      * 加载本地扩展
      *
-     * @return self
+     * @return object $this
      */
     public function loadExtension()
     {
@@ -406,7 +396,7 @@ class Extension
     /**
      * 刷新本地加载扩展
      *
-     * @return self
+     * @return object $this
      */
     public function refresh()
     {
@@ -419,8 +409,7 @@ class Extension
      * 移除扩展信息缓存
      *
      * @param string $name
-     *
-     * @return self
+     * @return object $this
      */
     public function forgetExtensionCache(string $name)
     {
@@ -435,7 +424,6 @@ class Extension
      * 扩展存放文件夹
      *
      * @param string $path
-     *
      * @return string
      */
     public function getExtensionDirectory()
@@ -447,7 +435,6 @@ class Extension
      * 扩展存放目录
      *
      * @param string $path
-     *
      * @return string
      */
     public function getExtensionPath(string $path = '')
@@ -460,7 +447,6 @@ class Extension
      * 扩展绑定类
      *
      * @param string|null $name
-     *
      * @return string
      */
     public function getExtensionClass(?string $name = null)
@@ -478,7 +464,6 @@ class Extension
      * 实例化类
      *
      * @param string|null $className
-     *
      * @return object
      */
     public function getNewClass(?string $className = null)
@@ -501,7 +486,6 @@ class Extension
      * @param string|null $className 
      * @param string|null $method 
      * @param array $param 
-     *
      * @return mixed
      */
     public function getNewClassMethod(?string $className = null, ?string $method = null, array $param = [])
@@ -527,7 +511,6 @@ class Extension
      * 扩展的实例化类
      *
      * @param string|null $name
-     *
      * @return mixed|object
      */
     public function getExtensionNewClass(?string $name = null)
@@ -541,7 +524,6 @@ class Extension
      * 扩展信息
      *
      * @param string|null $name
-     *
      * @return array
      */
     public function getExtension(?string $name = null)
@@ -590,7 +572,6 @@ class Extension
      * 扩展配置信息
      *
      * @param string|null $name
-     *
      * @return array
      */
     public function getExtensionConfig(?string $name = null)
@@ -634,7 +615,6 @@ class Extension
      * 扩展标识图片
      *
      * @param string|null $icon
-     *
      * @return string
      */    
     public function getIcon($icon = '')
@@ -655,7 +635,6 @@ class Extension
      * 验证扩展信息
      *
      * @param array $info
-     *
      * @return boolen
      */
     public function validateInfo(array $info)
@@ -682,7 +661,6 @@ class Extension
      * 获取满足条件的扩展文件夹
      *
      * @param string|null $dirPath
-     *
      * @return array
      */
     public function getDirectories(?string $dirPath = null)
@@ -717,7 +695,6 @@ class Extension
      * 根据类名获取类所在文件夹
      *
      * @param string|object|null $class
-     *
      * @return string|bool
      */
     public function getPathFromClass($class = null)

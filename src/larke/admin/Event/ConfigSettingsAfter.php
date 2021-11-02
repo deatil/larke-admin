@@ -14,12 +14,14 @@ class ConfigSettingsAfter
 {
     /**
      * 配置数组
+     * 
      * @var Array
      */
     public $settings;
     
     /**
      * 构造方法
+     * 
      * @access public
      * @param Array $settings 网站配置
      */

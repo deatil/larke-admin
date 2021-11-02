@@ -16,12 +16,14 @@ class PassportLoginInactive
 {
     /**
      * Request 实例
+     * 
      * @var \Larke\Admin\Model\Admin
      */
     public $admin;
     
     /**
      * 构造方法
+     * 
      * @access public
      * @param  \Larke\Admin\Model\Admin  $admin
      */

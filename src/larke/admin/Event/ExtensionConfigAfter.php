@@ -16,12 +16,14 @@ class ExtensionConfigAfter
 {
     /**
      * 请求数据
+     * 
      * @var Larke\Admin\Model\Extension
      */
     public $extension;
     
     /**
      * 构造方法
+     * 
      * @access public
      * @param Larke\Admin\Model\Extension $extension 扩展数据
      */

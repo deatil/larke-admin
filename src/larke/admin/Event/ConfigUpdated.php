@@ -16,12 +16,14 @@ class ConfigUpdated
 {
     /**
      * Config 实例
+     * 
      * @var \Larke\Admin\Model\Config
      */
     public $config;
     
     /**
      * 构造方法
+     * 
      * @access public
      * @param  \Larke\Admin\Model\Config  $config  配置对象
      */

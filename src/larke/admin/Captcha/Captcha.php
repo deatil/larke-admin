@@ -52,8 +52,7 @@ class Captcha implements CaptchaContract
     /**
      * 设置验证码
      * 
-     * @return string $code
-     *
+     * @param string $code
      * @return object $this
      */
     public function withCode($code)
@@ -66,8 +65,7 @@ class Captcha implements CaptchaContract
     /**
      * 设置唯一序号
      * 
-     * @return string $uniqid
-     *
+     * @param string $uniqid
      * @return object $this
      */
     public function withUniqid($uniqid)
@@ -80,9 +78,8 @@ class Captcha implements CaptchaContract
     /**
      * 设置配置
      * 
-     * @param string|array $name
-     * @return string $value
-     *
+     * @param string|array $name 键 | 键值对列表
+     * @param string $value 值
      * @return object $this
      */
     public function withConfig($name, $value = null)
@@ -105,7 +102,7 @@ class Captcha implements CaptchaContract
     /**
      * 生成验证码信息
      *
-     * @return object
+     * @return object $this
      */
     public function makeCode()
     {
@@ -117,6 +114,7 @@ class Captcha implements CaptchaContract
         // 生成验证码字符串
         if (empty($this->code)) {
             $length = strlen($this->config['charset']) - 1;
+            
             for ($i = 0; $i < $this->config['codelen']; $i++) {
                 $this->code .= $this->config['charset'][mt_rand(0, $length)];
             }
@@ -132,6 +130,7 @@ class Captcha implements CaptchaContract
 
     /**
      * 创建验证码图片
+     * 
      * @return string
      */
     private function createImage()
@@ -166,11 +165,12 @@ class Captcha implements CaptchaContract
         $data = ob_get_contents();
         ob_end_clean();
         imagedestroy($this->img);
+        
         return base64_encode($data);
     }
 
     /**
-     * 获取验证码
+     * 获取验证码数据集合
      *
      * @return array
      */
@@ -227,7 +227,8 @@ class Captcha implements CaptchaContract
             return false;
         }
         
-        $val = Cache::pull($uniqid); // 获取并删除
+        // 获取并删除
+        $val = Cache::pull($uniqid); 
         
         return is_string($val) && strtolower($val) === strtolower($code);
     }

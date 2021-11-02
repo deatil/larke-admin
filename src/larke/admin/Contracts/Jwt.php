@@ -12,5 +12,4 @@ namespace Larke\Admin\Contracts;
  */
 interface Jwt
 {
-
 }

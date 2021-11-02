@@ -456,7 +456,7 @@ class Jwt implements JwtContract
     }
 
     /**
-     * 获取token存储数据
+     * 获取 token 存储数据
      */
     public function getClaim($name)
     {
@@ -515,7 +515,7 @@ class Jwt implements JwtContract
     }
     
     /**
-     * base64解密
+     * base64 解密
      */
     public function base64Decode($contents)
     {

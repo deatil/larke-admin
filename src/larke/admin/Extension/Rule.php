@@ -20,8 +20,8 @@ class Rule
     /**
      * 创建
      *
-     * @return array $data 
-     * @return int|string $parentId 
+     * @param array $data 
+     * @param int|string $parentId 
      *
      * @return array
      */

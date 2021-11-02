@@ -17,8 +17,7 @@ interface Captcha
      * 
      * @param string|array $name
      * @return string $value
-     *
-     * @return object
+     * @return object $this
      */
     public function withConfig($name, $value = null);
 
@@ -41,7 +40,6 @@ interface Captcha
      *
      * @param string $code 需要验证的值
      * @param string $uniqid 验证码编号
-     *
      * @return boolean
      */
     public function check($code, $uniqid = null);

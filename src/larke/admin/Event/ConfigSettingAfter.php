@@ -14,12 +14,14 @@ class ConfigSettingAfter
 {
     /**
      * 请求数据
+     * 
      * @var Array
      */
     public $fields;
     
     /**
      * 构造方法
+     * 
      * @access public
      * @param Array $fields 请求数据
      */
