@@ -205,7 +205,7 @@ class Response implements ResponseContract
     }
     
     /**
-     * 将json字符窜以标准json格式返回
+     * 将 json 字符窜以标准 json 格式返回
      * 
      * @param string|null $contents
      * @param array $userHeader
@@ -225,7 +225,7 @@ class Response implements ResponseContract
      * 
      * @param string|null $contents
      * @param array $userHeader
-     * @return string json
+     * @return string
      */
     public function returnString($contents, $userHeader = []) 
     {

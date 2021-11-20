@@ -12,7 +12,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Larke\Admin\Traits\ResponseJson as ResponseJsonTrait;
 
 /**
- * 异常返回json
+ * 异常返回 json
  *
  * @create 2021-1-13
  * @author deatil

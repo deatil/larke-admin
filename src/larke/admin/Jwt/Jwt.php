@@ -32,17 +32,17 @@ class Jwt implements JwtContract
     private $headers = [];
     
     /**
-     * claim issuer
+     * 载荷 issuer
      */
     private $issuer = '';
     
     /**
-     * claim audience
+     * 载荷 audience
      */
     private $audience = '';
     
     /**
-     * subject
+     * 载荷 subject
      */
     private $subject = '';
     
@@ -67,22 +67,22 @@ class Jwt implements JwtContract
     private $passphrase = '';
     
     /**
-     * jwt claims
+     * 载荷
      */
     private $claims = [];
     
     /**
-     * jwt enToken
+     * 生成的 token
      */
     private $enToken = '';
     
     /**
-     * jwt deToken
+     * 需要解析的 token
      */
     private $deToken = '';
     
     /**
-     * parseToken
+     * 解析后的 token 句柄
      */
     private $parseToken;
     
