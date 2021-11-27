@@ -87,8 +87,8 @@
     "日志信息不存在": "log empty",
     "日志删除失败": "log delete error",
     "日志删除成功": "log delete success",
-    "日志清空失败": "log clear error",
-    "日志清空成功": "log clear success",
+    "日志批量删除失败": "log delete many error",
+    "日志批量删除成功": "log delete many success",
     
     "文件ID不能为空": "fileid dont empty",
     "文件信息不存在": "file empty",

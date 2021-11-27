@@ -6,27 +6,23 @@ namespace Larke\Admin;
 
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Foundation\AliasLoader;
-use Illuminate\Support\Facades\Response;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
-use Larke\Admin\Contracts\Response as ResponseContract;
-use Larke\Admin\Contracts\Jwt as JwtContract;
-use Larke\Admin\Contracts\Captcha as CaptchaContract;
 use Larke\Admin\Jwt\Jwt;
-use Larke\Admin\Http\Response as HttpResponse;
-use Larke\Admin\Http\ResponseCode;
 use Larke\Admin\Service\Cache;
 use Larke\Admin\Support\Loader;
-use Larke\Admin\Auth\Admin as AuthAdmin;
-use Larke\Admin\Auth\Token as AuthToken;
 use Larke\Admin\Captcha\Captcha;
 
 // 文件夹引用
+use Larke\Admin\Auth;
+use Larke\Admin\Http;
 use Larke\Admin\Model;
-use Larke\Admin\Observer;
 use Larke\Admin\Command;
+use Larke\Admin\Observer;
 use Larke\Admin\Provider;
+use Larke\Admin\Contracts;
 use Larke\Admin\Middleware;
 
 /**
@@ -43,7 +39,7 @@ class ServiceProvider extends BaseServiceProvider
      * @var array
      */
     protected $alias = [
-        'ResponseCode' => ResponseCode::class,
+        'ResponseCode' => Http\ResponseCode::class,
     ];
     
     /**
@@ -190,8 +186,8 @@ class ServiceProvider extends BaseServiceProvider
         $this->app->bind('larke-admin.loader', Loader::class);
         
         // 验证码
-        $this->app->bind('larke-admin.captcha', CaptchaContract::class);
-        $this->app->bind(CaptchaContract::class, function() {
+        $this->app->bind('larke-admin.captcha', Contracts\Captcha::class);
+        $this->app->bind(Contracts\Captcha::class, function() {
             $captcha = new Captcha();
             
             $config = config('larkeadmin.captcha');
@@ -206,9 +202,9 @@ class ServiceProvider extends BaseServiceProvider
         });
         
         // 响应
-        $this->app->bind('larke-admin.response', ResponseContract::class);
-        $this->app->bind(ResponseContract::class, function() {
-            $httpResponse = new HttpResponse();
+        $this->app->bind('larke-admin.response', Contracts\Response::class);
+        $this->app->bind(Contracts\Response::class, function() {
+            $httpResponse = new Http\Response();
             
             $config = config('larkeadmin.response.json');
             $httpResponse
@@ -230,8 +226,8 @@ class ServiceProvider extends BaseServiceProvider
         });
         
         // jwt
-        $this->app->bind('larke-admin.jwt', JwtContract::class);
-        $this->app->bind(JwtContract::class, function() {
+        $this->app->bind('larke-admin.jwt', Contracts\Jwt::class);
+        $this->app->bind(Contracts\Jwt::class, function() {
             $jwt = new Jwt();
             $config = config('larkeadmin.jwt');
 
@@ -255,10 +251,10 @@ class ServiceProvider extends BaseServiceProvider
         $this->app->singleton('larke-admin.extension', Extension::class);
         
         // 管理员登陆信息
-        $this->app->singleton('larke-admin.auth-admin', AuthAdmin::class);
+        $this->app->singleton('larke-admin.auth-admin', Auth\Admin::class);
         
         // 权限token
-        $this->app->singleton('larke-admin.auth-token', AuthToken::class);
+        $this->app->singleton('larke-admin.auth-token', Auth\Token::class);
         
         // response()->success('success');
         Response::macro('success', function($message = null, $data = null, $header = [], $code = 0) {

@@ -173,10 +173,10 @@ class AdminLog extends Base
         }
         
         if ($status === false) {
-            return $this->error(__('日志清空失败'));
+            return $this->error(__('日志批量删除失败'));
         }
         
-        return $this->success(__('日志清空成功'));
+        return $this->success(__('日志批量删除成功'));
     }
     
 }
