@@ -6,7 +6,10 @@ namespace Larke\Admin\Controller;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
+
+use phpseclib3\Crypt\RSA;
 
 use Larke\Admin\Model\Admin as AdminModel;
 
@@ -57,6 +60,47 @@ class Passport extends Base
     }
     
     /**
+     * 公钥
+     *
+     * @title 公钥
+     * @desc 登陆使用公钥
+     * @order 101
+     * @auth false
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function pubkey(Request $request)
+    {
+        $private = RSA::createKey(1024)
+            ->withPadding(RSA::ENCRYPTION_PKCS1);
+        $public = $private->getPublicKey();
+        
+        // 私钥
+        $privateKey = $private->toString('PKCS1');
+        
+        // 公钥
+        $publicKey = $public->toString('PKCS1');
+        
+        // 缓存私钥
+        $prikeyKey = config('larkeadmin.passport.prikey_cache_key');
+        $prikeyCacheTime = config('larkeadmin.passport.prikey_cache_time');
+        Cache::put($prikeyKey, $privateKey, $prikeyCacheTime);
+        
+        $publicKey = str_replace([
+            "-----BEGIN RSA PUBLIC KEY-----", 
+            "-----END RSA PUBLIC KEY-----", 
+            "\r\n",
+            "\r",
+            "\n",
+        ], "", $publicKey);
+
+        return $this->success(__('获取成功'), [
+            'key' => $publicKey,
+        ]);
+    }
+    
+    /**
      * 登陆
      *
      * @title 登陆
@@ -75,12 +119,11 @@ class Passport extends Base
         $data = $request->all();
         $validator = Validator::make($data, [
             'name' => 'required',
-            'password' => 'required|size:32',
+            'password' => 'required',
             'captcha' => 'required|size:4',
         ], [
             'name.required' => __('账号不能为空'),
             'password.required' => __('密码不能为空'),
-            'password.size' => __('密码错误'),
             'captcha.required' => __('验证码不能为空'),
             'captcha.size' => __('验证码位数错误'),
         ]);
@@ -109,6 +152,19 @@ class Passport extends Base
             ->toArray();
         $password = $request->input('password');
         
+        // 私钥
+        $prikeyKey = config('larkeadmin.passport.prikey_cache_key');
+        $prikey = Cache::get($prikeyKey);
+        $rsakey = RSA::loadFormat('PKCS1', $prikey, '');
+        
+        $password = base64_decode($password);
+        if (empty($password)) {
+            return $this->error(__('密码错误'), \ResponseCode::LOGIN_ERROR);
+        }
+        
+        // RSA 解出密码
+        $password = $rsakey->decrypt($password);
+
         $encryptPassword = AdminModel::checkPassword($adminInfo, $password); 
         if (! $encryptPassword) {
             event(new Event\PassportLoginPasswordError($admin));

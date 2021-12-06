@@ -53,6 +53,7 @@ class Permission
     protected function shouldPassThrough($request)
     {
         $excepts = array_merge(config('larkeadmin.auth.permission_excepts', []), [
+            $this->formatRouteSlug('passport.pubkey'),
             $this->formatRouteSlug('passport.captcha'),
             $this->formatRouteSlug('passport.login'),
             $this->formatRouteSlug('passport.logout'),

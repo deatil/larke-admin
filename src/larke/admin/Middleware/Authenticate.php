@@ -129,6 +129,7 @@ class Authenticate
     {
         $excepts = array_merge(config('larkeadmin.auth.authenticate_excepts', []), [
             $this->formatRouteSlug('passport.captcha'),
+            $this->formatRouteSlug('passport.pubkey'),
             $this->formatRouteSlug('passport.login'),
             $this->formatRouteSlug('passport.refresh-token'),
             $this->formatRouteSlug('attachment.download'),

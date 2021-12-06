@@ -25,6 +25,23 @@ return [
         'admin_middleware' => env('LARKE_ADMIN_ROUTE_ADMIN_MIDDLEWARE') ? explode(',', env('LARKE_ADMIN_ROUTE_ADMIN_MIDDLEWARE')) : ['larke-admin.admin-auth'],
     ],
     
+    // 登陆器
+    'passport' => [
+        'password_salt' => env('LARKE_ADMIN_PASSPORT_PASSWORD_SALT', 'e6c2ea864004a461e744b28a394df50c'),
+        'header_captcha_key' => env('LARKE_ADMIN_PASSPORT_HEADER_CAPTCHA_KEY', 'Larke-Admin-Captcha-Id'),
+        'access_token_id' => env('LARKE_ADMIN_PASSPORT_ACCESS_TOKEN_ID', 'larke-passport-access-token'),
+        'access_expires_in' => env('LARKE_ADMIN_PASSPORT_ACCESS_EXPIRED_IN', 86400),
+        'refresh_token_id' => env('LARKE_ADMIN_PASSPORT_REFRESH_TOKEN_ID', 'larke-passport-refresh-token'),
+        'refresh_expires_in' => env('LARKE_ADMIN_PASSPORT_REFRESH_EXPIRED_IN', 604800),
+        
+        // 登陆私钥缓存 key
+        'prikey_cache_key' => env('LARKE_ADMIN_PASSPORT_PRIKEY_CACHE_KEY', 'Larke-Admin-Prikey'),
+        'prikey_cache_time' => env('LARKE_ADMIN_PASSPORT_PRIKEY_CACHE_TIME', 300),
+
+        // 登陆方式 single - 单点登陆, many - 多点登陆
+        'login_type' => env('LARKE_ADMIN_PASSPORT_LOGIN_TYPE', 'many'),
+    ],
+    
     // JWT
     'jwt' => [
         'iss' => env('LARKE_ADMIN_JWT_ISS', 'admin-api.yourdomain.com'),
@@ -68,19 +85,6 @@ return [
                 'public_key' => env('LARKE_ADMIN_JWT_SIGNER_EDDSA_PUBLIC_KEY', ''),
             ],
         ],
-    ],
-    
-    // 登陆器
-    'passport' => [
-        'password_salt' => env('LARKE_ADMIN_PASSPORT_PASSWORD_SALT', 'e6c2ea864004a461e744b28a394df50c'),
-        'header_captcha_key' => env('LARKE_ADMIN_PASSPORT_HEADER_CAPTCHA_KEY', 'Larke-Admin-Captcha-Id'),
-        'access_token_id' => env('LARKE_ADMIN_PASSPORT_ACCESS_TOKEN_ID', 'larke-passport-access-token'),
-        'access_expires_in' => env('LARKE_ADMIN_PASSPORT_ACCESS_EXPIRED_IN', 86400),
-        'refresh_token_id' => env('LARKE_ADMIN_PASSPORT_REFRESH_TOKEN_ID', 'larke-passport-refresh-token'),
-        'refresh_expires_in' => env('LARKE_ADMIN_PASSPORT_REFRESH_EXPIRED_IN', 604800),
-        
-        // 登陆方式 single - 单点登陆, many - 多点登陆
-        'login_type' => env('LARKE_ADMIN_PASSPORT_LOGIN_TYPE', 'many'),
     ],
     
     // 系统相关缓存配置
