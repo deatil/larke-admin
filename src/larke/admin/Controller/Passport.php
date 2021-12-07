@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 use phpseclib3\Crypt\RSA;
+use phpseclib3\Crypt\PublicKeyLoader;
 
 use Larke\Admin\Model\Admin as AdminModel;
 
@@ -70,26 +71,28 @@ class Passport extends Base
      * @param  Request  $request
      * @return Response
      */
-    public function pubkey(Request $request)
+    public function passkey(Request $request)
     {
+        // 使用 RSA 方法
         $private = RSA::createKey(1024)
             ->withPadding(RSA::ENCRYPTION_PKCS1);
         $public = $private->getPublicKey();
         
         // 私钥
-        $privateKey = $private->toString('PKCS1');
+        $privateKey = $private->toString('PKCS8');
         
         // 公钥
-        $publicKey = $public->toString('PKCS1');
+        $publicKey = $public->toString('PKCS8');
         
         // 缓存私钥
-        $prikeyKey = config('larkeadmin.passport.prikey_cache_key');
+        $prikeyCacheKey = config('larkeadmin.passport.prikey_cache_key');
         $prikeyCacheTime = config('larkeadmin.passport.prikey_cache_time');
-        Cache::put($prikeyKey, $privateKey, $prikeyCacheTime);
+        Cache::put($prikeyCacheKey, $privateKey, $prikeyCacheTime);
         
+        // 过滤公钥多余字符
         $publicKey = str_replace([
-            "-----BEGIN RSA PUBLIC KEY-----", 
-            "-----END RSA PUBLIC KEY-----", 
+            "-----BEGIN PUBLIC KEY-----", 
+            "-----END PUBLIC KEY-----", 
             "\r\n",
             "\r",
             "\n",
@@ -151,19 +154,27 @@ class Passport extends Base
             ->makeVisible(['password', 'password_salt'])
             ->toArray();
         $password = $request->input('password');
-        
-        // 私钥
-        $prikeyKey = config('larkeadmin.passport.prikey_cache_key');
-        $prikey = Cache::get($prikeyKey);
-        $rsakey = RSA::loadFormat('PKCS1', $prikey, '');
-        
+
+        // 解出密码
         $password = base64_decode($password);
         if (empty($password)) {
             return $this->error(__('密码错误'), \ResponseCode::LOGIN_ERROR);
         }
         
-        // RSA 解出密码
-        $password = $rsakey->decrypt($password);
+        try {
+            // 私钥
+            $prikeyCacheKey = config('larkeadmin.passport.prikey_cache_key');
+            $prikey = Cache::get($prikeyCacheKey);
+            
+            // 导入私钥
+            $rsakey = PublicKeyLoader::load($prikey);
+            
+            // RSA 解出密码
+            $password = $rsakey->withPadding(RSA::ENCRYPTION_PKCS1)
+                ->decrypt($password);
+        } catch(\Exception $e) {
+            return $this->error(__('密码错误'), \ResponseCode::LOGIN_ERROR);
+        }
 
         $encryptPassword = AdminModel::checkPassword($adminInfo, $password); 
         if (! $encryptPassword) {

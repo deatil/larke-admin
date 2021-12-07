@@ -12,7 +12,7 @@ Response: {
 }
 ~~~
 
-> 登陆（默认账号及密码：admin / 123456）
+> 登陆
 ~~~
 POST: /admin-api/passport/login
 Request-Header: {

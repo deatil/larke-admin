@@ -7,12 +7,12 @@ namespace Larke\Admin\Jwt;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
+use Larke\JWT\Signer; // 文件夹引用
 use Larke\JWT\Builder;
 use Larke\JWT\Parser;
+use Larke\JWT\ValidationData;
 use Larke\JWT\Signer\Key\InMemory;
 use Larke\JWT\Signer\Key\LocalFileReference;
-use Larke\JWT\ValidationData;
-use Larke\JWT\Signer; // 文件夹
 
 use Larke\Admin\Exception\JWTException;
 use Larke\Admin\Support\Crypt;
@@ -299,6 +299,7 @@ class Jwt implements JwtContract
             case 'HS384':
             case 'HS512':
                 $secrect = Arr::get($config, 'hmac.secrect', '');
+                
                 // base64 秘钥数据解码
                 $secrect = InMemory::base64Encoded($secrect)->getContent();
                 $secrect = InMemory::plainText($secrect);

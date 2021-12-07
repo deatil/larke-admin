@@ -36,7 +36,8 @@ return [
         
         // 登陆私钥缓存 key
         'prikey_cache_key' => env('LARKE_ADMIN_PASSPORT_PRIKEY_CACHE_KEY', 'Larke-Admin-Prikey'),
-        'prikey_cache_time' => env('LARKE_ADMIN_PASSPORT_PRIKEY_CACHE_TIME', 300),
+        // 私钥缓存时间
+        'prikey_cache_time' => env('LARKE_ADMIN_PASSPORT_PRIKEY_CACHE_TIME', 600),
 
         // 登陆方式 single - 单点登陆, many - 多点登陆
         'login_type' => env('LARKE_ADMIN_PASSPORT_LOGIN_TYPE', 'many'),
