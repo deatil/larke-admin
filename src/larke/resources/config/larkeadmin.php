@@ -34,8 +34,8 @@ return [
         'refresh_token_id' => env('LARKE_ADMIN_PASSPORT_REFRESH_TOKEN_ID', 'larke-passport-refresh-token'),
         'refresh_expires_in' => env('LARKE_ADMIN_PASSPORT_REFRESH_EXPIRED_IN', 604800),
         
-        // 登陆私钥缓存 key
-        'prikey_cache_key' => env('LARKE_ADMIN_PASSPORT_PRIKEY_CACHE_KEY', 'Larke-Admin-Prikey'),
+        // 登陆公钥 key
+        'header_passkey_key' => env('LARKE_ADMIN_PASSPORT_HEADER_PASSKEY_KEY', 'Larke-Admin-Passkey-Id'),
         // 私钥缓存时间
         'prikey_cache_time' => env('LARKE_ADMIN_PASSPORT_PRIKEY_CACHE_TIME', 600),
 
@@ -106,8 +106,8 @@ return [
             'allow_origin' => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_ORIGIN', '*'),
             'allow_credentials' => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_CREDENTIALS', 0),
             'allow_methods' => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_METHODS', 'GET,POST,PATCH,PUT,DELETE,OPTIONS'),
-            'allow_headers' => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_HEADERS', 'X-Requested-With,X_Requested_With,Content-Type,Authorization,Locale-Language,Larke-Admin-Captcha-Id'),
-            'expose_headers' => env('LARKE_ADMIN_RESPONSE_JSON_EXPOSE_HEADERS', 'Larke-Admin-Captcha-Id'),
+            'allow_headers' => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_HEADERS', 'X-Requested-With,X_Requested_With,Content-Type,Authorization,Locale-Language,Larke-Admin-Captcha-Id,Larke-Admin-Passkey-Id'),
+            'expose_headers' => env('LARKE_ADMIN_RESPONSE_JSON_EXPOSE_HEADERS', 'Larke-Admin-Captcha-Id,Larke-Admin-Passkey-Id'),
             'max_age' => env('LARKE_ADMIN_RESPONSE_JSON_MAX_AGE', ''),
         ],
     ],

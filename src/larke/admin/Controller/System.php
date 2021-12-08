@@ -68,6 +68,7 @@ class System extends Base
         Artisan::call('cache:clear');
         Artisan::call('view:clear');
         
+        // > php artisan config:clear
         // Artisan::call('route:clear');
         // Artisan::call('config:clear');
         

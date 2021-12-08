@@ -85,7 +85,7 @@ class Passport extends Base
         $publicKey = $public->toString('PKCS8');
         
         // 缓存私钥
-        $prikeyCacheKey = config('larkeadmin.passport.prikey_cache_key');
+        $prikeyCacheKey = substr(md5(uniqid().microtime()), 8, 16);
         $prikeyCacheTime = config('larkeadmin.passport.prikey_cache_time');
         Cache::put($prikeyCacheKey, $privateKey, $prikeyCacheTime);
         
@@ -98,8 +98,11 @@ class Passport extends Base
             "\n",
         ], "", $publicKey);
 
+        $passkeyKey = config('larkeadmin.passport.header_passkey_key');
         return $this->success(__('获取成功'), [
             'key' => $publicKey,
+        ], [
+            $passkeyKey => $prikeyCacheKey,
         ]);
     }
     
@@ -153,17 +156,26 @@ class Passport extends Base
         $adminInfo = $admin
             ->makeVisible(['password', 'password_salt'])
             ->toArray();
+        
         $password = $request->input('password');
+        if (strlen($password) <= 16) {
+            return $this->error(__('密码错误'), \ResponseCode::LOGIN_ERROR);
+        }
+        
+        // 取出 RSA 缓存ID
+        $prikeyCacheKey = substr($password, 0, 16);
+        
+        // 原始密码
+        $password = substr($password, 16);
 
         // 解出密码
         $password = base64_decode($password);
         if (empty($password)) {
             return $this->error(__('密码错误'), \ResponseCode::LOGIN_ERROR);
         }
-        
+
         try {
             // 私钥
-            $prikeyCacheKey = config('larkeadmin.passport.prikey_cache_key');
             $prikey = Cache::get($prikeyCacheKey);
             
             // 导入私钥
@@ -216,6 +228,9 @@ class Passport extends Base
         if (empty($refreshToken)) {
             return $this->error(__('登陆失败'), \ResponseCode::LOGIN_ERROR);
         }
+        
+        // 清空 RSA 缓存
+        Cache::forget($prikeyCacheKey);
         
         // 过期时间
         $expiresIn = app('larke-admin.auth-token')->getAccessTokenExpiresIn();
