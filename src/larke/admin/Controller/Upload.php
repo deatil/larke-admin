@@ -4,6 +4,8 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Controller;
 
+use Exception;
+
 use Illuminate\Http\Request;
 
 use Larke\Admin\Model\Admin as AdminModel;
@@ -43,7 +45,7 @@ class Upload extends Base
             return $this->error(__('上传文件不能为空'));
         }
         
-        // Pathname
+        // 上传的文件临时位置
         $pathname = $requestFile->getPathname();
         
         // 原始名称
@@ -62,8 +64,9 @@ class Upload extends Base
         
         $sha1 = hash_file('sha1', $pathname);
         
-        $uploadService = UploadService::create();
-        if ($uploadService === false) {
+        try {
+            $uploadService = UploadService::create();
+        } catch(Exception $e) {
             return $this->error(__('上传文件失败'));
         }
         
@@ -102,12 +105,19 @@ class Upload extends Base
             $uploadDir = config('larkeadmin.upload.directory.file');
         }
         
-        $path = $uploadService->dir($uploadDir)
-            ->uniqueName()
-            ->upload($requestFile);
-        
+        try {
+            $path = $uploadService->dir($uploadDir)
+                ->uniqueName()
+                ->upload($requestFile);
+        } catch(Exception $e) {
+            return $this->error(__('上传文件失败'));
+        }
+
+        // 附件入库数据库
         $adminId = app('larke-admin.auth-admin')->getId();
-        $attachmentModel = AdminModel::where('id', $adminId)->first()->attachments();
+        $attachmentModel = AdminModel::where('id', $adminId)
+            ->first()
+            ->attachments();
         $attachment = $attachmentModel->create([
             'name' => $name,
             'path' => $path,
@@ -120,7 +130,9 @@ class Upload extends Base
             'status' => 1,
         ]);
         if ($attachment === false) {
+            // 入库信息失败删除已上传文件
             $uploadService->destroy($path);
+            
             return $this->error(__('上传文件失败'));
         }
         

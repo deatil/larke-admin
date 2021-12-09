@@ -4,6 +4,8 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Service;
 
+use Closure;
+
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 use Illuminate\Support\Arr;
@@ -40,14 +42,14 @@ class Upload
     protected $storage = '';
 
     /**
-     * 命名方式 (unique or datetime or sequence)
+     * 命名方式 [unique | datetime | sequence]
      *
      * @var bool
      */
     protected $generateName = null;
 
     /**
-     * 权限 'private' or 'public'
+     * 权限 ['private' | 'public']
      *
      * @var string
      */
@@ -66,9 +68,10 @@ class Upload
     /**
      * 使用驱动
      *
+     * @param string $disk Disks defined in `config/filesystems.php`.
      * @return $this
      */
-    public static function driver($disk = null)
+    public static function driver(string $disk = null)
     {
         return (new static())->disk($disk);
     }
@@ -76,7 +79,7 @@ class Upload
     /**
      * 默认文件夹
      *
-     * @return mixed
+     * @return string
      */
     public function defaultDirectory()
     {
@@ -84,18 +87,27 @@ class Upload
     }
 
     /**
+     * 默认驱动
+     *
+     * @return string
+     */
+    public function defaultDriver()
+    {
+        return config('larkeadmin.upload.disk');
+    }
+
+    /**
      * 磁盘
      *
      * @param string $disk Disks defined in `config/filesystems.php`.
      * @return $this|bool
+     *
+     * throw new \Exception
      */
-    public function disk($disk)
+    public function disk(string $disk)
     {
-        try {
-            $this->storage = Storage::disk($disk);
-        } catch (\Exception $exception) {
-            return false;
-        }
+        // 注意此出会抛出 Exception 异常
+        $this->storage = Storage::disk($disk);
 
         return $this;
     }
@@ -106,7 +118,7 @@ class Upload
      * @param string $dir
      * @return $this
      */
-    public function dir($dir)
+    public function dir(string $dir)
     {
         if ($dir) {
             $this->directory = $dir;
@@ -192,7 +204,7 @@ class Upload
             return $this->generateSequenceName($file);
         }
 
-        if ($this->name instanceof \Closure) {
+        if ($this->name instanceof Closure) {
             return call_user_func_array($this->name, [$this, $file]);
         }
 
@@ -204,13 +216,13 @@ class Upload
     }
 
     /**
-     * 设置的文件夹
+     * 获取设置的文件夹
      *
      * @return mixed|string
      */
     public function getDirectory()
     {
-        if ($this->directory instanceof \Closure) {
+        if ($this->directory instanceof Closure) {
             return call_user_func($this->directory);
         }
 
@@ -220,6 +232,7 @@ class Upload
     /**
      * 文件大类
      *
+     * @param UploadedFile $file
      * @return mixed|string
      */
     public function getFileType(UploadedFile $file)
@@ -227,8 +240,12 @@ class Upload
         // 扩展名
         $extension = $file->extension();
         
+        // 默认类型
         $filetype = 'other';
-        foreach (config('larkeadmin.upload.file_types') as $type => $pattern) {
+        
+        // 文件类型列表
+        $fileTypes = config('larkeadmin.upload.file_types');
+        foreach ($fileTypes as $type => $pattern) {
             if (preg_match($pattern, $extension) === 1) {
                 $filetype = $type;
                 break;
@@ -241,10 +258,14 @@ class Upload
     /**
      * 文件类型
      *
+     * @param UploadedFile $file
      * @return mixed|string
+     *
+     * throw new \Exception
      */
     public function getMimeType(UploadedFile $file)
     {
+        // 默认
         $mimeType = $file->getClientMimeType();
         
         $filetype = $this->getFileType($file);
@@ -261,10 +282,12 @@ class Upload
     }
 
     /**
-     * 上传文件并删除临时文件
+     * 上传文件
      *
      * @param UploadedFile $file
      * @return mixed
+     *
+     * throw new \Exception
      */
     public function upload(UploadedFile $file)
     {
@@ -272,7 +295,7 @@ class Upload
         
         $this->renameIfExists($file);
 
-        if (!is_null($this->storagePermission)) {
+        if (! is_null($this->storagePermission)) {
             return $this->storage->putFileAs($this->getDirectory(), $file, $this->name, $this->storagePermission);
         }
 
@@ -282,12 +305,12 @@ class Upload
     /**
      * 如果存在重命名
      *
-     * @param $file
+     * @param UploadedFile $file
      * @return void
      */
     public function renameIfExists(UploadedFile $file)
     {
-        if ($this->storage->exists("{$this->getDirectory()}/$this->name")) {
+        if ($this->storage->exists("{$this->getDirectory()}/{$this->name}")) {
             $this->name = $this->generateUniqueName($file);
         }
     }
@@ -295,10 +318,10 @@ class Upload
     /**
      * 访问链接
      *
-     * @param $path
+     * @param string $path
      * @return string
      */
-    public function objectUrl($path)
+    public function objectUrl(string $path)
     {
         if (URL::isValidUrl($path)) {
             return $path;
@@ -308,7 +331,7 @@ class Upload
             return $this->storage->url($path);
         }
 
-        return Storage::disk(config('larkeadmin.upload.disk'))->url($path);
+        return Storage::disk($this->defaultDriver())->url($path);
     }
 
     /**
@@ -319,7 +342,7 @@ class Upload
      */
     public function generateUniqueName(UploadedFile $file)
     {
-        return md5(uniqid().microtime()).'.'.$file->getClientOriginalExtension();
+        return md5(uniqid() . microtime()) . '.' . $file->getClientOriginalExtension();
     }
     
     /**
@@ -330,7 +353,7 @@ class Upload
      */
     public function generateDatetimeName(UploadedFile $file)
     {
-        return date('YmdHis').mt_rand(10000, 99999).'.'.$file->getClientOriginalExtension();
+        return date('YmdHis').mt_rand(10000, 99999) . '.' . $file->getClientOriginalExtension();
     }
 
     /**
@@ -346,7 +369,7 @@ class Upload
         $original = $file->getClientOriginalName();
         $new = sprintf('%s_%s.%s', $original, $index, $extension);
 
-        while ($this->storage->exists("{$this->getDirectory()}/$new")) {
+        while ($this->storage->exists("{$this->getDirectory()}/{$new}")) {
             $index++;
             $new = sprintf('%s_%s.%s', $original, $index, $extension);
         }
@@ -368,9 +391,10 @@ class Upload
     /**
      * 删除文件
      *
-     * @return void.
+     * @param string $path 文件路径
+     * @return void
      */
-    public function destroy($path)
+    public function destroy(string $path)
     {
         if ($this->storage->exists($path)) {
             $this->storage->delete($path);
@@ -383,7 +407,7 @@ class Upload
      * @param string $permission
      * @return $this
      */
-    public function storagePermission($permission)
+    public function storagePermission(string $permission)
     {
         $this->storagePermission = $permission;
 
