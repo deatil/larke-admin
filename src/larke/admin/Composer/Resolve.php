@@ -43,9 +43,8 @@ class Resolve
     /**
      * 目录
      *
-     * @param string $directory
-     *
-     * @return object
+     * @param   string  $directory
+     * @return  object
      */
     public function withDirectory($directory)
     {
@@ -57,9 +56,8 @@ class Resolve
     /**
      * composer 文件名称
      *
-     * @param string $composerName
-     *
-     * @return object
+     * @param   string  $composerName
+     * @return  object
      */
     public function withComposerName($composerName)
     {
@@ -229,9 +227,8 @@ class Resolve
     /**
      * 自动加载信息
      *
-     * @param string $autoload
-     *
-     * @return array
+     * @param   string  $autoload
+     * @return  array
      */
     public function getAutoload(string $autoload = 'autoload')
     {
@@ -257,10 +254,9 @@ class Resolve
     /**
      * 格式化自动加载信息
      *
-     * @param array $autoload
-     * @param string $directory
-     *
-     * @return array
+     * @param   array   $autoload
+     * @param   string  $directory
+     * @return  array
      */
     public function formatAutoload(array $autoload, string $directory)
     {
@@ -338,9 +334,8 @@ class Resolve
     /**
      * 注册自动加载
      *
-     * @param array $autoload
-     *
-     * @return object
+     * @param   array   $autoload
+     * @return  object
      */
     public function registerAutoload(array $autoload = [])
     {
@@ -387,9 +382,8 @@ class Resolve
     /**
      * 注册服务提供者
      *
-     * @param array|string $provider
-     *
-     * @return object
+     * @param   array|string $provider
+     * @return  object
      */
     public function registerProvider($provider)
     {
@@ -413,9 +407,8 @@ class Resolve
     /**
      * 注册别名
      *
-     * @param array|string $alias
-     *
-     * @return object
+     * @param   array|string $alias
+     * @return  object
      */
     public function registerAlias($alias, $class = null)
     {
@@ -435,9 +428,8 @@ class Resolve
     /**
      * 判断是否在仓库
      *
-     * @param string $name
-     *
-     * @return array
+     * @param   string  $name
+     * @return  array
      */
     public function hasRepository(string $name)
     {
@@ -449,10 +441,9 @@ class Resolve
     /**
      * 注册仓库
      *
-     * @param string $name
-     * @param array $repository
-     *
-     * @return array
+     * @param   string  $name
+     * @param   array   $repository
+     * @return  array
      */
     public function registerRepository(string $name, array $repository = [])
     {
@@ -467,9 +458,8 @@ class Resolve
     /**
      * 移除仓库
      *
-     * @param string $name
-     *
-     * @return array
+     * @param   string  $name
+     * @return  array
      */
     public function removeRepository(string $name)
     {
@@ -480,11 +470,10 @@ class Resolve
     }
     
     /**
-     * 格式化为json
+     * 格式化为 json
      *
-     * @param array $contents
-     *
-     * @return string
+     * @param   array   $contents
+     * @return  string
      */
     public function formatToJson(array $contents)
     {

@@ -17,18 +17,27 @@ class Route
     /**
      * 获取路由信息
      *
-     * @return mixed
+     * @return array
      */
     public function getRoutes()
     {
         $routes = app('router')->getRoutes();
-        $routes = collect($routes)->map(function ($route) {
-            return $this->getRouteInformation($route);
-        })->all();
+        
+        $routes = collect($routes)
+            ->map(function ($route) {
+                return $this->getRouteInformation($route);
+            })
+            ->all();
 
         return $routes;
     }
     
+    /**
+     * 获取格式化后的路由信息
+     *
+     * @param  Router $route
+     * @return array
+     */
     protected function getRouteInformation(Router $route)
     {
         return [
@@ -43,21 +52,24 @@ class Route
     }
     
     /**
-     * Get before filters.
+     * 中间件判断类型
      *
-     * @param \Illuminate\Routing\Route $route
-     *
-     * @return string
+     * @param   \Illuminate\Routing\Route $route
+     * @return  string
      */
     protected function getRouteMiddleware($route)
     {
-        return collect($route->gatherMiddleware())->map(function ($middleware) {
-            return $middleware instanceof \Closure ? 'Closure' : $middleware;
-        });
+        return collect($route->gatherMiddleware())
+            ->map(function ($middleware) {
+                return $middleware instanceof \Closure ? 'Closure' : $middleware;
+            });
     }
     
     /**
      * 格式化路由标识
+     *
+     * @param   string  $slug
+     * @return  string
      */
     public static function formatRouteSlug($slug = '')
     {

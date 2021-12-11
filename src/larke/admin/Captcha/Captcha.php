@@ -52,8 +52,8 @@ class Captcha implements CaptchaContract
     /**
      * 设置验证码
      * 
-     * @param string $code
-     * @return object $this
+     * @param   string  $code
+     * @return  object  $this
      */
     public function withCode($code)
     {
@@ -65,8 +65,8 @@ class Captcha implements CaptchaContract
     /**
      * 设置唯一序号
      * 
-     * @param string $uniqid
-     * @return object $this
+     * @param   string  $uniqid
+     * @return  object  $this
      */
     public function withUniqid($uniqid)
     {
@@ -78,9 +78,9 @@ class Captcha implements CaptchaContract
     /**
      * 设置配置
      * 
-     * @param string|array $name 键 | 键值对列表
-     * @param string $value 值
-     * @return object $this
+     * @param   string|array    $name   键 | 键值对列表
+     * @param   string          $value  值
+     * @return  object          $this
      */
     public function withConfig($name, $value = null)
     {
@@ -216,10 +216,9 @@ class Captcha implements CaptchaContract
     /**
      * 检查验证码是否正确
      *
-     * @param string $code 需要验证的值
-     * @param string $uniqid 验证码编号
-     *
-     * @return boolean
+     * @param   string  $code   需要验证的值
+     * @param   string  $uniqid 验证码编号
+     * @return  boolean
      */
     public function check($code, $uniqid = null)
     {

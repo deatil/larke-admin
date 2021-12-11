@@ -49,9 +49,8 @@ class JsonHandler extends ExceptionHandler
     /**
      * 异常信息
      *
-     * @param Throwable $e
-     *
-     * @return array
+     * @param   Throwable $e
+     * @return  array
      */
     protected function renderException(Throwable $e)
     {

@@ -132,7 +132,7 @@ class Jwt implements JwtContract
     }
     
     /**
-     * 设置iss
+     * 设置 iss
      */
     public function withIss($issuer)
     {
@@ -141,7 +141,7 @@ class Jwt implements JwtContract
     }
     
     /**
-     * 设置aud
+     * 设置 aud
      */
     public function withAud($audience)
     {
@@ -150,7 +150,7 @@ class Jwt implements JwtContract
     }
     
     /**
-     * 设置subject
+     * 设置 subject
      */
     public function withSub($subject)
     {
@@ -159,7 +159,7 @@ class Jwt implements JwtContract
     }
     
     /**
-     * 设置jti
+     * 设置 jti
      */
     public function withJti($jti)
     {
@@ -242,7 +242,7 @@ class Jwt implements JwtContract
     }
     
     /**
-     * 设置claim
+     * 设置 claim
      */
     public function withClaim($claim, $value = null)
     {

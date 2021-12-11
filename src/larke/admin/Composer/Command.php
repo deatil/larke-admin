@@ -4,9 +4,9 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Composer;
 
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\Process;
+use Symfony\Component\Process\PhpExecutableFinder;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
@@ -61,8 +61,8 @@ class Command
     /**
      * Runs `composer require` command.
      *
-     * @param mixed $packages
-     * @param array $flags
+     * @param   mixed   $packages
+     * @param   array   $flags
      *
      * @return void
      */
@@ -77,10 +77,9 @@ class Command
     /**
      * Runs `composer update` command.
      *
-     * @param mixed $packages
-     * @param array $flags
-     *
-     * @return void
+     * @param   mixed   $packages
+     * @param   array   $flags
+     * @return  void
      */
     public function update($packages, array $flags = [])
     {
@@ -93,10 +92,9 @@ class Command
     /**
      * Runs `composer remove` command.
      *
-     * @param mixed $packages
-     * @param array $flags
-     *
-     * @return void
+     * @param   mixed   $packages
+     * @param   array   $flags
+     * @return  void
      */
     public function remove($packages, array $flags = [])
     {

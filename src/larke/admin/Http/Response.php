@@ -28,8 +28,9 @@ class Response implements ResponseContract
     // 允许跨域域名
     protected $allowOrigin = '*';
     
-    // 是否允许后续请求携带认证信息（cookies）, 该值只能是true,否则不返回
-    protected $allowCredentials = false; // true or false
+    // 是否允许后续请求携带认证信息（cookies
+    // 该值只能是 true, 否则不返回，设置为 true | false
+    protected $allowCredentials = false; 
     
     // 预检结果缓存时间,缓存
     protected $maxAge = '';
@@ -40,6 +41,7 @@ class Response implements ResponseContract
     // 该次请求的自定义请求头字段
     protected $allowHeaders = 'X-Requested-With,X_Requested_With,Content-Type';
     
+    // js 允许获取的 header 字段
     protected $exposeHeaders = 'Authorization,authenticated';
     
     /**
@@ -111,7 +113,7 @@ class Response implements ResponseContract
     }
     
     /**
-     * 设置 js 允许获取的header字段
+     * 设置 js 允许获取的 header 字段
      */
     public function withExposeHeaders($exposeHeaders = false)
     {
@@ -130,7 +132,7 @@ class Response implements ResponseContract
                 $this->withHeader($key, $value);
             }
         } else {
-            if (!empty($name)) {
+            if (! empty($name)) {
                 $this->headers[$name] = $content;
             }
         }
@@ -159,10 +161,10 @@ class Response implements ResponseContract
             $header['Access-Control-Allow-Methods'] = $this->allowMethods;
             
             if ($this->allowCredentials === true) {
-                $header['Access-Control-Allow-Credentials'] = $this->allowCredentials;
+                $header['Access-Control-Allow-Credentials'] = "true";
             }
             
-            if (!empty($this->maxAge)) {
+            if (! empty($this->maxAge)) {
                 $header['Access-Control-Max-Age'] = $this->maxAge;
             }
         }
@@ -176,12 +178,13 @@ class Response implements ResponseContract
     
     /**
      * 输出响应
-     * @param boolen $success
-     * @param int $code
-     * @param string|null $message
-     * @param array|null $data
-     * @param array $userHeader
-     * @return string json
+     *
+     * @param   boolen      $success
+     * @param   int         $code
+     * @param   string|null $message
+     * @param   array|null  $data
+     * @param   array       $userHeader
+     * @return  string      json
      */
     public function json(
         $success = true, 
@@ -205,11 +208,47 @@ class Response implements ResponseContract
     }
     
     /**
-     * 将 json 字符窜以标准 json 格式返回
+     * 输出成功响应
+     *
+     * @param   int         $code
+     * @param   string|null $message
+     * @param   array|null  $data
+     * @param   array       $userHeader
+     * @return  string      json
+     */
+    public function success(
+        $message = "", 
+        $data = [], 
+        $code = \ResponseCode::SUCCESS, 
+        $userHeader = []
+    ) {
+        return $this->json(true, $code, $message, $data, $userHeader);
+    }
+    
+    /**
+     * 输出失败响应
+     *
+     * @param   string|null   $message
+     * @param   int           $code
+     * @param   array|null    $data
+     * @param   array         $userHeader
+     * @return  string        json
+     */
+    public function error(
+        $message = "", 
+        $code = \ResponseCode::ERROR, 
+        $data = [], 
+        $userHeader = []
+    ) {
+        return $this->json(false, $code, $message, $data, $userHeader);
+    }
+    
+    /**
+     * 将 json 字符串以标准 json 格式返回
      * 
-     * @param string|null $contents
-     * @param array $userHeader
-     * @return string json
+     * @param   string|null  $contents
+     * @param   array        $userHeader
+     * @return  string       json
      */
     public function returnJsonFromString($contents, $userHeader = []) 
     {
@@ -223,9 +262,9 @@ class Response implements ResponseContract
     /**
      * 返回字符
      * 
-     * @param string|null $contents
-     * @param array $userHeader
-     * @return string
+     * @param   string|null   $contents
+     * @param   array         $userHeader
+     * @return  string
      */
     public function returnString($contents, $userHeader = []) 
     {

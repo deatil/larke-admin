@@ -20,10 +20,9 @@ class Rule
     /**
      * 创建
      *
-     * @param array $data 
-     * @param int|string $parentId 
-     *
-     * @return array
+     * @param   array       $data 
+     * @param   int|string  $parentId 
+     * @return  array
      */
     public static function create($data = [], $parentId = 0) 
     {
@@ -54,9 +53,8 @@ class Rule
     /**
      * 删除
      *
-     * @param string $slug 规则slug
-     *
-     * @return boolean
+     * @param   string  $slug 规则slug
+     * @return  boolean
      */
     public static function delete($slug)
     {
@@ -77,9 +75,8 @@ class Rule
     /**
      * 启用
      *
-     * @param string $slug
-     *
-     * @return boolean
+     * @param   string  $slug
+     * @return  boolean
      */
     public static function enable($slug)
     {
@@ -100,9 +97,8 @@ class Rule
     /**
      * 禁用
      *
-     * @param string $slug
-     *
-     * @return boolean
+     * @param   string  $slug
+     * @return  boolean
      */
     public static function disable($slug)
     {
@@ -123,9 +119,8 @@ class Rule
     /**
      * 导出指定slug的规则
      *
-     * @param string $slug
-     *
-     * @return array
+     * @param   string  $slug
+     * @return  array
      */
     public static function export($slug)
     {
@@ -157,9 +152,8 @@ class Rule
     /**
      * 根据slug获取规则IDS
      *
-     * @param string $slug
-     *
-     * @return array
+     * @param   string  $slug
+     * @return  array
      */
     public static function getAuthRuleIdsBySlug($slug)
     {

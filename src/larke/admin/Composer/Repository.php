@@ -35,7 +35,6 @@ class Repository
      * 目录
      *
      * @param string $directory
-     *
      * @return object
      */
     public function withDirectory($directory)
@@ -60,9 +59,8 @@ class Repository
     /**
      * 判断
      *
-     * @param string $name
-     *
-     * @return bool
+     * @param   string  $name
+     * @return  bool
      */
     public function has(string $name)
     {
@@ -74,10 +72,9 @@ class Repository
     /**
      * 注册仓库
      *
-     * @param string $name
-     * @param array $repository
-     *
-     * @return bool
+     * @param   string  $name
+     * @param   array   $repository
+     * @return  bool
      */
     public function register(string $name, array $repository = [])
     {
@@ -91,9 +88,8 @@ class Repository
     /**
      * 移除仓库
      *
-     * @param string $name
-     *
-     * @return bool
+     * @param   string  $name
+     * @return  bool
      */
     public function remove(string $name)
     {
@@ -107,10 +103,9 @@ class Repository
     /**
      * 更新composer信息
      *
-     * @param Resolve $resolve
-     * @param array $contents
-     *
-     * @return bool
+     * @param   Resolve $resolve
+     * @param   array   $contents
+     * @return  bool
      */
     public function updateComposer(Resolve $resolve, array $contents)
     {

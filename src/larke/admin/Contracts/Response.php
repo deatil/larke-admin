@@ -15,11 +15,11 @@ interface Response
     /*
      * 响应json输出
      * 
-     * @param boolen $success
-     * @param int $code
-     * @param string|null $message
-     * @param array|null $data
-     * @return string json
+     * @param   boolen      $success
+     * @param   int         $code
+     * @param   string|null $message
+     * @param   array|null  $data
+     * @return  string      json
      */
     public function json($success, $code, $message, $data);
 

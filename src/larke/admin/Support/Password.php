@@ -17,8 +17,8 @@ class Password
     /**
      * 设置盐
      *
-     * @param $salt 加密盐
-     * @return $this
+     * @param   $salt   加密盐
+     * @return  $this
      */
     public function withSalt(string $salt)
     {
@@ -29,9 +29,9 @@ class Password
     /**
      * 密码加密
      *
-     * @param $password
-     * @param $encrypt // 传入加密串，在修改密码时做认证
-     * @return array/password
+     * @param   $password   密码
+     * @param   $encrypt    传入加密串，在修改密码时做认证
+     * @return  array/password
      */
     public function encrypt(string $password, string $encrypt = '')
     {
@@ -44,8 +44,8 @@ class Password
     /**
      * 随机字符串
      *
-     * @param type $len 字符长度
-     * @return string 随机字符串
+     * @param   type $len 字符长度
+     * @return  string 随机字符串
      */
     protected function randomString(int $len = 6)
     {

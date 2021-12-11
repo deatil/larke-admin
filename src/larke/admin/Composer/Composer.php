@@ -24,8 +24,8 @@ class Composer
     /**
      * 解析
      *
-     * @param $path
-     * @return ComposerProperty
+     * @param   $path
+     * @return  ComposerProperty
      */
     public static function parse(?string $path)
     {
@@ -35,9 +35,9 @@ class Composer
     /**
      * 包用composer安装的版本
      *
-     * @param null|string $packageName
-     * @param null|string $lockFile
-     * @return null
+     * @param   null|string $packageName
+     * @param   null|string $lockFile
+     * @return  null
      */
     public static function getVersion(?string $packageName, ?string $lockFile = null)
     {
@@ -56,10 +56,10 @@ class Composer
     }
 
     /**
-     * 解析JSON文件
+     * 解析 JSON 文件
      *
-     * @param null|string $path
-     * @return array
+     * @param   null|string  $path
+     * @return  array
      */
     public static function fromJson(?string $path)
     {

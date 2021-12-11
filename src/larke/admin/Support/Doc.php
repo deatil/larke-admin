@@ -17,8 +17,8 @@ Class Doc
     /**
      * 解析注释
      *
-     * @param string $doc
-     * @return array
+     * @param   string  $doc
+     * @return  array
      */
     public function parse(string $doc = ''): array
     {
@@ -44,8 +44,8 @@ Class Doc
     /**
      * 格式化数据
      *
-     * @param array $lines
-     * @return void
+     * @param   array   $lines
+     * @return  void
      */
     protected function parseLines(array $lines): void
     {
@@ -77,8 +77,8 @@ Class Doc
     /**
      * 格式化单行注释
      *
-     * @param string $line
-     * @return array|bool
+     * @param   string  $line
+     * @return  array|bool
      */
     protected function parseLine(string $line)
     {
@@ -108,9 +108,9 @@ Class Doc
     /**
      * 设置数据
      *
-     * @param string $lines
-     * @param string $value
-     * @return bool
+     * @param   string  $lines
+     * @param   string  $value
+     * @return  bool
      */
     protected function setParam(string $param, string $value): bool
     {
@@ -141,8 +141,8 @@ Class Doc
     /**
      * 格式化类
      *
-     * @param string $value
-     * @return array
+     * @param   string  $value
+     * @return  array
      */
     protected function formatClass(string $value): array
     {
@@ -173,8 +173,8 @@ Class Doc
     /**
      * 格式化
      *
-     * @param string $string
-     * @return array
+     * @param   string  $string
+     * @return  array
      */
     protected function formatParam(string $string)
     {
@@ -195,8 +195,8 @@ Class Doc
     /**
      * 转换类型
      *
-     * @param string $type
-     * @return array
+     * @param   string  $type
+     * @return  array
      */
     protected function getParamType(string $type): string
     {

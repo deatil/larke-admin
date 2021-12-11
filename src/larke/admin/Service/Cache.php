@@ -7,7 +7,7 @@ namespace Larke\Admin\Service;
 use Illuminate\Support\Facades\Cache as LaravelCache;
 
 /**
- * Cache
+ * 缓存
  *
  * @create 2020-10-27
  * @author deatil

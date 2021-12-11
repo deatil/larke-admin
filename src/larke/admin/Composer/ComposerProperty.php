@@ -39,8 +39,9 @@ class ComposerProperty implements Arrayable
     }
 
     /**
-     * @param $key
+     * 判断存在
      *
+     * @param $key
      * @return bool
      */
     public function has($key)
@@ -49,10 +50,11 @@ class ComposerProperty implements Arrayable
     }
 
     /**
-     * @param $key
-     * @param null $default
+     * 获取
      *
-     * @return mixed
+     * @param   $key
+     * @param   null    $default
+     * @return  mixed
      */
     public function get($key, $default = null)
     {
@@ -60,10 +62,11 @@ class ComposerProperty implements Arrayable
     }
 
     /**
-     * @param $key
-     * @param $val
+     * 设置
      *
-     * @return $this
+     * @param   $key
+     * @param   $val
+     * @return  $this
      */
     public function set($key, $val)
     {
@@ -75,8 +78,9 @@ class ComposerProperty implements Arrayable
     }
 
     /**
-     * @param $key
+     * 删除
      *
+     * @param $key
      * @return $this
      */
     public function delete($key)
@@ -89,8 +93,9 @@ class ComposerProperty implements Arrayable
     }
 
     /**
-     * @param $name
+     * 获取
      *
+     * @param $name
      * @return mixed
      */
     public function __get($name)
@@ -98,11 +103,21 @@ class ComposerProperty implements Arrayable
         return $this->get(str_replace('_', '-', $name));
     }
 
+    /**
+     * 返回数组
+     *
+     * @return array
+     */
     public function toArray()
     {
         return $this->attributes;
     }
 
+    /**
+     * 返回 json 字符
+     *
+     * @return string
+     */
     public function toJson()
     {
         return json_encode($this->toArray());

@@ -49,7 +49,7 @@ class Upload
     protected $generateName = null;
 
     /**
-     * 权限 ['private' | 'public']
+     * 权限 [private | public]
      *
      * @var string
      */

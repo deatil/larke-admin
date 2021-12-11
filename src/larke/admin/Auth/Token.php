@@ -16,7 +16,7 @@ use Larke\Admin\Exception\JWTException;
 class Token
 {
     /**
-     * 鉴权token过期时间
+     * 鉴权 token 过期时间
      */
     public function getAccessTokenExpiresIn()
     {
@@ -26,7 +26,7 @@ class Token
     }
     
     /**
-     * 刷新token过期时间
+     * 刷新 token 过期时间
      */
     public function getRefreshTokenExpiresIn()
     {
@@ -36,7 +36,7 @@ class Token
     }
     
     /**
-     * 生成鉴权token
+     * 生成鉴权 token
      */
     public function buildAccessToken(array $data)
     {
@@ -52,7 +52,7 @@ class Token
     }
     
     /**
-     * 生成刷新token
+     * 生成刷新 token
      */
     public function buildRefreshToken(array $data)
     {
