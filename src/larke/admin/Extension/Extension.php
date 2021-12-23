@@ -2,7 +2,7 @@
 
 declare (strict_types = 1);
 
-namespace Larke\Admin;
+namespace Larke\Admin\Extension;
 
 use ReflectionClass;
 use RecursiveDirectoryIterator;

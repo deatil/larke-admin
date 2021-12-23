@@ -14,6 +14,7 @@ use Larke\Admin\Jwt\Jwt;
 use Larke\Admin\Service\Cache;
 use Larke\Admin\Support\Loader;
 use Larke\Admin\Captcha\Captcha;
+use Larke\Admin\Extension\Extension;
 
 // 文件夹引用
 use Larke\Admin\Auth;

@@ -1,7 +1,7 @@
-## larke-admin通用后台管理系统
+# larke-admin通用后台管理系统
 
 
-### 项目介绍
+## 项目介绍
 
 *  `larke-admin` 是基于 `laravel8` 版本的后台快速开发框架，完全api接口化，适用于前后端分离的项目
 *  基于 `JWT` 的用户登录态管理
@@ -9,14 +9,14 @@
 *  本项目为 `后台api服务`，`后台前端页面` 可查看 [Larke Admin Frontend](https://github.com/deatil/larke-admin-frontend) 项目
 
 
-### 环境要求
+## 环境要求
 
  - PHP >= 7.3.0
  - Laravel >= 8.0.0
  - Fileinfo PHP Extension
 
 
-### 截图预览
+## 截图预览
 
 <table>
     <tr>
@@ -73,7 +73,7 @@
 [Larke Admin 后台截图](https://github.com/deatil/larke-admin/issues/1)
 
 
-### 安装步骤
+## 安装步骤
 
 1. 首先安装 `laravel 8.*`，并确认连接数据库的配置没有问题，开始执行以下命令
 
@@ -104,7 +104,7 @@ php artisan larke-admin:import-route
 5. 后台登录账号：`admin` 及密码 `123456`
 
 
-### 扩展推荐
+## 扩展推荐
 
 | 名称 | 描述 |
 | --- | --- |
@@ -115,7 +115,7 @@ php artisan larke-admin:import-route
 注：扩展目录默认为 `/extension` 目录
 
 
-### 特别鸣谢
+## 特别鸣谢
 
 感谢以下的项目,排名不分先后
 
@@ -132,11 +132,11 @@ php artisan larke-admin:import-route
  - PclZip
 
 
-### 开源协议
+## 开源协议
 
 *  `larke-admin` 遵循 `Apache2` 开源协议发布，在保留本系统版权的情况下提供个人及商业免费使用。 
 
 
-### 版权
+## 版权
 
 *  该系统所属版权归 deatil(https://github.com/deatil) 所有。

@@ -49,7 +49,7 @@ abstract class ServiceProvider extends LaravelServiceProvider
         'adaptation' => '1.1.*',
         // 依赖扩展[选填]
         'require' => [
-            // 'vendor/package' => '1.0.*'
+            // 'larke/log-viewer' => '1.0.*'
         ], 
     ];
     
