@@ -1,6 +1,6 @@
 ## 系统api接口文档
 
-*  系统api提交的数据 `POST`、 `PUT` 及 `PATCH` 以 `JSON` 格式提交，其他均以 `URL` 参数提交
+*  系统 api 提交的数据通常 `POST`、 `PUT` 及 `PATCH` 以 `JSON` 格式提交，其他均以 `URL` 参数提交
 *  部分响应code码可查看 `Larke\Admin\Http\ResponseCode` 文件
 
 
