@@ -12,6 +12,17 @@ Response: {
 }
 ~~~
 
+> 公钥
+~~~
+GET: /admin-api/passport/passkey
+Response-Header: {
+    'Larke-Admin-Passkey-Id'
+}
+Response: {
+    'key',
+}
+~~~
+
 > 登陆
 ~~~
 POST: /admin-api/passport/login
@@ -20,7 +31,7 @@ Request-Header: {
 }
 Request: {
     'name': name,
-    'password': md5(password),
+    'password': prikeyCacheKey + rsa(md5(password)),
     'captcha': captcha,
 }
 Response: {
