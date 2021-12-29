@@ -198,13 +198,8 @@ class Response implements ResponseContract
         $message ? $result['message'] = $message : null;
         $data ? $result['data'] = $data : null;
         
-        $this->mergeCorsHeaders()->withHeader($userHeader);
-        
-        $result = json_encode($result, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
-        
-        $header = $this->getHeaders();
-        $response = response($result, 200, $header);
-        throw new HttpResponseException($response);
+        // 返回 JSON 
+        $this->returnJson($result, $userHeader);
     }
     
     /**
@@ -241,6 +236,20 @@ class Response implements ResponseContract
         $userHeader = []
     ) {
         return $this->json(false, $code, $message, $data, $userHeader);
+    }
+    
+    /**
+     * 将数组以标准 json 格式返回
+     * 
+     * @param   array    $data
+     * @param   array    $userHeader
+     * @return  string   json
+     */
+    public function returnJson(array $data, $userHeader = []) 
+    {
+        $contents = json_encode($data, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
+        
+        $this->returnJsonFromString($contents, $userHeader);
     }
     
     /**

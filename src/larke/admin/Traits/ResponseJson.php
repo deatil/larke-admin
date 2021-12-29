@@ -39,6 +39,14 @@ trait ResponseJson
     }
     
     /**
+     * 将数组以标准 json 格式返回
+     */
+    protected function returnJson(array $data, $header = [])
+    {
+        return Response::returnJson($data, $header);
+    }
+    
+    /**
      * 将 json 字符窜以标准 json 格式返回
      */
     protected function returnJsonFromString($contents, $header = [])
