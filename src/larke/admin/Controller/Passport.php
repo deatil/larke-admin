@@ -51,11 +51,14 @@ class Passport extends Base
         $captchaImage = Arr::get($captchaAttr, 'data', '');
         $captchaUniqid = Arr::get($captchaAttr, 'uniq', '');
         
+        $headerAllowHeadersKey = config('larkeadmin.passport.header_allow_headers_key');
+        $headerAllowHeaders = config('larkeadmin.passport.header_allow_headers');
         $captchaKey = config('larkeadmin.passport.header_captcha_key');
         
         return $this->success(__('获取成功'), [
             'captcha' => $captchaImage,
         ], [
+            $headerAllowHeadersKey => $headerAllowHeaders,
             $captchaKey => $captchaUniqid,
         ]);
     }

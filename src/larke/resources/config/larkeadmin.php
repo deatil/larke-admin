@@ -34,6 +34,11 @@ return [
         'refresh_token_id' => env('LARKE_ADMIN_PASSPORT_REFRESH_TOKEN_ID', 'larke-passport-refresh-token'),
         'refresh_expires_in' => env('LARKE_ADMIN_PASSPORT_REFRESH_EXPIRED_IN', 604800),
         
+        // 允许输出 key
+        'header_allow_headers_key' => env('LARKE_ADMIN_PASSPORT_HEADER_ALLOW_HEADERS_KEY', 'Access-Control-Allow-Headers'),
+        // 允许输出获取
+        'header_allow_headers' => env('LARKE_ADMIN_PASSPORT_HEADER_ALLOW_HEADERS', 'X-Requested-With,X_Requested_With,Content-Type,Authorization,Locale-Language,Larke-Admin-Passkey-Id'),
+        
         // 登陆公钥 key
         'header_passkey_key' => env('LARKE_ADMIN_PASSPORT_HEADER_PASSKEY_KEY', 'Larke-Admin-Passkey-Id'),
         // 私钥缓存时间
@@ -106,8 +111,8 @@ return [
             'allow_origin' => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_ORIGIN', '*'),
             'allow_credentials' => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_CREDENTIALS', 0),
             'allow_methods' => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_METHODS', 'GET,POST,PATCH,PUT,DELETE,OPTIONS'),
-            'allow_headers' => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_HEADERS', 'X-Requested-With,X_Requested_With,Content-Type,Authorization,Locale-Language,Larke-Admin-Captcha-Id,Larke-Admin-Passkey-Id'),
-            'expose_headers' => env('LARKE_ADMIN_RESPONSE_JSON_EXPOSE_HEADERS', 'Larke-Admin-Captcha-Id,Larke-Admin-Passkey-Id'),
+            'allow_headers' => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_HEADERS', 'X-Requested-With,X_Requested_With,Content-Type,Authorization,Locale-Language,Larke-Admin-Captcha-Id'),
+            'expose_headers' => env('LARKE_ADMIN_RESPONSE_JSON_EXPOSE_HEADERS', 'Larke-Admin-Captcha-Id'),
             'max_age' => env('LARKE_ADMIN_RESPONSE_JSON_MAX_AGE', ''),
         ],
     ],
@@ -133,12 +138,14 @@ return [
         // Disk in `config/filesystem.php`.
         'disk' => env('LARKE_ADMIN_UPLOAD_DISK', 'public'),
         
+        // 文件夹
         'directory' => [
             'image' => env('LARKE_ADMIN_UPLOAD_DIRECTORY_IMAGE', 'images'),
             'media' => env('LARKE_ADMIN_UPLOAD_DIRECTORY_MEDIA', 'medias'),
             'file' => env('LARKE_ADMIN_UPLOAD_DIRECTORY_FILE', 'files'),
         ],
         
+        // 后缀类型
         'file_types' => [
             'image'  => '/^(gif|png|jpe?g|svg|webp)$/i',
             'html'   => '/^(htm|html)$/i',
@@ -150,6 +157,9 @@ return [
             'pdf'    => '/^(pdf)$/i',
             'flash'  => '/^(swf)$/i',
         ],
+        
+        // 上传文件名最长字符
+        'name_maxlen' => env('LARKE_ADMIN_UPLOAD_NAME_MAXLEN', 150),
     ],
     
     // 验证码
@@ -158,9 +168,9 @@ return [
         'codelen' => 4,
         'width' => 130,
         'height' => 50,
-        // 为空为默认字体
-        'font' => '',
         'fontsize' => 20,
         'cachetime' => 300,
+        // 为空为默认字体
+        'font' => '',
     ],
 ];

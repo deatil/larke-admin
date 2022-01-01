@@ -6,6 +6,7 @@ namespace Larke\Admin\Controller;
 
 use Exception;
 
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 use Larke\Admin\Model\Admin as AdminModel;
@@ -112,6 +113,12 @@ class Upload extends Base
         } catch(Exception $e) {
             return $this->error(__('上传文件失败'));
         }
+        
+        // 附件保存的原始名称，限制总长度
+        $nameMaxlen = config('larkeadmin.upload.name_maxlen');
+        $extensionLen = strlen($extension) + 1;
+        $attachmentName = Str::substr($name, 0, -$extensionLen);
+        $name = Str::substr($attachmentName, 0, $nameMaxlen - $extensionLen) . "." . $extension;
 
         // 附件入库数据库
         $adminId = app('larke-admin.auth-admin')->getId();

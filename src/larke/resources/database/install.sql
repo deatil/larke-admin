@@ -41,7 +41,7 @@ CREATE TABLE `pre__larke_attachment` (
   `id` char(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `belong_type` varchar(250) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '附件属于',
   `belong_id` varchar(32) CHARACTER SET utf8mb4 DEFAULT '0' COMMENT '附件属于ID',
-  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '文件名',
+  `name` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '文件名',
   `path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '文件路径',
   `mime` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '文件mime类型',
   `extension` varchar(10) CHARACTER SET utf8mb4 NOT NULL DEFAULT '' COMMENT '文件类型',
