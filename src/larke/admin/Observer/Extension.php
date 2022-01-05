@@ -13,7 +13,8 @@ class Extension
      */
     public function creating(ExtensionModel $model)
     {
-        $model->id = md5(mt_rand(100000, 999999).microtime());
+        $model->id = md5(mt_rand(100000, 999999).microtime().uniqid());
+        
         $model->installtime = time();
         $model->upgradetime = time();
         

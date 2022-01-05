@@ -10,7 +10,7 @@ class Attachment
 {
     public function creating(AttachmentModel $model)
     {
-        $model->id = md5(mt_rand(100000, 999999).microtime());
+        $model->id = md5(mt_rand(100000, 999999).microtime().uniqid());
         
         $model->update_time = time();
         $model->update_ip = request()->ip();

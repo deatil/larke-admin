@@ -14,7 +14,7 @@ class Admin
      */
     public function creating(AdminModel $model)
     {
-        $model->id = md5(mt_rand(100000, 999999).microtime());
+        $model->id = md5(mt_rand(100000, 999999).microtime().uniqid());
         
         $model->last_active = time();
         $model->last_ip = request()->ip();

@@ -157,9 +157,6 @@ return [
             'pdf'    => '/^(pdf)$/i',
             'flash'  => '/^(swf)$/i',
         ],
-        
-        // 上传文件名最长字符
-        'name_maxlen' => env('LARKE_ADMIN_UPLOAD_NAME_MAXLEN', 150),
     ],
     
     // 验证码

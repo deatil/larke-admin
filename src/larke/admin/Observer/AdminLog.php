@@ -20,7 +20,7 @@ class AdminLog
      */
     public function creating(AdminLogModel $model)
     {
-        $model->id = md5(mt_rand(100000, 999999).microtime());
+        $model->id = md5(mt_rand(100000, 999999).microtime().uniqid());
         
         $model->create_time = time();
         $model->create_ip = request()->ip();
