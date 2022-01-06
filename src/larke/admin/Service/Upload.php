@@ -268,13 +268,16 @@ class Upload
         // 默认
         $mimeType = $file->getClientMimeType();
         
+        // 文件大类
         $filetype = $this->getFileType($file);
         
+        // 扩展名
+        $extension = $file->extension();
+        
+        // 视频和音频重新赋值
         if ($filetype == 'video') {
             $mimeType = "video/{$extension}";
-        }
-
-        if ($filetype == 'audio') {
+        } elseif ($filetype == 'audio') {
             $mimeType = "audio/{$extension}";
         }
         
