@@ -172,7 +172,7 @@ class Admin
      */
     public function isGuest()
     {
-        return !empty($this->id) ? true : false;
+        return empty($this->id) ? true : false;
     }
 
     /**
