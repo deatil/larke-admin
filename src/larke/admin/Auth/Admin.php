@@ -168,6 +168,14 @@ class Admin
     }
 
     /**
+     * 是否为匿名用户
+     */
+    public function isGuest()
+    {
+        return !empty($this->id) ? true : false;
+    }
+
+    /**
      * 判断是否有权限
      */
     public function hasAccess($slug, $method = 'GET')

@@ -1,6 +1,6 @@
 {
     "name": "lake/larke-admin",
-    "description": "An admin api library with jwt and rbac.",
+    "description": "An admin api library with JWT and RBAC.",
     "keywords": [
         "laravel",
         "lake",
