@@ -122,6 +122,8 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function boot()
     {
+        $this->bootBind();
+        
         $this->bootObserver();
         
         $this->bootRelationMorphMap();
@@ -256,7 +258,15 @@ class ServiceProvider extends BaseServiceProvider
         
         // 权限token
         $this->app->singleton('larke-admin.auth-token', Auth\Token::class);
-        
+    }
+    
+    /**
+     * 绑定
+     *
+     * @return void
+     */
+    protected function bootBind()
+    {
         // response()->success('success');
         Response::macro('success', function($message = null, $data = null, $header = [], $code = 0) {
             return app('larke-admin.response')->json(true, $code, $message, $data, $header);
