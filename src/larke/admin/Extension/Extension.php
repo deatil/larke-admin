@@ -620,7 +620,7 @@ class Extension
     public function getIcon($icon = '')
     {
         if (! File::exists($icon) || ! File::isFile($icon)) {
-            $icon = __DIR__ . '/../resources/icon/larke.png';
+            $icon = __DIR__ . '/../../resources/icon/larke.png';
         }
         
         $data = File::get($icon);
