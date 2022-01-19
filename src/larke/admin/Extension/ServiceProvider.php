@@ -68,34 +68,4 @@ abstract class ServiceProvider extends LaravelServiceProvider
      */
     public function start()
     {}
-    
-    /**
-     * 安装后
-     */
-    public function install()
-    {}
-    
-    /**
-     * 卸载后
-     */
-    public function uninstall()
-    {}
-    
-    /**
-     * 更新后
-     */
-    public function upgrade()
-    {}
-    
-    /**
-     * 启用后
-     */
-    public function enable()
-    {}
-    
-    /**
-     * 禁用后
-     */
-    public function disable()
-    {}
 }

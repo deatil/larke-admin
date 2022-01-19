@@ -6,7 +6,7 @@ namespace Larke\Admin\Event;
 
 use Illuminate\Http\Request;
 
-/*
+/**
  * 登陆之前
  *
  * @create 2020-11-2

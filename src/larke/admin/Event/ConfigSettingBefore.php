@@ -4,7 +4,7 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Event;
 
-/*
+/**
  * 更新配置之前
  *
  * @create 2020-12-11

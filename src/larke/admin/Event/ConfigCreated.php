@@ -6,7 +6,7 @@ namespace Larke\Admin\Event;
 
 use Larke\Admin\Model\Config as ConfigModel;
 
-/*
+/**
  * 配置
  *
  * @create 2020-11-2

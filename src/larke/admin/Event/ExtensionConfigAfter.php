@@ -6,7 +6,7 @@ namespace Larke\Admin\Event;
 
 use Larke\Admin\Model\Extension as ExtensionModel;
 
-/*
+/**
  * 扩展更新配置之后
  *
  * @create 2020-12-12

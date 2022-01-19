@@ -4,7 +4,7 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Event;
 
-/*
+/**
  * 系统信息
  *
  * @create 2020-11-5

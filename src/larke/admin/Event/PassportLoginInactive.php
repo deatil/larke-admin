@@ -6,7 +6,7 @@ namespace Larke\Admin\Event;
 
 use Larke\Admin\Model\Admin as AdminModel;
 
-/*
+/**
  * 账号被禁用
  *
  * @create 2021-2-25

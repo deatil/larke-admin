@@ -6,7 +6,7 @@ namespace Larke\Admin\Event;
 
 use Larke\Admin\Model\Admin as AdminModel;
 
-/*
+/**
  * 登陆密码错误
  *
  * @create 2020-12-22

@@ -4,7 +4,7 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Event;
 
-/*
+/**
  * 网站获取配置
  *
  * @create 2020-12-11
