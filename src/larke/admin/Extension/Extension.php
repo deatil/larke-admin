@@ -33,7 +33,7 @@ class Extension
     use Macroable;
     
     /**
-     * @var array
+     * @var array<string, Info>
      */
     public $extensions = [];
     
@@ -45,16 +45,16 @@ class Extension
     /**
      * 添加扩展
      *
-     * @param string $name
-     * @param string $class
-     * @return self
+     * @param   string    $name
+     * @param   Info      $info
+     * @return  self
      */
-    public function extend($name, $class = null)
+    public function extend($name, Info $info = null)
     {
-        if (!empty($name) && !empty($class)) {
+        if (!empty($name) && !empty($info)) {
             $this->forget($name);
             
-            $this->extensions[$name] = $class;
+            $this->extensions[$name] = $info;
         }
         
         return $this;
@@ -64,7 +64,7 @@ class Extension
      * 获取添加的扩展
      *
      * @param string|array $name
-     * @return string|array
+     * @return Info|array|null
      */
     public function getExtend($name = null)
     {
@@ -81,6 +81,16 @@ class Extension
             return $this->extensions[$name];
         }
         
+        return null;
+    }
+    
+    /**
+     * 获取全部添加的扩展
+     *
+     * @return array
+     */
+    public function getAllExtend()
+    {
         return $this->extensions;
     }
     
@@ -88,7 +98,7 @@ class Extension
      * 移除添加的扩展
      *
      * @param string|array $name
-     * @return string|array|null
+     * @return Info|array|null
      */
     public function forget($name)
     {
@@ -104,6 +114,7 @@ class Extension
         if (isset($this->extensions[$name])) {
             $extension = $this->extensions[$name];
             unset($this->extensions[$name]);
+            
             return $extension;
         }
         
@@ -111,7 +122,7 @@ class Extension
     }
     
     /**
-     * 检测非compoer扩展是否存在
+     * 检测非 compoer 扩展是否存在
      *
      * @param string $name 扩展包名
      * @return bool
@@ -455,7 +466,12 @@ class Extension
             return '';
         }
         
-        $className = Arr::get($this->extensions, $name, '');
+        $info = Arr::get($this->extensions, $name, '');
+        if (empty($info)) {
+            return '';
+        }
+        
+        $className = $info->getName();
         
         return $className;
     }
@@ -528,32 +544,25 @@ class Extension
      */
     public function getExtension(?string $name = null)
     {
-        $newClass = $this->getExtensionNewClass($name);
-        if ($newClass === false) {
+        $data = $this->getExtend($name);
+        if (empty($data)) {
             return [];
         }
         
-        if (empty($newClass->info)) {
-            return [];
-        }
-        
-        $info = (array) $newClass->info;
+        // 扩展信息
+        $info = $data->getInfo()->toArray();
         
         // 配置
-        $config = [];
-        if (! empty($newClass->config)) {
-            $config = (array) $newClass->config;
-        }
+        $config = $data->getConfig()->toArray();
         
-        // 扩展icon
-        $icon = '';
-        if (! empty($newClass->icon)) {
-            $icon = $newClass->icon;
-        }
+        // 扩展图标
+        $icon = $data->getIcon();
         $icon = $this->getIcon($icon);
         
+        // 服务提供者名称
+        $className = $data->getName();
+        
         return [
-            'icon' => $icon,
             'name' => $name,
             'title' => Arr::get($info, 'title'),
             'description' => Arr::get($info, 'description'),
@@ -564,7 +573,8 @@ class Extension
             'adaptation' => Arr::get($info, 'adaptation'),
             'require' => Arr::get($info, 'require', []),
             'config' => $config,
-            'class_name' => Arr::get($this->extensions, $name, ''),
+            'icon' => $icon,
+            'class_name' => $className,
         ];
     }
     
