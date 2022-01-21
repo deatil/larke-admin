@@ -15,6 +15,13 @@ use Larke\Admin\Model\Extension as ExtensionModel;
 class ExtensionConfigAfter
 {
     /**
+     * 扩展名称
+     * 
+     * @var string
+     */
+    public $name;
+    
+    /**
      * 请求数据
      * 
      * @var Larke\Admin\Model\Extension
@@ -27,8 +34,10 @@ class ExtensionConfigAfter
      * @access public
      * @param Larke\Admin\Model\Extension $extension 扩展数据
      */
-    public function __construct(ExtensionModel $extension)
+    public function __construct(string $name, ExtensionModel $extension)
     {
+        $this->name = $name;
+        
         $this->extension = $extension;
     }
     

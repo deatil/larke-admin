@@ -15,6 +15,13 @@ use Illuminate\Http\Request;
 class ExtensionConfigBefore
 {
     /**
+     * 扩展名称
+     * 
+     * @var string
+     */
+    public $name;
+    
+    /**
      * 请求数据
      * 
      * @var Request
@@ -27,8 +34,10 @@ class ExtensionConfigBefore
      * @access public
      * @param Request $request 请求数据
      */
-    public function __construct(Request $request)
+    public function __construct(string $name, Request $request)
     {
+        $this->name = $name;
+        
         $this->request = $request;
     }
     

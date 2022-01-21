@@ -297,11 +297,11 @@ class Extension extends Base
             return $this->error(__('安装扩展失败'));
         }
         
-        // 安装事件
-        event(new Event\ExtensionInstall($name, $info));
-        
         // 清除缓存
         AdminExtension::forgetExtensionCache($name);
+        
+        // 安装事件
+        event(new Event\ExtensionInstall($name, $info));
         
         return $this->success(__('安装扩展成功'), [
             'name' => $extension->name
@@ -340,13 +340,13 @@ class Extension extends Base
             return $this->error(__('扩展卸载失败'));
         }
         
+        // 清除缓存
+        AdminExtension::forgetExtensionCache($name);
+        
         AdminExtension::loadExtension();
         
         // 卸载事件
         event(new Event\ExtensionUninstall($name, $info->toArray()));
-        
-        // 清除缓存
-        AdminExtension::forgetExtensionCache($name);
         
         return $this->success(__('扩展卸载成功'));
     }
@@ -445,11 +445,11 @@ class Extension extends Base
             return $this->error(__('更新扩展失败'));
         }
         
-        // 更新事件
-        event(new Event\ExtensionUpgrade($name, $installInfo->toArray(), $info));
-        
         // 清除缓存
         AdminExtension::forgetExtensionCache($name);
+        
+        // 更新事件
+        event(new Event\ExtensionUpgrade($name, $installInfo->toArray(), $info));
         
         return $this->success(__('更新扩展成功'));
     }
@@ -520,13 +520,13 @@ class Extension extends Base
             return $this->error(__('启用扩展失败'));
         }
         
+        // 清除缓存
+        AdminExtension::forgetExtensionCache($name);
+        
         AdminExtension::loadExtension();
         
         // 启用事件
         event(new Event\ExtensionEnable($name, $installInfo->toArray()));
-        
-        // 清除缓存
-        AdminExtension::forgetExtensionCache($name);
         
         return $this->success(__('启用扩展成功'));
     }
@@ -563,11 +563,11 @@ class Extension extends Base
             return $this->error(__('禁用扩展失败'));
         }
         
-        // 禁用事件
-        event(new Event\ExtensionDisable($name, $installInfo->toArray()));
-        
         // 清除缓存
         AdminExtension::forgetExtensionCache($name);
+        
+        // 禁用事件
+        event(new Event\ExtensionDisable($name, $installInfo->toArray()));
         
         return $this->success(__('禁用扩展成功'));
     }
@@ -590,7 +590,7 @@ class Extension extends Base
             return $this->error(__('扩展包名不能为空'));
         }
         
-        event(new Event\ExtensionConfigBefore($request));
+        event(new Event\ExtensionConfigBefore($name, $request));
         
         $config = $request->input('config');
         
@@ -611,7 +611,7 @@ class Extension extends Base
             return $this->error(__('更新扩展配置失败'));
         }
         
-        event(new Event\ExtensionConfigAfter($info));
+        event(new Event\ExtensionConfigAfter($name, $info));
         
         // 清除缓存
         AdminExtension::forgetExtensionCache($name);
