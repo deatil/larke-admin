@@ -74,6 +74,17 @@ abstract class ServiceProvider extends BaseServiceProvider
     }
     
     /**
+     * 设置扩展路由
+     *
+     * @param $callback
+     * @param $config
+     */
+    protected function withRoute($callback, $config = [])
+    {
+        AdminExtension::routes($callback, $config);
+    }
+    
+    /**
      * 添加登陆过滤
      *
      * @param array $excepts
