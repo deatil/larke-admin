@@ -41,6 +41,11 @@ class Extension
      * @var string 本地扩展缓存id
      */
     public $extensionsCacheId = 'larke-admin-local-extensions';
+    
+    /**
+     * @var string 默认图标
+     */
+    public $defaultIcon = __DIR__ . '/../../resources/icon/larke.png';
 
     /**
      * 添加扩展
@@ -630,7 +635,7 @@ class Extension
     public function getIcon($icon = '')
     {
         if (! File::exists($icon) || ! File::isFile($icon)) {
-            $icon = __DIR__ . '/../../resources/icon/larke.png';
+            $icon = $this->defaultIcon;
         }
         
         $data = File::get($icon);

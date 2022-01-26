@@ -103,7 +103,7 @@ php artisan larke-admin:install
 php artisan larke-admin:import-route
 ```
 
-5. 后台登录账号：`admin` 及密码 `123456`
+5. 后台登录账号及密码：`admin` / `123456`
 
 
 ## 扩展推荐
