@@ -415,23 +415,6 @@ class Admin extends Base
             'introduce.max' => __('简介字数超过了限制'),
             'status.required' => __('状态选项不能为空'),
         ]);
-        if (!empty($data['avatar'])) {
-            $validatorAvatar = Validator::make([
-                'avatar' => $data['avatar'],
-            ], [
-                'avatar' => 'required|size:32',
-            ], [
-                'avatar.required' => __('头像数据不能为空'),
-                'avatar.size' => __('头像数据错误'),
-            ]);
-
-            if ($validatorAvatar->fails()) {
-                return $this->error($validatorAvatar->errors()->first());
-            }
-
-            $updateData['avatar'] = $data['avatar'];
-        }
-
         if ($validator->fails()) {
             return $this->error($validator->errors()->first());
         }
@@ -457,6 +440,23 @@ class Admin extends Base
             'status' => ($data['status'] == 1) ? 1 : 0,
         ];
         
+        if (! empty($data['avatar'])) {
+            $validatorAvatar = Validator::make([
+                'avatar' => $data['avatar'],
+            ], [
+                'avatar' => 'required|size:32',
+            ], [
+                'avatar.required' => __('头像数据不能为空'),
+                'avatar.size' => __('头像数据错误'),
+            ]);
+
+            if ($validatorAvatar->fails()) {
+                return $this->error($validatorAvatar->errors()->first());
+            }
+
+            $updateData['avatar'] = $data['avatar'];
+        }
+
         // 更新信息
         $status = $adminInfo->update($updateData);
         if ($status === false) {

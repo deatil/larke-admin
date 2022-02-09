@@ -217,4 +217,14 @@ class Info
     {
         return $this->icon;
     }
+
+    /**
+     * 返回服务提供者名称
+     *
+     * @return  string
+     */
+    public function __toString() 
+    {
+        return $this->name;
+    }
 }

@@ -141,35 +141,35 @@ class Response implements ResponseContract
     }
     
     /**
-     * 获取haders
+     * 获取 haders
      */
     public function getHeaders()
     {
-        return $this->headers;
+        if ($this->isAllowOrigin == 1) {
+            return $this->headers;
+        }
+        
+        return [];
     }
     
     /**
-     * 组合跨域 haders
+     * 组合跨域 headers
      */
     public function mergeCorsHeaders()
     {
         $header = [];
-        if ($this->isAllowOrigin == 1) {
-            $header['Access-Control-Allow-Origin']  = $this->allowOrigin;
-            $header['Access-Control-Allow-Headers'] = $this->allowHeaders;
-            $header['Access-Control-Expose-Headers'] = $this->exposeHeaders;
-            $header['Access-Control-Allow-Methods'] = $this->allowMethods;
-            
-            if ($this->allowCredentials === true) {
-                $header['Access-Control-Allow-Credentials'] = "true";
-            }
-            
-            if (! empty($this->maxAge)) {
-                $header['Access-Control-Max-Age'] = $this->maxAge;
-            }
+        $header['Access-Control-Allow-Origin']  = $this->allowOrigin;
+        $header['Access-Control-Allow-Headers'] = $this->allowHeaders;
+        $header['Access-Control-Expose-Headers'] = $this->exposeHeaders;
+        $header['Access-Control-Allow-Methods'] = $this->allowMethods;
+        
+        if ($this->allowCredentials === true) {
+            $header['Access-Control-Allow-Credentials'] = "true";
         }
         
-        $header['Content-Type'] = 'application/json; charset=utf-8';
+        if (! empty($this->maxAge)) {
+            $header['Access-Control-Max-Age'] = $this->maxAge;
+        }
         
         $this->withHeader($header);
         
@@ -262,8 +262,11 @@ class Response implements ResponseContract
     public function returnJsonFromString($contents, $userHeader = []) 
     {
         $this->mergeCorsHeaders()->withHeader($userHeader);
-        
         $header = $this->getHeaders();
+        
+        // 添加 json 输出相应
+        $header['Content-Type'] = 'application/json; charset=utf-8';
+        
         $response = response($contents, 200, $header);
         throw new HttpResponseException($response);
     }
@@ -278,8 +281,9 @@ class Response implements ResponseContract
     public function returnString($contents, $userHeader = []) 
     {
         $this->mergeCorsHeaders()->withHeader($userHeader);
-        
         $header = $this->getHeaders();
+        
+        // 文件输出相应
         $header['Content-Type'] = 'text/html';
         
         $response = response($contents, 200, $header);

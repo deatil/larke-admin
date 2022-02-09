@@ -6,8 +6,8 @@ return [
         'name' => "LarkeAdmin",
         'name_mini' => "Larke",
         'logo' => "<b>Larke</b> admin",
-        'release' => 20220118,
-        'version' => "1.2.0",
+        'release' => 20220208,
+        'version' => "1.2.1",
     ],
     
     // 是否使用 https 方式
@@ -34,10 +34,11 @@ return [
         'refresh_token_id' => env('LARKE_ADMIN_PASSPORT_REFRESH_TOKEN_ID', 'larke-passport-refresh-token'),
         'refresh_expires_in' => env('LARKE_ADMIN_PASSPORT_REFRESH_EXPIRED_IN', 604800),
         
-        // 允许输出 key
-        'header_allow_headers_key' => env('LARKE_ADMIN_PASSPORT_HEADER_ALLOW_HEADERS_KEY', 'Access-Control-Allow-Headers'),
-        // 允许输出获取
-        'header_allow_headers' => env('LARKE_ADMIN_PASSPORT_HEADER_ALLOW_HEADERS', 'X-Requested-With,X_Requested_With,Content-Type,Authorization,Locale-Language,Larke-Admin-Passkey-Id'),
+        // 验证码 
+        'captcha_expose_headers' => env('LARKE_ADMIN_PASSPORT_CAPTCHA_EXPOSE_HEADERS', 'Larke-Admin-Captcha-Id'),
+        
+        // RSA 公钥 
+        'passkey_expose_headers' => env('LARKE_ADMIN_PASSPORT_PASSKEY_EXPOSE_HEADERS', 'Larke-Admin-Passkey-Id'),
         
         // 登陆公钥 key
         'header_passkey_key' => env('LARKE_ADMIN_PASSPORT_HEADER_PASSKEY_KEY', 'Larke-Admin-Passkey-Id'),
@@ -111,8 +112,10 @@ return [
             'allow_origin' => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_ORIGIN', '*'),
             'allow_credentials' => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_CREDENTIALS', 0),
             'allow_methods' => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_METHODS', 'GET,POST,PATCH,PUT,DELETE,OPTIONS'),
+            // 发送数据到服务器可携带的请求头字段 [Access-Control-Allow-Headers]
             'allow_headers' => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_HEADERS', 'X-Requested-With,X_Requested_With,Content-Type,Authorization,Locale-Language,Larke-Admin-Captcha-Id'),
-            'expose_headers' => env('LARKE_ADMIN_RESPONSE_JSON_EXPOSE_HEADERS', 'Larke-Admin-Captcha-Id'),
+            // 客户端可获取请求头字段 [Access-Control-Expose-Headers]
+            'expose_headers' => env('LARKE_ADMIN_RESPONSE_JSON_EXPOSE_HEADERS', ''),
             'max_age' => env('LARKE_ADMIN_RESPONSE_JSON_MAX_AGE', ''),
         ],
     ],

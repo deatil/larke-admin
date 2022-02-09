@@ -25,7 +25,7 @@ class RequestOptions
     
     public function handle($request, Closure $next)
     {
-        if ($this->isLarkeAdminRequest($request) 
+        if ($this->isTrueRequest($request) 
             && $request->isMethod('OPTIONS')
         ) {
             $this->success('');
@@ -40,7 +40,7 @@ class RequestOptions
      * @param  \Illuminate\Http\Request  $request
      * @return bool
      */
-    protected function isLarkeAdminRequest($request)
+    protected function isTrueRequest($request)
     {
         $path = trim(config('larkeadmin.route.prefix'), '/') ?: '/';
 

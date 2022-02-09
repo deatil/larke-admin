@@ -6,6 +6,7 @@ namespace Larke\Admin\Controller;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
@@ -51,14 +52,16 @@ class Passport extends Base
         $captchaImage = Arr::get($captchaAttr, 'data', '');
         $captchaUniqid = Arr::get($captchaAttr, 'uniq', '');
         
-        $headerAllowHeadersKey = config('larkeadmin.passport.header_allow_headers_key');
-        $headerAllowHeaders = config('larkeadmin.passport.header_allow_headers');
         $captchaKey = config('larkeadmin.passport.header_captcha_key');
+        
+        // 请求头信息
+        $headerExposeHeaders = config('larkeadmin.passport.captcha_expose_headers');
         
         return $this->success(__('获取成功'), [
             'captcha' => $captchaImage,
         ], [
-            $headerAllowHeadersKey => $headerAllowHeaders,
+            "Access-Control-Expose-Headers" => $headerExposeHeaders,
+            
             $captchaKey => $captchaUniqid,
         ]);
     }
@@ -102,9 +105,15 @@ class Passport extends Base
         ], "", $publicKey);
 
         $passkeyKey = config('larkeadmin.passport.header_passkey_key');
+        
+        // 请求头信息
+        $headerExposeHeaders = config('larkeadmin.passport.passkey_expose_headers');
+        
         return $this->success(__('获取成功'), [
             'key' => $publicKey,
         ], [
+            "Access-Control-Expose-Headers" => $headerExposeHeaders,
+            
             $passkeyKey => $prikeyCacheKey,
         ]);
     }
@@ -188,6 +197,8 @@ class Passport extends Base
             $password = $rsakey->withPadding(RSA::ENCRYPTION_PKCS1)
                 ->decrypt($password);
         } catch(\Exception $e) {
+            Log::error('larke-admin-login: ' . $e->getMessage());
+            
             return $this->error(__('密码错误'), \ResponseCode::LOGIN_ERROR);
         }
 
@@ -211,6 +222,8 @@ class Passport extends Base
                     'adminid' => $adminInfo['id'],
                 ]);
         } catch(\Exception $e) {
+            Log::error('larke-admin-login: ' . $e->getMessage());
+            
             return $this->error(__('登陆失败'), \ResponseCode::LOGIN_ERROR);
         }
         
@@ -225,6 +238,8 @@ class Passport extends Base
                     'adminid' => $adminInfo['id'],
                 ]);
         } catch(\Exception $e) {
+            Log::error('larke-admin-login: ' . $e->getMessage());
+            
             return $this->error($e->getMessage(), \ResponseCode::LOGIN_ERROR);
         }
         
