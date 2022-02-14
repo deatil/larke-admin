@@ -17,12 +17,12 @@ Class Doc
     /**
      * 解析注释
      *
-     * @param   string  $doc
+     * @param   mixed  $doc
      * @return  array
      */
-    public function parse(string $doc = ''): array
+    public function parse($doc = ''): array
     {
-        if (empty($doc)) {
+        if (empty($doc) || !is_string($doc)) {
             return $this->params;
         }
         
