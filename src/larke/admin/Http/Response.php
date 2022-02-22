@@ -261,14 +261,12 @@ class Response implements ResponseContract
      */
     public function returnJsonFromString($contents, $userHeader = []) 
     {
-        $this->mergeCorsHeaders()->withHeader($userHeader);
-        $header = $this->getHeaders();
-        
         // 添加 json 输出相应
-        $header['Content-Type'] = 'application/json; charset=utf-8';
+        $header = array_merge($userHeader, [
+            'Content-Type' => 'application/json; charset=utf-8',
+        ]);
         
-        $response = response($contents, 200, $header);
-        throw new HttpResponseException($response);
+        $this->returnData($contents, $header);
     }
     
     /**
@@ -280,11 +278,25 @@ class Response implements ResponseContract
      */
     public function returnString($contents, $userHeader = []) 
     {
+        // 文件输出相应
+        $header = array_merge($userHeader, [
+            'Content-Type' => 'text/html',
+        ]);
+        
+        $this->returnData($contents, $header);
+    }
+    
+    /**
+     * 返回数据
+     * 
+     * @param   string|null   $contents
+     * @param   array         $userHeader
+     * @return  string
+     */
+    public function returnData($contents, $userHeader = []) 
+    {
         $this->mergeCorsHeaders()->withHeader($userHeader);
         $header = $this->getHeaders();
-        
-        // 文件输出相应
-        $header['Content-Type'] = 'text/html';
         
         $response = response($contents, 200, $header);
         throw new HttpResponseException($response);
