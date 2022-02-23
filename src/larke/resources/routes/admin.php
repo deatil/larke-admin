@@ -93,12 +93,6 @@ Route::group([
     $router->patch('/config/{id}/enable', 'Config@enable')->name('config.enable')->where('id', '[A-Za-z0-9]+');
     $router->patch('/config/{id}/disable', 'Config@disable')->name('config.disable')->where('id', '[A-Za-z0-9]+');
     
-    // 日志
-    $router->get('/log', 'AdminLog@index')->name('log.index');
-    $router->get('/log/{id}', 'AdminLog@detail')->name('log.detail')->where('id', '[A-Za-z0-9]+');
-    $router->delete('/log/clear', 'AdminLog@clear')->name('log.clear');
-    $router->delete('/log/{id}', 'AdminLog@delete')->name('log.delete')->where('id', '[A-Za-z0-9]+');
-    
     // 扩展
     $router->get('/extension/index', 'Extension@index')->name('extension.index');
     $router->get('/extension/local', 'Extension@local')->name('extension.local');

@@ -83,13 +83,6 @@
     "账号退出成功": "passport logout success",
     "账号授权分组成功": "passport'group access success",
     
-    "日志ID不能为空": "logid dont empty",
-    "日志信息不存在": "log empty",
-    "日志删除失败": "log delete error",
-    "日志删除成功": "log delete success",
-    "日志批量删除失败": "log delete many error",
-    "日志批量删除成功": "log delete many success",
-    
     "文件ID不能为空": "fileid dont empty",
     "文件信息不存在": "file empty",
     "文件删除失败": "file delete error",

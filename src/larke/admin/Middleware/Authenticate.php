@@ -93,17 +93,6 @@ class Authenticate
         // 账号信息
         $adminInfo = $adminInfo->toArray();
         
-        // 单点登陆处理
-        $loginType = config('larkeadmin.passport.login_type', 'many');
-        if ($loginType == 'single') {
-            $iat = $decodeAccessToken->getClaim('iat');
-            
-            // 判断是否是单点登陆
-            if ($adminInfo['refresh_time'] != $iat) {
-                return $this->error(__('token已失效'), \ResponseCode::ACCESS_TOKEN_TIMEOUT);
-            }
-        }
-        
         app('larke-admin.auth-admin')
             ->withAccessToken($accessToken)
             ->withId($adminid)

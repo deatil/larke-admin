@@ -67,9 +67,9 @@ class ServiceProvider extends BaseServiceProvider
     protected $routeMiddleware = [
         'larke-admin.lang' => Middleware\CheckLang::class,
         'larke-admin.auth' => Middleware\Authenticate::class,
+        'larke-admin.login-type' => Middleware\CheckLoginType::class,
         'larke-admin.admin-auth' => Middleware\AdminCheck::class,
         'larke-admin.permission' => Middleware\Permission::class,
-        'larke-admin.log' => Middleware\Log::class,
     ];
 
     /**
@@ -81,8 +81,8 @@ class ServiceProvider extends BaseServiceProvider
         'larke-admin' => [
             'larke-admin.lang',
             'larke-admin.auth',
+            'larke-admin.login-type',
             'larke-admin.permission',
-            'larke-admin.log',
         ],
     ];
 
@@ -305,8 +305,10 @@ class ServiceProvider extends BaseServiceProvider
         }
 
         // register middleware group.
-        foreach ($this->middlewareGroups as $key => $middleware) {
-            app('router')->middlewareGroup($key, $middleware);
+        foreach ($this->middlewareGroups as $key => $middlewares) {
+            foreach ($middlewares as $middleware) {
+                app('router')->pushMiddlewareToGroup($key, $middleware);
+            }
         }
     }
     
@@ -348,7 +350,6 @@ class ServiceProvider extends BaseServiceProvider
     protected function bootObserver()
     {
         Model\Admin::observe(new Observer\Admin());
-        Model\AdminLog::observe(new Observer\AdminLog());
         Model\Attachment::observe(new Observer\Attachment());
         Model\AuthGroup::observe(new Observer\AuthGroup());
         Model\AuthGroupAccess::observe(new Observer\AuthGroupAccess());

@@ -25,8 +25,8 @@
         "composer/semver": "^3.2",
         "phpseclib/phpseclib": "^3.0",
         "lake/larke-pclzip": "^1.0",
-        "lake/larke-jwt": "^1.0",
-        "lake/larke-auth": "^1.0"
+        "lake/larke-jwt": "^1.1",
+        "lake/larke-auth": "^1.1"
     },
     "autoload": {
         "psr-4": {

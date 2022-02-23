@@ -6,8 +6,8 @@ return [
         'name' => "LarkeAdmin",
         'name_mini' => "Larke",
         'logo' => "<b>Larke</b> admin",
-        'release' => 20220213,
-        'version' => "1.2.2",
+        'release' => 20220223,
+        'version' => "1.3.0",
     ],
     
     // 是否使用 https 方式
@@ -45,7 +45,7 @@ return [
         // 私钥缓存时间
         'prikey_cache_time' => env('LARKE_ADMIN_PASSPORT_PRIKEY_CACHE_TIME', 600),
 
-        // 登陆方式 single - 单点登陆, many - 多点登陆
+        // 登陆方式 [ single - 单点登陆 | many - 多点登陆 ]
         'login_type' => env('LARKE_ADMIN_PASSPORT_LOGIN_TYPE', 'many'),
     ],
     
