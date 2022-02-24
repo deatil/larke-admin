@@ -728,6 +728,15 @@ class Extension extends Base
             ]));
         }
         
+        // 覆盖的时候禁用扩展
+        if ($force) {
+            $installInfo = ExtensionModel::where(['name' => $composerInfo['name']])
+                ->first();
+            if (! empty($installInfo) && $installInfo['status'] != 0) {
+                $installInfo->disable();
+            }
+        }
+        
         // 上传后刷新本地缓存
         AdminExtension::refresh();
         
