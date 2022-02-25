@@ -124,6 +124,9 @@ class ServiceProvider extends BaseServiceProvider
     {
         $this->bootBind();
         
+        // 执行自定义方法
+        app('larke-admin.extension')->callBooting();
+        
         $this->bootObserver();
         
         $this->bootRelationMorphMap();
@@ -131,6 +134,9 @@ class ServiceProvider extends BaseServiceProvider
         $this->bootExtension();
         
         $this->bootCommand();
+        
+        // 执行自定义方法
+        app('larke-admin.extension')->callBooted();
     }
 
     /**

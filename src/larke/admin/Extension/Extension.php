@@ -12,6 +12,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
@@ -35,17 +36,27 @@ class Extension
     /**
      * @var array<string, Info>
      */
-    public $extensions = [];
+    protected $extensions = [];
     
     /**
      * @var string 本地扩展缓存id
      */
-    public $extensionsCacheId = 'larke-admin-local-extensions';
+    protected $extensionsCacheId = 'larke-admin-local-extensions';
     
     /**
      * @var string 默认图标
      */
-    public $defaultIcon = __DIR__ . '/../../resources/icon/larke.png';
+    protected $defaultIcon = __DIR__ . '/../../resources/icon/larke.png';
+    
+    /**
+     * @var string 事件名称
+     */
+    protected $eventBootingName = "larke-admin:booting";
+    
+    /**
+     * @var string 事件名称
+     */
+    protected $eventBootedName = "larke-admin:booted";
 
     /**
      * 添加扩展
@@ -192,6 +203,38 @@ class Extension
         );
         
         return $command;
+    }
+
+    /**
+     * @param callable $callback
+     */
+    public function booting($callback)
+    {
+        Event::listen($this->eventBootingName, $callback);
+    }
+
+    /**
+     * @param callable $callback
+     */
+    public function booted($callback)
+    {
+        Event::listen($this->eventBootedName, $callback);
+    }
+
+    /**
+     * @return void
+     */
+    public function callBooting()
+    {
+        Event::dispatch($this->eventBootingName);
+    }
+
+    /**
+     * @return void
+     */
+    public function callBooted()
+    {
+        Event::dispatch($this->eventBootedName);
     }
     
     /**

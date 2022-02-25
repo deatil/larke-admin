@@ -49,7 +49,7 @@ class Info
         'version' => '1.0.2',
         // 适配系统版本
         'adaptation' => '1.1.*',
-        // 依赖扩展[选填]
+        // 依赖扩展[选填]。用 composer.josn 时字段为 required
         'require' => [
             // 'larke/log-viewer' => '1.0.*'
         ], 

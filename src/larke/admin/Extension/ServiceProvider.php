@@ -6,10 +6,12 @@ namespace Larke\Admin\Extension;
 
 use Closure;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Traits\Macroable;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
+use Larke\Admin\Composer\Composer;
 use Larke\Admin\Event as AdminEvent;
 use Larke\Admin\Facade\Extension as AdminExtension;
 use Larke\Admin\Traits\ExtensionServiceProvider as ExtensionServiceProviderTrait;
@@ -36,12 +38,45 @@ abstract class ServiceProvider extends BaseServiceProvider
     /**
      * 添加扩展
      *
-     * @param string    $name   扩展包名
-     * @param Info      $info   扩展信息
+     * @param string  $pkgName  扩展包名
+     * @param Info    $info     扩展信息
      */
-    protected function withExtension($name, Info $info = null)
+    protected function withExtension($pkgName, Info $info = null)
     {
-        AdminExtension::extend($name, $info);
+        AdminExtension::extend($pkgName, $info);
+    }
+    
+    /**
+     * 添加扩展
+     *
+     * @param  string  $name          服务提供者名称
+     * @param  string  $composerFile  composer.json 文件
+     * @param  string  $icon          扩展图标
+     * @param  array   $config        扩展配置
+     */
+    protected function withExtensionFromComposer(
+        string $name = null, 
+        string $composerFile = '', 
+        string $icon = '', 
+        array  $config = []
+    ) {
+        $info = $this->fromComposer($composerFile);
+        
+        // 扩展包名
+        $pkgName = Arr::get($info, 'name', "");
+        if (empty($pkgName)) {
+            return ;
+        }
+        
+        $this->withExtension(
+            $pkgName,
+            $this->withExtensionInfo(
+                $name, 
+                $info, 
+                $icon, 
+                $config
+            )
+        );
     }
     
     /**
@@ -55,9 +90,9 @@ abstract class ServiceProvider extends BaseServiceProvider
      */
     protected function withExtensionInfo(
         $name = null, 
-        array $info = [], 
+        array  $info = [], 
         string $icon = '', 
-        array $config = []
+        array  $config = []
     ) {
         return Info::make($name, $info, $icon, $config);
     }
@@ -102,6 +137,24 @@ abstract class ServiceProvider extends BaseServiceProvider
     protected function withPermissionExcepts(array $excepts = [])
     {
         AdminExtension::permissionExcepts($excepts);
+    }
+
+    /**
+     * 从 composer.json 获取数据
+     *
+     * @return array
+     */
+    public function fromComposer(string $composerFile, bool $isOriginal = false) 
+    {
+        $data = Composer::parse($composerFile)->toArray();
+        
+        if (! $isOriginal) {
+            // 用 required 覆盖 require 数据
+            $required = Arr::get($data, "required", []);
+            Arr::set($data, "require", $required);
+        }
+        
+        return $data;
     }
     
     /**

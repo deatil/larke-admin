@@ -111,6 +111,7 @@ php artisan larke-admin:import-route
 | 名称 | 描述 |
 | --- | --- |
 | [demo](https://github.com/deatil/larke-admin-demo) | 扩展示例 |
+| [操作日志](https://github.com/deatil/larke-operation-log) | 记录 admin 系统的相关操作日志 |
 | [签名证书](https://github.com/deatil/larke-admin-signcert) | 生成RSA,EDDSA,ECDSA等非对称签名证书 |
 | [日志查看器](https://github.com/deatil/larke-admin-logviewer) | laravel日志查看扩展 |
 
