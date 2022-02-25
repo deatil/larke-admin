@@ -152,6 +152,9 @@ abstract class ServiceProvider extends BaseServiceProvider
             // 用 required 覆盖 require 数据
             $required = Arr::get($data, "required", []);
             Arr::set($data, "require", $required);
+            
+            $version = Arr::get($data, "versions", []);
+            Arr::set($data, "version", $version);
         }
         
         return $data;
