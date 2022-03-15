@@ -233,9 +233,9 @@ class JwtManger implements JwtContract
     }
     
     /**
-     * 设置默认配置
+     * 设置 JWT 配置
      */
-    public function setDefault()
+    public function putJwtConfig()
     {
         // 配置
         $config = $this->config;
@@ -346,7 +346,7 @@ class JwtManger implements JwtContract
      */
     public function encode()
     {
-        $this->setDefault()->setSigner(true);
+        $this->putJwtConfig()->setSigner(true);
         
         foreach ($this->headers as $headerKey => $header) {
             $this->jwt->withHeader($headerKey, $header);
@@ -376,7 +376,7 @@ class JwtManger implements JwtContract
      */
     public function validate()
     {
-        $this->setDefault();
+        $this->putJwtConfig();
         
         return $this->jwt->validate($this->parseToken);
     }
@@ -386,7 +386,7 @@ class JwtManger implements JwtContract
      */
     public function verify()
     {
-        $this->setDefault()->setSigner(false);
+        $this->putJwtConfig()->setSigner(false);
     
         return $this->jwt->verify($this->parseToken);
     }
