@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 use Larke\Admin\Jwt\Jwt;
+use Larke\Admin\Jwt\JwtManger;
 use Larke\Admin\Service\Cache;
 use Larke\Admin\Support\Loader;
 use Larke\Admin\Captcha\Captcha;
@@ -25,6 +26,11 @@ use Larke\Admin\Observer;
 use Larke\Admin\Provider;
 use Larke\Admin\Contracts;
 use Larke\Admin\Middleware;
+
+// 使用方法
+use function app;
+use function url;
+use function config;
 
 /**
  * 服务提供者
@@ -237,23 +243,14 @@ class ServiceProvider extends BaseServiceProvider
         // jwt
         $this->app->bind('larke-admin.jwt', Contracts\Jwt::class);
         $this->app->bind(Contracts\Jwt::class, function() {
-            $jwt = new Jwt();
             $config = config('larkeadmin.jwt');
+            
+            $jwtManger = new JwtManger();
 
-            $jwt->withIss($config['iss']);
-            $jwt->withAud($config['aud']);
-            $jwt->withSub($config['sub']);
+            $jwtManger->withJwt(new Jwt());
+            $jwtManger->setConfig($config);
             
-            $jwt->withJti($config['jti']); // JWT ID
-            $jwt->withExp($config['exp']);
-            $jwt->withNbf($config['nbf']);
-            $jwt->withLeeway($config['leeway']);
-            
-            $jwt->withPassphrase($config['passphrase']);
-            
-            $jwt->withSignerConfig($config['signer']);
-            
-            return $jwt;
+            return $jwtManger;
         });
         
         // 扩展

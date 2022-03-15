@@ -4,7 +4,6 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Auth;
 
-use Larke\Admin\Jwt\Jwt;
 use Larke\Admin\Exception\JWTException;
 
 /*
@@ -41,10 +40,12 @@ class Token
     public function buildAccessToken(array $data)
     {
         $expiresIn = $this->getAccessTokenExpiresIn();
+        $jti = config('larkeadmin.passport.access_token_id');
+        
         $token = app('larke-admin.jwt')
             ->withData($data)
             ->withExp($expiresIn)
-            ->withJti(config('larkeadmin.passport.access_token_id'))
+            ->withJti($jti)
             ->encode()
             ->getEnToken();
         
@@ -57,10 +58,12 @@ class Token
     public function buildRefreshToken(array $data)
     {
         $expiresIn = $this->getRefreshTokenExpiresIn();
+        $jti = config('larkeadmin.passport.refresh_token_id');
+        
         $token = app('larke-admin.jwt')
             ->withData($data)
             ->withExp($expiresIn)
-            ->withJti(config('larkeadmin.passport.refresh_token_id'))
+            ->withJti($jti)
             ->encode()
             ->getEnToken();
         
@@ -74,8 +77,10 @@ class Token
     {
         $this->checkToken($token);
         
+        $jti = config('larkeadmin.passport.access_token_id');
+        
         $jwt = app('larke-admin.jwt')
-            ->withJti(config('larkeadmin.passport.access_token_id'))
+            ->withJti($jti)
             ->withDeToken($token)
             ->decode();
         
@@ -89,8 +94,10 @@ class Token
     {
         $this->checkToken($token);
         
+        $jti = config('larkeadmin.passport.refresh_token_id');
+        
         $jwt = app('larke-admin.jwt')
-            ->withJti(config('larkeadmin.passport.refresh_token_id'))
+            ->withJti($jti)
             ->withDeToken($token)
             ->decode();
             
@@ -99,8 +106,10 @@ class Token
     
     /**
      * 验证格式
+     *
+     * @param \Larke\Admin\Jwt\JwtManger $decodeToken
      */
-    public function validate(Jwt $decodeToken) 
+    public function validate($decodeToken) 
     {
         if (! $decodeToken->validate()) {
             throw new JWTException(__('token数据错误'));
@@ -109,8 +118,10 @@ class Token
     
     /**
      * 验证签名
+     *
+     * @param \Larke\Admin\Jwt\JwtManger $decodeToken
      */
-    public function verify(Jwt $decodeToken) 
+    public function verify($decodeToken) 
     {
         if (! $decodeToken->verify()) {
             throw new JWTException(__('token验证失败'));

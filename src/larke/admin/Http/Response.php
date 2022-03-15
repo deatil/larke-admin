@@ -177,32 +177,6 @@ class Response implements ResponseContract
     }
     
     /**
-     * 输出响应
-     *
-     * @param   boolen      $success
-     * @param   int         $code
-     * @param   string|null $message
-     * @param   array|null  $data
-     * @param   array       $userHeader
-     * @return  string      json
-     */
-    public function json(
-        $success = true, 
-        $code = \ResponseCode::INVALID, 
-        $message = "", 
-        $data = [], 
-        $userHeader = []
-    ) {
-        $result['success'] = $success;
-        $result['code'] = $code;
-        $message ? $result['message'] = $message : null;
-        $data ? $result['data'] = $data : null;
-        
-        // 返回 JSON 
-        $this->returnJson($result, $userHeader);
-    }
-    
-    /**
      * 输出成功响应
      *
      * @param   int         $code
@@ -236,6 +210,32 @@ class Response implements ResponseContract
         $userHeader = []
     ) {
         return $this->json(false, $code, $message, $data, $userHeader);
+    }
+    
+    /**
+     * 输出响应
+     *
+     * @param   boolen      $success
+     * @param   int         $code
+     * @param   string|null $message
+     * @param   array|null  $data
+     * @param   array       $userHeader
+     * @return  string      json
+     */
+    public function json(
+        $success = true, 
+        $code = \ResponseCode::INVALID, 
+        $message = "", 
+        $data = [], 
+        $userHeader = []
+    ) {
+        $result['success'] = $success;
+        $result['code'] = $code;
+        $message ? $result['message'] = $message : null;
+        $data ? $result['data'] = $data : null;
+        
+        // 返回 JSON 
+        $this->returnJson($result, $userHeader);
     }
     
     /**

@@ -319,6 +319,21 @@ class Upload
     }
 
     /**
+     * 获取完整路径
+     *
+     * @param string $path
+     * @return string
+     */
+    protected function fullPath($path)
+    {
+        if ($this->storage) {
+            return $this->storage->path($path);
+        }
+
+        return Storage::disk($this->defaultDriver())->path($path);
+    }
+
+    /**
      * 访问链接
      *
      * @param string $path

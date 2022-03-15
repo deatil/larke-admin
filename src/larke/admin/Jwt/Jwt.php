@@ -4,10 +4,10 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Jwt;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
-use Larke\JWT\Signer; // 文件夹引用
+// 文件夹引用
+use Larke\JWT\Signer; 
 use Larke\JWT\Builder;
 use Larke\JWT\Parser;
 use Larke\JWT\ValidationData;
@@ -15,8 +15,6 @@ use Larke\JWT\Signer\Key\InMemory;
 use Larke\JWT\Signer\Key\LocalFileReference;
 
 use Larke\Admin\Exception\JWTException;
-use Larke\Admin\Support\Crypt;
-use Larke\Admin\Contracts\Jwt as JwtContract;
 
 /**
  * jwt
@@ -24,12 +22,17 @@ use Larke\Admin\Contracts\Jwt as JwtContract;
  * @create 2020-10-19
  * @author deatil
  */
-class Jwt implements JwtContract
+class Jwt
 {
     /**
      * headers
      */
     private $headers = [];
+    
+    /**
+     * 载荷
+     */
+    private $claims = [];
     
     /**
      * 载荷 issuer
@@ -47,6 +50,11 @@ class Jwt implements JwtContract
     private $subject = '';
     
     /**
+     * jwt 签发时间
+     */
+    private $issuedAt = 0;
+    
+    /**
      * jwt 过期时间
      */
     private $expTime = 3600;
@@ -62,37 +70,32 @@ class Jwt implements JwtContract
     private $leeway = 0;
     
     /**
-     * 载荷加密秘钥
+     * 签名方法
      */
-    private $passphrase = '';
+    private $signingMethod = '';
     
     /**
-     * 载荷
+     * 秘钥
      */
-    private $claims = [];
+    private $secret = '';
     
     /**
-     * 生成的 token
+     * 私钥
      */
-    private $enToken = '';
+    private $privateKey = '';
     
     /**
-     * 需要解析的 token
+     * 公钥
      */
-    private $deToken = '';
+    private $publicKey = '';
     
     /**
-     * 解析后的 token 句柄
+     * 私钥密码
      */
-    private $parseToken;
+    private $privateKeyPassword = '';
     
     /**
-     * 配置
-     */
-    private $signerConfig = [];
-    
-    /**
-     * 类型列表
+     * 签名类型列表
      */
     protected $algorithms = [
         // Hmac 加密
@@ -128,6 +131,23 @@ class Jwt implements JwtContract
         }
         
         $this->headers[(string) $name] = $value;
+        return $this;
+    }
+    
+    /**
+     * 设置 claim
+     */
+    public function withClaim($claim, $value = null)
+    {
+        if (is_array($claim)) {
+            foreach ($claim as $k => $v) {
+                $this->withClaim($k, $v);
+            }
+            
+            return $this;
+        }
+        
+        $this->claims[(string) $claim] = $value;
         return $this;
     }
     
@@ -168,11 +188,11 @@ class Jwt implements JwtContract
     }
     
     /**
-     * 设置 expTime
+     * 设置 issuedAt
      */
-    public function withExp($expTime)
+    public function withIat($issuedAt)
     {
-        $this->expTime = $expTime;
+        $this->issuedAt = $issuedAt;
         return $this;
     }
     
@@ -185,7 +205,16 @@ class Jwt implements JwtContract
             $notBeforeTime = 0;
         }
         
-        $this->notBeforeTime = $notBeforeTime;
+        $this->notBeforeTime = time() + $notBeforeTime;
+        return $this;
+    }
+    
+    /**
+     * 设置 expTime
+     */
+    public function withExp($expTime)
+    {
+        $this->expTime = time() + $expTime;
         return $this;
     }
     
@@ -199,71 +228,47 @@ class Jwt implements JwtContract
     }
     
     /**
-     * 载荷加密秘钥
+     * 签名方法
      */
-    public function withPassphrase($passphrase)
+    public function withSigningMethod($signingMethod)
     {
-        $this->passphrase = $passphrase;
+        $this->signingMethod = $signingMethod;
         return $this;
     }
     
     /**
-     * 设置 enToken
+     * 秘钥
      */
-    public function withEnToken($enToken)
+    public function withSecret($secret)
     {
-        $this->enToken = $enToken;
+        $this->secret = $secret;
         return $this;
     }
     
     /**
-     * 获取 enToken
+     * 私钥
      */
-    public function getEnToken()
+    public function withPrivateKey($privateKey)
     {
-        return (string) $this->enToken;
-    }
-    
-    /**
-     * 设置 deToken
-     */
-    public function withDeToken($deToken)
-    {
-        $this->deToken = $deToken;
+        $this->privateKey = $privateKey;
         return $this;
     }
     
     /**
-     * 获取 deToken
+     * 公钥
      */
-    public function getDeToken()
+    public function withPublicKey($publicKey)
     {
-        return (string) $this->deToken;
-    }
-    
-    /**
-     * 设置 claim
-     */
-    public function withClaim($claim, $value = null)
-    {
-        if (is_array($claim)) {
-            foreach ($claim as $k => $v) {
-                $this->withClaim($k, $v);
-            }
-            
-            return $this;
-        }
-        
-        $this->claims[(string) $claim] = $value;
+        $this->publicKey = $publicKey;
         return $this;
     }
     
     /**
-     * 设置配置
+     * 私钥密码
      */
-    public function withSignerConfig($config)
+    public function withPrivateKeyPassword($privateKeyPassword)
     {
-        $this->signerConfig = array_merge($this->signerConfig, $config);
+        $this->privateKeyPassword = $privateKeyPassword;
         return $this;
     }
     
@@ -272,15 +277,8 @@ class Jwt implements JwtContract
      */
     public function getSigner($isPrivate = true)
     {
-        $config = $this->signerConfig;
-        
         // 加密方式
-        $algorithm = Arr::get($config, 'algorithm', 'HS256');
-        if (empty($algorithm)) {
-            Log::error('larke-admin-jwt-signer: 加密方式为空');
-            
-            throw new JWTException(__('JWT编码失败'));
-        }
+        $algorithm = $this->signingMethod;
         
         // 加密方式不存在
         if (! array_key_exists($algorithm, $this->algorithms)) {
@@ -298,7 +296,7 @@ class Jwt implements JwtContract
             case 'HS256':
             case 'HS384':
             case 'HS512':
-                $secrect = Arr::get($config, 'hmac.secrect', '');
+                $secrect = $this->secret;
                 
                 // base64 秘钥数据解码
                 $secrect = InMemory::base64Encoded($secrect)->getContent();
@@ -308,16 +306,16 @@ class Jwt implements JwtContract
             case 'RS384':
             case 'RS512':
                 if ($isPrivate) {
-                    $privateKey = Arr::get($config, 'rsa.private_key', '');
+                    $privateKey = $this->privateKey;
                     
-                    $passphrase = Arr::get($config, 'rsa.passphrase', null);
+                    $passphrase = $this->privateKeyPassword;
                     if (! empty($passphrase)) {
                         $passphrase = InMemory::base64Encoded($passphrase)->getContent();
                     }
                     
                     $secrect = LocalFileReference::file($privateKey, $passphrase);
                 } else {
-                    $publicKey = Arr::get($config, 'rsa.public_key', '');
+                    $publicKey = $this->publicKey;
                     $secrect = LocalFileReference::file($publicKey);
                 }
                 break;
@@ -325,25 +323,25 @@ class Jwt implements JwtContract
             case 'ES384':
             case 'ES512':
                 if ($isPrivate) {
-                    $privateKey = Arr::get($config, 'ecdsa.private_key', '');
+                    $privateKey = $this->privateKey;
                     
-                    $passphrase = Arr::get($config, 'ecdsa.passphrase', null);
-                    if (!empty($passphrase)) {
+                    $passphrase = $this->privateKeyPassword;
+                    if (! empty($passphrase)) {
                         $passphrase = InMemory::base64Encoded($passphrase)->getContent();
                     }
                     
                     $secrect = LocalFileReference::file($privateKey, $passphrase);
                 } else {
-                    $publicKey = Arr::get($config, 'ecdsa.public_key', '');
+                    $publicKey = $this->publicKey;
                     $secrect = LocalFileReference::file($publicKey);
                 }
                 break;
             case 'EdDSA':
                 if ($isPrivate) {
-                    $privateKey = Arr::get($config, 'eddsa.private_key', '');
+                    $privateKey = $this->privateKey;
                     $secrect = InMemory::file($privateKey);
                 } else {
-                    $publicKey = Arr::get($config, 'eddsa.public_key', '');
+                    $publicKey = $this->publicKey;
                     $secrect = InMemory::file($publicKey);
                 }
                 break;
@@ -353,26 +351,34 @@ class Jwt implements JwtContract
     }
     
     /**
-     * 编码 jwt token
+     * 生成 token
      */
-    public function encode()
+    public function makeToken()
     {
         $builder = new Builder();
         
-        $builder->issuedBy($this->issuer); // 发布者
-        $builder->permittedFor($this->audience); // 接收者
-        $builder->relatedTo($this->subject); // 主题
-        $builder->identifiedBy($this->jti); // 对当前token设置的标识
+        // 发布者
+        $builder->issuedBy($this->issuer); 
+        // 接收者
+        $builder->permittedFor($this->audience); 
+        // 主题
+        $builder->relatedTo($this->subject); 
+        // 对当前token设置的标识
+        $builder->identifiedBy($this->jti); 
         
-        $time = time();
-        $builder->issuedAt($time); // token创建时间
-        $builder->canOnlyBeUsedAfter($time + $this->notBeforeTime); // 多少秒内无法使用
-        $builder->expiresAt($time + $this->expTime); // 过期时间
+        // token创建时间
+        $builder->issuedAt($this->issuedAt); 
+        // 多少秒内无法使用
+        $builder->canOnlyBeUsedAfter($this->notBeforeTime); 
+        // 过期时间
+        $builder->expiresAt($this->expTime); 
         
+        // 添加 header 信息
         foreach ($this->headers as $headerKey => $header) {
             $builder->withHeader($headerKey, $header);
         }
         
+        // 添加载荷信息
         foreach ($this->claims as $claimKey => $claim) {
             $builder->withClaim($claimKey, $claim);
         }
@@ -380,36 +386,36 @@ class Jwt implements JwtContract
         try {
             list ($signer, $secrect) = $this->getSigner(true);
             
-            $this->enToken = $builder->getToken($signer, $secrect);
+            $token = $builder->getToken($signer, $secrect);
         } catch(\Exception $e) {
-            Log::error('larke-admin-jwt-encode: '.$e->getMessage());
+            Log::error('larke-admin-jwt-makeToken: '.$e->getMessage());
             
             throw new JWTException(__('JWT编码失败'));
         }
         
-        return $this;
+        return $token;
     }
     
     /**
-     * 解码
+     * 解析 token
      */
-    public function decode()
+    public function parseToken($token)
     {
         try {
-            $this->parseToken = (new Parser())->parse((string) $this->deToken); 
+            $token = (new Parser())->parse((string) $token); 
         } catch(\Exception $e) {
-            Log::error('larke-admin-jwt-decode: '.$e->getMessage());
+            Log::error('larke-admin-jwt-parseToken: '.$e->getMessage());
             
             throw new JWTException(__('JWT解析失败'));
         }
         
-        return $this;
+        return $token;
     }
     
     /**
      * 验证
      */
-    public function validate()
+    public function validate($token)
     {
         $data = new ValidationData(time(), $this->leeway); 
         $data->issuedBy($this->issuer);
@@ -417,61 +423,49 @@ class Jwt implements JwtContract
         $data->identifiedBy($this->jti);
         $data->relatedTo($this->subject);
         
-        return $this->parseToken->validate($data);
+        return $token->validate($data);
     }
 
     /**
      * 检测
      */
-    public function verify()
+    public function verify($token)
     {
         list ($signer, $secrect) = $this->getSigner(false);
     
-        return $this->parseToken->verify($signer, $secrect);
-    }
-
-    /**
-     * 获取 parseToken
-     */
-    public function getParseToken()
-    {
-        return $this->parseToken;
+        return $token->verify($signer, $secrect);
     }
     
     /**
      * 获取 Header
      */
-    public function getHeader($name)
+    public function getHeader($token, $name)
     {
-        $header = $this->parseToken->getHeader($name);
-        
-        return $header;
+        return $token->getHeader($name);
     }
     
     /**
      * 获取 Headers
      */
-    public function getHeaders()
+    public function getHeaders($token)
     {
-        return $this->parseToken->getHeaders();
+        return $token->getHeaders();
     }
 
     /**
      * 获取 token 存储数据
      */
-    public function getClaim($name)
+    public function getClaim($token, $name)
     {
-        $claim = $this->parseToken->getClaim($name);
-        
-        return $claim;
+        return $token->getClaim($name);
     }
     
     /**
      * 获取 Claims
      */
-    public function getClaims()
+    public function getClaims($token)
     {
-        $claims = $this->parseToken->getClaims();
+        $claims = $token->getClaims();
         
         $data = [];
         foreach ($claims as $claim) {
@@ -479,57 +473,5 @@ class Jwt implements JwtContract
         }
         
         return $data;
-    }
-    
-    /**
-     * 加密载荷数据
-     */
-    public function withData($claim, $value = null)
-    {
-        if (is_array($claim)) {
-            foreach ($claim as $k => $v) {
-                $this->withData($k, $v);
-            }
-            
-            return $this;
-        }
-        
-        if (! empty($claim) && ! empty($value)) {
-            $value = (new Crypt())->encrypt($value, $this->base64Decode($this->passphrase));
-            
-            $this->withClaim($claim, $value);
-        }
-        
-        return $this;
-    }
-
-    /**
-     * 载荷解密后数据
-     */
-    public function getData($name)
-    {
-        $claim = $this->getClaim($name);
-        
-        $claim = (new Crypt())->decrypt($claim, $this->base64Decode($this->passphrase));
-        
-        return $claim;
-    }
-    
-    /**
-     * base64 解密
-     */
-    public function base64Decode($contents)
-    {
-        if (empty($contents)) {
-            return '';
-        }
-        
-        $decoded = base64_decode($contents, true);
-        
-        if ($decoded === false) {
-            throw new JWTException(__('JWT载荷解析失败'));
-        }
-        
-        return $decoded;
     }
 }
