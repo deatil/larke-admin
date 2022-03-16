@@ -78,6 +78,9 @@ class Base extends Model
         return $query->select($columns);
     }
 
+    /**
+     * wheres 作用域
+     */
     public function scopeWheres($query, array $columns)
     {
         if (empty($columns)) {
@@ -97,6 +100,9 @@ class Base extends Model
         return $query;
     }
     
+    /**
+     * orWheres 作用域
+     */
     public function scopeOrWheres($query, array $columns)
     {
         if (empty($columns)) {

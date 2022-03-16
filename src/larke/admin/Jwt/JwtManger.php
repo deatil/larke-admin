@@ -7,14 +7,14 @@ namespace Larke\Admin\Jwt;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
-use Larke\Admin\Support\Crypt;
 use Larke\Admin\Exception\JWTException;
 use Larke\Admin\Contracts\Jwt as JwtContract;
+use Larke\Admin\Contracts\Crypt as CryptContract;
 
 /**
  * jwt 管理器
  *
- * @create 2020-10-19
+ * @create 2022-3-13
  * @author deatil
  */
 class JwtManger implements JwtContract
@@ -23,6 +23,11 @@ class JwtManger implements JwtContract
      * jwt
      */
     private $jwt = null;
+    
+    /**
+     * 加密
+     */
+    private $crypt = null;
     
     /**
      * 配置
@@ -69,6 +74,23 @@ class JwtManger implements JwtContract
     public function getJwt()
     {
         return $this->jwt;
+    }
+    
+    /**
+     * 设置加密
+     */
+    public function withCrypt(CryptContract $crypt)
+    {
+        $this->crypt = $crypt;
+        return $this;
+    }
+    
+    /**
+     * 获取加密
+     */
+    public function getCrypt()
+    {
+        return $this->crypt;
     }
     
     /**
@@ -301,8 +323,8 @@ class JwtManger implements JwtContract
                     
                     $passphrase = Arr::get($config, 'rsa.passphrase', null);
                     
-                    $this->jwt->withPrivateKey($privateKey)
-                        ->withPrivateKeyPassword($passphrase);
+                    $this->jwt->withPrivateKey($privateKey);
+                    $this->jwt->withPrivateKeyPassword($passphrase);
                 } else {
                     $publicKey = Arr::get($config, 'rsa.public_key', '');
                     
@@ -317,8 +339,8 @@ class JwtManger implements JwtContract
                     
                     $passphrase = Arr::get($config, 'ecdsa.passphrase', null);
                     
-                    $this->jwt->withPrivateKey($privateKey)
-                        ->withPrivateKeyPassword($passphrase);
+                    $this->jwt->withPrivateKey($privateKey);
+                    $this->jwt->withPrivateKeyPassword($passphrase);
                 } else {
                     $publicKey = Arr::get($config, 'ecdsa.public_key', '');
                     
@@ -336,6 +358,11 @@ class JwtManger implements JwtContract
                     $this->jwt->withPublicKey($publicKey);
                 }
                 break;
+            default:
+                // 加密方式不存在
+                Log::error('larke-admin-jwt-signer: ' . $algorithm . ' 加密方式不存在');
+                
+                throw new JWTException(__('JWT编码失败'));
         }
         
         return $this;
@@ -356,7 +383,13 @@ class JwtManger implements JwtContract
             $this->jwt->withClaim($claimKey, $claim);
         }
         
-        $this->enToken = $this->jwt->makeToken();
+        try {
+            $this->enToken = $this->jwt->makeToken();
+        } catch(\Exception $e) {
+            Log::error('larke-admin-jwt-makeToken: '.$e->getMessage());
+            
+            throw new JWTException(__('JWT编码失败'));
+        }
         
         return $this;
     }
@@ -366,7 +399,13 @@ class JwtManger implements JwtContract
      */
     public function decode()
     {
-        $this->parseToken = $this->jwt->parseToken((string) $this->deToken); 
+        try {
+            $this->parseToken = $this->jwt->parseToken((string) $this->deToken); 
+        } catch(\Exception $e) {
+            Log::error('larke-admin-jwt-parseToken: '.$e->getMessage());
+            
+            throw new JWTException(__('JWT解析失败'));
+        }
         
         return $this;
     }
@@ -445,7 +484,7 @@ class JwtManger implements JwtContract
         }
         
         if (! empty($claim) && ! empty($value)) {
-            $value = (new Crypt())->encrypt($value, $this->base64Decode(Arr::get($this->config, 'passphrase', '')));
+            $value = $this->crypt->encrypt($value, $this->base64Decode(Arr::get($this->config, 'passphrase', '')));
             
             $this->withClaim($claim, $value);
         }
@@ -460,7 +499,7 @@ class JwtManger implements JwtContract
     {
         $claim = $this->getClaim($name);
         
-        $claim = (new Crypt())->decrypt($claim, $this->base64Decode(Arr::get($this->config, 'passphrase', '')));
+        $claim = $this->crypt->decrypt($claim, $this->base64Decode(Arr::get($this->config, 'passphrase', '')));
         
         return $claim;
     }

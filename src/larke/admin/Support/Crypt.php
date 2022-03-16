@@ -6,13 +6,15 @@ namespace Larke\Admin\Support;
 
 use phpseclib3\Crypt\AES;
 
+use Larke\Admin\Contracts\Crypt as CryptContract;
+
 /**
  * 加密/解密
  *
  * @create 2021-1-29
  * @author deatil
  */
-class Crypt
+class Crypt implements CryptContract
 {
     /**
      * $var string

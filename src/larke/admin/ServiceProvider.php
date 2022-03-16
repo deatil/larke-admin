@@ -13,6 +13,7 @@ use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 use Larke\Admin\Jwt\Jwt;
 use Larke\Admin\Jwt\JwtManger;
 use Larke\Admin\Service\Cache;
+use Larke\Admin\Support\Crypt;
 use Larke\Admin\Support\Loader;
 use Larke\Admin\Captcha\Captcha;
 use Larke\Admin\Extension\Extension;
@@ -248,6 +249,7 @@ class ServiceProvider extends BaseServiceProvider
             $jwtManger = new JwtManger();
 
             $jwtManger->withJwt(new Jwt());
+            $jwtManger->withCrypt(new Crypt());
             $jwtManger->setConfig($config);
             
             return $jwtManger;

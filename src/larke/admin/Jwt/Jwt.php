@@ -4,8 +4,6 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Jwt;
 
-use Illuminate\Support\Facades\Log;
-
 // 文件夹引用
 use Larke\JWT\Signer; 
 use Larke\JWT\Builder;
@@ -13,8 +11,6 @@ use Larke\JWT\Parser;
 use Larke\JWT\ValidationData;
 use Larke\JWT\Signer\Key\InMemory;
 use Larke\JWT\Signer\Key\LocalFileReference;
-
-use Larke\Admin\Exception\JWTException;
 
 /**
  * jwt
@@ -280,13 +276,6 @@ class Jwt
         // 加密方式
         $algorithm = $this->signingMethod;
         
-        // 加密方式不存在
-        if (! array_key_exists($algorithm, $this->algorithms)) {
-            Log::error('larke-admin-jwt-signer: ' . $algorithm . ' 加密方式不存在');
-            
-            throw new JWTException(__('JWT编码失败'));
-        }
-        
         // 加密方式
         $signer = new $this->algorithms[$algorithm];
         
@@ -383,15 +372,9 @@ class Jwt
             $builder->withClaim($claimKey, $claim);
         }
         
-        try {
-            list ($signer, $secrect) = $this->getSigner(true);
-            
-            $token = $builder->getToken($signer, $secrect);
-        } catch(\Exception $e) {
-            Log::error('larke-admin-jwt-makeToken: '.$e->getMessage());
-            
-            throw new JWTException(__('JWT编码失败'));
-        }
+        list ($signer, $secrect) = $this->getSigner(true);
+        
+        $token = $builder->getToken($signer, $secrect);
         
         return $token;
     }
@@ -401,13 +384,7 @@ class Jwt
      */
     public function parseToken($token)
     {
-        try {
-            $token = (new Parser())->parse((string) $token); 
-        } catch(\Exception $e) {
-            Log::error('larke-admin-jwt-parseToken: '.$e->getMessage());
-            
-            throw new JWTException(__('JWT解析失败'));
-        }
+        $token = (new Parser())->parse((string) $token); 
         
         return $token;
     }
