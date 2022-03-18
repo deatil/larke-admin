@@ -320,7 +320,6 @@ class JwtManger implements JwtContract
             case 'RS512':
                 if ($isPrivate) {
                     $privateKey = Arr::get($config, 'rsa.private_key', '');
-                    
                     $passphrase = Arr::get($config, 'rsa.passphrase', null);
                     
                     $this->jwt->withPrivateKey($privateKey);
@@ -336,7 +335,6 @@ class JwtManger implements JwtContract
             case 'ES512':
                 if ($isPrivate) {
                     $privateKey = Arr::get($config, 'ecdsa.private_key', '');
-                    
                     $passphrase = Arr::get($config, 'ecdsa.passphrase', null);
                     
                     $this->jwt->withPrivateKey($privateKey);

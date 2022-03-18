@@ -40,7 +40,7 @@ class Captcha implements CaptchaContract
         'height' => 50,
         
         // 字体文件路径
-        'font' => __DIR__ . '/font/icon.ttf',
+        'font' => '',
         
         // 字体大小
         'fontsize' => 20,

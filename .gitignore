@@ -2,6 +2,7 @@ build
 vendor
 .DS
 .idea
+.github
 .vscode
 .phpunit*
 composer.lock

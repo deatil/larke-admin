@@ -131,9 +131,6 @@ class ServiceProvider extends BaseServiceProvider
     {
         $this->bootBind();
         
-        // 执行自定义方法
-        app('larke-admin.extension')->callBooting();
-        
         $this->bootObserver();
         
         $this->bootRelationMorphMap();
@@ -142,7 +139,10 @@ class ServiceProvider extends BaseServiceProvider
         
         $this->bootCommand();
         
-        // 执行自定义方法
+        // 运行前
+        app('larke-admin.extension')->callBooting();
+        
+        // 运行后
         app('larke-admin.extension')->callBooted();
     }
 
@@ -212,6 +212,12 @@ class ServiceProvider extends BaseServiceProvider
                     return !empty($data);
                 })
                 ->toArray();
+            
+            // 字体没设置重设
+            if (empty($config['font'])) {
+                $config['font'] = __DIR__ . '/../resources/font/icon.ttf';
+            }
+            
             $captcha->withConfig($config);
             
             return $captcha;
