@@ -155,7 +155,7 @@ class ServiceProvider extends BaseServiceProvider
     protected function ensureHttps()
     {
         // 是否为 admin 路径
-        $iaAdminPath = Str::startsWith($request->decodedPath(), '/' . ltrim(config('larkeadmin.route.prefix'), '/'));
+        $iaAdminPath = Str::startsWith(request()->decodedPath(), '/' . ltrim(config('larkeadmin.route.prefix'), '/'));
         
         if (
             (config('larkeadmin.https') || config('larkeadmin.secure'))
