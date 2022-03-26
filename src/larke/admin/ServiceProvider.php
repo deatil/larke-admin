@@ -4,9 +4,10 @@ declare (strict_types = 1);
 
 namespace Larke\Admin;
 
-use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Foundation\AliasLoader;
+use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
@@ -153,7 +154,13 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function ensureHttps()
     {
-        if (config('larkeadmin.https') || config('larkeadmin.secure')) {
+        // 是否为 admin 路径
+        $iaAdminPath = Str::startsWith($request->decodedPath(), '/' . ltrim(config('larkeadmin.route.prefix'), '/'));
+        
+        if (
+            (config('larkeadmin.https') || config('larkeadmin.secure'))
+            && $iaAdminPath
+        ) {
             url()->forceScheme('https');
             $this->app['request']->server->set('HTTPS', true);
         }
@@ -310,12 +317,12 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function registerRouteMiddleware()
     {
-        // register route middleware.
+        // 注册路由
         foreach ($this->routeMiddleware as $key => $middleware) {
             app('router')->aliasMiddleware($key, $middleware);
         }
 
-        // register middleware group.
+        // 注册路由分组
         foreach ($this->middlewareGroups as $key => $middlewares) {
             foreach ($middlewares as $middleware) {
                 app('router')->pushMiddlewareToGroup($key, $middleware);

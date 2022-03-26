@@ -27,7 +27,8 @@ if (! function_exists('Larke\\Admin\\success')) {
      * @create 2020-10-19
      * @author deatil
      */
-    function success($message = null, $data = null, $header = [], $code = 0) {
+    function success($message = null, $data = null, $header = [], $code = 0) 
+    {
         return (new class {
             use ResponseJsonTrait;
             
@@ -52,7 +53,8 @@ if (! function_exists('Larke\\Admin\\error')) {
      * @create 2020-10-19
      * @author deatil
      */
-    function error($message = null, $code = 1, $data = [], $header = []) {
+    function error($message = null, $code = 1, $data = [], $header = []) 
+    {
         return (new class {
             use ResponseJsonTrait;
             
@@ -75,7 +77,8 @@ if (! function_exists('Larke\\Admin\\route')) {
      * @create 2021-2-27
      * @author deatil
      */
-    function route(?string $route, array $params = [], $absolute = true) {
+    function route(?string $route, array $params = [], $absolute = true) 
+    {
         return route(RouteService::formatRouteSlug($route), $params, $absolute);
     }
 }
@@ -173,7 +176,8 @@ if (! function_exists('Larke\\Admin\\config')) {
      * @create 2020-12-17
      * @author deatil
      */
-    function config($name, $default = null) {
+    function config($name, $default = null) 
+    {
         $settings =  ConfigModel::getSettings();
         return Arr::get($settings, $name, $default);
     }
@@ -190,7 +194,8 @@ if (! function_exists('Larke\\Admin\\attachment_url')) {
      * @create 2020-12-17
      * @author deatil
      */
-    function attachment_url($id, $default = null) {
+    function attachment_url($id, $default = null) 
+    {
         return AttachmentModel::path($id, $default);
     }
 }
@@ -207,7 +212,8 @@ if (! function_exists('Larke\\Admin\\extension_config')) {
      * @create 2021-3-24
      * @author deatil
      */
-    function extension_config($name, $key = null, $default = null) {
+    function extension_config($name, $key = null, $default = null) 
+    {
         $extensions = ExtensionModel::getExtensions();
         
         $data = Arr::get($extensions, $name, []);
