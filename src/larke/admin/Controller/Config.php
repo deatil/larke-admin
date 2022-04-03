@@ -41,10 +41,11 @@ class Config extends Base
         $start = (int) $request->input('start', 0);
         $limit = (int) $request->input('limit', 10);
         
-        $order = $this->formatOrderBy($request->input('order', 'ASC'));
+        $order = $this->formatOrderBy($request->input('order', 'create_time__ASC'));
         
-        $searchword = $request->input('searchword', '');
         $orWheres = [];
+
+        $searchword = $request->input('searchword', '');
         if (! empty($searchword)) {
             $orWheres = [
                 ['type', 'like', '%'.$searchword.'%'],
@@ -88,15 +89,15 @@ class Config extends Base
             $wheres[] = ['group', $group];
         }
         
-        $query = ConfigModel::orWheres($orWheres)
-            ->wheres($wheres);
+        // 查询
+        $query = ConfigModel::wheres($wheres)
+            ->orWheres($orWheres);
         
         $total = $query->count(); 
         $list = $query
             ->offset($start)
             ->limit($limit)
-            ->orderBy('listorder', $order)
-            ->orderBy('create_time', $order)
+            ->orderBy($order[0], $order[1])
             ->get()
             ->toArray(); 
         

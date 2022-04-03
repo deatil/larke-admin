@@ -42,10 +42,11 @@ class AuthRule extends Base
         $start = (int) $request->input('start', 0);
         $limit = (int) $request->input('limit', 10);
         
-        $order = $this->formatOrderBy($request->input('order', 'ASC'));
+        $order = $this->formatOrderBy($request->input('order', 'create_time__ASC'));
         
-        $searchword = $request->input('searchword', '');
         $orWheres = [];
+
+        $searchword = $request->input('searchword', '');
         if (! empty($searchword)) {
             $orWheres = [
                 ['title', 'like', '%'.$searchword.'%'],
@@ -77,16 +78,15 @@ class AuthRule extends Base
             $wheres[] = ['method', $method];
         }
         
-        $query = AuthRuleModel::orWheres($orWheres)
-            ->wheres($wheres);
+        // 查询
+        $query = AuthRuleModel::wheres($wheres)
+            ->orWheres($orWheres);
         
         $total = $query->count(); 
         $list = $query
             ->offset($start)
             ->limit($limit)
-            ->orderBy('listorder', $order)
-            ->orderBy('create_time', $order)
-            ->orderBy('slug', $order)
+            ->orderBy($order[0], $order[1])
             ->get()
             ->toArray(); 
         

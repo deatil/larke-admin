@@ -54,18 +54,23 @@ abstract class Controller
     /**
      * 格式化排序
      */
-    protected function formatOrderBy($order = '', $default = 'ASC')
+    protected function formatOrderBy($order = '', $default = 'create_time__ASC')
     {
         if (empty($order)) {
             $order = $default;
         }
         
-        $order = strtoupper($order);
-        if (!in_array($order, ['ASC', 'DESC'])) {
-            $order = 'ASC';
+        $orders = explode("__", $order);
+        if (count($orders) < 2) {
+            $orders = ["create_time", "ASC"];
         }
         
-        return $order;
+        $orders[1] = strtoupper($orders[1]);
+        if (! in_array($orders[1], ['ASC', 'DESC'])) {
+            $orders[1] = 'ASC';
+        }
+        
+        return $orders;
     }
     
 }

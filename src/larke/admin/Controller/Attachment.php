@@ -43,10 +43,11 @@ class Attachment extends Base
         $start = (int) $request->input('start', 0);
         $limit = (int) $request->input('limit', 10);
         
-        $order = $this->formatOrderBy($request->input('order', 'ASC'));
+        $order = $this->formatOrderBy($request->input('order', 'create_time__ASC'));
+        
+        $orWheres = [];
         
         $searchword = $request->input('searchword', '');
-        $orWheres = [];
         if (! empty($searchword)) {
             $orWheres = [
                 ['name', 'like', '%'.$searchword.'%'],
@@ -72,14 +73,15 @@ class Attachment extends Base
             $wheres[] = ['status', $status];
         }
         
-        $query = AttachmentModel::orWheres($orWheres)
-            ->wheres($wheres);
+        // 查询
+        $query = AttachmentModel::wheres($wheres)
+            ->orWheres($orWheres);
         
         $total = $query->count(); 
         $list = $query
             ->offset($start)
             ->limit($limit)
-            ->orderBy('create_time', $order)
+            ->orderBy($order[0], $order[1])
             ->get()
             ->toArray(); 
         

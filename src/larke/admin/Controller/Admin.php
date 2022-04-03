@@ -43,7 +43,7 @@ class Admin extends Base
         $start = (int) $request->input('start', 0);
         $limit = (int) $request->input('limit', 10);
         
-        $order = $this->formatOrderBy($request->input('order', 'ASC'));
+        $order = $this->formatOrderBy($request->input('order', 'create_time__ASC'));
         
         $wheres = [];
         
@@ -73,9 +73,10 @@ class Admin extends Base
             ];
         }
         
+        // 条件
         $query = AdminModel::withAccess()
-            ->orWheres($orWheres)
-            ->wheres($wheres);
+            ->wheres($wheres)
+            ->orWheres($orWheres);
         
         $total = $query->count(); 
         $list = $query->offset($start)
@@ -93,7 +94,7 @@ class Admin extends Base
                 'create_time', 
                 'create_ip'
             ])
-            ->orderBy('create_time', $order)
+            ->orderBy($order[0], $order[1])
             ->get()
             ->toArray(); 
         
