@@ -6,8 +6,8 @@ return [
         'name' => "LarkeAdmin",
         'name_mini' => "Larke",
         'logo' => "<b>Larke</b> admin",
-        'release' => 20220225,
-        'version' => "1.3.3",
+        'release' => "20220515",
+        'version' => "1.3.6",
     ],
     
     // 是否使用 https 方式
@@ -122,10 +122,15 @@ return [
     
     // 权限
     'auth' => [
+        // 决策器
+        'enforcer_guard' => env('LARKE_ADMIN_AUTH_ENFORCER_GUARD', 'larke'),
+        
         // 登陆过滤
         'authenticate_excepts' => env('LARKE_ADMIN_AUTH_AUTHENTICATE_EXCEPTS') ? explode(',', env('LARKE_ADMIN_AUTH_AUTHENTICATE_EXCEPTS')) : [],
+        
         // 权限过滤
         'permission_excepts' => env('LARKE_ADMIN_AUTH_PERMISSION_EXCEPTS') ? explode(',', env('LARKE_ADMIN_AUTH_PERMISSION_EXCEPTS')) : [],
+        
         // 超级管理员
         'admin_id' => env('LARKE_ADMIN_AUTH_ADMIN_ID', '04f65b19e5a2513fe5a89100309da9b7'),
     ],
@@ -134,6 +139,12 @@ return [
     'extension' => [
         // 扩展存放文件夹
         'directory' => env('LARKE_ADMIN_EXTENSION_DIRECTORY', 'extension'),
+        
+        // 本地扩展缓存id
+        'cache_id' => env('LARKE_ADMIN_EXTENSION_CACHE_ID', 'larke-admin-local-extensions'),
+        
+        // 本地扩展缓存时间
+        'cache_time' => env('LARKE_ADMIN_EXTENSION_CACHE_TIME', 10080),
     ],
     
     // 上传

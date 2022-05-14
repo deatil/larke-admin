@@ -4,7 +4,7 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Observer;
 
-use Larke\Admin\Auth\Permission;
+use Larke\Admin\Facade\Permission;
 use Larke\Admin\Model\AuthRuleAccess as AuthRuleAccessModel;
 
 class AuthRuleAccess

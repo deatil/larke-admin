@@ -89,7 +89,15 @@ composer require lake/larke-admin
 php artisan vendor:publish --tag=larke-admin-config
 ```
 
-运行完命令后，你可以找到 `config/larkeadmin.php`、`config/larkeauth.php` 及 `config/larkeauth-rbac-model.conf` 三个配置文件
+运行完命令后
+
+你需要复制 `config/larkeadmin.php.larke` 重命名为 `config/larkeadmin.php`，
+
+复制 `config/larkeauth.php.larke` 重命名为 `config/larkeauth.php`，
+
+复制 `larkeauth-rbac-model.conf.larke` 重命名为 `larkeauth-rbac-model.conf`
+
+如果文件已存在，请根据情况复制内容到对应配置文件
 
 3. 最后运行下面的命令安装完成系统
 

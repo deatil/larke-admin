@@ -10,9 +10,9 @@ use Illuminate\Support\Str;
 /**
  * JWT 生成秘钥
  *
- * > php artisan larke-admin:jwt-secret -f
+ * > php artisan larke-admin:jwt-generate-secret -f
  *
- * @create 2021-1-25
+ * @create 2022-1-25
  * @author deatil
  */
 class JWTGenerateSecret extends Command
@@ -22,7 +22,7 @@ class JWTGenerateSecret extends Command
      *
      * @var string
      */
-    protected $signature = 'larke-admin:jwt-secret
+    protected $signature = 'larke-admin:jwt-generate-secret
         {--s|show : Display the key instead of modifying files.}
         {--always-no : Skip generating key if it already exists.}
         {--f|force : Skip confirmation when overwriting an existing key.}';

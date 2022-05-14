@@ -17,7 +17,8 @@ use Larke\Admin\Service\Cache;
 use Larke\Admin\Support\Crypt;
 use Larke\Admin\Support\Loader;
 use Larke\Admin\Captcha\Captcha;
-use Larke\Admin\Extension\Extension;
+use Larke\Admin\Extension\Manager as ExtensionManager;
+use Larke\Admin\Permission\Manager as PermissionManager;
 
 // 文件夹引用
 use Larke\Admin\Auth;
@@ -269,7 +270,24 @@ class ServiceProvider extends BaseServiceProvider
         });
         
         // 扩展
-        $this->app->singleton('larke-admin.extension', Extension::class);
+        $this->app->singleton('larke-admin.extension', function() {
+            $directory = config('larkeadmin.extension.directory');
+            $cacheId   = config('larkeadmin.extension.cache_id');
+            $cacheTime = config('larkeadmin.extension.cache_time');
+            
+            $manger = new ExtensionManager($directory, $cacheId, $cacheTime);
+            
+            return $manger;
+        });
+        
+        // 权限
+        $this->app->singleton('larke-admin.permission', function() {
+            $guard = config('larkeadmin.auth.enforcer_guard');
+            
+            $manger = new PermissionManager($guard);
+            
+            return $manger;
+        });
         
         // 管理员登陆信息
         $this->app->singleton('larke-admin.auth-admin', Auth\Admin::class);
@@ -305,7 +323,9 @@ class ServiceProvider extends BaseServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__.'/../resources/config' => config_path(),
+                __DIR__.'/../resources/config/larkeadmin.php' => config_path('larkeadmin.php.larke'),
+                __DIR__.'/../resources/config/larkeauth.php' => config_path('larkeauth.php.larke'),
+                __DIR__.'/../resources/config/larkeauth-rbac-model.conf' => config_path('larkeauth-rbac-model.conf.larke'),
             ], 'larke-admin-config');
         }
     }

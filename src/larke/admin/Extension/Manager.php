@@ -29,19 +29,29 @@ use Larke\Admin\Extension\ServiceProvider as ExtensionServiceProvider;
  * @create 2020-10-30
  * @author deatil
  */
-class Extension
+class Manager
 {
     use Macroable;
     
     /**
-     * @var array<string, Info>
+     * @var string 扩展存放文件夹
      */
-    protected $extensions = [];
+    protected $extensionsDirectory = 'extension';
     
     /**
      * @var string 本地扩展缓存id
      */
     protected $extensionsCacheId = 'larke-admin-local-extensions';
+    
+    /**
+     * @var string 本地扩展缓存时间
+     */
+    protected $extensionsCacheTime = 10080;
+    
+    /**
+     * @var array<string, Info>
+     */
+    protected $extensions = [];
     
     /**
      * @var string 默认图标
@@ -57,6 +67,23 @@ class Extension
      * @var string 事件名称
      */
     protected $eventBootedName = "larke-admin:booted";
+
+    /**
+     * 构造函数
+     *
+     * @param string $extensionsDirectory
+     * @param string $extensionsCacheId
+     * @param int    $extensionsCacheTime
+     */
+    public function __construct(
+        $extensionsDirectory = 'extension', 
+        $extensionsCacheId = 'larke-admin-local-extensions', 
+        $extensionsCacheTime = 10080
+    ) {
+        $this->extensionsDirectory = $extensionsDirectory;
+        $this->extensionsCacheId = $extensionsCacheId;
+        $this->extensionsCacheTime = $extensionsCacheTime;
+    }
 
     /**
      * 添加扩展
@@ -362,15 +389,13 @@ class Extension
                 $composerData = Cache::get($cacheId);
                 if (! $composerData) {
                     $composerData = $composer->getData();
-                    Cache::put($cacheId, $composerData, 10080);
+                    Cache::put($cacheId, $composerData, $this->extensionsCacheTime);
                 }
                 
                 $composer->registerAutoload(Arr::get($composerData, 'autoload', []));
                 
-                // 加载dev数据
-                if (config('app.debug')) {
-                    $composer->registerAutoload(Arr::get($composerData, 'autoload-dev', []));
-                }
+                // 加载 dev 数据
+                $composer->registerAutoload(Arr::get($composerData, 'autoload-dev', []));
                 
                 $composer->registerProvider(Arr::get($composerData, 'providers', []));
                 $composer->registerAlias(Arr::get($composerData, 'aliases', []));
@@ -431,7 +456,7 @@ class Extension
                 ->values()
                 ->toArray();
             
-            Cache::put($this->extensionsCacheId, $extensions, 10080);
+            Cache::put($this->extensionsCacheId, $extensions, $this->extensionsCacheTime);
         }
         
         $composer = ComposerResolve::create();
@@ -440,10 +465,8 @@ class Extension
             
             $composer->registerAutoload(Arr::get($extension, 'autoload', []));
             
-            // 加载dev数据
-            if (config('app.debug')) {
-                $composer->registerAutoload(Arr::get($extension, 'autoload-dev', []));
-            }
+            // 加载 dev 数据
+            $composer->registerAutoload(Arr::get($extension, 'autoload-dev', []));
             
             $composer->registerProvider(Arr::get($extension, 'providers', []));
             $composer->registerAlias(Arr::get($extension, 'aliases', []));
@@ -487,7 +510,7 @@ class Extension
      */
     public function getExtensionDirectory()
     {
-        return config('larkeadmin.extension.directory');
+        return $this->extensionsDirectory;
     }
     
     /**

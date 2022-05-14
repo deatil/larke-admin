@@ -6,7 +6,7 @@ namespace Larke\Admin\Auth;
 
 use Illuminate\Support\Arr;
 
-use Larke\Admin\Auth\Permission as AuthPermission;
+use Larke\Admin\Facade\Permission as AuthPermission;
 use Larke\Admin\Repository\Admin as AdminRepository;
 use Larke\Admin\Repository\AuthGroup as AuthGroupRepository;
 

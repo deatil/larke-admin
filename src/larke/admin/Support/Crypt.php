@@ -65,7 +65,9 @@ class Crypt implements CryptContract
             return $plaintext;
         }
         
+        // 加密数据前添加时间
         $plaintext = time() . '_' . $plaintext;
+        
         $aes = new AES($this->mode);
         $aes->setIV($this->iv);
         $aes->setKey($key);

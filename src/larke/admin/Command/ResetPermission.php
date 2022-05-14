@@ -7,7 +7,7 @@ namespace Larke\Admin\Command;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-use Larke\Admin\Auth\Permission;
+use Larke\Admin\Facade\Permission;
 use Larke\Admin\Model\AuthGroupAccess as AuthGroupAccessModel;
 use Larke\Admin\Model\AuthRuleAccess as AuthRuleAccessModel;
 

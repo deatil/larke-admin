@@ -247,7 +247,7 @@ class Tree
      * @param   string|int  $id     当前id
      * @return  array
      */
-    public function getListChild($list = [], $id)
+    public function getListChild($list = [], $id = '')
     {
         if (empty($list) || !is_array($list)) {
             return [];
@@ -272,7 +272,7 @@ class Tree
      * @param   string|int  $id     当前id
      * @return  array
      */
-    public function getListSelf($list = [], $id)
+    public function getListSelf($list = [], $id = '')
     {
         if (empty($list) || !is_array($list)) {
             return [];
