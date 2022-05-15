@@ -17,7 +17,7 @@ use Larke\Admin\Contracts\Crypt as CryptContract;
  * @create 2022-3-13
  * @author deatil
  */
-class JwtManger implements JwtContract
+class JwtManager implements JwtContract
 {
     /**
      * jwt

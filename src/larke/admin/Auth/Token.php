@@ -107,7 +107,7 @@ class Token
     /**
      * 验证格式
      *
-     * @param \Larke\Admin\Jwt\JwtManger $decodeToken
+     * @param \Larke\Admin\Jwt\JwtManager $decodeToken
      */
     public function validate($decodeToken) 
     {
@@ -119,7 +119,7 @@ class Token
     /**
      * 验证签名
      *
-     * @param \Larke\Admin\Jwt\JwtManger $decodeToken
+     * @param \Larke\Admin\Jwt\JwtManager $decodeToken
      */
     public function verify($decodeToken) 
     {

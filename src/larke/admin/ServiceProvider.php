@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 use Larke\Admin\Jwt\Jwt;
-use Larke\Admin\Jwt\JwtManger;
+use Larke\Admin\Jwt\JwtManager;
 use Larke\Admin\Service\Cache;
 use Larke\Admin\Support\Crypt;
 use Larke\Admin\Support\Loader;
@@ -260,13 +260,13 @@ class ServiceProvider extends BaseServiceProvider
         $this->app->bind(Contracts\Jwt::class, function() {
             $config = config('larkeadmin.jwt');
             
-            $jwtManger = new JwtManger();
+            $jwtManager = new JwtManager();
 
-            $jwtManger->withJwt(new Jwt());
-            $jwtManger->withCrypt(new Crypt());
-            $jwtManger->setConfig($config);
+            $jwtManager->withJwt(new Jwt());
+            $jwtManager->withCrypt(new Crypt());
+            $jwtManager->setConfig($config);
             
-            return $jwtManger;
+            return $jwtManager;
         });
         
         // 扩展
@@ -275,18 +275,18 @@ class ServiceProvider extends BaseServiceProvider
             $cacheId   = config('larkeadmin.extension.cache_id');
             $cacheTime = config('larkeadmin.extension.cache_time');
             
-            $manger = new ExtensionManager($directory, $cacheId, $cacheTime);
+            $manager = new ExtensionManager($directory, $cacheId, $cacheTime);
             
-            return $manger;
+            return $manager;
         });
         
         // 权限
         $this->app->singleton('larke-admin.permission', function() {
             $guard = config('larkeadmin.auth.enforcer_guard');
             
-            $manger = new PermissionManager($guard);
+            $manager = new PermissionManager($guard);
             
-            return $manger;
+            return $manager;
         });
         
         // 管理员登陆信息
