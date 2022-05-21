@@ -151,6 +151,11 @@ class CachePermission
      */
     public function wrapperCacheKey(string $key)
     {
-        return $this->cachePrefix . ':' . substr(md5($key), 8, 16);
+        $newKey = substr(md5($key), 8, 16);
+        if (empty($this->cachePrefix)) {
+            return $newKey;
+        }
+        
+        return $this->cachePrefix . ':' . $newKey;
     }
 }

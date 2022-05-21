@@ -66,7 +66,7 @@ Response: {
 
 > 权限列表
 ~~~
-GET: /admin-api/passport/rules
+GET: /admin-api/profile/rules
 Header: {
     'Authorization:Bearer ${accessToken}'
 }
