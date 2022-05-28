@@ -1,6 +1,6 @@
 # larke-admin通用后台管理系统
 
-larke-admin 是一套使用 Laravel 8 、JWT 和 RBAC鉴权的通用后台管理系统
+larke-admin 是一套使用 Laravel、JWT 和 RBAC鉴权的通用后台管理系统
 
 
 ## 项目介绍
