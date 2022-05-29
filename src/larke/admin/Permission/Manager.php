@@ -42,11 +42,36 @@ class Manager
     /**
      * 读取自定义配置
      * 
+     * @param  string $guard 决策器名称
      * @return \Larke\Admin\Permission\Manager
      */
     public function guard(string $name = '')
     {
         return new static($name);
+    }
+    
+    /**
+     * 设置决策器
+     *
+     * @param  $enforcer 决策器
+     * @return \Larke\Admin\Permission\Manager
+     */
+    public function withEnforcer($enforcer) 
+    {
+        // 决策器
+        $this->enforcer = $enforcer;
+        
+        return $this;
+    }
+    
+    /**
+     * 获取决策器
+     *
+     * @return $enforcer 决策器
+     */
+    public function getEnforcer() 
+    {
+        return $this->enforcer;
     }
     
     // =========================
