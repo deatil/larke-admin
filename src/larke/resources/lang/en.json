@@ -210,6 +210,9 @@
     "密码修改失败": "update password fail",
     "密码修改成功": "update password success",
     
+    "重设权限缓存失败": "reset permission error",
+    "重设权限缓存成功": "reset permission successfully",
+    
     "清除缓存成功": "clear cache success",
     "路由及配置信息缓存成功": "routes and config chache success",
     "请选择要查询的语言分组": "lang group dont empty",

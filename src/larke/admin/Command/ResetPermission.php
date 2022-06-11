@@ -42,7 +42,11 @@ class ResetPermission extends Command
      */
     public function handle()
     {
-        $this->runReset();
+        $status = $this->runReset();
+        if ($status === false) {
+            $this->error('Larke-admin reset permission error.');
+            return ;
+        }
         
         $this->info('Larke-admin reset permission successfully.');
     }
@@ -50,7 +54,12 @@ class ResetPermission extends Command
     protected function runReset()
     {
         // 清空原始数据
-        $table = config('larkeauth.basic.database.rules_table');
+        $guard = config('larkeauth.default');
+        $table = config('larkeauth.guards.'.$guard.'.database.rules_table');
+        if (empty($table)) {
+            return false;
+        }
+        
         DB::table($table)->truncate();
         
         // 规则权限
@@ -74,5 +83,7 @@ class ResetPermission extends Command
             ->each(function($data) {
                 Permission::addRoleForUser($data['admin_id'], $data['group_id']);
             });
+            
+        return true;
     }
 }

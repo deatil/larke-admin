@@ -72,6 +72,7 @@ Route::group([
     $router->get('/admin/{id}/rules', 'Admin@rules')->name('admin.rules')->where('id', '[A-Za-z0-9]+');
     $router->post('/admin', 'Admin@create')->name('admin.create');
     $router->put('/admin/{id}', 'Admin@update')->name('admin.update')->where('id', '[A-Za-z0-9]+');
+    $router->put('/admin/reset-permission', 'Admin@ResetPermission')->name('admin.reset-permission');
     $router->delete('/admin/{id}', 'Admin@delete')->name('admin.delete')->where('id', '[A-Za-z0-9]+');
     $router->patch('/admin/{id}/enable', 'Admin@enable')->name('admin.enable')->where('id', '[A-Za-z0-9]+');
     $router->patch('/admin/{id}/disable', 'Admin@disable')->name('admin.disable')->where('id', '[A-Za-z0-9]+');

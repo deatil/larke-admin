@@ -176,4 +176,14 @@ class Base extends Model
         return ($this->status == 1);
     }
     
+    /**
+     * 批量添加
+     */
+    public function insertAll(array $data)
+    {
+        $res = DB::table($this->getTable())->insert($data);
+        
+        return $res;
+    }
+  
 }

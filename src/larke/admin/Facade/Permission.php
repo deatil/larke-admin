@@ -7,7 +7,7 @@ namespace Larke\Admin\Facade;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * 扩展
+ * 权限
  *
  * @create 2022-5-7
  * @author deatil

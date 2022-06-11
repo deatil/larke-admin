@@ -9,7 +9,9 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 
 use Larke\Admin\Support\Tree;
+use Larke\Admin\Facade\Permission;
 use Larke\Admin\Model\AuthGroup as AuthGroupModel;
+use Larke\Admin\Model\AuthRule as AuthRuleModel;
 use Larke\Admin\Model\AuthRuleAccess as AuthRuleAccessModel;
 use Larke\Admin\Repository\AuthGroup as AuthGroupRepository;
 
@@ -469,20 +471,39 @@ class AuthGroup extends Base
             return $this->error(__('信息不存在'));
         }
         
+        // 删除
         AuthRuleAccessModel::where([
             'group_id' => $id
-        ])->get()->each->delete();
+        ])->delete();
+        
+        // 权限缓存数据更新
+        Permission::deletePolicies($id);
         
         $access = $request->input('access');
         if (!empty($access)) {
             $accessArr = explode(',', $access);
             $accessArr = collect($accessArr)->unique();
+            
+            // 批量添加
+            $newData = [];
             foreach ($accessArr as $value) {
-                AuthRuleAccessModel::create([
+                $newData[] = [
+                    'id' => md5(mt_rand(100000, 999999).microtime().uniqid()),
                     'group_id' => $id,
                     'rule_id' => $value,
-                ]);
+                ];
             }
+            
+            (new AuthRuleAccessModel())->insertAll($newData);
+            
+            // 批量赋值权限
+            $policies = AuthRuleModel::whereIn("id", $accessArr)
+                ->where('status', 1)
+                ->select()
+                ->get()
+                ->each(function($data) use($id) {
+                    Permission::addPolicy($id, $data['slug'], strtoupper($data['method']));
+                });
         }
         
         return $this->success(__('授权成功'));

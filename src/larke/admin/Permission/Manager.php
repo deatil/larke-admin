@@ -167,6 +167,16 @@ class Manager
     }
     
     /**
+     * 批量添加权限
+     * 
+     * $rules array<name, type, rule>
+     */
+    public function addPolicies(array $rules)
+    {
+        return $this->enforcer->addPolicies($rules);
+    }
+    
+    /**
      * 删除权限
      */
     public function deletePolicy(string $name, string $type, string $rule)

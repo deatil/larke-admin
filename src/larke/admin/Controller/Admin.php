@@ -5,11 +5,14 @@ declare (strict_types = 1);
 namespace Larke\Admin\Controller;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 use Larke\Admin\Support\Tree;
+use Larke\Admin\Facade\Permission;
 use Larke\Admin\Model\Admin as AdminModel;
 use Larke\Admin\Model\AuthGroup as AuthGroupModel;
+use Larke\Admin\Model\AuthRuleAccess as AuthRuleAccessModel;
 use Larke\Admin\Model\AuthGroupAccess as AuthGroupAccessModel;
 use Larke\Admin\Repository\Admin as AdminRepository;
 
@@ -732,13 +735,16 @@ class Admin extends Base
             return $this->error(__('账号不存在'));
         }
         
-        AuthGroupAccessModel::where('admin_id', '=', $id)
-            ->get()
-            ->each
-            ->delete();
+        // 删除
+        AuthGroupAccessModel::where([
+            'admin_id' => $id,
+        ])->delete();
+        
+        // 权限缓存数据更新
+        Permission::deleteRolesForUser($id);
         
         $access = $request->input('access');
-        if (!empty($access)) {
+        if (! empty($access)) {
             $groupIds = app('larke-admin.auth-admin')->getGroupChildrenIds();
             $accessIds = explode(',', $access);
             $accessIds = collect($accessIds)->unique();
@@ -750,15 +756,76 @@ class Admin extends Base
                 $intersectAccess = $accessIds;
             }
             
+            // 批量添加
+            $newData = [];
             foreach ($intersectAccess as $value) {
-                AuthGroupAccessModel::create([
+                $newData[] = [
+                    'id' => md5(mt_rand(100000, 999999).microtime().uniqid()),
                     'admin_id' => $id,
                     'group_id' => $value,
-                ]);
+                ];
             }
+            
+            (new AuthGroupAccessModel())->insertAll($newData);
+            
+            // 批量赋值授权
+            $roles = AuthGroupModel::whereIn("id", $intersectAccess)
+                ->where('status', 1)
+                ->distinct()
+                ->select()
+                ->get()
+                ->each(function($data) use($id) {
+                    Permission::addRoleForUser($id, $data['id']);
+                });
         }
         
         return $this->success(__('账号授权分组成功'));
     }
     
+    /**
+     * 重设权限缓存
+     *
+     * @title 重设权限缓存
+     * @desc 重设权限缓存
+     * @order 313
+     * @auth true
+     *
+     * @return Response
+     */
+    public function ResetPermission()
+    {
+        // 清空原始数据
+        $guard = config('larkeauth.default');
+        $table = config('larkeauth.guards.'.$guard.'.database.rules_table');
+        if (empty($table)) {
+            return $this->error(__('重设权限缓存失败'));
+        }
+        
+        DB::table($table)->truncate();
+        
+        // 规则权限
+        $rules = AuthRuleAccessModel::with('rule')
+            ->whereHas('rule', function($query) {
+                $query->where('status', 1);
+            })
+            ->select()
+            ->get()
+            ->each(function($data) {
+                Permission::addPolicy($data['group_id'], $data['rule']['slug'], strtoupper($data['rule']['method']));
+            });
+        
+        // 分组权限
+        $groups = AuthGroupAccessModel::with('group')
+            ->whereHas('group', function($query) {
+                $query->where('status', 1);
+            })
+            ->select()
+            ->get()
+            ->each(function($data) {
+                Permission::addRoleForUser($data['admin_id'], $data['group_id']);
+            });
+        
+        return $this->success(__('重设权限缓存成功'));
+    }
+
 }

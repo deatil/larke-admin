@@ -390,9 +390,7 @@ class ServiceProvider extends BaseServiceProvider
         Model\Admin::observe(new Observer\Admin());
         Model\Attachment::observe(new Observer\Attachment());
         Model\AuthGroup::observe(new Observer\AuthGroup());
-        Model\AuthGroupAccess::observe(new Observer\AuthGroupAccess());
         Model\AuthRule::observe(new Observer\AuthRule());
-        Model\AuthRuleAccess::observe(new Observer\AuthRuleAccess());
         Model\Config::observe(new Observer\Config());
         Model\Extension::observe(new Observer\Extension());
     }

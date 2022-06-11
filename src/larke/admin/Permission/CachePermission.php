@@ -24,9 +24,7 @@ class CachePermission
     protected $enforcer = '';
     
     /**
-     * 缓存
-     *
-     * @var \Illuminate\Cache\Repository
+     * @var \Illuminate\Cache\Repository 缓存
      */
     protected $cache;
     
