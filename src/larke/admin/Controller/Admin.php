@@ -760,13 +760,13 @@ class Admin extends Base
             $newData = [];
             foreach ($intersectAccess as $value) {
                 $newData[] = [
-                    'id' => md5(mt_rand(100000, 999999).microtime().uniqid()),
+                    'id' => AuthGroupAccessModel::uuid(),
                     'admin_id' => $id,
                     'group_id' => $value,
                 ];
             }
             
-            (new AuthGroupAccessModel())->insertAll($newData);
+            AuthGroupAccessModel::insertAll($newData);
             
             // 批量赋值授权
             $roles = AuthGroupModel::whereIn("id", $intersectAccess)
@@ -774,9 +774,9 @@ class Admin extends Base
                 ->distinct()
                 ->select()
                 ->get()
-                ->each(function($data) use($id) {
-                    Permission::addRoleForUser($id, $data['id']);
-                });
+                ->pluck("id")
+                ->all();
+            Permission::addRolesForUser($id, $roles);
         }
         
         return $this->success(__('账号授权分组成功'));

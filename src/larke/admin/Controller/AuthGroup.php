@@ -488,22 +488,27 @@ class AuthGroup extends Base
             $newData = [];
             foreach ($accessArr as $value) {
                 $newData[] = [
-                    'id' => md5(mt_rand(100000, 999999).microtime().uniqid()),
+                    'id' => AuthRuleAccessModel::uuid(),
                     'group_id' => $id,
                     'rule_id' => $value,
                 ];
             }
             
-            (new AuthRuleAccessModel())->insertAll($newData);
+            AuthRuleAccessModel::insertAll($newData);
             
             // 批量赋值权限
             $policies = AuthRuleModel::whereIn("id", $accessArr)
                 ->where('status', 1)
                 ->select()
                 ->get()
-                ->each(function($data) use($id) {
-                    Permission::addPolicy($id, $data['slug'], strtoupper($data['method']));
-                });
+                ->mapWithKeys(function($item, $key) use($id) {
+                    return [
+                        $key => [$id, $item['slug'], strtoupper($item['method'])],
+                    ];
+                })
+                ->values()
+                ->all();
+            Permission::addPolicies($policies);
         }
         
         return $this->success(__('授权成功'));

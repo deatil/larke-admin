@@ -44,6 +44,9 @@ class Base extends Model
      */
     protected $visible = [];
     
+    /**
+     * Certain
+     */
     public function scopeWithCertain($query, $relation, array $columns)
     {
         return $query->with([$relation => function ($query) use ($columns) {
@@ -62,7 +65,7 @@ class Base extends Model
             return $query;
         }
         
-        $columns = Schema::getColumnListing($this->table);
+        $columns = Schema::getColumnListing($this->getTable());
         foreach ($columns as $key => $val) {
             if (is_array($field)) {
                 if (in_array($val, $field)) {
@@ -179,11 +182,23 @@ class Base extends Model
     /**
      * 批量添加
      */
-    public function insertAll(array $data)
+    public static function insertAll(array $data)
     {
-        $res = DB::table($this->getTable())->insert($data);
+        $self = new static();
+        
+        $res = DB::table($self->getTable())->insert($data);
         
         return $res;
+    }
+    
+    /**
+     * 唯一ID
+     */
+    public static function uuid()
+    {
+        $id = md5(mt_rand(100000, 999999).microtime().uniqid());
+        
+        return $id;
     }
   
 }
