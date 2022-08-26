@@ -59,6 +59,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected $commands = [
         Command\Install::class,
+        Command\ImportMenus::class,
         Command\ImportRoute::class,
         Command\ResetPassword::class,
         Command\PassportLogout::class,

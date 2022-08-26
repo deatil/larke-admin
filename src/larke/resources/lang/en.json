@@ -221,5 +221,23 @@
     "语言名称格式错误": "lang locale error",
     "设置的语言不能为空": "lang locale dont empty",
     "设置的语言格式错误": "set lang locale error",
-    "设置默认语言成功": "set lang locale success"
+    "设置默认语言成功": "set lang locale success",
+
+    "父级ID错误": "parentid error",
+    "创建的菜单数据不能为空": "menu data dont empty",
+    "添加菜单失败": "create menu fail",
+    "添加菜单成功": "create menu success",
+    "菜单ID不能为空": "menuid dont empty",
+    "菜单不存在": "menu empty",
+    "父级菜单不能为空": "parent menu dont empty",
+    "排序不能为空": "sort dont empty",
+    "菜单修改失败": "update menu fail",
+    "菜单修改成功": "update menu success",
+    "菜单有子菜单，请删除子菜单": "menu has children and dont delete",
+    "菜单删除失败": "delete menu fail",
+    "菜单删除成功": "delete menu success",
+    "json不能为空": "json dont empty",
+    "json格式错误": "json error",
+    "保存数据失败": "save menu fail",
+    "保存数据成功": "save menu success"
 }

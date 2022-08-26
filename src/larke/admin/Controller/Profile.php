@@ -208,5 +208,25 @@ class Profile extends Base
             'list' => $rules,
         ]);
     }
+    
+    /**
+     * 权限列表
+     *
+     * @title 权限列表
+     * @desc 权限列表配置
+     * @order 208
+     * @auth true
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function roles()
+    {
+        $list = app('larke-admin.auth-admin')->getRuleSlugs();
+        
+        return $this->success(__('获取成功'), [
+            'list' => $list,
+        ]);
+    }
 
 }

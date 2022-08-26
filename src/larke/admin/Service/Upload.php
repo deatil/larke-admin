@@ -420,6 +420,17 @@ class Upload
     }
 
     /**
+     * 判断文件是否存在
+     *
+     * @param string $path 文件路径
+     * @return bool
+     */
+    public function exists(string $path)
+    {
+        return $this->storage->exists($path);
+    }
+
+    /**
      * 设置权限
      *
      * @param string $permission

@@ -291,6 +291,10 @@ class Attachment extends Base
             return $this->returnString(__('下载文件失败'));
         }
         
+        if (! $uploadService->exists($fileInfo['path'])) {
+            return $this->returnString(__('文件不存在'));
+        }
+        
         return $uploadService->getStorage()->download($fileInfo['path'], $fileInfo['name']);
     }
     

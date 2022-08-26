@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Validator;
 
+use Larke\Admin\Service\Menu as MenuModel;
 use Larke\Admin\Event\SystemInfo as SystemInfoEvent;
 use Larke\Admin\Event\SystemClearCache as SystemClearCacheEvent;
 use Larke\Admin\Event\SystemCache as SystemCacheEvent;
@@ -225,6 +226,46 @@ class System extends Base
         $sysInfo['laravel'] = app()->version(); // laravel版本
         
         return $sysInfo;
+    }
+    
+    /**
+     * 菜单列表
+     *
+     * @title 菜单列表
+     * @desc 菜单列表配置
+     * @order 206
+     * @auth true
+     *
+     * @param  MenuModel $model
+     * @return Response
+     */
+    public function menus(MenuModel $model)
+    {
+        $list = $model->getAuthList();
+        
+        return $this->success(__('获取成功'), [
+            'list' => $list,
+        ]);
+    }
+    
+    /**
+     * 菜单树
+     *
+     * @title 菜单树
+     * @desc 菜单树配置
+     * @order 207
+     * @auth true
+     *
+     * @param  MenuModel $model
+     * @return Response
+     */
+    public function menusTree(MenuModel $model)
+    {
+        $tree = $model->getAuthTree();
+        
+        return $this->success(__('获取成功'), [
+            'list' => $tree,
+        ]);
     }
     
 }

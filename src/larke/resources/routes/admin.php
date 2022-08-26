@@ -52,6 +52,7 @@ Route::group([
     $router->patch('/profile/avatar', 'Profile@updateAvatar')->name('profile.avatar');
     $router->patch('/profile/password', 'Profile@updatePasssword')->name('profile.password');
     $router->get('/profile/rules', 'Profile@rules')->name('profile.rules');
+    $router->get('/profile/roles', 'Profile@roles')->name('profile.roles');
     
     // 附件
     $router->get('/attachment', 'Attachment@index')->name('attachment.index');
@@ -116,4 +117,17 @@ Route::group([
     $router->patch('/system/lang/{locale}', 'System@setLang')->name('system.set-lang')->where('locale', '[A-Za-z0-9\-\_]+');
     $router->post('/system/cache', 'System@cache')->name('system.cache');
     $router->post('/system/clear-cache', 'System@clearCache')->name('system.clear-cache');
+    $router->get('/system/menus', 'System@menus')->name('system.menus');
+    $router->get('/system/menus-tree', 'System@menusTree')->name('system.menus-tree');
+
+    // 菜单
+    $router->get('/menu', 'Menu@index')->name('menu.index');
+    $router->get('/menu/tree', 'Menu@indexTree')->name('menu.index-tree');
+    $router->get('/menu/children', 'Menu@indexChildren')->name('menu.index-children');
+    $router->post('/menu', 'Menu@create')->name('menu.create');
+    $router->put('/menu/{id}', 'Menu@update')->name('menu.update');
+    $router->delete('/menu/{id}', 'Menu@delete')->name('menu.delete');
+    $router->get('/menu/json', 'Menu@getJson')->name('menu.json');
+    $router->put('/menu/save-json', 'Menu@saveJson')->name('menu.save-json');
+
 });

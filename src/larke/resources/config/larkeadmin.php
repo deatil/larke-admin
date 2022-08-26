@@ -135,6 +135,11 @@ return [
         'admin_id' => env('LARKE_ADMIN_AUTH_ADMIN_ID', '04f65b19e5a2513fe5a89100309da9b7'),
     ],
     
+    // 菜单存储
+    'menu' => [
+        'file' => env('LARKE_ADMIN_FRONTEND_MENU_FILE', storage_path('data/menus.json')),
+    ],
+    
     // 扩展
     'extension' => [
         // 扩展存放文件夹

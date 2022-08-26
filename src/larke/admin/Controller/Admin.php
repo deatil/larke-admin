@@ -740,7 +740,7 @@ class Admin extends Base
             'admin_id' => $id,
         ])->delete();
         
-        // 权限缓存数据更新
+        // 删除权限缓存数据
         Permission::deleteRolesForUser($id);
         
         $access = $request->input('access');
