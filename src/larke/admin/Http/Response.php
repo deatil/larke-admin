@@ -229,10 +229,17 @@ class Response implements ResponseContract
         $data = [], 
         $userHeader = []
     ) {
-        $result['success'] = $success;
-        $result['code'] = $code;
-        $message ? $result['message'] = $message : null;
-        $data ? $result['data'] = $data : null;
+        $result = [
+            'success' => $success,
+            'code'    => $code,
+        ];
+        
+        if ($message) {
+            $result['message'] = $message;
+        }
+        if ($data) {
+            $result['data'] = $data;
+        }
         
         // 返回 JSON 
         $this->returnJson($result, $userHeader);
