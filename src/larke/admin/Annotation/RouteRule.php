@@ -13,7 +13,7 @@ use Attribute;
  * @author deatil
  */
 #[Attribute]
-class Route
+class RouteRule
 {
     /**
      * 父级

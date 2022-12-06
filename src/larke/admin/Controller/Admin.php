@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 
 use Larke\Admin\Support\Tree;
 use Larke\Admin\Facade\Permission;
-use Larke\Admin\Annotation\Route;
+use Larke\Admin\Annotation\RouteRule;
 use Larke\Admin\Model\Admin as AdminModel;
 use Larke\Admin\Model\AuthGroup as AuthGroupModel;
 use Larke\Admin\Model\AuthRuleAccess as AuthRuleAccessModel;
@@ -23,7 +23,7 @@ use Larke\Admin\Repository\Admin as AdminRepository;
  * @create 2020-10-23
  * @author deatil
  */
-#[Route(
+#[RouteRule(
     title: "管理员", 
     desc: "系统管理员账号管理",
     order: 300,
@@ -38,7 +38,7 @@ class Admin extends Base
      * @param  Request  $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "管理员列表", 
         desc: "系统管理员账号列表",
         order: 301,
@@ -118,7 +118,7 @@ class Admin extends Base
      * @param string $id
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "管理员详情", 
         desc: "系统管理员账号详情",
         order: 302,
@@ -173,7 +173,7 @@ class Admin extends Base
      * @param string $id
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "管理员权限", 
         desc: "系统管理员账号权限",
         order: 303,
@@ -212,7 +212,7 @@ class Admin extends Base
      * @param string $id
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "管理员删除", 
         desc: "系统管理员账号删除",
         order: 304,
@@ -254,7 +254,7 @@ class Admin extends Base
      * @param  Request  $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "获取分组", 
         desc: "添加账号所需分组",
         order: 305,
@@ -302,7 +302,7 @@ class Admin extends Base
      * @param  Request  $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "管理员添加", 
         desc: "系统管理员账号添加",
         order: 305,
@@ -388,7 +388,7 @@ class Admin extends Base
      * @param Request $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "管理员更新", 
         desc: "系统管理员账号更新",
         order: 306,
@@ -486,7 +486,7 @@ class Admin extends Base
      * @param Request $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "修改头像", 
         desc: "系统管理员账号修改头像",
         order: 307,
@@ -538,7 +538,7 @@ class Admin extends Base
      * @param Request $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "修改密码", 
         desc: "系统管理员账号修改密码",
         order: 308,
@@ -589,7 +589,7 @@ class Admin extends Base
      * @param string $id
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "管理员启用", 
         desc: "系统管理员账号启用",
         order: 309,
@@ -631,7 +631,7 @@ class Admin extends Base
      * @param string $id
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "管理员禁用", 
         desc: "系统管理员账号禁用",
         order: 310,
@@ -673,7 +673,7 @@ class Admin extends Base
      * @param string $refreshToken
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "管理员退出", 
         desc: "系统管理员账号退出，添加用户的 refreshToken 到黑名单",
         order: 311,
@@ -731,7 +731,7 @@ class Admin extends Base
      * @param Request $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "管理员授权", 
         desc: "系统管理员账号授权",
         order: 312,
@@ -802,7 +802,7 @@ class Admin extends Base
      *
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "重设权限缓存", 
         desc: "重设权限缓存",
         order: 313,

@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 
 use Larke\Admin\Support\Tree;
-use Larke\Admin\Annotation\Route;
+use Larke\Admin\Annotation\RouteRule;
 use Larke\Admin\Model\AuthRule as AuthRuleModel;
 use Larke\Admin\Repository\AuthRule as AuthRuleRepository;
 
@@ -19,7 +19,7 @@ use Larke\Admin\Repository\AuthRule as AuthRuleRepository;
  * @create 2020-10-24
  * @author deatil
  */
-#[Route(
+#[RouteRule(
     title: "权限", 
     desc: "系统权限管理",
     order: 400,
@@ -34,7 +34,7 @@ class AuthRule extends Base
      * @param  Request  $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "权限列表", 
         desc:  "系统权限列表",
         order: 401,
@@ -107,7 +107,7 @@ class AuthRule extends Base
      * @param  Request  $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "权限树结构", 
         desc:  "权限树结构列表",
         order: 402,
@@ -138,7 +138,7 @@ class AuthRule extends Base
      * @param  Request  $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "权限子列表", 
         desc:  "权限子结构列表",
         order: 403,
@@ -169,7 +169,7 @@ class AuthRule extends Base
      * @param string $id
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "权限详情", 
         desc:  "权限详情",
         order: 404,
@@ -196,7 +196,7 @@ class AuthRule extends Base
      * @param string $id
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "权限删除", 
         desc:  "权限删除",
         order: 405,
@@ -238,7 +238,7 @@ class AuthRule extends Base
      * @param  Request  $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "权限清空", 
         desc:  "清空特定ID权限",
         order: 406,
@@ -281,7 +281,7 @@ class AuthRule extends Base
      * @param  Request  $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "权限添加", 
         desc:  "添加权限",
         order: 407,
@@ -352,7 +352,7 @@ class AuthRule extends Base
      * @param Request $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "权限更新", 
         desc:  "权限更新",
         order: 408,
@@ -440,7 +440,7 @@ class AuthRule extends Base
      * @param Request $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "权限排序", 
         desc:  "更新权限排序",
         order: 409,
@@ -474,7 +474,7 @@ class AuthRule extends Base
      * @param string $id
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "权限启用", 
         desc:  "更新权限启用",
         order: 410,
@@ -510,7 +510,7 @@ class AuthRule extends Base
      * @param string $id
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "权限禁用", 
         desc:  "更新权限禁用",
         order: 411,

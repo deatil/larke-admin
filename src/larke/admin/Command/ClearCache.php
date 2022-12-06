@@ -41,6 +41,7 @@ class ClearCache extends Command
         $this->call('view:clear');
         
         // > php artisan route:clear
+        // > php artisan config:clear
         // $this->call('route:clear');
         // $this->call('config:clear');
         

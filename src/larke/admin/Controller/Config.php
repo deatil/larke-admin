@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 
 use Larke\Admin\Event;
-use Larke\Admin\Annotation\Route;
+use Larke\Admin\Annotation\RouteRule;
 use Larke\Admin\Model\Config as ConfigModel;
 
 /**
@@ -18,7 +18,7 @@ use Larke\Admin\Model\Config as ConfigModel;
  * @create 2020-10-25
  * @author deatil
  */
-#[Route(
+#[RouteRule(
     title: "配置", 
     desc:  "系统配置管理",
     order: 250,
@@ -33,7 +33,7 @@ class Config extends Base
      * @param  Request  $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "配置列表", 
         desc:  "系统配置列表",
         order: 251,
@@ -118,7 +118,7 @@ class Config extends Base
      * @param string $id
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "配置详情", 
         desc:  "系统配置详情",
         order: 252,
@@ -146,7 +146,7 @@ class Config extends Base
      * @param string $id
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "配置删除", 
         desc:  "系统配置删除",
         order: 253,
@@ -179,7 +179,7 @@ class Config extends Base
      * @param  Request  $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "配置添加", 
         desc:  "系统配置添加",
         order: 254,
@@ -241,7 +241,7 @@ class Config extends Base
      * @param Request $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "配置更新", 
         desc:  "系统配置更新",
         order: 255,
@@ -317,7 +317,7 @@ class Config extends Base
      *
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "配置全部列表", 
         desc:  "配置全部列表，没有分页",
         order: 256,
@@ -353,7 +353,7 @@ class Config extends Base
      *
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "更新配置", 
         desc:  "更新配置",
         order: 257,
@@ -379,7 +379,7 @@ class Config extends Base
      *
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "获取配置数组", 
         desc:  "获取配置全部数组",
         order: 258,
@@ -403,7 +403,7 @@ class Config extends Base
      * @param  Request $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "配置排序", 
         desc:  "配置排序",
         order: 259,
@@ -437,7 +437,7 @@ class Config extends Base
      * @param string $id
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "配置启用", 
         desc:  "配置启用",
         order: 260,
@@ -473,7 +473,7 @@ class Config extends Base
      * @param string $id
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "配置禁用", 
         desc:  "配置禁用",
         order: 261,

@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 use Larke\Admin\Support\Tree;
-use Larke\Admin\Annotation\Route;
+use Larke\Admin\Annotation\RouteRule;
 use Larke\Admin\Http\Controller as BaseController;
 use Larke\Admin\Service\Menu as MenuModel;
 
@@ -18,7 +18,7 @@ use Larke\Admin\Service\Menu as MenuModel;
  * @create 2022-8-26
  * @author deatil
  */
-#[Route(
+#[RouteRule(
     title: "菜单管理", 
     desc:  "菜单管理",
     order: 650,
@@ -34,7 +34,7 @@ class Menu extends BaseController
      * @param  MenuModel $menuModel
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "菜单列表", 
         desc:  "菜单列表管理",
         order: 651,
@@ -55,7 +55,7 @@ class Menu extends BaseController
      * @param  Request  $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "菜单树列表", 
         desc:  "菜单树列表管理",
         order: 652,
@@ -87,7 +87,7 @@ class Menu extends BaseController
      * @param  Request  $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "菜单子列表", 
         desc:  "菜单子列表管理",
         order: 653,
@@ -139,7 +139,7 @@ class Menu extends BaseController
      * @param  MenuModel $menuModel
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "菜单创建", 
         desc:  "菜单创建管理",
         order: 654,
@@ -168,7 +168,7 @@ class Menu extends BaseController
      * @param  MenuModel $menuModel
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "菜单更新", 
         desc:  "菜单更新管理",
         order: 655,
@@ -216,7 +216,7 @@ class Menu extends BaseController
      * @param  MenuModel $menuModel
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "菜单删除", 
         desc:  "菜单删除管理",
         order: 656,
@@ -252,7 +252,7 @@ class Menu extends BaseController
      * @param  Request  $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "菜单获取全部", 
         desc:  "菜单获取全部管理",
         order: 657,
@@ -273,7 +273,7 @@ class Menu extends BaseController
      * @param  Request  $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "菜单保存全部", 
         desc:  "菜单保存全部管理",
         order: 658,

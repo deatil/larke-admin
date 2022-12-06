@@ -9,7 +9,7 @@ use ReflectionClass;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
-use Larke\Admin\Annotation\Route;
+use Larke\Admin\Annotation\RouteRule;
 use Larke\Admin\Service\Route as RouteService;
 use Larke\Admin\Model\AuthRule as AuthRuleModel;
 
@@ -244,7 +244,7 @@ class ImportRoute
         
         // 获取注解信息
         $reflection = new ReflectionClass($actionClass);
-        $actionClassAttrs = $reflection->getAttributes(Route::class);
+        $actionClassAttrs = $reflection->getAttributes(RouteRule::class);
         
         $docComment = [];
         if (count($actionClassAttrs) > 0) {
@@ -287,7 +287,7 @@ class ImportRoute
         list ($actionClass, $actionMethod) = $actions;
         
         $reflection = new ReflectionClass($actionClass);
-        $actionMethodAttrs = $reflection->getMethod($actionMethod)->getAttributes(Route::class);
+        $actionMethodAttrs = $reflection->getMethod($actionMethod)->getAttributes(RouteRule::class);
         
         $docComment = [];
         if (count($actionMethodAttrs) > 0) {

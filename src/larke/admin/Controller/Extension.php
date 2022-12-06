@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Validator;
 
 use Larke\Admin\Event;
 use Larke\Admin\Support\PclZip;
-use Larke\Admin\Annotation\Route;
+use Larke\Admin\Annotation\RouteRule;
 use Larke\Admin\Composer\Repository as ComposerRepository;
 use Larke\Admin\Facade\Extension as AdminExtension;
 use Larke\Admin\Model\Extension as ExtensionModel;
@@ -26,7 +26,7 @@ use Larke\Admin\Model\Extension as ExtensionModel;
  * @create 2020-10-30
  * @author deatil
  */
-#[Route(
+#[RouteRule(
     title: "扩展", 
     desc:  "系统扩展管理",
     order: 560,
@@ -41,7 +41,7 @@ class Extension extends Base
      * @param  Request  $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "扩展列表", 
         desc:  "系统扩展列表管理",
         order: 561,
@@ -123,7 +123,7 @@ class Extension extends Base
      *
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "本地扩展", 
         desc:  "本地全部扩展",
         order: 562,
@@ -163,7 +163,7 @@ class Extension extends Base
      *
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "刷新扩展", 
         desc:  "刷新本地扩展",
         order: 563,
@@ -182,7 +182,7 @@ class Extension extends Base
      * @param string $name
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "本地扩展命令", 
         desc:  "本地扩展命令，只限用于非composer扩展",
         order: 564,
@@ -225,7 +225,7 @@ class Extension extends Base
      * @param string $name
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "扩展安装", 
         desc:  "系统扩展安装",
         order: 565,
@@ -321,7 +321,7 @@ class Extension extends Base
      * @param string $name
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "扩展卸载", 
         desc:  "系统扩展卸载",
         order: 566,
@@ -365,7 +365,7 @@ class Extension extends Base
      * @param string $name
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "扩展更新", 
         desc:  "系统扩展更新",
         order: 567,
@@ -470,7 +470,7 @@ class Extension extends Base
      * @param Request $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "扩展排序", 
         desc:  "系统扩展排序",
         order: 568,
@@ -504,7 +504,7 @@ class Extension extends Base
      * @param string $name
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "扩展启用", 
         desc:  "系统扩展启用",
         order: 569,
@@ -548,7 +548,7 @@ class Extension extends Base
      * @param string $name
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "扩展禁用", 
         desc:  "系统扩展禁用",
         order: 570,
@@ -591,7 +591,7 @@ class Extension extends Base
      * @param Request $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "扩展配置", 
         desc:  "系统扩展配置",
         order: 571,
@@ -638,7 +638,7 @@ class Extension extends Base
      * @param  Request  $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "扩展上传", 
         desc:  "扩展压缩包上传",
         order: 572,
@@ -766,7 +766,7 @@ class Extension extends Base
      * @param Request $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "仓库注册扩展", 
         desc:  "本地扩展注册到composer.json仓库",
         order: 573,
@@ -808,7 +808,7 @@ class Extension extends Base
      * @param Request $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "仓库移除扩展", 
         desc:  "本地扩展从composer.json仓库移除",
         order: 574,

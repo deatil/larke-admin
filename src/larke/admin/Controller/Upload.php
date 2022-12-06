@@ -8,7 +8,7 @@ use Exception;
 
 use Illuminate\Http\Request;
 
-use Larke\Admin\Annotation\Route;
+use Larke\Admin\Annotation\RouteRule;
 use Larke\Admin\Model\Admin as AdminModel;
 use Larke\Admin\Model\Attachment as AttachmentModel;
 use Larke\Admin\Service\Upload as UploadService;
@@ -19,7 +19,7 @@ use Larke\Admin\Service\Upload as UploadService;
  * @create 2021-4-18
  * @author deatil
  */
-#[Route(
+#[RouteRule(
     title: "附件上传", 
     desc:  "附件上传",
     order: 571,
@@ -35,7 +35,7 @@ class Upload extends Base
      * @param  Request  $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "上传文件", 
         desc:  "上传附件文件",
         order: 572,

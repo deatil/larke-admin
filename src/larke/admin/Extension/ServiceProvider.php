@@ -38,8 +38,8 @@ abstract class ServiceProvider extends BaseServiceProvider
     /**
      * 添加扩展
      *
-     * @param string  $pkgName  扩展包名
-     * @param Info    $info     扩展信息
+     * @param string $pkgName 扩展包名
+     * @param Info   $info    扩展信息
      */
     protected function withExtension($pkgName, Info $info = null)
     {
@@ -49,10 +49,10 @@ abstract class ServiceProvider extends BaseServiceProvider
     /**
      * 添加扩展
      *
-     * @param  string  $name          服务提供者名称
-     * @param  string  $composerFile  composer.json 文件
-     * @param  string  $icon          扩展图标
-     * @param  array   $config        扩展配置
+     * @param  string  $name         服务提供者名称
+     * @param  string  $composerFile composer.json 文件
+     * @param  string  $icon         扩展图标
+     * @param  array   $config       扩展配置
      */
     protected function withExtensionFromComposer(
         string $name = null, 
@@ -82,11 +82,11 @@ abstract class ServiceProvider extends BaseServiceProvider
     /**
      * 添加扩展信息
      *
-     * @param   string|array    $name       服务提供者名称
-     * @param   array           $info       扩展信息
-     * @param   string          $icon       扩展图标
-     * @param   array           $config     扩展配置
-     * @return  Info          
+     * @param   string|array $name   服务提供者名称
+     * @param   array        $info   扩展信息
+     * @param   string       $icon   扩展图标
+     * @param   array        $config 扩展配置
+     * @return  Info         
      */
     protected function withExtensionInfo(
         $name = null, 
@@ -149,12 +149,8 @@ abstract class ServiceProvider extends BaseServiceProvider
         $data = Composer::parse($composerFile)->toArray();
         
         if (! $isOriginal) {
-            // 用 required 覆盖 require 数据
-            $required = Arr::get($data, "required", []);
-            Arr::set($data, "require", $required);
-            
-            $version = Arr::get($data, "versions", []);
-            Arr::set($data, "version", $version);
+            $extensionData = Arr::get($data, "extra.larke", []);
+            $data = array_merge($data, $extensionData);
         }
         
         return $data;

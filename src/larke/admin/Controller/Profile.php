@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 
-use Larke\Admin\Annotation\Route;
+use Larke\Admin\Annotation\RouteRule;
 use Larke\Admin\Model\Admin as AdminModel;
 
 /**
@@ -17,7 +17,7 @@ use Larke\Admin\Model\Admin as AdminModel;
  * @create 2020-10-20
  * @author deatil
  */
-#[Route(
+#[RouteRule(
     title: "个人信息", 
     desc:  "个人信息管理",
     order: 150,
@@ -31,7 +31,7 @@ class Profile extends Base
      *
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "我的信息", 
         desc:  "我的信息管理",
         order: 151,
@@ -50,7 +50,7 @@ class Profile extends Base
      * @param  Request  $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "修改我的信息", 
         desc:  "修改我的信息管理",
         order: 152,
@@ -101,7 +101,7 @@ class Profile extends Base
      * @param  Request  $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "修改头像", 
         desc:  "修改头像管理",
         order: 153,
@@ -139,7 +139,7 @@ class Profile extends Base
      * @param  Request  $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "修改密码", 
         desc:  "修改密码管理",
         order: 154,
@@ -201,7 +201,7 @@ class Profile extends Base
      *
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "权限列表", 
         desc:  "权限列表管理",
         order: 155,
@@ -222,7 +222,7 @@ class Profile extends Base
      * @param  Request  $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "权限列表配置", 
         desc:  "权限列表配置",
         order: 208,

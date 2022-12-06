@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use phpseclib3\Crypt\RSA;
 use phpseclib3\Crypt\PublicKeyLoader;
 
-use Larke\Admin\Annotation\Route;
+use Larke\Admin\Annotation\RouteRule;
 use Larke\Admin\Model\Admin as AdminModel;
 
 // 文件夹引入
@@ -25,7 +25,7 @@ use Larke\Admin\Event;
  * @create 2020-10-19
  * @author deatil
  */
-#[Route(
+#[RouteRule(
     title: "登陆", 
     desc:  "系统登陆管理",
     order: 100,
@@ -40,7 +40,7 @@ class Passport extends Base
      * @param  Request  $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "验证码", 
         desc:  "登陆验证码",
         order: 101,
@@ -75,7 +75,7 @@ class Passport extends Base
      * @param  Request  $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "公钥", 
         desc:  "登陆使用公钥",
         order: 102,
@@ -128,7 +128,7 @@ class Passport extends Base
      * @param  Request  $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "登陆", 
         desc:  "登陆登陆",
         order: 103,
@@ -277,7 +277,7 @@ class Passport extends Base
      * @param  Request  $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "刷新token", 
         desc:  "刷新token",
         order: 104,
@@ -363,7 +363,7 @@ class Passport extends Base
      * @param  Request  $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "退出", 
         desc:  "账号退出",
         order: 105,

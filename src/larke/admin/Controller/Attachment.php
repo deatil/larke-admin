@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
 
-use Larke\Admin\Annotation\Route;
+use Larke\Admin\Annotation\RouteRule;
 use Larke\Admin\Model\Admin as AdminModel;
 use Larke\Admin\Model\Attachment as AttachmentModel;
 use Larke\Admin\Service\Upload as UploadService;
@@ -20,7 +20,7 @@ use Larke\Admin\Service\Upload as UploadService;
  * @create 2020-10-22
  * @author deatil
  */
-#[Route(
+#[RouteRule(
     title: "附件", 
     desc: "系统附件管理",
     order: 570,
@@ -35,7 +35,7 @@ class Attachment extends Base
      * @param  Request  $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "附件列表", 
         desc: "附件列表",
         order: 501,
@@ -102,7 +102,7 @@ class Attachment extends Base
      * @param string $id
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "附件详情", 
         desc: "附件详情",
         order: 502,
@@ -129,7 +129,7 @@ class Attachment extends Base
      * @param string $id
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "附件删除", 
         desc: "附件删除",
         order: 503,
@@ -168,7 +168,7 @@ class Attachment extends Base
      * @param string $id
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "附件启用", 
         desc: "附件启用",
         order: 504,
@@ -204,7 +204,7 @@ class Attachment extends Base
      * @param string $id
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "附件禁用", 
         desc: "附件禁用",
         order: 505,
@@ -240,7 +240,7 @@ class Attachment extends Base
      * @param string $id
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "附件下载码", 
         desc: "附件下载码",
         order: 506,
@@ -272,7 +272,7 @@ class Attachment extends Base
      * @param string $code
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "附件下载", 
         desc: "附件下载",
         order: 507,

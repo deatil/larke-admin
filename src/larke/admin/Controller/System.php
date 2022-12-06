@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Validator;
 
-use Larke\Admin\Annotation\Route;
+use Larke\Admin\Annotation\RouteRule;
 use Larke\Admin\Service\Menu as MenuModel;
 use Larke\Admin\Event\SystemInfo as SystemInfoEvent;
 use Larke\Admin\Event\SystemClearCache as SystemClearCacheEvent;
@@ -22,7 +22,7 @@ use Larke\Admin\Event\SystemCache as SystemCacheEvent;
  * @create 2020-10-25
  * @author deatil
  */
-#[Route(
+#[RouteRule(
     title: "系统", 
     desc:  "系统管理",
     order: 200,
@@ -36,7 +36,7 @@ class System extends Base
      *
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "系统详情", 
         desc:  "系统详情管理",
         order: 201,
@@ -62,7 +62,7 @@ class System extends Base
      *
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "清除缓存", 
         desc:  "清除缓存管理",
         order: 202,
@@ -87,7 +87,7 @@ class System extends Base
      *
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "设置缓存", 
         desc:  "设置缓存管理",
         order: 203,
@@ -109,7 +109,7 @@ class System extends Base
      * @param  Request  $request
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "语言包", 
         desc:  "语言包管理",
         order: 204,
@@ -169,7 +169,7 @@ class System extends Base
      *
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "语言设置", 
         desc:  "设置系统默认语言",
         order: 205,
@@ -241,7 +241,7 @@ class System extends Base
      * @param  MenuModel $model
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "菜单列表", 
         desc:  "菜单列表配置",
         order: 206,
@@ -262,7 +262,7 @@ class System extends Base
      * @param  MenuModel $model
      * @return Response
      */
-    #[Route(
+    #[RouteRule(
         title: "菜单树", 
         desc:  "菜单树配置",
         order: 207,
