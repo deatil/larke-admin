@@ -7,12 +7,12 @@ namespace Larke\Admin\Annotation;
 use Attribute;
 
 /**
- * 路由注解
+ * 路由规则注解
  *
  * @create 2022-12-6
  * @author deatil
  */
-#[Attribute]
+#[Attribute(Attribute::TARGET_ALL|Attribute::IS_REPEATABLE)]
 class RouteRule
 {
     /**

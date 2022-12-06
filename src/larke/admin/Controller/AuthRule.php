@@ -21,10 +21,10 @@ use Larke\Admin\Repository\AuthRule as AuthRuleRepository;
  */
 #[RouteRule(
     title: "权限", 
-    desc: "系统权限管理",
+    desc:  "系统权限管理",
     order: 400,
-    auth: true,
-    slug: "{prefix}auth-rule"
+    auth:  true,
+    slug:  "{prefix}auth-rule"
 )]
 class AuthRule extends Base
 {

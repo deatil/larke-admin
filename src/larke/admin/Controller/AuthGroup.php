@@ -24,10 +24,10 @@ use Larke\Admin\Repository\AuthGroup as AuthGroupRepository;
  */
 #[RouteRule(
     title: "管理分组", 
-    desc: "系统管理分组管理",
+    desc:  "系统管理分组管理",
     order: 450,
-    auth: true,
-    slug: "{prefix}auth-group"
+    auth:  true,
+    slug:  "{prefix}auth-group"
 )]
 class AuthGroup extends Base
 {
@@ -39,9 +39,9 @@ class AuthGroup extends Base
      */
     #[RouteRule(
         title: "分组列表", 
-        desc: "系统管理分组列表",
+        desc:  "系统管理分组列表",
         order: 451,
-        auth: true
+        auth:  true
     )]
     public function index(Request $request)
     {
@@ -104,9 +104,9 @@ class AuthGroup extends Base
      */
     #[RouteRule(
         title: "分组树结构", 
-        desc: "管理分组树结构",
+        desc:  "管理分组树结构",
         order: 452,
-        auth: true
+        auth:  true
     )]
     public function indexTree(Request $request)
     {
@@ -134,9 +134,9 @@ class AuthGroup extends Base
      */
     #[RouteRule(
         title: "分组子列表", 
-        desc: "管理分组子列表",
+        desc:  "管理分组子列表",
         order: 453,
-        auth: true
+        auth:  true
     )]
     public function indexChildren(Request $request)
     {
@@ -165,9 +165,9 @@ class AuthGroup extends Base
      */
     #[RouteRule(
         title: "分组详情", 
-        desc: "管理分组详情",
+        desc:  "管理分组详情",
         order: 454,
-        auth: true
+        auth:  true
     )]
     public function detail(string $id)
     {
@@ -202,9 +202,9 @@ class AuthGroup extends Base
      */
     #[RouteRule(
         title: "分组删除", 
-        desc: "管理分组删除",
+        desc:  "管理分组删除",
         order: 455,
-        auth: true
+        auth:  true
     )]
     public function delete(string $id)
     {
@@ -244,9 +244,9 @@ class AuthGroup extends Base
      */
     #[RouteRule(
         title: "分组添加", 
-        desc: "管理分组添加",
+        desc:  "管理分组添加",
         order: 456,
-        auth: true
+        auth:  true
     )]
     public function create(Request $request)
     {

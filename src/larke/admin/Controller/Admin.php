@@ -25,10 +25,10 @@ use Larke\Admin\Repository\Admin as AdminRepository;
  */
 #[RouteRule(
     title: "管理员", 
-    desc: "系统管理员账号管理",
+    desc:  "系统管理员账号管理",
     order: 300,
-    auth: true,
-    slug: "{prefix}admin"
+    auth:  true,
+    slug:  "{prefix}admin"
 )]
 class Admin extends Base
 {
@@ -40,9 +40,9 @@ class Admin extends Base
      */
     #[RouteRule(
         title: "管理员列表", 
-        desc: "系统管理员账号列表",
+        desc:  "系统管理员账号列表",
         order: 301,
-        auth: true
+        auth:  true
     )]
     public function index(Request $request)
     {
@@ -120,9 +120,9 @@ class Admin extends Base
      */
     #[RouteRule(
         title: "管理员详情", 
-        desc: "系统管理员账号详情",
+        desc:  "系统管理员账号详情",
         order: 302,
-        auth: true
+        auth:  true
     )]
     public function detail(string $id)
     {
@@ -175,9 +175,9 @@ class Admin extends Base
      */
     #[RouteRule(
         title: "管理员权限", 
-        desc: "系统管理员账号权限",
+        desc:  "系统管理员账号权限",
         order: 303,
-        auth: true
+        auth:  true
     )]
     public function rules(string $id)
     {
@@ -214,9 +214,9 @@ class Admin extends Base
      */
     #[RouteRule(
         title: "管理员删除", 
-        desc: "系统管理员账号删除",
+        desc:  "系统管理员账号删除",
         order: 304,
-        auth: true
+        auth:  true
     )]
     public function delete(string $id)
     {
@@ -256,9 +256,9 @@ class Admin extends Base
      */
     #[RouteRule(
         title: "获取分组", 
-        desc: "添加账号所需分组",
+        desc:  "添加账号所需分组",
         order: 305,
-        auth: true
+        auth:  true
     )]
     public function groups(Request $request)
     {
@@ -304,9 +304,9 @@ class Admin extends Base
      */
     #[RouteRule(
         title: "管理员添加", 
-        desc: "系统管理员账号添加",
+        desc:  "系统管理员账号添加",
         order: 305,
-        auth: true
+        auth:  true
     )]
     public function create(Request $request)
     {
@@ -390,9 +390,9 @@ class Admin extends Base
      */
     #[RouteRule(
         title: "管理员更新", 
-        desc: "系统管理员账号更新",
+        desc:  "系统管理员账号更新",
         order: 306,
-        auth: true
+        auth:  true
     )]
     public function update(string $id, Request $request)
     {
@@ -488,9 +488,9 @@ class Admin extends Base
      */
     #[RouteRule(
         title: "修改头像", 
-        desc: "系统管理员账号修改头像",
+        desc:  "系统管理员账号修改头像",
         order: 307,
-        auth: true
+        auth:  true
     )]
     public function updateAvatar(string $id, Request $request)
     {
@@ -540,9 +540,9 @@ class Admin extends Base
      */
     #[RouteRule(
         title: "修改密码", 
-        desc: "系统管理员账号修改密码",
+        desc:  "系统管理员账号修改密码",
         order: 308,
-        auth: true
+        auth:  true
     )]
     public function updatePasssword(string $id, Request $request)
     {
@@ -591,9 +591,9 @@ class Admin extends Base
      */
     #[RouteRule(
         title: "管理员启用", 
-        desc: "系统管理员账号启用",
+        desc:  "系统管理员账号启用",
         order: 309,
-        auth: true
+        auth:  true
     )]
     public function enable(string $id)
     {
@@ -633,9 +633,9 @@ class Admin extends Base
      */
     #[RouteRule(
         title: "管理员禁用", 
-        desc: "系统管理员账号禁用",
+        desc:  "系统管理员账号禁用",
         order: 310,
-        auth: true
+        auth:  true
     )]
     public function disable(string $id)
     {
@@ -675,9 +675,9 @@ class Admin extends Base
      */
     #[RouteRule(
         title: "管理员退出", 
-        desc: "系统管理员账号退出，添加用户的 refreshToken 到黑名单",
+        desc:  "系统管理员账号退出，添加用户的 refreshToken 到黑名单",
         order: 311,
-        auth: true
+        auth:  true
     )]
     public function logout(string $refreshToken)
     {
@@ -733,9 +733,9 @@ class Admin extends Base
      */
     #[RouteRule(
         title: "管理员授权", 
-        desc: "系统管理员账号授权",
+        desc:  "系统管理员账号授权",
         order: 312,
-        auth: true
+        auth:  true
     )]
     public function access(string $id, Request $request)
     {
@@ -804,9 +804,9 @@ class Admin extends Base
      */
     #[RouteRule(
         title: "重设权限缓存", 
-        desc: "重设权限缓存",
+        desc:  "重设权限缓存",
         order: 313,
-        auth: true
+        auth:  true
     )]
     public function ResetPermission()
     {
