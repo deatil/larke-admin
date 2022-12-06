@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Validator;
 
+use Larke\Admin\Annotation\Route;
 use Larke\Admin\Service\Menu as MenuModel;
 use Larke\Admin\Event\SystemInfo as SystemInfoEvent;
 use Larke\Admin\Event\SystemClearCache as SystemClearCacheEvent;
@@ -18,27 +19,29 @@ use Larke\Admin\Event\SystemCache as SystemCacheEvent;
 /**
  * 系统
  *
- * @title 系统
- * @desc 系统管理
- * @order 200
- * @auth true
- * @slug {prefix}system
- *
  * @create 2020-10-25
  * @author deatil
  */
+#[Route(
+    title: "系统", 
+    desc:  "系统管理",
+    order: 200,
+    auth:  true,
+    slug:  "{prefix}system"
+)]
 class System extends Base
 {
     /**
      * 系统详情
      *
-     * @title 系统详情
-     * @desc 系统详情管理
-     * @order 201
-     * @auth true
-     *
      * @return Response
      */
+    #[Route(
+        title: "系统详情", 
+        desc:  "系统详情管理",
+        order: 201,
+        auth:  true
+    )]
     public function info()
     {
         $info = [
@@ -57,13 +60,14 @@ class System extends Base
     /**
      * 清除缓存
      *
-     * @title 清除缓存
-     * @desc 清除缓存管理
-     * @order 202
-     * @auth true
-     *
      * @return Response
      */
+    #[Route(
+        title: "清除缓存", 
+        desc:  "清除缓存管理",
+        order: 202,
+        auth:  true
+    )]
     public function clearCache()
     {
         Artisan::call('cache:clear');
@@ -81,13 +85,14 @@ class System extends Base
     /**
      * 设置缓存
      *
-     * @title 设置缓存
-     * @desc 设置缓存管理
-     * @order 203
-     * @auth true
-     *
      * @return Response
      */
+    #[Route(
+        title: "设置缓存", 
+        desc:  "设置缓存管理",
+        order: 203,
+        auth:  true
+    )]
     public function cache()
     {
         Artisan::call('route:cache');
@@ -101,14 +106,15 @@ class System extends Base
     /**
      * 语言包
      *
-     * @title 语言包
-     * @desc 语言包管理
-     * @order 204
-     * @auth true
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "语言包", 
+        desc:  "语言包管理",
+        order: 204,
+        auth:  true
+    )]
     public function lang(Request $request)
     {
         $group = $request->input('group');
@@ -161,13 +167,14 @@ class System extends Base
     /**
      * 设置默认语言
      *
-     * @title 语言设置
-     * @desc 设置系统默认语言
-     * @order 205
-     * @auth true
-     *
      * @return Response
      */
+    #[Route(
+        title: "语言设置", 
+        desc:  "设置系统默认语言",
+        order: 205,
+        auth:  true
+    )]
     public function setLang(string $locale)
     {
         $validator = Validator::make([
@@ -231,14 +238,15 @@ class System extends Base
     /**
      * 菜单列表
      *
-     * @title 菜单列表
-     * @desc 菜单列表配置
-     * @order 206
-     * @auth true
-     *
      * @param  MenuModel $model
      * @return Response
      */
+    #[Route(
+        title: "菜单列表", 
+        desc:  "菜单列表配置",
+        order: 206,
+        auth:  true
+    )]
     public function menus(MenuModel $model)
     {
         $list = $model->getAuthList();
@@ -251,14 +259,15 @@ class System extends Base
     /**
      * 菜单树
      *
-     * @title 菜单树
-     * @desc 菜单树配置
-     * @order 207
-     * @auth true
-     *
      * @param  MenuModel $model
      * @return Response
      */
+    #[Route(
+        title: "菜单树", 
+        desc:  "菜单树配置",
+        order: 207,
+        auth:  true
+    )]
     public function menusTree(MenuModel $model)
     {
         $tree = $model->getAuthTree();

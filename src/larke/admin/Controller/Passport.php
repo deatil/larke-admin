@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use phpseclib3\Crypt\RSA;
 use phpseclib3\Crypt\PublicKeyLoader;
 
+use Larke\Admin\Annotation\Route;
 use Larke\Admin\Model\Admin as AdminModel;
 
 // 文件夹引入
@@ -21,28 +22,30 @@ use Larke\Admin\Event;
 /**
  * 登陆
  *
- * @title 登陆
- * @desc 系统登陆管理
- * @order 100
- * @auth false
- * @slug {prefix}passport
- *
  * @create 2020-10-19
  * @author deatil
  */
+#[Route(
+    title: "登陆", 
+    desc:  "系统登陆管理",
+    order: 100,
+    auth:  true,
+    slug:  "{prefix}passport"
+)]
 class Passport extends Base
 {
     /**
      * 验证码
      *
-     * @title 验证码
-     * @desc 登陆验证码
-     * @order 101
-     * @auth false
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "验证码", 
+        desc:  "登陆验证码",
+        order: 101,
+        auth:  false
+    )]
     public function captcha(Request $request)
     {
         $captchaAttr = app('larke-admin.captcha')
@@ -69,14 +72,15 @@ class Passport extends Base
     /**
      * 公钥
      *
-     * @title 公钥
-     * @desc 登陆使用公钥
-     * @order 101
-     * @auth false
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "公钥", 
+        desc:  "登陆使用公钥",
+        order: 102,
+        auth:  false
+    )]
     public function passkey(Request $request)
     {
         // 使用 RSA 方法
@@ -121,14 +125,15 @@ class Passport extends Base
     /**
      * 登陆
      *
-     * @title 登陆
-     * @desc 登陆登陆
-     * @order 102
-     * @auth false
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "登陆", 
+        desc:  "登陆登陆",
+        order: 103,
+        auth:  false
+    )]
     public function login(Request $request)
     {
         // 监听事件
@@ -269,14 +274,15 @@ class Passport extends Base
     /**
      * 刷新token
      *
-     * @title 刷新token
-     * @desc 刷新token
-     * @order 103
-     * @auth false
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "刷新token", 
+        desc:  "刷新token",
+        order: 104,
+        auth:  false
+    )]
     public function refreshToken(Request $request)
     {
         $refreshToken = $request->input('refresh_token');
@@ -354,14 +360,15 @@ class Passport extends Base
     /**
      * 退出
      *
-     * @title 退出
-     * @desc 账号退出
-     * @order 104
-     * @auth true
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "退出", 
+        desc:  "账号退出",
+        order: 105,
+        auth:  true
+    )]
     public function logout(Request $request)
     {
         $refreshToken = $request->input('refresh_token');

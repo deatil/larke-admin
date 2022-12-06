@@ -8,32 +8,35 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 
+use Larke\Admin\Annotation\Route;
 use Larke\Admin\Model\Admin as AdminModel;
 
 /**
  * 个人信息
  *
- * @title 个人信息
- * @desc 个人信息管理
- * @order 150
- * @auth true
- * @slug {prefix}profile
- *
  * @create 2020-10-20
  * @author deatil
  */
+#[Route(
+    title: "个人信息", 
+    desc:  "个人信息管理",
+    order: 150,
+    auth:  true,
+    slug:  "{prefix}profile"
+)]
 class Profile extends Base
 {
     /**
      * 我的信息
      *
-     * @title 我的信息
-     * @desc 我的信息管理
-     * @order 151
-     * @auth true
-     *
      * @return Response
      */
+    #[Route(
+        title: "我的信息", 
+        desc:  "我的信息管理",
+        order: 151,
+        auth:  true
+    )]
     public function index()
     {
         $data = app('larke-admin.auth-admin')->getProfile();
@@ -44,14 +47,15 @@ class Profile extends Base
     /**
      * 修改我的信息
      *
-     * @title 修改我的信息
-     * @desc 修改我的信息管理
-     * @order 152
-     * @auth true
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "修改我的信息", 
+        desc:  "修改我的信息管理",
+        order: 152,
+        auth:  true
+    )]
     public function update(Request $request)
     {
         $data = $request->only(['nickname', 'email', 'introduce']);
@@ -94,14 +98,15 @@ class Profile extends Base
     /**
      * 修改头像
      *
-     * @title 修改头像
-     * @desc 修改头像管理
-     * @order 153
-     * @auth true
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "修改头像", 
+        desc:  "修改头像管理",
+        order: 153,
+        auth:  true
+    )]
     public function updateAvatar(Request $request)
     {
         $data = $request->only(['avatar']);
@@ -131,14 +136,15 @@ class Profile extends Base
     /**
      * 修改密码
      *
-     * @title 修改密码
-     * @desc 修改密码管理
-     * @order 154
-     * @auth true
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "修改密码", 
+        desc:  "修改密码管理",
+        order: 154,
+        auth:  true
+    )]
     public function updatePasssword(Request $request)
     {
         // 密码长度错误
@@ -193,13 +199,14 @@ class Profile extends Base
     /**
      * 权限列表
      *
-     * @title 权限列表
-     * @desc 权限列表管理
-     * @order 155
-     * @auth true
-     *
      * @return Response
      */
+    #[Route(
+        title: "权限列表", 
+        desc:  "权限列表管理",
+        order: 155,
+        auth:  true
+    )]
     public function rules()
     {
         $rules = app('larke-admin.auth-admin')->getRules();
@@ -212,14 +219,15 @@ class Profile extends Base
     /**
      * 权限列表
      *
-     * @title 权限列表
-     * @desc 权限列表配置
-     * @order 208
-     * @auth true
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "权限列表配置", 
+        desc:  "权限列表配置",
+        order: 208,
+        auth:  true
+    )]
     public function roles()
     {
         $list = app('larke-admin.auth-admin')->getRuleSlugs();

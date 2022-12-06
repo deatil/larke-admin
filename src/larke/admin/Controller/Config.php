@@ -9,33 +9,36 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 
 use Larke\Admin\Event;
+use Larke\Admin\Annotation\Route;
 use Larke\Admin\Model\Config as ConfigModel;
 
 /**
  * 配置
  *
- * @title 配置
- * @desc 系统配置管理
- * @order 250
- * @auth true
- * @slug {prefix}config
- *
  * @create 2020-10-25
  * @author deatil
  */
+#[Route(
+    title: "配置", 
+    desc:  "系统配置管理",
+    order: 250,
+    auth:  true,
+    slug:  "{prefix}config"
+)]
 class Config extends Base
 {
     /**
      * 列表
      *
-     * @title 配置列表
-     * @desc 系统配置列表
-     * @order 251
-     * @auth true
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "配置列表", 
+        desc:  "系统配置列表",
+        order: 251,
+        auth:  true
+    )]
     public function index(Request $request)
     {
         $start = (int) $request->input('start', 0);
@@ -112,14 +115,15 @@ class Config extends Base
     /**
      * 详情
      *
-     * @title 配置详情
-     * @desc 系统配置详情
-     * @order 252
-     * @auth true
-     *
      * @param string $id
      * @return Response
      */
+    #[Route(
+        title: "配置详情", 
+        desc:  "系统配置详情",
+        order: 252,
+        auth:  true
+    )]
     public function detail(string $id)
     {
         if (empty($id)) {
@@ -139,14 +143,15 @@ class Config extends Base
     /**
      * 删除
      *
-     * @title 配置删除
-     * @desc 系统配置删除
-     * @order 253
-     * @auth true
-     *
      * @param string $id
      * @return Response
      */
+    #[Route(
+        title: "配置删除", 
+        desc:  "系统配置删除",
+        order: 253,
+        auth:  true
+    )]
     public function delete(string $id)
     {
         if (empty($id)) {
@@ -171,14 +176,15 @@ class Config extends Base
      * 添加
      * type: text,textarea,number,radio,select,checkbox,array,switch,image,images
      *
-     * @title 配置添加
-     * @desc 系统配置添加
-     * @order 254
-     * @auth true
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "配置添加", 
+        desc:  "系统配置添加",
+        order: 254,
+        auth:  true
+    )]
     public function create(Request $request)
     {
         $data = $request->all();
@@ -231,15 +237,16 @@ class Config extends Base
     /**
      * 更新
      *
-     * @title 配置更新
-     * @desc 系统配置更新
-     * @order 255
-     * @auth true
-     *
      * @param string $id
      * @param Request $request
      * @return Response
      */
+    #[Route(
+        title: "配置更新", 
+        desc:  "系统配置更新",
+        order: 255,
+        auth:  true
+    )]
     public function update(string $id, Request $request)
     {
         if (empty($id)) {
@@ -308,13 +315,14 @@ class Config extends Base
     /**
      * 配置全部列表
      *
-     * @title 配置全部列表
-     * @desc 配置全部列表，没有分页
-     * @order 256
-     * @auth true
-     *
      * @return Response
      */
+    #[Route(
+        title: "配置全部列表", 
+        desc:  "配置全部列表，没有分页",
+        order: 256,
+        auth:  true
+    )]
     public function lists()
     {
         $list = ConfigModel::where('status', '=', 1)
@@ -343,13 +351,14 @@ class Config extends Base
     /**
      * 更新配置
      *
-     * @title 更新配置
-     * @desc 更新配置
-     * @order 257
-     * @auth true
-     *
      * @return Response
      */
+    #[Route(
+        title: "更新配置", 
+        desc:  "更新配置",
+        order: 257,
+        auth:  true
+    )]
     public function setting(Request $request)
     {
         $fields = $request->input('fields');
@@ -368,13 +377,14 @@ class Config extends Base
     /**
      * 获取配置数组
      *
-     * @title 获取配置数组
-     * @desc 获取配置全部数组
-     * @order 258
-     * @auth true
-     *
      * @return Response
      */
+    #[Route(
+        title: "获取配置数组", 
+        desc:  "获取配置全部数组",
+        order: 258,
+        auth:  true
+    )]
     public function settings()
     {
         $settings = ConfigModel::getSettings();
@@ -389,15 +399,16 @@ class Config extends Base
     /**
      * 排序
      *
-     * @title 配置排序
-     * @desc 配置排序
-     * @order 259
-     * @auth true
-     *
-     * @param string $id
-     * @param  Request  $request
+     * @param  string  $id
+     * @param  Request $request
      * @return Response
      */
+    #[Route(
+        title: "配置排序", 
+        desc:  "配置排序",
+        order: 259,
+        auth:  true
+    )]
     public function listorder(string $id, Request $request)
     {
         if (empty($id)) {
@@ -423,14 +434,15 @@ class Config extends Base
     /**
      * 启用
      *
-     * @title 配置启用
-     * @desc 配置启用
-     * @order 260
-     * @auth true
-     *
      * @param string $id
      * @return Response
      */
+    #[Route(
+        title: "配置启用", 
+        desc:  "配置启用",
+        order: 260,
+        auth:  true
+    )]
     public function enable(string $id)
     {
         if (empty($id)) {
@@ -458,14 +470,15 @@ class Config extends Base
     /**
      * 禁用
      *
-     * @title 配置禁用
-     * @desc 配置禁用
-     * @order 261
-     * @auth true
-     *
      * @param string $id
      * @return Response
      */
+    #[Route(
+        title: "配置禁用", 
+        desc:  "配置禁用",
+        order: 261,
+        auth:  true
+    )]
     public function disable(string $id)
     {
         if (empty($id)) {

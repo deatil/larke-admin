@@ -9,6 +9,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 
 use Larke\Admin\Support\Tree;
+use Larke\Admin\Annotation\Route;
 use Larke\Admin\Facade\Permission;
 use Larke\Admin\Model\AuthGroup as AuthGroupModel;
 use Larke\Admin\Model\AuthRule as AuthRuleModel;
@@ -18,28 +19,30 @@ use Larke\Admin\Repository\AuthGroup as AuthGroupRepository;
 /**
  * 管理分组
  *
- * @title 管理分组
- * @desc 系统管理分组管理
- * @order 450
- * @auth true
- * @slug {prefix}auth-group
- *
  * @create 2020-10-25
  * @author deatil
  */
+#[Route(
+    title: "管理分组", 
+    desc: "系统管理分组管理",
+    order: 450,
+    auth: true,
+    slug: "{prefix}auth-group"
+)]
 class AuthGroup extends Base
 {
     /**
      * 列表
      *
-     * @title 分组列表
-     * @desc 系统管理分组列表
-     * @order 451
-     * @auth true
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "分组列表", 
+        desc: "系统管理分组列表",
+        order: 451,
+        auth: true
+    )]
     public function index(Request $request)
     {
         $start = (int) $request->input('start', 0);
@@ -96,14 +99,15 @@ class AuthGroup extends Base
     /**
      * 分组树结构
      *
-     * @title 分组树结构
-     * @desc 管理分组树结构
-     * @order 452
-     * @auth true
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "分组树结构", 
+        desc: "管理分组树结构",
+        order: 452,
+        auth: true
+    )]
     public function indexTree(Request $request)
     {
         $result = AuthGroupModel::orderBy('listorder', 'ASC')
@@ -125,14 +129,15 @@ class AuthGroup extends Base
     /**
      * 分组子列表
      *
-     * @title 分组子列表
-     * @desc 管理分组子列表
-     * @order 453
-     * @auth true
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "分组子列表", 
+        desc: "管理分组子列表",
+        order: 453,
+        auth: true
+    )]
     public function indexChildren(Request $request)
     {
         $id = $request->input('id', 0);
@@ -155,14 +160,15 @@ class AuthGroup extends Base
     /**
      * 详情
      *
-     * @title 分组详情
-     * @desc 管理分组详情
-     * @order 454
-     * @auth true
-     *
      * @param string $id
      * @return Response
      */
+    #[Route(
+        title: "分组详情", 
+        desc: "管理分组详情",
+        order: 454,
+        auth: true
+    )]
     public function detail(string $id)
     {
         if (empty($id)) {
@@ -191,14 +197,15 @@ class AuthGroup extends Base
     /**
      * 删除
      *
-     * @title 分组删除
-     * @desc 管理分组删除
-     * @order 455
-     * @auth true
-     *
      * @param string $id
      * @return Response
      */
+    #[Route(
+        title: "分组删除", 
+        desc: "管理分组删除",
+        order: 455,
+        auth: true
+    )]
     public function delete(string $id)
     {
         if (empty($id)) {
@@ -232,14 +239,15 @@ class AuthGroup extends Base
     /**
      * 添加
      *
-     * @title 分组添加
-     * @desc 管理分组添加
-     * @order 456
-     * @auth true
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "分组添加", 
+        desc: "管理分组添加",
+        order: 456,
+        auth: true
+    )]
     public function create(Request $request)
     {
         $data = $request->all();
@@ -281,15 +289,16 @@ class AuthGroup extends Base
     /**
      * 更新
      *
-     * @title 分组更新
-     * @desc 管理分组更新
-     * @order 457
-     * @auth true
-     *
      * @param string $id
      * @param Request $request
      * @return Response
      */
+    #[Route(
+        title: "分组更新", 
+        desc:  "管理分组更新",
+        order: 457,
+        auth:  true
+    )]
     public function update(string $id, Request $request)
     {
         if (empty($id)) {
@@ -346,15 +355,16 @@ class AuthGroup extends Base
     /**
      * 排序
      *
-     * @title 分组排序
-     * @desc 管理分组排序
-     * @order 458
-     * @auth true
-     *
      * @param string $id
      * @param Request $request
      * @return Response
      */
+    #[Route(
+        title: "分组排序", 
+        desc:  "管理分组排序",
+        order: 458,
+        auth:  true
+    )]
     public function listorder(string $id, Request $request)
     {
         if (empty($id)) {
@@ -380,14 +390,15 @@ class AuthGroup extends Base
     /**
      * 启用
      *
-     * @title 分组启用
-     * @desc 管理分组启用
-     * @order 459
-     * @auth true
-     *
      * @param string $id
      * @return Response
      */
+    #[Route(
+        title: "分组启用", 
+        desc:  "管理分组启用",
+        order: 459,
+        auth:  true
+    )]
     public function enable(string $id)
     {
         if (empty($id)) {
@@ -415,14 +426,15 @@ class AuthGroup extends Base
     /**
      * 禁用
      *
-     * @title 分组禁用
-     * @desc 管理分组禁用
-     * @order 460
-     * @auth true
-     *
      * @param string $id
      * @return Response
      */
+    #[Route(
+        title: "分组禁用", 
+        desc:  "管理分组禁用",
+        order: 459,
+        auth:  true
+    )]
     public function disable(string $id)
     {
         if (empty($id)) {
@@ -450,15 +462,16 @@ class AuthGroup extends Base
     /**
      * 授权
      *
-     * @title 分组授权
-     * @desc 管理分组授权
-     * @order 461
-     * @auth true
-     *
      * @param string $id
      * @param Request $request
      * @return Response
      */
+    #[Route(
+        title: "分组授权", 
+        desc:  "管理分组授权",
+        order: 461,
+        auth:  true
+    )]
     public function access(string $id, Request $request)
     {
         if (empty($id)) {

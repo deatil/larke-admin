@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
 
+use Larke\Admin\Annotation\Route;
 use Larke\Admin\Model\Admin as AdminModel;
 use Larke\Admin\Model\Attachment as AttachmentModel;
 use Larke\Admin\Service\Upload as UploadService;
@@ -16,28 +17,30 @@ use Larke\Admin\Service\Upload as UploadService;
 /**
  * 附件
  *
- * @title 附件
- * @desc 系统附件管理
- * @order 570
- * @auth true
- * @slug {prefix}attachment
- *
  * @create 2020-10-22
  * @author deatil
  */
+#[Route(
+    title: "附件", 
+    desc: "系统附件管理",
+    order: 570,
+    auth: true,
+    slug: "{prefix}attachment"
+)]
 class Attachment extends Base
 {
     /**
      * 列表
      *
-     * @title 附件列表
-     * @desc 附件列表
-     * @order 501
-     * @auth true
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "附件列表", 
+        desc: "附件列表",
+        order: 501,
+        auth: true
+    )]
     public function index(Request $request)
     {
         $start = (int) $request->input('start', 0);
@@ -96,14 +99,15 @@ class Attachment extends Base
     /**
      * 详情
      *
-     * @title 附件详情
-     * @desc 附件详情
-     * @order 502
-     * @auth true
-     *
      * @param string $id
      * @return Response
      */
+    #[Route(
+        title: "附件详情", 
+        desc: "附件详情",
+        order: 502,
+        auth: true
+    )]
     public function detail(string $id)
     {
         if (empty($id)) {
@@ -122,14 +126,15 @@ class Attachment extends Base
     /**
      * 删除
      *
-     * @title 附件删除
-     * @desc 附件删除
-     * @order 503
-     * @auth true
-     *
      * @param string $id
      * @return Response
      */
+    #[Route(
+        title: "附件删除", 
+        desc: "附件删除",
+        order: 503,
+        auth: true
+    )]
     public function delete(string $id)
     {
         if (empty($id)) {
@@ -160,14 +165,15 @@ class Attachment extends Base
     /**
      * 启用
      *
-     * @title 附件启用
-     * @desc 附件启用
-     * @order 504
-     * @auth true
-     *
      * @param string $id
      * @return Response
      */
+    #[Route(
+        title: "附件启用", 
+        desc: "附件启用",
+        order: 504,
+        auth: true
+    )]
     public function enable(string $id)
     {
         if (empty($id)) {
@@ -195,14 +201,15 @@ class Attachment extends Base
     /**
      * 禁用
      *
-     * @title 附件禁用
-     * @desc 附件禁用
-     * @order 505
-     * @auth true
-     *
      * @param string $id
      * @return Response
      */
+    #[Route(
+        title: "附件禁用", 
+        desc: "附件禁用",
+        order: 505,
+        auth: true
+    )]
     public function disable(string $id)
     {
         if (empty($id)) {
@@ -230,14 +237,15 @@ class Attachment extends Base
     /**
      * 下载码
      *
-     * @title 附件下载码
-     * @desc 附件下载码
-     * @order 507
-     * @auth true
-     *
      * @param string $id
      * @return Response
      */
+    #[Route(
+        title: "附件下载码", 
+        desc: "附件下载码",
+        order: 506,
+        auth: true
+    )]
     public function downloadCode(string $id)
     {
         if (empty($id)) {
@@ -261,14 +269,15 @@ class Attachment extends Base
     /**
      * 下载
      *
-     * @title 附件下载
-     * @desc 附件下载
-     * @order 508
-     * @auth true
-     *
      * @param string $code
      * @return Response
      */
+    #[Route(
+        title: "附件下载", 
+        desc: "附件下载",
+        order: 507,
+        auth: true
+    )]
     public function download(string $code)
     {
         if (empty($code)) {

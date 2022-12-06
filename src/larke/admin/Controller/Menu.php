@@ -8,35 +8,38 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 use Larke\Admin\Support\Tree;
+use Larke\Admin\Annotation\Route;
 use Larke\Admin\Http\Controller as BaseController;
 use Larke\Admin\Service\Menu as MenuModel;
 
 /**
  * 菜单管理
  *
- * @title 菜单管理
- * @desc 菜单管理
- * @order 650
- * @auth true
- * @slug larke-admin.menu
- *
  * @create 2022-8-26
  * @author deatil
  */
+#[Route(
+    title: "菜单管理", 
+    desc:  "菜单管理",
+    order: 650,
+    auth:  true,
+    slug:  "{prefix}menu"
+)]
 class Menu extends BaseController
 {
     /**
      * 列表
      *
-     * @title 菜单列表
-     * @desc 菜单列表管理
-     * @order 651
-     * @auth true
-     *
      * @param  Request  $request
      * @param  MenuModel $menuModel
      * @return Response
      */
+    #[Route(
+        title: "菜单列表", 
+        desc:  "菜单列表管理",
+        order: 651,
+        auth:  true
+    )]
     public function index(Request $request, MenuModel $menuModel)
     {
         $list = $menuModel->getList();
@@ -49,14 +52,15 @@ class Menu extends BaseController
     /**
      * 菜单树
      *
-     * @title 菜单树列表
-     * @desc 菜单树列表管理
-     * @order 652
-     * @auth true
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "菜单树列表", 
+        desc:  "菜单树列表管理",
+        order: 652,
+        auth:  true
+    )]
     public function indexTree(Request $request, MenuModel $menuModel)
     {
         $result = $menuModel->getList();
@@ -80,14 +84,15 @@ class Menu extends BaseController
     /**
      * 菜单子列表
      *
-     * @title 菜单子列表
-     * @desc 菜单子列表管理
-     * @order 653
-     * @auth true
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "菜单子列表", 
+        desc:  "菜单子列表管理",
+        order: 653,
+        auth:  true
+    )]
     public function indexChildren(Request $request, MenuModel $menuModel)
     {
         $id = $request->input('id', 0);
@@ -130,15 +135,16 @@ class Menu extends BaseController
     /**
      * 创建
      *
-     * @title 菜单创建
-     * @desc 菜单创建管理
-     * @order 654
-     * @auth true
-     *
      * @param  Request  $request
      * @param  MenuModel $menuModel
      * @return Response
      */
+    #[Route(
+        title: "菜单创建", 
+        desc:  "菜单创建管理",
+        order: 654,
+        auth:  true
+    )]
     public function create(Request $request, MenuModel $menuModel)
     {
         $data = $request->all();
@@ -157,16 +163,17 @@ class Menu extends BaseController
     /**
      * 更新
      *
-     * @title 菜单更新
-     * @desc 菜单更新管理
-     * @order 655
-     * @auth true
-     *
      * @param  String $id
      * @param  Request $request
      * @param  MenuModel $menuModel
      * @return Response
      */
+    #[Route(
+        title: "菜单更新", 
+        desc:  "菜单更新管理",
+        order: 655,
+        auth:  true
+    )]
     public function update(String $id, Request $request, MenuModel $menuModel)
     {
         if (empty($id)) {
@@ -204,16 +211,17 @@ class Menu extends BaseController
     /**
      * 删除
      *
-     * @title 菜单删除
-     * @desc 菜单删除管理
-     * @order 656
-     * @auth true
-     *
      * @param  String $id
      * @param  Request $request
      * @param  MenuModel $menuModel
      * @return Response
      */
+    #[Route(
+        title: "菜单删除", 
+        desc:  "菜单删除管理",
+        order: 656,
+        auth:  true
+    )]
     public function delete(String $id, Request $request, MenuModel $menuModel)
     {
         if (empty($id)) {
@@ -241,14 +249,15 @@ class Menu extends BaseController
     /**
      * 获取全部
      *
-     * @title 菜单获取全部
-     * @desc 菜单获取全部管理
-     * @order 657
-     * @auth true
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "菜单获取全部", 
+        desc:  "菜单获取全部管理",
+        order: 657,
+        auth:  true
+    )]
     public function getJson(Request $request, MenuModel $menuModel)
     {
         $json = $menuModel->getFileData();
@@ -261,14 +270,15 @@ class Menu extends BaseController
     /**
      * 保存全部
      *
-     * @title 菜单保存全部
-     * @desc 菜单保存全部管理
-     * @order 658
-     * @auth true
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "菜单保存全部", 
+        desc:  "菜单保存全部管理",
+        order: 658,
+        auth:  true
+    )]
     public function saveJson(Request $request, MenuModel $menuModel)
     {
         $json = $request->input('json');

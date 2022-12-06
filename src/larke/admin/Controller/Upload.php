@@ -8,6 +8,7 @@ use Exception;
 
 use Illuminate\Http\Request;
 
+use Larke\Admin\Annotation\Route;
 use Larke\Admin\Model\Admin as AdminModel;
 use Larke\Admin\Model\Attachment as AttachmentModel;
 use Larke\Admin\Service\Upload as UploadService;
@@ -15,29 +16,31 @@ use Larke\Admin\Service\Upload as UploadService;
 /**
  * 上传
  *
- * @title 附件上传
- * @desc 附件上传
- * @order 571
- * @auth true
- * @slug {prefix}upload
- *
  * @create 2021-4-18
  * @author deatil
  */
+#[Route(
+    title: "附件上传", 
+    desc:  "附件上传",
+    order: 571,
+    auth:  true,
+    slug:  "{prefix}upload"
+)]
 class Upload extends Base
 {
     
     /**
      * 上传文件
      *
-     * @title 上传文件
-     * @desc 上传附件文件
-     * @order 572
-     * @auth true
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "上传文件", 
+        desc:  "上传附件文件",
+        order: 572,
+        auth:  true
+    )]
     public function file(Request $request)
     {
         $requestFile = $request->file('file');

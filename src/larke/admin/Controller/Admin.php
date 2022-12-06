@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 
 use Larke\Admin\Support\Tree;
 use Larke\Admin\Facade\Permission;
+use Larke\Admin\Annotation\Route;
 use Larke\Admin\Model\Admin as AdminModel;
 use Larke\Admin\Model\AuthGroup as AuthGroupModel;
 use Larke\Admin\Model\AuthRuleAccess as AuthRuleAccessModel;
@@ -19,28 +20,30 @@ use Larke\Admin\Repository\Admin as AdminRepository;
 /**
  * 管理员
  *
- * @title 管理员
- * @desc 系统管理员账号管理
- * @order 300
- * @auth true
- * @slug {prefix}admin
- *
  * @create 2020-10-23
  * @author deatil
  */
+#[Route(
+    title: "管理员", 
+    desc: "系统管理员账号管理",
+    order: 300,
+    auth: true,
+    slug: "{prefix}admin"
+)]
 class Admin extends Base
 {
     /**
      * 列表
      *
-     * @title 管理员列表
-     * @desc 系统管理员账号列表
-     * @order 301
-     * @auth true
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "管理员列表", 
+        desc: "系统管理员账号列表",
+        order: 301,
+        auth: true
+    )]
     public function index(Request $request)
     {
         $start = (int) $request->input('start', 0);
@@ -112,14 +115,15 @@ class Admin extends Base
     /**
      * 详情
      *
-     * @title 管理员详情
-     * @desc 系统管理员账号详情
-     * @order 302
-     * @auth true
-     *
      * @param string $id
      * @return Response
      */
+    #[Route(
+        title: "管理员详情", 
+        desc: "系统管理员账号详情",
+        order: 302,
+        auth: true
+    )]
     public function detail(string $id)
     {
         if (empty($id)) {
@@ -166,14 +170,15 @@ class Admin extends Base
     /**
      * 权限
      *
-     * @title 管理员权限
-     * @desc 系统管理员账号权限
-     * @order 303
-     * @auth true
-     *
      * @param string $id
      * @return Response
      */
+    #[Route(
+        title: "管理员权限", 
+        desc: "系统管理员账号权限",
+        order: 303,
+        auth: true
+    )]
     public function rules(string $id)
     {
         if (empty($id)) {
@@ -204,14 +209,15 @@ class Admin extends Base
     /**
      * 删除
      *
-     * @title 管理员删除
-     * @desc 系统管理员账号删除
-     * @order 304
-     * @auth true
-     *
      * @param string $id
      * @return Response
      */
+    #[Route(
+        title: "管理员删除", 
+        desc: "系统管理员账号删除",
+        order: 304,
+        auth: true
+    )]
     public function delete(string $id)
     {
         if (empty($id)) {
@@ -245,14 +251,15 @@ class Admin extends Base
     /**
      * 添加账号所需分组
      *
-     * @title 获取分组
-     * @desc 添加账号所需分组
-     * @order 305
-     * @auth true
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "获取分组", 
+        desc: "添加账号所需分组",
+        order: 305,
+        auth: true
+    )]
     public function groups(Request $request)
     {
         $isSuperAdministrator = app('larke-admin.auth-admin')->isSuperAdministrator();
@@ -292,14 +299,15 @@ class Admin extends Base
     /**
      * 添加
      *
-     * @title 管理员添加
-     * @desc 系统管理员账号添加
-     * @order 305
-     * @auth true
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "管理员添加", 
+        desc: "系统管理员账号添加",
+        order: 305,
+        auth: true
+    )]
     public function create(Request $request)
     {
         $data = $request->all();
@@ -376,15 +384,16 @@ class Admin extends Base
     /**
      * 更新
      *
-     * @title 管理员更新
-     * @desc 系统管理员账号更新
-     * @order 306
-     * @auth true
-     *
      * @param string $id
      * @param Request $request
      * @return Response
      */
+    #[Route(
+        title: "管理员更新", 
+        desc: "系统管理员账号更新",
+        order: 306,
+        auth: true
+    )]
     public function update(string $id, Request $request)
     {
         if (empty($id)) {
@@ -473,15 +482,16 @@ class Admin extends Base
     /**
      * 修改头像
      *
-     * @title 修改头像
-     * @desc 系统管理员账号修改头像
-     * @order 307
-     * @auth true
-     *
      * @param string $id
      * @param Request $request
      * @return Response
      */
+    #[Route(
+        title: "修改头像", 
+        desc: "系统管理员账号修改头像",
+        order: 307,
+        auth: true
+    )]
     public function updateAvatar(string $id, Request $request)
     {
         if (empty($id)) {
@@ -524,15 +534,16 @@ class Admin extends Base
     /**
      * 修改密码
      *
-     * @title 修改密码
-     * @desc 系统管理员账号修改密码
-     * @order 308
-     * @auth true
-     *
      * @param string $id
      * @param Request $request
      * @return Response
      */
+    #[Route(
+        title: "修改密码", 
+        desc: "系统管理员账号修改密码",
+        order: 308,
+        auth: true
+    )]
     public function updatePasssword(string $id, Request $request)
     {
         if (empty($id)) {
@@ -575,14 +586,15 @@ class Admin extends Base
     /**
      * 启用
      *
-     * @title 管理员启用
-     * @desc 系统管理员账号启用
-     * @order 309
-     * @auth true
-     *
      * @param string $id
      * @return Response
      */
+    #[Route(
+        title: "管理员启用", 
+        desc: "系统管理员账号启用",
+        order: 309,
+        auth: true
+    )]
     public function enable(string $id)
     {
         if (empty($id)) {
@@ -616,14 +628,15 @@ class Admin extends Base
     /**
      * 禁用
      *
-     * @title 管理员禁用
-     * @desc 系统管理员账号禁用
-     * @order 310
-     * @auth true
-     *
      * @param string $id
      * @return Response
      */
+    #[Route(
+        title: "管理员禁用", 
+        desc: "系统管理员账号禁用",
+        order: 310,
+        auth: true
+    )]
     public function disable(string $id)
     {
         if (empty($id)) {
@@ -657,14 +670,15 @@ class Admin extends Base
     /**
      * 退出
      *
-     * @title 管理员退出
-     * @desc 系统管理员账号退出，添加用户的 refreshToken 到黑名单
-     * @order 311
-     * @auth true
-     *
      * @param string $refreshToken
      * @return Response
      */
+    #[Route(
+        title: "管理员退出", 
+        desc: "系统管理员账号退出，添加用户的 refreshToken 到黑名单",
+        order: 311,
+        auth: true
+    )]
     public function logout(string $refreshToken)
     {
         if (empty($refreshToken)) {
@@ -713,15 +727,16 @@ class Admin extends Base
     /**
      * 授权
      *
-     * @title 管理员授权
-     * @desc 系统管理员账号授权
-     * @order 312
-     * @auth true
-     *
      * @param string $id
      * @param Request $request
      * @return Response
      */
+    #[Route(
+        title: "管理员授权", 
+        desc: "系统管理员账号授权",
+        order: 312,
+        auth: true
+    )]
     public function access(string $id, Request $request)
     {
         if (empty($id)) {
@@ -785,13 +800,14 @@ class Admin extends Base
     /**
      * 重设权限缓存
      *
-     * @title 重设权限缓存
-     * @desc 重设权限缓存
-     * @order 313
-     * @auth true
-     *
      * @return Response
      */
+    #[Route(
+        title: "重设权限缓存", 
+        desc: "重设权限缓存",
+        order: 313,
+        auth: true
+    )]
     public function ResetPermission()
     {
         // 清空原始数据

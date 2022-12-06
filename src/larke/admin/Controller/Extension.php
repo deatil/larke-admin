@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Validator;
 
 use Larke\Admin\Event;
 use Larke\Admin\Support\PclZip;
+use Larke\Admin\Annotation\Route;
 use Larke\Admin\Composer\Repository as ComposerRepository;
 use Larke\Admin\Facade\Extension as AdminExtension;
 use Larke\Admin\Model\Extension as ExtensionModel;
@@ -22,28 +23,30 @@ use Larke\Admin\Model\Extension as ExtensionModel;
 /**
  * 扩展
  *
- * @title 扩展
- * @desc 系统扩展管理
- * @order 560
- * @auth true
- * @slug {prefix}extension
- *
  * @create 2020-10-30
  * @author deatil
  */
+#[Route(
+    title: "扩展", 
+    desc:  "系统扩展管理",
+    order: 560,
+    auth:  true,
+    slug:  "{prefix}extension"
+)]
 class Extension extends Base
 {
     /**
      * 扩展列表
      *
-     * @title 扩展列表
-     * @desc 系统扩展列表管理
-     * @order 351
-     * @auth true
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "扩展列表", 
+        desc:  "系统扩展列表管理",
+        order: 561,
+        auth:  true
+    )]
     public function index(Request $request)
     {
         $start = (int) $request->input('start', 0);
@@ -118,13 +121,14 @@ class Extension extends Base
     /**
      * 本地全部扩展
      *
-     * @title 本地扩展
-     * @desc 本地全部扩展
-     * @order 352
-     * @auth true
-     *
      * @return Response
      */
+    #[Route(
+        title: "本地扩展", 
+        desc:  "本地全部扩展",
+        order: 562,
+        auth:  true
+    )]
     public function local()
     {
         $extensions = AdminExtension::loadExtension()->getExtensions();
@@ -157,13 +161,14 @@ class Extension extends Base
     /**
      * 刷新本地扩展
      *
-     * @title 刷新扩展
-     * @desc 刷新本地扩展
-     * @order 353
-     * @auth true
-     *
      * @return Response
      */
+    #[Route(
+        title: "刷新扩展", 
+        desc:  "刷新本地扩展",
+        order: 563,
+        auth:  true
+    )]
     public function refreshLocal()
     {
         AdminExtension::refresh();
@@ -174,14 +179,15 @@ class Extension extends Base
     /**
      * 本地扩展命令
      *
-     * @title 本地扩展命令
-     * @desc 本地扩展命令，只限用于非composer扩展
-     * @order 354
-     * @auth true
-     *
      * @param string $name
      * @return Response
      */
+    #[Route(
+        title: "本地扩展命令", 
+        desc:  "本地扩展命令，只限用于非composer扩展",
+        order: 564,
+        auth:  true
+    )]
     public function command(string $name)
     {
         if (empty($name)) {
@@ -216,14 +222,15 @@ class Extension extends Base
     /**
      * 安装
      *
-     * @title 扩展安装
-     * @desc 系统扩展安装
-     * @order 355
-     * @auth true
-     *
      * @param string $name
      * @return Response
      */
+    #[Route(
+        title: "扩展安装", 
+        desc:  "系统扩展安装",
+        order: 565,
+        auth:  true
+    )]
     public function install(string $name)
     {
         if (empty($name)) {
@@ -311,14 +318,15 @@ class Extension extends Base
     /**
      * 卸载
      *
-     * @title 扩展卸载
-     * @desc 系统扩展卸载
-     * @order 356
-     * @auth true
-     *
      * @param string $name
      * @return Response
      */
+    #[Route(
+        title: "扩展卸载", 
+        desc:  "系统扩展卸载",
+        order: 566,
+        auth:  true
+    )]
     public function uninstall(string $name)
     {
         if (empty($name)) {
@@ -354,14 +362,15 @@ class Extension extends Base
     /**
      * 更新
      *
-     * @title 扩展更新
-     * @desc 系统扩展更新
-     * @order 357
-     * @auth true
-     *
      * @param string $name
      * @return Response
      */
+    #[Route(
+        title: "扩展更新", 
+        desc:  "系统扩展更新",
+        order: 567,
+        auth:  true
+    )]
     public function upgrade(string $name)
     {
         if (empty($name)) {
@@ -457,15 +466,16 @@ class Extension extends Base
     /**
      * 排序
      *
-     * @title 扩展排序
-     * @desc 系统扩展排序
-     * @order 358
-     * @auth true
-     *
      * @param string $name
      * @param Request $request
      * @return Response
      */
+    #[Route(
+        title: "扩展排序", 
+        desc:  "系统扩展排序",
+        order: 568,
+        auth:  true
+    )]
     public function listorder(string $name, Request $request)
     {
         if (empty($name)) {
@@ -491,14 +501,15 @@ class Extension extends Base
     /**
      * 启用
      *
-     * @title 扩展启用
-     * @desc 系统扩展启用
-     * @order 359
-     * @auth true
-     *
      * @param string $name
      * @return Response
      */
+    #[Route(
+        title: "扩展启用", 
+        desc:  "系统扩展启用",
+        order: 569,
+        auth:  true
+    )]
     public function enable(string $name)
     {
         if (empty($name)) {
@@ -534,14 +545,15 @@ class Extension extends Base
     /**
      * 禁用
      *
-     * @title 扩展禁用
-     * @desc 系统扩展禁用
-     * @order 360
-     * @auth true
-     *
      * @param string $name
      * @return Response
      */
+    #[Route(
+        title: "扩展禁用", 
+        desc:  "系统扩展禁用",
+        order: 570,
+        auth:  true
+    )]
     public function disable(string $name)
     {
         if (empty($name)) {
@@ -575,15 +587,16 @@ class Extension extends Base
     /**
      * 配置
      *
-     * @title 扩展配置
-     * @desc 系统扩展配置
-     * @order 361
-     * @auth true
-     *
      * @param string $name
      * @param Request $request
      * @return Response
      */
+    #[Route(
+        title: "扩展配置", 
+        desc:  "系统扩展配置",
+        order: 571,
+        auth:  true
+    )]
     public function config(string $name, Request $request)
     {
         if (empty($name)) {
@@ -622,14 +635,15 @@ class Extension extends Base
     /**
      * 上传
      *
-     * @title 扩展上传
-     * @desc 扩展压缩包上传
-     * @order 362
-     * @auth true
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "扩展上传", 
+        desc:  "扩展压缩包上传",
+        order: 572,
+        auth:  true
+    )]
     public function upload(Request $request)
     {
         $requestFile = $request->file('file');
@@ -748,15 +762,16 @@ class Extension extends Base
     /**
      * 本地扩展注册到composer.json
      *
-     * @title 仓库注册扩展
-     * @desc 本地扩展注册到composer.json仓库
-     * @order 363
-     * @auth true
-     *
      * @param string $name
      * @param Request $request
      * @return Response
      */
+    #[Route(
+        title: "仓库注册扩展", 
+        desc:  "本地扩展注册到composer.json仓库",
+        order: 573,
+        auth:  true
+    )]
     public function repositoryRegister(string $name, Request $request)
     {
         if (empty($name)) {
@@ -789,15 +804,16 @@ class Extension extends Base
     /**
      * 本地扩展从composer.json移除
      *
-     * @title 仓库移除扩展
-     * @desc 本地扩展从composer.json仓库移除
-     * @order 364
-     * @auth true
-     *
      * @param string $name
      * @param Request $request
      * @return Response
      */
+    #[Route(
+        title: "仓库移除扩展", 
+        desc:  "本地扩展从composer.json仓库移除",
+        order: 574,
+        auth:  true
+    )]
     public function repositoryRemove(string $name, Request $request)
     {
         if (empty($name)) {

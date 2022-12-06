@@ -9,34 +9,37 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 
 use Larke\Admin\Support\Tree;
+use Larke\Admin\Annotation\Route;
 use Larke\Admin\Model\AuthRule as AuthRuleModel;
 use Larke\Admin\Repository\AuthRule as AuthRuleRepository;
 
 /**
  * 权限
  *
- * @title 权限
- * @desc 系统权限管理
- * @order 400
- * @auth true
- * @slug {prefix}auth-rule
- *
  * @create 2020-10-24
  * @author deatil
  */
+#[Route(
+    title: "权限", 
+    desc: "系统权限管理",
+    order: 400,
+    auth: true,
+    slug: "{prefix}auth-rule"
+)]
 class AuthRule extends Base
 {
     /**
      * 列表
      *
-     * @title 权限列表
-     * @desc 系统权限列表
-     * @order 401
-     * @auth true
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "权限列表", 
+        desc:  "系统权限列表",
+        order: 401,
+        auth:  true
+    )]
     public function index(Request $request)
     {
         $start = (int) $request->input('start', 0);
@@ -101,14 +104,15 @@ class AuthRule extends Base
     /**
      * 权限树结构
      *
-     * @title 权限树结构
-     * @desc 权限树结构列表
-     * @order 402
-     * @auth true
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "权限树结构", 
+        desc:  "权限树结构列表",
+        order: 402,
+        auth:  true
+    )]
     public function indexTree(Request $request)
     {
         $result = AuthRuleModel::orderBy('listorder', 'ASC')
@@ -131,14 +135,15 @@ class AuthRule extends Base
     /**
      * 权限子列表
      *
-     * @title 权限子列表
-     * @desc 权限子结构列表
-     * @order 403
-     * @auth true
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "权限子列表", 
+        desc:  "权限子结构列表",
+        order: 403,
+        auth:  true
+    )]
     public function indexChildren(Request $request)
     {
         $id = $request->input('id', 0);
@@ -161,14 +166,15 @@ class AuthRule extends Base
     /**
      * 详情
      *
-     * @title 权限详情
-     * @desc 权限详情
-     * @order 404
-     * @auth true
-     *
      * @param string $id
      * @return Response
      */
+    #[Route(
+        title: "权限详情", 
+        desc:  "权限详情",
+        order: 404,
+        auth:  true
+    )]
     public function detail(string $id)
     {
         if (empty($id)) {
@@ -187,14 +193,15 @@ class AuthRule extends Base
     /**
      * 删除
      *
-     * @title 权限删除
-     * @desc 权限删除
-     * @order 405
-     * @auth true
-     *
      * @param string $id
      * @return Response
      */
+    #[Route(
+        title: "权限删除", 
+        desc:  "权限删除",
+        order: 405,
+        auth:  true
+    )]
     public function delete(string $id)
     {
         if (empty($id)) {
@@ -228,14 +235,15 @@ class AuthRule extends Base
     /**
      * 清空特定ID权限
      *
-     * @title 权限清空
-     * @desc 清空特定ID权限
-     * @order 406
-     * @auth true
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "权限清空", 
+        desc:  "清空特定ID权限",
+        order: 406,
+        auth:  true
+    )]
     public function clear(Request $request)
     {
         $ids = $request->input('ids');
@@ -270,14 +278,15 @@ class AuthRule extends Base
     /**
      * 添加
      *
-     * @title 权限添加
-     * @desc 添加权限
-     * @order 407
-     * @auth true
-     *
      * @param  Request  $request
      * @return Response
      */
+    #[Route(
+        title: "权限添加", 
+        desc:  "添加权限",
+        order: 407,
+        auth:  true
+    )]
     public function create(Request $request)
     {
         $data = $request->all();
@@ -339,15 +348,16 @@ class AuthRule extends Base
     /**
      * 更新
      *
-     * @title 权限更新
-     * @desc 更新权限
-     * @order 408
-     * @auth true
-     *
      * @param string $id
      * @param Request $request
      * @return Response
      */
+    #[Route(
+        title: "权限更新", 
+        desc:  "权限更新",
+        order: 408,
+        auth:  true
+    )]
     public function update(string $id, Request $request)
     {
         if (empty($id)) {
@@ -426,15 +436,16 @@ class AuthRule extends Base
     /**
      * 排序
      *
-     * @title 权限排序
-     * @desc 更新权限排序
-     * @order 409
-     * @auth true
-     *
      * @param string $id
      * @param Request $request
      * @return Response
      */
+    #[Route(
+        title: "权限排序", 
+        desc:  "更新权限排序",
+        order: 409,
+        auth:  true
+    )]
     public function listorder(string $id, Request $request)
     {
         if (empty($id)) {
@@ -460,14 +471,15 @@ class AuthRule extends Base
     /**
      * 启用
      *
-     * @title 权限启用
-     * @desc 更新权限启用
-     * @order 410
-     * @auth true
-     *
      * @param string $id
      * @return Response
      */
+    #[Route(
+        title: "权限启用", 
+        desc:  "更新权限启用",
+        order: 410,
+        auth:  true
+    )]
     public function enable(string $id)
     {
         if (empty($id)) {
@@ -495,14 +507,15 @@ class AuthRule extends Base
     /**
      * 禁用
      *
-     * @title 权限禁用
-     * @desc 更新权限禁用
-     * @order 411
-     * @auth true
-     *
      * @param string $id
      * @return Response
      */
+    #[Route(
+        title: "权限禁用", 
+        desc:  "更新权限禁用",
+        order: 411,
+        auth:  true
+    )]
     public function disable(string $id)
     {
         if (empty($id)) {

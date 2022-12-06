@@ -9,7 +9,7 @@ use ReflectionClass;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
-use Larke\Admin\Support\Doc;
+use Larke\Admin\Annotation\Route;
 use Larke\Admin\Service\Route as RouteService;
 use Larke\Admin\Model\AuthRule as AuthRuleModel;
 
@@ -242,19 +242,25 @@ class ImportRoute
         
         list ($actionClass, $actionMethod) = $actions;
         
+        // 获取注解信息
         $reflection = new ReflectionClass($actionClass);
-        $docComment = $this->parseDoc($reflection->getDocComment());
+        $actionClassAttrs = $reflection->getAttributes(Route::class);
+        
+        $docComment = [];
+        if (count($actionClassAttrs) > 0) {
+            $docComment = $actionClassAttrs[0]->newInstance()->toArray();
+        }
         
         $commentInfo = [
-            'parent' => Arr::get($docComment, 'parent'),
-            'slug' => Arr::get($docComment, 'slug'),
-            'title' => Arr::get($docComment, 'title'),
-            'description' => Arr::get($docComment, 'desc'),
-            'listorder' => Arr::get($docComment, 'order', 10000),
-            'is_need_auth' => Arr::get($docComment, 'auth', 'true'),
+            'parent'       => Arr::get($docComment, 'parent'),
+            'slug'         => Arr::get($docComment, 'slug'),
+            'title'        => Arr::get($docComment, 'title'),
+            'description'  => Arr::get($docComment, 'desc'),
+            'listorder'    => Arr::get($docComment, 'order', 10000),
+            'is_need_auth' => Arr::get($docComment, 'auth', true),
         ];
         
-        if ($commentInfo['is_need_auth'] === 'true') {
+        if ($commentInfo['is_need_auth'] === true) {
             $commentInfo['is_need_auth'] = 1;
         } else {
             $commentInfo['is_need_auth'] = 0;
@@ -281,19 +287,23 @@ class ImportRoute
         list ($actionClass, $actionMethod) = $actions;
         
         $reflection = new ReflectionClass($actionClass);
-        $methodDocComment = $reflection->getMethod($actionMethod)->getDocComment();
-        $docComment = $this->parseDoc($methodDocComment);
+        $actionMethodAttrs = $reflection->getMethod($actionMethod)->getAttributes(Route::class);
+        
+        $docComment = [];
+        if (count($actionMethodAttrs) > 0) {
+            $docComment = $actionMethodAttrs[0]->newInstance()->toArray();
+        }
         
         $commentInfo = [
-            'parent' => Arr::get($docComment, 'parent'),
-            'slug' => Arr::get($docComment, 'slug'),
-            'title' => Arr::get($docComment, 'title'),
-            'description' => Arr::get($docComment, 'desc'),
-            'listorder' => Arr::get($docComment, 'order', 10000),
-            'is_need_auth' => Arr::get($docComment, 'auth', 'true'),
+            'parent'       => Arr::get($docComment, 'parent'),
+            'slug'         => Arr::get($docComment, 'slug'),
+            'title'        => Arr::get($docComment, 'title'),
+            'description'  => Arr::get($docComment, 'desc'),
+            'listorder'    => Arr::get($docComment, 'order', 10000),
+            'is_need_auth' => Arr::get($docComment, 'auth', true),
         ];
         
-        if ($commentInfo['is_need_auth'] === 'true') {
+        if ($commentInfo['is_need_auth'] === true) {
             $commentInfo['is_need_auth'] = 1;
         } else {
             $commentInfo['is_need_auth'] = 0;
@@ -304,15 +314,6 @@ class ImportRoute
         $commentInfo['slug'] = $this->formatSlug($commentInfo['slug']);
         
         return $commentInfo;
-    }
-    
-    /**
-     * 解析注释
-     */
-    public function parseDoc($text)
-    {
-        $doc = new Doc();
-        return $doc->parse($text);
     }
     
     /**
