@@ -29,7 +29,7 @@ use Larke\Admin\Event;
     title: "登陆", 
     desc:  "系统登陆管理",
     order: 100,
-    auth:  true,
+    auth:  false,
     slug:  "{prefix}passport"
 )]
 class Passport extends Base

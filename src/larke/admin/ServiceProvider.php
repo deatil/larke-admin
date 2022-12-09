@@ -59,6 +59,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected $commands = [
         Command\Install::class,
+        Command\AppAdmin::class,
         Command\ImportMenus::class,
         Command\ImportRoute::class,
         Command\ResetPassword::class,
@@ -75,8 +76,8 @@ class ServiceProvider extends BaseServiceProvider
      * @var array
      */
     protected $routeMiddleware = [
-        'larke-admin.lang' => Middleware\CheckLang::class,
-        'larke-admin.auth' => Middleware\Authenticate::class,
+        'larke-admin.lang'       => Middleware\CheckLang::class,
+        'larke-admin.auth'       => Middleware\Authenticate::class,
         'larke-admin.login-type' => Middleware\CheckLoginType::class,
         'larke-admin.admin-auth' => Middleware\AdminCheck::class,
         'larke-admin.permission' => Middleware\Permission::class,
