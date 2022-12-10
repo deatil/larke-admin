@@ -104,11 +104,74 @@ EOF;
     }
     
     /**
+     * 生成扩展
+     */
+    public function makeExtension(string $author, string $name, bool $force = false): mixed
+    {
+        // 格式化
+        $authorName = Str::kebab($author);
+        $extensionName = Str::kebab($name);
+        $extensionTitle = Str::studly($name);
+        $namespace = Str::studly($author) . "\\" . $extensionTitle;
+        $composerNamespace = Str::studly($author) . "\\\\" . $extensionTitle;
+        
+        // 模板路径
+        $stubPath = function($path) {
+            return __DIR__ . '/stubs/extension/' . $path;
+        };
+
+        // 扩展路径
+        $extensionPath = function($path) use($authorName, $extensionName) {
+            return base_path("extension/{$authorName}/{$extensionName}/{$path}");
+        };
+        
+        $extension = $extensionPath("");
+        if (File::exists($extension) && !$force) {
+            return "[{$extension}] is exists !";
+        }
+        
+        $data = [
+            'datetime' => now()->rawFormat('Y-m-d H:i:s'),
+            'authorName' => $authorName,
+            'extensionName' => $extensionName,
+            'extensionTitle' => $extensionTitle,
+            'namespace' => $namespace,
+            'composerNamespace' => $composerNamespace,
+        ];
+        
+        $files = [
+            'README.md',
+            'composer.json',
+            'src/Command/Cmd.php',
+            'src/Controller/Index.php',
+            'src/ServiceProvider.php',
+            'resources/assets/router.js',
+            'resources/assets/views/index.vue',
+            'resources/assets/lang/zh.js',
+            'resources/assets/lang/en.js',
+            'resources/assets/api/index.js',
+            'resources/route/admin.php',
+            'resources/rules/rules.php',
+            'logo.png',
+            '.gitignore',
+            '.gitattributes',
+            'resources/assets/.gitkeep',
+        ];
+        
+        // 需要替换的文件
+        foreach ($files as $file) {
+            $this->copyFile($stubPath($file), $extensionPath($file), $data, $force);
+        }
+        
+        return true;
+    }
+    
+    /**
      * 生成文件夹
      */
-    public function makeDir($path, $mode = 0755, $recursive = false): bool
+    public function makeDir($path, $mode = 0755, $recursive = false)
     {
-        return File::ensureDirectoryExists($path, $mode, $recursive);
+        File::ensureDirectoryExists($path, $mode, $recursive);
     }
     
     /**
@@ -123,6 +186,10 @@ EOF;
         if (File::exists($dst) && !$force) {
             return "[{$dst}] exists !";
         }
+        
+        // 创建文件夹
+        $dstDir = dirname($dst);
+        $this->makeDir($dstDir, 0755, true);
         
         $srcData = File::get($src);
         
@@ -174,5 +241,13 @@ EOF;
     public function exists(string $path): bool
     {
         return File::exists($path);
+    }
+    
+    /**
+     * 复制
+     */
+    public function copy(string $path, string $target): bool
+    {
+        return File::copy($path, $target);
     }
 }

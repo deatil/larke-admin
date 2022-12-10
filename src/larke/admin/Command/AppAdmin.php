@@ -14,6 +14,7 @@ use Larke\Admin\Stubs\Stubs;
  *
  * > php artisan larke-admin:app-admin create_controller --name=NewsContent [--force]
  * > php artisan larke-admin:app-admin create_model --name=NewsContent [--force]
+ * > php artisan larke-admin:app-admin create_extension --extension=larke/news-books [--force]
  * > php artisan larke-admin:app-admin create_app_admin [--force]
  *
  * @create 2022-12-8
@@ -29,6 +30,7 @@ class AppAdmin extends Command
     protected $signature = 'larke-admin:app-admin
         {type : Run type name.}
         {--name=none : File name.}
+        {--extension=none : Extension info.}
         {--force : Force action.}';
 
     /**
@@ -60,6 +62,10 @@ class AppAdmin extends Command
                 $this->makeModel();
                 
                 break;
+            case 'create_extension':
+                $this->makeExtension();
+                
+                break;
             case 'create_app_admin':
                 $this->makeAppAdmin();
                 
@@ -76,7 +82,7 @@ class AppAdmin extends Command
     public function makeController()
     {
         $name = $this->option('name');
-        if (empty($name)) {
+        if (empty($name) || $name == "none") {
             $this->line("<error>Enter file'name is empty !</error> ");
             return;
         }
@@ -104,7 +110,7 @@ class AppAdmin extends Command
     public function makeModel()
     {
         $name = $this->option('name');
-        if (empty($name)) {
+        if (empty($name) || $name == "none") {
             $this->line("<error>Enter file'name is empty !</error> ");
             return;
         }
@@ -140,7 +146,39 @@ class AppAdmin extends Command
             return;
         }
         
-        $this->info('Action appAdmin dir successfully!');
+        $this->info('Make appAdmin dir successfully!');
+    }
+
+    /**
+     * 生成扩展
+     */
+    public function makeExtension()
+    {
+        $extension = $this->option('extension');
+        if (empty($extension) || $extension == "none") {
+            $this->line("<error>Enter extension is empty !</error> ");
+            return;
+        }
+        
+        $extensions = explode("/", $extension);
+        if (count($extensions) != 2) {
+            $this->line("<error>Enter extension is error !</error> ");
+            return;
+        }
+        
+        // 获取信息
+        [$author, $name] = $extensions;
+        
+        $force = $this->option('force');
+
+        $status = Stubs::create()->makeExtension($author, $name, $force);
+        if ($status !== true) {
+            $this->line("<error>Make extension [{$extension}] fail ! {$status} </error> ");
+
+            return;
+        }
+        
+        $this->info("Make extension [{$extension}] successfully!");
     }
     
     
