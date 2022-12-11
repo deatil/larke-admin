@@ -145,6 +145,7 @@ EOF;
             'src/Command/Cmd.php',
             'src/Controller/Index.php',
             'src/ServiceProvider.php',
+            'resources/assets/.gitkeep',
             'resources/assets/router.js',
             'resources/assets/views/index.vue',
             'resources/assets/lang/zh.js',
@@ -155,7 +156,6 @@ EOF;
             'logo.png',
             '.gitignore',
             '.gitattributes',
-            'resources/assets/.gitkeep',
         ];
         
         // 需要替换的文件

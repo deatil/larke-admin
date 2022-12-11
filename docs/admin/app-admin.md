@@ -1,11 +1,12 @@
 ## app-admin 生成文档
 
-带选择 `--force` 将会覆盖旧文件或者目录
+带选项 `--force` 将会覆盖旧文件或者目录
 
 
 ### 初始化 app-admin 目录
 
 运行命令后将会生成目录 `app/Admin`，生成文档后请查看文档 `app/Admin/README.md`
+如果目录已存在，可带选项 `--force` 覆盖生成
 
 ```php
 php artisan larke-admin:app-admin create_app_admin

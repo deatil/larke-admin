@@ -54,7 +54,7 @@ class Install extends Command
         
         // 生成 app-admin 目录
         $this->call('larke-admin:app-admin', [
-            'create_app_admin',
+            'type' => 'create_app_admin',
         ]);
         
         $this->info('Larke-admin install successfully.');
