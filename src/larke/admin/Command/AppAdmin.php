@@ -15,7 +15,7 @@ use Larke\Admin\Stubs\Stubs;
  * > php artisan larke-admin:app-admin create_app_admin [--force]
  * > php artisan larke-admin:app-admin create_controller --name=NewsContent [--force]
  * > php artisan larke-admin:app-admin create_model --name=NewsContent [--force]
- * > php artisan larke-admin:app-admin create_extension --extension=larke/news-books [--force]
+ * > php artisan larke-admin:app-admin create_extension --extension=deatil/news-books [--force]
  *
  * @create 2022-12-8
  * @author deatil

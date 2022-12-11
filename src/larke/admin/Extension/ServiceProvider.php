@@ -144,7 +144,7 @@ abstract class ServiceProvider extends BaseServiceProvider
      *
      * @return array
      */
-    public function fromComposer(string $composerFile, bool $isOriginal = false) 
+    protected function fromComposer(string $composerFile, bool $isOriginal = false) 
     {
         $data = Composer::parse($composerFile)->toArray();
         

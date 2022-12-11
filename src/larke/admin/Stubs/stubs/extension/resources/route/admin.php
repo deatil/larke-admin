@@ -8,14 +8,14 @@ Extension::routes(function ($router) {
         ->group(function ($router) {
             // {extensionName} 路由
             $router->get('/{extensionName}', 'Index@index')
-                ->name('larke-admin.{extensionName}.index');
+                ->name('larke-admin.ext.{extensionName}.index');
             
             $router->get('/{extensionName}/{id}', 'Index@detail')
-                ->name('larke-admin.{extensionName}.detail')
+                ->name('larke-admin.ext.{extensionName}.detail')
                 ->where('id', '[A-Za-z0-9]+');
             
             $router->delete('/{extensionName}/{id}', 'Index@delete')
-                ->name('larke-admin.{extensionName}.delete')
+                ->name('larke-admin.ext.{extensionName}.delete')
                 ->where('id', '[A-Za-z0-9]+');
         });
 });

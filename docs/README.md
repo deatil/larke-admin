@@ -7,4 +7,5 @@
 - [admin 脚手架文档](./admin)
     - [app-admin 生成文档](./admin/app-admin.md)
     - [扩展自动生成文档](./admin/extension.md)
+    - [扩展服务提供者自带方法](./admin/service-provider.md)
 - [nginx 配置](./nginx/readme.md)

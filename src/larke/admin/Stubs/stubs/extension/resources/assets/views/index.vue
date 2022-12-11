@@ -120,7 +120,7 @@
             <el-button 
               v-waves
               :loading="scope.row.id == loading.detail"
-              :disabled="!checkPermission(['larke-admin.ext.demo.detail'])" 
+              :disabled="!checkPermission(['larke-admin.ext.{extensionName}.detail'])" 
               type="info" 
               size="mini" 
               icon="el-icon-info" 
@@ -132,7 +132,7 @@
             <el-button 
               v-waves
               :loading="scope.row.id == loading.delete"
-              v-permission="['larke-admin.ext.demo.delete']" 
+              v-permission="['larke-admin.ext.{extensionName}.delete']" 
               type="danger" 
               size="mini" 
               icon="el-icon-delete" 
