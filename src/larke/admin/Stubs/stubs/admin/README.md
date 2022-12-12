@@ -8,5 +8,3 @@
 $this->loadRoutesFrom(__DIR__ . '/../Admin/routes.php');
 ~~~
 
-### 以下是添加新控制器后生成的路由，需要手动添加到路由文件
-

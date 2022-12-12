@@ -43,32 +43,7 @@ class Stubs
         if ($status !== true) {
             return $status;
         }
-        
-        $nameController = $name . "Controller";
-        
-        $routeName = Str::kebab($name);
-        
-        // 添加控制器
-        $routes = <<<EOF
-#### 创建控制器[{$nameController}] / {$datetime}
 
-// 管理分组
-\$router->get('/{$routeName}', '{$nameController}@index')->name('app-admin.{$routeName}.index');
-\$router->get('/{$routeName}/{id}', '{$nameController}@detail')->name('app-admin.{$routeName}.detail');
-\$router->post('/{$routeName}', '{$nameController}@create')->name('app-admin.{$routeName}.create');
-\$router->put('/{$routeName}/{id}', '{$nameController}@update')->name('app-admin.{$routeName}.update');
-\$router->delete('/{$routeName}/{id}', '{$nameController}@delete')->name('app-admin.{$routeName}.delete');
-\$router->patch('/{$routeName}/{id}/sort', '{$nameController}@listorder')->name('app-admin.{$routeName}.listorder');
-\$router->patch('/{$routeName}/{id}/enable', '{$nameController}@enable')->name('app-admin.{$routeName}.enable');
-\$router->patch('/{$routeName}/{id}/disable', '{$nameController}@disable')->name('app-admin.{$routeName}.disable');
-
-EOF;
-
-        $readmeFile = app_path("Admin/README.md");
-        if (File::exists($readmeFile)) {
-            File::append($readmeFile, $routes);
-        }
-        
         return true;
     }
     

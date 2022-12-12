@@ -10,6 +10,16 @@ use Larke\Admin\Http\Controller as BaseController;
 /**
  * {controllerName} 控制器
  *
+ * // {controllerName} 路由
+ * $router->get('/{controllerPath}', '{controllerName}Controller@index')->name('app-admin.{controllerPath}.index');
+ * $router->get('/{controllerPath}/{id}', '{controllerName}Controller@detail')->name('app-admin.{controllerPath}.detail');
+ * $router->post('/{controllerPath}', '{controllerName}Controller@create')->name('app-admin.{controllerPath}.create');
+ * $router->put('/{controllerPath}/{id}', '{controllerName}Controller@update')->name('app-admin.{controllerPath}.update');
+ * $router->delete('/{controllerPath}/{id}', '{controllerName}Controller@delete')->name('app-admin.{controllerPath}.delete');
+ * $router->patch('/{controllerPath}/{id}/sort', '{controllerName}Controller@listorder')->name('app-admin.{controllerPath}.listorder');
+ * $router->patch('/{controllerPath}/{id}/enable', '{controllerName}Controller@enable')->name('app-admin.{controllerPath}.enable');
+ * $router->patch('/{controllerPath}/{id}/disable', '{controllerName}Controller@disable')->name('app-admin.{controllerPath}.disable');
+ *
  * @create {datetime}
  * @author lakego-admin
  */
