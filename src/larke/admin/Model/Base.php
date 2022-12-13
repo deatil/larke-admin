@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Model;
 
+use Larke\Admin\Support\Uuid;
+
 /*
  * Base
  *
@@ -196,7 +198,7 @@ class Base extends Model
      */
     public static function uuid()
     {
-        $id = md5(mt_rand(100000, 999999).microtime().uniqid());
+        $id = Uuid::toString();
         
         return $id;
     }

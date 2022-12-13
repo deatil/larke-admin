@@ -112,7 +112,7 @@ class Profile extends Base
         $data = $request->only(['avatar']);
         
         $validator = Validator::make($data, [
-            'avatar' => 'required|size:32',
+            'avatar' => 'required|size:36',
         ], [
             'avatar.required' => __('头像数据不能为空'),
             'avatar.size' => __('头像数据错误'),

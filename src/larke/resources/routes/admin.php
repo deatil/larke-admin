@@ -3,11 +3,11 @@
 use Illuminate\Support\Facades\Route;
 
 Route::group([
-    'domain' => config('larkeadmin.route.domain'),
-    'prefix' => config('larkeadmin.route.prefix'),
+    'domain'     => config('larkeadmin.route.domain'),
+    'prefix'     => config('larkeadmin.route.prefix'),
     'middleware' => config('larkeadmin.route.middleware'),
-    'namespace' => config('larkeadmin.route.namespace'),
-    'as' => config('larkeadmin.route.as'),
+    'namespace'  => config('larkeadmin.route.namespace'),
+    'as'         => config('larkeadmin.route.as'),
 ], function ($router) {
     $router->group([
         'middleware' => config('larkeadmin.route.admin_middleware'),
@@ -16,27 +16,27 @@ Route::group([
         $router->get('/auth/rule', 'AuthRule@index')->name('auth-rule.index');
         $router->get('/auth/rule/tree', 'AuthRule@indexTree')->name('auth-rule.index-tree');
         $router->get('/auth/rule/children', 'AuthRule@indexChildren')->name('auth-rule.index-children');
-        $router->get('/auth/rule/{id}', 'AuthRule@detail')->name('auth-rule.detail')->where('id', '[A-Za-z0-9]+');
+        $router->get('/auth/rule/{id}', 'AuthRule@detail')->name('auth-rule.detail')->where('id', '[A-Za-z0-9\-]+');
         $router->post('/auth/rule', 'AuthRule@create')->name('auth-rule.create');
-        $router->put('/auth/rule/{id}', 'AuthRule@update')->name('auth-rule.update')->where('id', '[A-Za-z0-9]+');
+        $router->put('/auth/rule/{id}', 'AuthRule@update')->name('auth-rule.update')->where('id', '[A-Za-z0-9\-]+');
         $router->delete('/auth/rule/clear', 'AuthRule@clear')->name('auth-rule.clear');
-        $router->delete('/auth/rule/{id}', 'AuthRule@delete')->name('auth-rule.delete')->where('id', '[A-Za-z0-9]+');
-        $router->patch('/auth/rule/{id}/sort', 'AuthRule@listorder')->name('auth-rule.listorder')->where('id', '[A-Za-z0-9]+');
-        $router->patch('/auth/rule/{id}/enable', 'AuthRule@enable')->name('auth-rule.enable')->where('id', '[A-Za-z0-9]+');
-        $router->patch('/auth/rule/{id}/disable', 'AuthRule@disable')->name('auth-rule.disable')->where('id', '[A-Za-z0-9]+');
+        $router->delete('/auth/rule/{id}', 'AuthRule@delete')->name('auth-rule.delete')->where('id', '[A-Za-z0-9\-]+');
+        $router->patch('/auth/rule/{id}/sort', 'AuthRule@listorder')->name('auth-rule.listorder')->where('id', '[A-Za-z0-9\-]+');
+        $router->patch('/auth/rule/{id}/enable', 'AuthRule@enable')->name('auth-rule.enable')->where('id', '[A-Za-z0-9\-]+');
+        $router->patch('/auth/rule/{id}/disable', 'AuthRule@disable')->name('auth-rule.disable')->where('id', '[A-Za-z0-9\-]+');
         
         // 管理分组
         $router->get('/auth/group', 'AuthGroup@index')->name('auth-group.index');
         $router->get('/auth/group/tree', 'AuthGroup@indexTree')->name('auth-group.index-tree');
         $router->get('/auth/group/children', 'AuthGroup@indexChildren')->name('auth-group.index-children');
-        $router->get('/auth/group/{id}', 'AuthGroup@detail')->name('auth-group.detail')->where('id', '[A-Za-z0-9]+');
+        $router->get('/auth/group/{id}', 'AuthGroup@detail')->name('auth-group.detail')->where('id', '[A-Za-z0-9\-]+');
         $router->post('/auth/group', 'AuthGroup@create')->name('auth-group.create');
-        $router->put('/auth/group/{id}', 'AuthGroup@update')->name('auth-group.update')->where('id', '[A-Za-z0-9]+');
-        $router->delete('/auth/group/{id}', 'AuthGroup@delete')->name('auth-group.delete')->where('id', '[A-Za-z0-9]+');
-        $router->patch('/auth/group/{id}/sort', 'AuthGroup@listorder')->name('auth-group.listorder')->where('id', '[A-Za-z0-9]+');
-        $router->patch('/auth/group/{id}/enable', 'AuthGroup@enable')->name('auth-group.enable')->where('id', '[A-Za-z0-9]+');
-        $router->patch('/auth/group/{id}/disable', 'AuthGroup@disable')->name('auth-group.disable')->where('id', '[A-Za-z0-9]+');
-        $router->patch('/auth/group/{id}/access', 'AuthGroup@access')->name('auth-group.access')->where('id', '[A-Za-z0-9]+');
+        $router->put('/auth/group/{id}', 'AuthGroup@update')->name('auth-group.update')->where('id', '[A-Za-z0-9\-]+');
+        $router->delete('/auth/group/{id}', 'AuthGroup@delete')->name('auth-group.delete')->where('id', '[A-Za-z0-9\-]+');
+        $router->patch('/auth/group/{id}/sort', 'AuthGroup@listorder')->name('auth-group.listorder')->where('id', '[A-Za-z0-9\-]+');
+        $router->patch('/auth/group/{id}/enable', 'AuthGroup@enable')->name('auth-group.enable')->where('id', '[A-Za-z0-9\-]+');
+        $router->patch('/auth/group/{id}/disable', 'AuthGroup@disable')->name('auth-group.disable')->where('id', '[A-Za-z0-9\-]+');
+        $router->patch('/auth/group/{id}/access', 'AuthGroup@access')->name('auth-group.access')->where('id', '[A-Za-z0-9\-]+');
     });
     
     // 登陆
@@ -56,11 +56,11 @@ Route::group([
     
     // 附件
     $router->get('/attachment', 'Attachment@index')->name('attachment.index');
-    $router->get('/attachment/{id}', 'Attachment@detail')->name('attachment.detail')->where('id', '[A-Za-z0-9]+');
-    $router->patch('/attachment/{id}/enable', 'Attachment@enable')->name('attachment.enable')->where('id', '[A-Za-z0-9]+');
-    $router->patch('/attachment/{id}/disable', 'Attachment@disable')->name('attachment.disable')->where('id', '[A-Za-z0-9]+');
-    $router->delete('/attachment/{id}', 'Attachment@delete')->name('attachment.delete')->where('id', '[A-Za-z0-9]+');
-    $router->get('/attachment/downcode/{id}', 'Attachment@downloadCode')->name('attachment.download-code')->where('id', '[A-Za-z0-9]+');
+    $router->get('/attachment/{id}', 'Attachment@detail')->name('attachment.detail')->where('id', '[A-Za-z0-9\-]+');
+    $router->patch('/attachment/{id}/enable', 'Attachment@enable')->name('attachment.enable')->where('id', '[A-Za-z0-9\-]+');
+    $router->patch('/attachment/{id}/disable', 'Attachment@disable')->name('attachment.disable')->where('id', '[A-Za-z0-9\-]+');
+    $router->delete('/attachment/{id}', 'Attachment@delete')->name('attachment.delete')->where('id', '[A-Za-z0-9\-]+');
+    $router->get('/attachment/downcode/{id}', 'Attachment@downloadCode')->name('attachment.download-code')->where('id', '[A-Za-z0-9\-]+');
     $router->get('/attachment/download/{code}', 'Attachment@download')->name('attachment.download')->where('code', '[A-Za-z0-9]+');
     
     // 上传
@@ -69,31 +69,31 @@ Route::group([
     // 管理员
     $router->get('/admin', 'Admin@index')->name('admin.index');
     $router->get('/admin/groups', 'Admin@groups')->name('admin.groups');
-    $router->get('/admin/{id}', 'Admin@detail')->name('admin.detail')->where('id', '[A-Za-z0-9]+');
-    $router->get('/admin/{id}/rules', 'Admin@rules')->name('admin.rules')->where('id', '[A-Za-z0-9]+');
+    $router->get('/admin/{id}', 'Admin@detail')->name('admin.detail')->where('id', '[A-Za-z0-9\-]+');
+    $router->get('/admin/{id}/rules', 'Admin@rules')->name('admin.rules')->where('id', '[A-Za-z0-9\-]+');
     $router->post('/admin', 'Admin@create')->name('admin.create');
-    $router->put('/admin/{id}', 'Admin@update')->name('admin.update')->where('id', '[A-Za-z0-9]+');
+    $router->put('/admin/{id}', 'Admin@update')->name('admin.update')->where('id', '[A-Za-z0-9\-]+');
     $router->put('/admin/reset-permission', 'Admin@ResetPermission')->name('admin.reset-permission');
-    $router->delete('/admin/{id}', 'Admin@delete')->name('admin.delete')->where('id', '[A-Za-z0-9]+');
-    $router->patch('/admin/{id}/enable', 'Admin@enable')->name('admin.enable')->where('id', '[A-Za-z0-9]+');
-    $router->patch('/admin/{id}/disable', 'Admin@disable')->name('admin.disable')->where('id', '[A-Za-z0-9]+');
-    $router->patch('/admin/{id}/avatar', 'Admin@updateAvatar')->name('admin.avatar')->where('id', '[A-Za-z0-9]+');
-    $router->patch('/admin/{id}/password', 'Admin@updatePasssword')->name('admin.password')->where('id', '[A-Za-z0-9]+');
-    $router->patch('/admin/{id}/access', 'Admin@access')->name('admin.access')->where('id', '[A-Za-z0-9]+');
+    $router->delete('/admin/{id}', 'Admin@delete')->name('admin.delete')->where('id', '[A-Za-z0-9\-]+');
+    $router->patch('/admin/{id}/enable', 'Admin@enable')->name('admin.enable')->where('id', '[A-Za-z0-9\-]+');
+    $router->patch('/admin/{id}/disable', 'Admin@disable')->name('admin.disable')->where('id', '[A-Za-z0-9\-]+');
+    $router->patch('/admin/{id}/avatar', 'Admin@updateAvatar')->name('admin.avatar')->where('id', '[A-Za-z0-9\-]+');
+    $router->patch('/admin/{id}/password', 'Admin@updatePasssword')->name('admin.password')->where('id', '[A-Za-z0-9\-]+');
+    $router->patch('/admin/{id}/access', 'Admin@access')->name('admin.access')->where('id', '[A-Za-z0-9\-]+');
     $router->delete('/admin/logout/{refreshToken}', 'Admin@logout')->name('admin.logout');
     
     // 配置
     $router->get('/config/settings', 'Config@settings')->name('config.settings');
     $router->get('/config/list', 'Config@lists')->name('config.lists');
     $router->get('/config', 'Config@index')->name('config.index');
-    $router->get('/config/{id}', 'Config@detail')->name('config.detail')->where('id', '[A-Za-z0-9]+');
+    $router->get('/config/{id}', 'Config@detail')->name('config.detail')->where('id', '[A-Za-z0-9\-]+');
     $router->post('/config', 'Config@create')->name('config.create');
     $router->put('/config/setting', 'Config@setting')->name('config.setting');
-    $router->put('/config/{id}', 'Config@update')->name('config.update')->where('id', '[A-Za-z0-9]+');
-    $router->delete('/config/{id}', 'Config@delete')->name('config.delete')->where('id', '[A-Za-z0-9]+');
-    $router->patch('/config/{id}/sort', 'Config@listorder')->name('config.listorder')->where('id', '[A-Za-z0-9]+');
-    $router->patch('/config/{id}/enable', 'Config@enable')->name('config.enable')->where('id', '[A-Za-z0-9]+');
-    $router->patch('/config/{id}/disable', 'Config@disable')->name('config.disable')->where('id', '[A-Za-z0-9]+');
+    $router->put('/config/{id}', 'Config@update')->name('config.update')->where('id', '[A-Za-z0-9\-]+');
+    $router->delete('/config/{id}', 'Config@delete')->name('config.delete')->where('id', '[A-Za-z0-9\-]+');
+    $router->patch('/config/{id}/sort', 'Config@listorder')->name('config.listorder')->where('id', '[A-Za-z0-9\-]+');
+    $router->patch('/config/{id}/enable', 'Config@enable')->name('config.enable')->where('id', '[A-Za-z0-9\-]+');
+    $router->patch('/config/{id}/disable', 'Config@disable')->name('config.disable')->where('id', '[A-Za-z0-9\-]+');
     
     // 扩展
     $router->get('/extension/index', 'Extension@index')->name('extension.index');

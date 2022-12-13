@@ -6,8 +6,8 @@ return [
         'name' => "LarkeAdmin",
         'name_mini' => "Larke",
         'logo' => "<b>Larke</b> admin",
-        'release' => "20221211",
-        'version' => "1.4.1",
+        'release' => "20221213",
+        'version' => "1.4.2",
     ],
     
     // 是否使用 https 方式
@@ -132,7 +132,7 @@ return [
         'permission_excepts' => env('LARKE_ADMIN_AUTH_PERMISSION_EXCEPTS') ? explode(',', env('LARKE_ADMIN_AUTH_PERMISSION_EXCEPTS')) : [],
         
         // 超级管理员
-        'admin_id' => env('LARKE_ADMIN_AUTH_ADMIN_ID', '04f65b19e5a2513fe5a89100309da9b7'),
+        'admin_id' => env('LARKE_ADMIN_AUTH_ADMIN_ID', '9b09f6b6-5808-4234-a7ff-0316838ed467'),
     ],
     
     // 菜单存储

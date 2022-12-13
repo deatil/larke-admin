@@ -4,13 +4,14 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Observer;
 
+use Larke\Admin\Support\Uuid;
 use Larke\Admin\Model\AuthRule as AuthRuleModel;
 
 class AuthRule
 {
     public function creating(AuthRuleModel $model)
     {
-        $model->id = md5(mt_rand(100000, 999999).microtime().uniqid());
+        $model->id = Uuid::toString();
         
         $model->update_time = time();
         $model->update_ip = request()->ip();

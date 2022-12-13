@@ -45,7 +45,7 @@ class Manager
      * @param  string $guard 决策器名称
      * @return \Larke\Admin\Permission\Manager
      */
-    public function guard(string $name = '')
+    public static function guard(string $name = '')
     {
         return new static($name);
     }

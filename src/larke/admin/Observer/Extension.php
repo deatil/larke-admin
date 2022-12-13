@@ -4,6 +4,7 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Observer;
 
+use Larke\Admin\Support\Uuid;
 use Larke\Admin\Model\Extension as ExtensionModel;
 
 class Extension
@@ -13,7 +14,7 @@ class Extension
      */
     public function creating(ExtensionModel $model)
     {
-        $model->id = md5(mt_rand(100000, 999999).microtime().uniqid());
+        $model->id = Uuid::toString();
         
         $model->installtime = time();
         $model->upgradetime = time();
