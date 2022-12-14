@@ -10,7 +10,7 @@ use Larke\Admin\Facade\Permission as AuthPermission;
 use Larke\Admin\Repository\Admin as AdminRepository;
 use Larke\Admin\Repository\AuthGroup as AuthGroupRepository;
 
-/*
+/**
  * 管理员信息
  *
  * @create 2020-10-26
@@ -18,22 +18,27 @@ use Larke\Admin\Repository\AuthGroup as AuthGroupRepository;
  */
 class Admin
 {
-    /*
+    /**
      * 鉴权Token
      */
     protected $accessToken = null;
     
-    /*
-     * id
+    /**
+     * 用户id
      */
     protected $id = null;
     
-    /*
-     * data
+    /**
+     * 数据
      */
     protected $data = [];
     
-    /*
+    /**
+     * 全部用户组
+     */
+    protected $allGroup = [];
+    
+    /**
      * 设置 accessToken
      */
     public function withAccessToken($accessToken)
@@ -43,7 +48,7 @@ class Admin
         return $this;
     }
     
-    /*
+    /**
      * 获取 accessToken
      */
     public function getAccessToken()
@@ -51,7 +56,7 @@ class Admin
         return $this->accessToken;
     }
     
-    /*
+    /**
      * 设置 id
      */
     public function withId($id)
@@ -61,7 +66,7 @@ class Admin
         return $this;
     }
     
-    /*
+    /**
      * 获取 id
      */
     public function getId()
@@ -69,7 +74,7 @@ class Admin
         return $this->id;
     }
     
-    /*
+    /**
      * 设置 data
      */
     public function withData($data)
@@ -79,7 +84,7 @@ class Admin
         return $this;
     }
     
-    /*
+    /**
      * 获取 data
      */
     public function getData()
@@ -87,7 +92,29 @@ class Admin
         return $this->data;
     }
     
-    /*
+    /**
+     * 设置全部用户组
+     */
+    public function withAllGroup(array $data)
+    {
+        $this->allGroup = $data;
+        
+        return $this;
+    }
+    
+    /**
+     * 获取全部用户组
+     */
+    public function getAllGroup()
+    {
+        if (empty($this->allGroup)) {
+            $this->allGroup = AuthGroupRepository::getAllGroup();
+        }
+        
+        return $this->allGroup;
+    }
+    
+    /**
      * 获取个人信息
      */
     public function getProfile()
@@ -196,6 +223,10 @@ class Admin
      */
     public function getGroups()
     {
+        if ($this->isSuperAdministrator()) {
+            return $this->getAllGroup();
+        }
+        
         $data = $this->getProfile();
         return Arr::get($data, 'groups', []);
     }

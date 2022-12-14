@@ -17,6 +17,19 @@ use Larke\Admin\Model\AuthGroup as AuthGroupModel;
  */
 class AuthGroup
 {
+    /**
+     * 获取全部用户组
+     */
+    public static function getAllGroup()
+    {
+        $data = AuthGroupModel::query()
+            ->orderBy('listorder', 'ASC')
+            ->orderBy('create_time', 'ASC')
+            ->get()
+            ->toArray();
+        
+        return $data;
+    }
     
     /**
      * 获取 Children
@@ -33,9 +46,7 @@ class AuthGroup
             
             return $list;
         } else {
-            $wheres = [
-                ['status', 1],
-            ];
+            $wheres = [];
             if (! empty($groupid)) {
                 $wheres[] = ['parentid', $groupid];
             }
