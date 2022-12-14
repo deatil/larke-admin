@@ -23,6 +23,7 @@ class AuthGroup
     public static function getAllGroup()
     {
         $data = AuthGroupModel::query()
+            ->where('status', 1)
             ->orderBy('listorder', 'ASC')
             ->orderBy('create_time', 'ASC')
             ->get()
@@ -46,7 +47,9 @@ class AuthGroup
             
             return $list;
         } else {
-            $wheres = [];
+            $wheres = [
+                ['status', 1],
+            ];
             if (! empty($groupid)) {
                 $wheres[] = ['parentid', $groupid];
             }
