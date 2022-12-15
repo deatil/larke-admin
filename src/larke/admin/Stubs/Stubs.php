@@ -97,6 +97,7 @@ class Stubs
 
         // 扩展路径
         $extensionPath = function($path) use($authorName, $extensionName) {
+            $path = str_replace(".stub", "", $path);
             return base_path("extension/{$authorName}/{$extensionName}/{$path}");
         };
         
@@ -115,22 +116,21 @@ class Stubs
         ];
         
         $files = [
-            'README.md',
-            'composer.json',
-            'src/Command/Cmd.php',
-            'src/Controller/Index.php',
-            'src/ServiceProvider.php',
-            'resources/assets/.gitkeep',
-            'resources/assets/router.js',
-            'resources/assets/views/index.vue',
-            'resources/assets/lang/zh.js',
-            'resources/assets/lang/en.js',
-            'resources/assets/api/index.js',
-            'resources/route/admin.php',
-            'resources/rules/rules.php',
-            'logo.png',
-            '.gitignore',
-            '.gitattributes',
+            'src/Command/Cmd.php.stub',
+            'src/Controller/Index.php.stub',
+            'src/ServiceProvider.php.stub',
+            'resources/assets/router.js.stub',
+            'resources/assets/views/index.vue.stub',
+            'resources/assets/lang/zh.js.stub',
+            'resources/assets/lang/en.js.stub',
+            'resources/assets/api/index.js.stub',
+            'resources/route/admin.php.stub',
+            'resources/rules/rules.php.stub',
+            'README.md.stub',
+            'composer.json.stub',
+            'logo.png.stub',
+            '.gitignore.stub',
+            '.gitattributes.stub',
         ];
         
         // 需要替换的文件
