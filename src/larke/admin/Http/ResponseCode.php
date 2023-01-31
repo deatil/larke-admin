@@ -24,36 +24,36 @@ namespace Larke\Admin\Http;
  */
 class ResponseCode
 {
-    const SUCCESS = 0; 
-    const ERROR = 1; 
+    const SUCCESS   = 0; 
+    const ERROR     = 1; 
     const EXCEPTION = 99997;
-    const UNKNOWN = 99998; 
-    const INVALID = 99999;
+    const UNKNOWN   = 99998; 
+    const INVALID   = 99999;
     
-    const LOGIN_ERROR = 101;
-    const LOGOUT_ERROR = 102;
-    const ACCESS_TOKEN_ERROR = 103;
-    const REFRESH_TOKEN_ERROR = 104;
-    const AUTH_ERROR = 105;
-    const ACCESS_TOKEN_TIMEOUT = 106;
+    const LOGIN_ERROR           = 101;
+    const LOGOUT_ERROR          = 102;
+    const ACCESS_TOKEN_ERROR    = 103;
+    const REFRESH_TOKEN_ERROR   = 104;
+    const AUTH_ERROR            = 105;
+    const ACCESS_TOKEN_TIMEOUT  = 106;
     const REFRESH_TOKEN_TIMEOUT = 107;
     
-    const EMPTY_PARAM = 200;
-    const PARAM_INVALID = 201; // 参数无效
+    const EMPTY_PARAM     = 200;
+    const PARAM_INVALID   = 201; // 参数无效
     const JSON_PARSE_FAIL = 202;
-    const TYPE_ERROR = 203;
+    const TYPE_ERROR      = 203;
     
-    const NOT_EXISTS = 400;
-    const DATA_EXISTS = 401;
-    const ACCESS_TOKEN_EMPTY = 402;
+    const NOT_EXISTS          = 400;
+    const DATA_EXISTS         = 401;
+    const ACCESS_TOKEN_EMPTY  = 402;
     const REFRESH_TOKEN_EMPTY = 403;
     
     const EXTENSION_NOT_MATCH = 410; // 扩展没有匹配成功
-    const EXTENSION_EXISTS = 411; // 扩展已经存在
+    const EXTENSION_EXISTS    = 411; // 扩展已经存在
 
     const FILE_SAVE_FAILED = 500;
     const RECORD_NOT_FOUND = 501; // 记录未找到
-    const DELETE_FAILED = 502; // 删除失败
-    const CREATE_FAILED = 503; // 添加记录失败 
-    const UPDATE_FAILED = 504; // 修改记录失败
+    const DELETE_FAILED    = 502; // 删除失败
+    const CREATE_FAILED    = 503; // 添加记录失败 
+    const UPDATE_FAILED    = 504; // 修改记录失败
 }

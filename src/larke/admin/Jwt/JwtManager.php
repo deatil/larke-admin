@@ -8,7 +8,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
 use Larke\Admin\Exception\JWTException;
-use Larke\Admin\Contracts\Jwt as JwtContract;
 use Larke\Admin\Contracts\Crypt as CryptContract;
 
 /**
@@ -17,7 +16,7 @@ use Larke\Admin\Contracts\Crypt as CryptContract;
  * @create 2022-3-13
  * @author deatil
  */
-class JwtManager implements JwtContract
+class JwtManager
 {
     /**
      * jwt
@@ -58,6 +57,19 @@ class JwtManager implements JwtContract
      * 解析后的 token 句柄
      */
     private $parseToken;
+    
+    /**
+     * 构造函数
+     */
+    public function __construct(
+        $jwt, 
+        CryptContract $crypt,
+        $config
+    ) {
+        $this->jwt    = $jwt;
+        $this->crypt  = $crypt;
+        $this->config = $config;
+    }
     
     /**
      * 设置 jwt
@@ -263,15 +275,15 @@ class JwtManager implements JwtContract
         $config = $this->config;
         
         // 发布者
-        $this->jwt->withIss(Arr::get($config, 'iss', '')); 
+        $this->jwt->withIss($this->arrGet($config, 'iss', '')); 
         // 接收者
-        $this->jwt->withAud(Arr::get($config, 'aud', '')); 
+        $this->jwt->withAud($this->arrGet($config, 'aud', '')); 
         // 主题
-        $this->jwt->withSub(Arr::get($config, 'sub', '')); 
+        $this->jwt->withSub($this->arrGet($config, 'sub', '')); 
         // 对当前token设置的标识
-        $this->jwt->withJti(Arr::get($config, 'jti', '')); 
+        $this->jwt->withJti($this->arrGet($config, 'jti', '')); 
         
-        $iat = Arr::get($config, 'iat', 0);
+        $iat = $this->arrGet($config, 'iat', 0);
         if (empty($iat)) {
             $iat = time();
         }
@@ -279,11 +291,11 @@ class JwtManager implements JwtContract
         // token创建时间
         $this->jwt->withIat($iat); 
         // 多少秒内无法使用
-        $this->jwt->withNbf(Arr::get($config, 'nbf', 0)); 
+        $this->jwt->withNbf($this->arrGet($config, 'nbf', 0)); 
         // 过期时间
-        $this->jwt->withExp(Arr::get($config, 'exp', 0)); 
+        $this->jwt->withExp($this->arrGet($config, 'exp', 0)); 
         // leeway
-        $this->jwt->withLeeway(Arr::get($config, 'leeway', 0)); 
+        $this->jwt->withLeeway($this->arrGet($config, 'leeway', 0)); 
         
         return $this;
     }
@@ -293,10 +305,10 @@ class JwtManager implements JwtContract
      */
     public function setSigner($isPrivate = true)
     {
-        $config = Arr::get($this->config, 'signer', []);;
+        $config = $this->arrGet($this->config, 'signer', []);;
         
         // 加密方式
-        $algorithm = Arr::get($config, 'algorithm', 'HS256');
+        $algorithm = $this->arrGet($config, 'algorithm', 'HS256');
         if (empty($algorithm)) {
             Log::error('larke-admin-jwt-signer: 加密方式为空');
             
@@ -310,7 +322,7 @@ class JwtManager implements JwtContract
             case 'HS256':
             case 'HS384':
             case 'HS512':
-                $secrect = Arr::get($config, 'hmac.secrect', '');
+                $secrect = $this->arrGet($config, 'hmac.secrect', '');
                 
                 $this->jwt->withSecret($secrect);
                 
@@ -319,13 +331,13 @@ class JwtManager implements JwtContract
             case 'RS384':
             case 'RS512':
                 if ($isPrivate) {
-                    $privateKey = Arr::get($config, 'rsa.private_key', '');
-                    $passphrase = Arr::get($config, 'rsa.passphrase', null);
+                    $privateKey = $this->arrGet($config, 'rsa.private_key', '');
+                    $passphrase = $this->arrGet($config, 'rsa.passphrase', null);
                     
                     $this->jwt->withPrivateKey($privateKey);
                     $this->jwt->withPrivateKeyPassword($passphrase);
                 } else {
-                    $publicKey = Arr::get($config, 'rsa.public_key', '');
+                    $publicKey = $this->arrGet($config, 'rsa.public_key', '');
                     
                     $this->jwt->withPublicKey($publicKey);
                 }
@@ -334,24 +346,24 @@ class JwtManager implements JwtContract
             case 'ES384':
             case 'ES512':
                 if ($isPrivate) {
-                    $privateKey = Arr::get($config, 'ecdsa.private_key', '');
-                    $passphrase = Arr::get($config, 'ecdsa.passphrase', null);
+                    $privateKey = $this->arrGet($config, 'ecdsa.private_key', '');
+                    $passphrase = $this->arrGet($config, 'ecdsa.passphrase', null);
                     
                     $this->jwt->withPrivateKey($privateKey);
                     $this->jwt->withPrivateKeyPassword($passphrase);
                 } else {
-                    $publicKey = Arr::get($config, 'ecdsa.public_key', '');
+                    $publicKey = $this->arrGet($config, 'ecdsa.public_key', '');
                     
                     $this->jwt->withPublicKey($publicKey);
                 }
                 break;
             case 'EdDSA':
                 if ($isPrivate) {
-                    $privateKey = Arr::get($config, 'eddsa.private_key', '');
+                    $privateKey = $this->arrGet($config, 'eddsa.private_key', '');
                     
                     $this->jwt->withPrivateKey($privateKey);
                 } else {
-                    $publicKey = Arr::get($config, 'eddsa.public_key', '');
+                    $publicKey = $this->arrGet($config, 'eddsa.public_key', '');
                     
                     $this->jwt->withPublicKey($publicKey);
                 }
@@ -482,7 +494,7 @@ class JwtManager implements JwtContract
         }
         
         if (! empty($claim) && ! empty($value)) {
-            $value = $this->crypt->encrypt($value, $this->base64Decode(Arr::get($this->config, 'passphrase', '')));
+            $value = $this->crypt->encrypt($value, $this->base64Decode($this->arrGet($this->config, 'passphrase', '')));
             
             $this->withClaim($claim, $value);
         }
@@ -497,7 +509,7 @@ class JwtManager implements JwtContract
     {
         $claim = $this->getClaim($name);
         
-        $claim = $this->crypt->decrypt($claim, $this->base64Decode(Arr::get($this->config, 'passphrase', '')));
+        $claim = $this->crypt->decrypt($claim, $this->base64Decode($this->arrGet($this->config, 'passphrase', '')));
         
         return $claim;
     }
@@ -519,4 +531,13 @@ class JwtManager implements JwtContract
         
         return $decoded;
     }
+    
+    /**
+     * 数据获取
+     */
+    protected function arrGet($array, $key, $default = null)
+    {
+        return Arr::get($array, $key, $default);
+    }
+
 }

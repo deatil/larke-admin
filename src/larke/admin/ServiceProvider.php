@@ -257,36 +257,39 @@ class ServiceProvider extends BaseServiceProvider
             return $cache->store();
         });
         
+        // 加密数据
+        $this->app->bind('larke-admin.crypto', Crypt::class);
+        
+        // Jwt 底层驱动
+        $this->app->bind('larke-admin.jwt-driver', Jwt::class);
+        
         // jwt
-        $this->app->bind('larke-admin.jwt', Contracts\Jwt::class);
-        $this->app->bind(Contracts\Jwt::class, function() {
-            $config = config('larkeadmin.jwt');
-            
-            $jwtManager = new JwtManager();
-
-            $jwtManager->withJwt(new Jwt());
-            $jwtManager->withCrypt(new Crypt());
-            $jwtManager->setConfig($config);
+        $this->app->bind('larke-admin.jwt', function($app) {
+            $jwtManager = new JwtManager(
+                $app['larke-admin.jwt-driver'],
+                $app['larke-admin.crypto'],
+                config('larkeadmin.jwt')
+            );
             
             return $jwtManager;
         });
         
         // 扩展
         $this->app->singleton('larke-admin.extension', function() {
-            $directory = config('larkeadmin.extension.directory');
-            $cacheId   = config('larkeadmin.extension.cache_id');
-            $cacheTime = config('larkeadmin.extension.cache_time');
-            
-            $manager = new ExtensionManager($directory, $cacheId, $cacheTime);
+            $manager = new ExtensionManager(
+                config('larkeadmin.extension.directory'), 
+                config('larkeadmin.extension.cache_id'), 
+                config('larkeadmin.extension.cache_time')
+            );
             
             return $manager;
         });
         
         // 权限
         $this->app->singleton('larke-admin.permission', function() {
-            $guard = config('larkeadmin.auth.enforcer_guard');
-            
-            $manager = new PermissionManager($guard);
+            $manager = new PermissionManager(
+                config('larkeadmin.auth.enforcer_guard')
+            );
             
             return $manager;
         });
