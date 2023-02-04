@@ -2,6 +2,7 @@
     "JWT编码失败": "JWT encode error",
     "JWT解析失败": "JWT parse error",
     "JWT载荷解析失败": "JWT claim parse error",
+    "签名类型不存在": "JWT signing method not exists",
     
     "你没有权限进行该操作": "no permission",
     "token不能为空": "token dont empty",

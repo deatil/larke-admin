@@ -5,13 +5,11 @@ declare (strict_types = 1);
 namespace Larke\Admin\Jwt;
 
 // 文件夹引用
-use Larke\JWT\Signer; 
 use Larke\JWT\Builder;
 use Larke\JWT\Parser;
 use Larke\JWT\ValidationData;
-use Larke\JWT\Signer\Key\InMemory;
-use Larke\JWT\Signer\Key\LocalFileReference;
 
+use Larke\Admin\Jwt\Signer; 
 use Larke\Admin\Exception\JWTException;
 
 /**
@@ -274,85 +272,45 @@ class Jwt
     }
     
     /**
+     * 注册签名方法
+     */
+    public function addSigningMethod($algorithm, $signer)
+    {
+        $this->algorithms[$algorithm] = $signer;
+        
+        return $this;
+    }
+    
+    /**
+     * 判断签名方法是否存在
+     */
+    public function hasSigningMethod($algorithm)
+    {
+        return isset($this->algorithms[$algorithm]);
+    }
+    
+    /**
      * 获取签名
      */
-    public function getSigner($isPrivate = true)
+    public function getSigner()
     {
         // 加密方式
         $algorithm = $this->signingMethod;
         
         if (! isset($this->algorithms[$algorithm])) {
-            throw new JWTException(__('JWT编码失败'));
+            throw new JWTException(__('签名类型不存在'));
         }
         
         // 加密方式
-        $signer = new $this->algorithms[$algorithm];
+        $config = collect([
+            'secrect'     => $this->secret,
+            'private_key' => $this->privateKey,
+            'public_key'  => $this->publicKey,
+            'passphrase'  => $this->privateKeyPassword,
+        ]);
+        $signer = new $this->algorithms[$algorithm]($config);
         
-        // 加密秘钥
-        $secrect = '';
-        switch ($algorithm) {
-            case 'HS256':
-            case 'HS384':
-            case 'HS512':
-                $secrect = $this->secret;
-                
-                // base64 秘钥数据解码
-                $secrect = InMemory::base64Encoded($secrect)->getContent();
-                $secrect = InMemory::plainText($secrect);
-                break;
-            case 'RS256':
-            case 'RS384':
-            case 'RS512':
-                if ($isPrivate) {
-                    $privateKey = $this->privateKey;
-                    
-                    $passphrase = $this->privateKeyPassword;
-                    if (! empty($passphrase)) {
-                        $passphrase = InMemory::base64Encoded($passphrase)->getContent();
-                    }
-                    
-                    $secrect = LocalFileReference::file($privateKey, $passphrase);
-                } else {
-                    $publicKey = $this->publicKey;
-                    $secrect = LocalFileReference::file($publicKey);
-                }
-                break;
-            case 'ES256':
-            case 'ES384':
-            case 'ES512':
-                if ($isPrivate) {
-                    $privateKey = $this->privateKey;
-                    
-                    $passphrase = $this->privateKeyPassword;
-                    if (! empty($passphrase)) {
-                        $passphrase = InMemory::base64Encoded($passphrase)->getContent();
-                    }
-                    
-                    $secrect = LocalFileReference::file($privateKey, $passphrase);
-                } else {
-                    $publicKey = $this->publicKey;
-                    $secrect = LocalFileReference::file($publicKey);
-                }
-                break;
-            case 'EdDSA':
-                if ($isPrivate) {
-                    $privateKey = $this->privateKey;
-                    $secrect = InMemory::file($privateKey);
-                } else {
-                    $publicKey = $this->publicKey;
-                    $secrect = InMemory::file($publicKey);
-                }
-                break;
-            case 'Blake2b':
-                $secrect = $this->secret;
-                
-                // base64 秘钥数据解码
-                $secrect = InMemory::base64Encoded($secrect)->getContent();
-                $secrect = InMemory::plainText($secrect);
-                break;
-        }
-        
-        return [$signer, $secrect];
+        return $signer;
     }
     
     /**
@@ -388,9 +346,8 @@ class Jwt
             $builder->withClaim($claimKey, $claim);
         }
         
-        list ($signer, $secrect) = $this->getSigner(true);
-        
-        $token = $builder->getToken($signer, $secrect);
+        $sign = $this->getSigner();
+        $token = $builder->getToken($sign->getSigner(), $sign->getSignSecrect());
         
         return $token;
     }
@@ -424,9 +381,9 @@ class Jwt
      */
     public function verify($token)
     {
-        list ($signer, $secrect) = $this->getSigner(false);
-    
-        return $token->verify($signer, $secrect);
+        $sign = $this->getSigner();
+        
+        return $token->verify($sign->getSigner(), $sign->getVerifySecrect());
     }
     
     /**

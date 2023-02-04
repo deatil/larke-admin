@@ -74,11 +74,14 @@ return [
             'secrect'   => env('LARKE_ADMIN_JWT_SIGNER_SECRECT', 'NzdjMTNmODU0YzA5ODg5ZjJiY2UzYWY4OTUwOWFkMzY='),
             
             // 非对称加密使用
+            // 示例: storage_path('key/rsa/rsa-pkcs8')
+            // EdDSA key 请填写 base64 编码的字符，其他的填写 key 路径即可
             // RS256,RS384,RS512
             // ES256,ES384,ES512
             // EdDSA
             'private_key' => env('LARKE_ADMIN_JWT_SIGNER_PRIVATE_KEY', ''),
             'public_key'  => env('LARKE_ADMIN_JWT_SIGNER_PUBLIC_KEY', ''),
+            
             // 私钥密码，私钥有加密时使用。base64编码后
             'passphrase'  => env('LARKE_ADMIN_JWT_SIGNER_PASSPHRASE', ''),
         ],
