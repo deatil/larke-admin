@@ -12,6 +12,8 @@ use Larke\JWT\ValidationData;
 use Larke\JWT\Signer\Key\InMemory;
 use Larke\JWT\Signer\Key\LocalFileReference;
 
+use Larke\Admin\Exception\JWTException;
+
 /**
  * jwt
  *
@@ -110,7 +112,10 @@ class Jwt
         'ES512' => Signer\Ecdsa\Sha512::class,
         
         // Eddsa 加密
-        'EdDSA' => Signer\Eddsa::class,
+        'EdDSA'   => Signer\Eddsa::class,
+        
+        // Blake2b 加密
+        'Blake2b' => Signer\Blake2b::class,
     ];
     
     /**
@@ -276,6 +281,10 @@ class Jwt
         // 加密方式
         $algorithm = $this->signingMethod;
         
+        if (! isset($this->algorithms[$algorithm])) {
+            throw new JWTException(__('JWT编码失败'));
+        }
+        
         // 加密方式
         $signer = new $this->algorithms[$algorithm];
         
@@ -333,6 +342,13 @@ class Jwt
                     $publicKey = $this->publicKey;
                     $secrect = InMemory::file($publicKey);
                 }
+                break;
+            case 'Blake2b':
+                $secrect = $this->secret;
+                
+                // base64 秘钥数据解码
+                $secrect = InMemory::base64Encoded($secrect)->getContent();
+                $secrect = InMemory::plainText($secrect);
                 break;
         }
         

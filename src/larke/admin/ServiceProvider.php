@@ -268,7 +268,7 @@ class ServiceProvider extends BaseServiceProvider
             $jwtManager = new JwtManager(
                 $app['larke-admin.jwt-driver'],
                 $app['larke-admin.crypto'],
-                config('larkeadmin.jwt')
+                collect(config('larkeadmin.jwt'))
             );
             
             return $jwtManager;

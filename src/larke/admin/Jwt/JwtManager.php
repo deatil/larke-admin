@@ -5,6 +5,7 @@ declare (strict_types = 1);
 namespace Larke\Admin\Jwt;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
 use Larke\Admin\Exception\JWTException;
@@ -30,6 +31,8 @@ class JwtManager
     
     /**
      * 配置
+     *
+     * @var Collection
      */
     private $config = [];
     
@@ -56,7 +59,7 @@ class JwtManager
     /**
      * 解析后的 token 句柄
      */
-    private $parseToken;
+    private $parsedToken;
     
     /**
      * 构造函数
@@ -64,7 +67,7 @@ class JwtManager
     public function __construct(
         $jwt, 
         CryptContract $crypt,
-        $config
+        Collection $config
     ) {
         $this->jwt    = $jwt;
         $this->crypt  = $crypt;
@@ -117,7 +120,7 @@ class JwtManager
     /**
      * 设置配置
      */
-    public function setConfig($config)
+    public function setConfig(Collection $config)
     {
         $this->config = $config;
         return $this;
@@ -267,23 +270,20 @@ class JwtManager
     }
     
     /**
-     * 设置 JWT 配置
+     * 设置 JWT
      */
-    public function putJwtConfig()
+    public function loadJwt()
     {
-        // 配置
-        $config = $this->config;
-        
         // 发布者
-        $this->jwt->withIss($this->arrGet($config, 'iss', '')); 
+        $this->jwt->withIss($this->configGet('iss', '')); 
         // 接收者
-        $this->jwt->withAud($this->arrGet($config, 'aud', '')); 
+        $this->jwt->withAud($this->configGet('aud', '')); 
         // 主题
-        $this->jwt->withSub($this->arrGet($config, 'sub', '')); 
+        $this->jwt->withSub($this->configGet('sub', '')); 
         // 对当前token设置的标识
-        $this->jwt->withJti($this->arrGet($config, 'jti', '')); 
+        $this->jwt->withJti($this->configGet('jti', '')); 
         
-        $iat = $this->arrGet($config, 'iat', 0);
+        $iat = $this->configGet('iat', 0);
         if (empty($iat)) {
             $iat = time();
         }
@@ -291,89 +291,31 @@ class JwtManager
         // token创建时间
         $this->jwt->withIat($iat); 
         // 多少秒内无法使用
-        $this->jwt->withNbf($this->arrGet($config, 'nbf', 0)); 
+        $this->jwt->withNbf($this->configGet('nbf', 0)); 
         // 过期时间
-        $this->jwt->withExp($this->arrGet($config, 'exp', 0)); 
+        $this->jwt->withExp($this->configGet('exp', 0)); 
         // leeway
-        $this->jwt->withLeeway($this->arrGet($config, 'leeway', 0)); 
-        
-        return $this;
-    }
-    
-    /**
-     * 设置签名
-     */
-    public function setSigner($isPrivate = true)
-    {
-        $config = $this->arrGet($this->config, 'signer', []);;
-        
+        $this->jwt->withLeeway($this->configGet('leeway', 0)); 
+
         // 加密方式
-        $algorithm = $this->arrGet($config, 'algorithm', 'HS256');
-        if (empty($algorithm)) {
-            Log::error('larke-admin-jwt-signer: 加密方式为空');
-            
-            throw new JWTException(__('JWT编码失败'));
-        }
-        
+        $algorithm = $this->configGet('signer.algorithm', 'HS256');
         $this->jwt->withSigningMethod($algorithm);
         
-        // 加密秘钥
-        switch ($algorithm) {
-            case 'HS256':
-            case 'HS384':
-            case 'HS512':
-                $secrect = $this->arrGet($config, 'hmac.secrect', '');
-                
-                $this->jwt->withSecret($secrect);
-                
-                break;
-            case 'RS256':
-            case 'RS384':
-            case 'RS512':
-                if ($isPrivate) {
-                    $privateKey = $this->arrGet($config, 'rsa.private_key', '');
-                    $passphrase = $this->arrGet($config, 'rsa.passphrase', null);
-                    
-                    $this->jwt->withPrivateKey($privateKey);
-                    $this->jwt->withPrivateKeyPassword($passphrase);
-                } else {
-                    $publicKey = $this->arrGet($config, 'rsa.public_key', '');
-                    
-                    $this->jwt->withPublicKey($publicKey);
-                }
-                break;
-            case 'ES256':
-            case 'ES384':
-            case 'ES512':
-                if ($isPrivate) {
-                    $privateKey = $this->arrGet($config, 'ecdsa.private_key', '');
-                    $passphrase = $this->arrGet($config, 'ecdsa.passphrase', null);
-                    
-                    $this->jwt->withPrivateKey($privateKey);
-                    $this->jwt->withPrivateKeyPassword($passphrase);
-                } else {
-                    $publicKey = $this->arrGet($config, 'ecdsa.public_key', '');
-                    
-                    $this->jwt->withPublicKey($publicKey);
-                }
-                break;
-            case 'EdDSA':
-                if ($isPrivate) {
-                    $privateKey = $this->arrGet($config, 'eddsa.private_key', '');
-                    
-                    $this->jwt->withPrivateKey($privateKey);
-                } else {
-                    $publicKey = $this->arrGet($config, 'eddsa.public_key', '');
-                    
-                    $this->jwt->withPublicKey($publicKey);
-                }
-                break;
-            default:
-                // 加密方式不存在
-                Log::error('larke-admin-jwt-signer: ' . $algorithm . ' 加密方式不存在');
-                
-                throw new JWTException(__('JWT编码失败'));
-        }
+        // 密码
+        $secrect = $this->configGet('signer.secrect', '');
+        $this->jwt->withSecret($secrect);
+        
+        // 私钥
+        $privateKey = $this->configGet('signer.private_key', '');
+        $this->jwt->withPrivateKey($privateKey);
+        
+        // 私钥密码
+        $passphrase = $this->configGet('signer.passphrase', null);
+        $this->jwt->withPrivateKeyPassword($passphrase);
+
+        // 公钥
+        $publicKey = $this->configGet('signer.public_key', '');
+        $this->jwt->withPublicKey($publicKey);
         
         return $this;
     }
@@ -383,7 +325,7 @@ class JwtManager
      */
     public function encode()
     {
-        $this->putJwtConfig()->setSigner(true);
+        $this->loadJwt();
         
         foreach ($this->headers as $headerKey => $header) {
             $this->jwt->withHeader($headerKey, $header);
@@ -410,9 +352,9 @@ class JwtManager
     public function decode()
     {
         try {
-            $this->parseToken = $this->jwt->parseToken((string) $this->deToken); 
+            $this->parsedToken = $this->jwt->parseToken((string) $this->deToken); 
         } catch(\Exception $e) {
-            Log::error('larke-admin-jwt-parseToken: '.$e->getMessage());
+            Log::error('larke-admin-jwt-parsedToken: '.$e->getMessage());
             
             throw new JWTException(__('JWT解析失败'));
         }
@@ -425,9 +367,9 @@ class JwtManager
      */
     public function validate()
     {
-        $this->putJwtConfig();
+        $this->loadJwt();
         
-        return $this->jwt->validate($this->parseToken);
+        return $this->jwt->validate($this->parsedToken);
     }
 
     /**
@@ -435,17 +377,17 @@ class JwtManager
      */
     public function verify()
     {
-        $this->putJwtConfig()->setSigner(false);
+        $this->loadJwt();
     
-        return $this->jwt->verify($this->parseToken);
+        return $this->jwt->verify($this->parsedToken);
     }
 
     /**
-     * 获取 parseToken
+     * 获取 parsedToken
      */
-    public function getParseToken()
+    public function getParsedToken()
     {
-        return $this->parseToken;
+        return $this->parsedToken;
     }
     
     /**
@@ -453,7 +395,7 @@ class JwtManager
      */
     public function getHeader($name)
     {
-        return $this->jwt->getHeader($this->parseToken, $name);
+        return $this->jwt->getHeader($this->parsedToken, $name);
     }
     
     /**
@@ -461,7 +403,7 @@ class JwtManager
      */
     public function getHeaders()
     {
-        return $this->jwt->getHeaders($this->parseToken);
+        return $this->jwt->getHeaders($this->parsedToken);
     }
 
     /**
@@ -469,7 +411,7 @@ class JwtManager
      */
     public function getClaim($name)
     {
-        return $this->jwt->getClaim($this->parseToken, $name);
+        return $this->jwt->getClaim($this->parsedToken, $name);
     }
     
     /**
@@ -477,7 +419,7 @@ class JwtManager
      */
     public function getClaims()
     {
-        return $this->jwt->getClaims($this->parseToken);
+        return $this->jwt->getClaims($this->parsedToken);
     }
     
     /**
@@ -494,7 +436,7 @@ class JwtManager
         }
         
         if (! empty($claim) && ! empty($value)) {
-            $value = $this->crypt->encrypt($value, $this->base64Decode($this->arrGet($this->config, 'passphrase', '')));
+            $value = $this->crypt->encrypt($value, $this->base64Decode($this->configGet('passphrase', '')));
             
             $this->withClaim($claim, $value);
         }
@@ -509,7 +451,7 @@ class JwtManager
     {
         $claim = $this->getClaim($name);
         
-        $claim = $this->crypt->decrypt($claim, $this->base64Decode($this->arrGet($this->config, 'passphrase', '')));
+        $claim = $this->crypt->decrypt($claim, $this->base64Decode($this->configGet('passphrase', '')));
         
         return $claim;
     }
@@ -535,9 +477,9 @@ class JwtManager
     /**
      * 数据获取
      */
-    protected function arrGet($array, $key, $default = null)
+    protected function configGet($key, $default = null)
     {
-        return Arr::get($array, $key, $default);
+        return Arr::get($this->config, $key, $default);
     }
 
 }
