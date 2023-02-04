@@ -9,7 +9,6 @@ use Larke\JWT\Builder;
 use Larke\JWT\Parser;
 use Larke\JWT\ValidationData;
 
-use Larke\Admin\Jwt\Signer; 
 use Larke\Admin\Exception\JWTException;
 
 /**
@@ -89,32 +88,6 @@ class Jwt
      * 私钥密码
      */
     private $privateKeyPassword = '';
-    
-    /**
-     * 签名类型列表
-     */
-    protected $algorithms = [
-        // Hmac 加密
-        'HS256' => Signer\Hmac\Sha256::class,
-        'HS384' => Signer\Hmac\Sha384::class,
-        'HS512' => Signer\Hmac\Sha512::class,
-        
-        // Rsa 加密
-        'RS256' => Signer\Rsa\Sha256::class,
-        'RS384' => Signer\Rsa\Sha384::class,
-        'RS512' => Signer\Rsa\Sha512::class,
-        
-        // Ecdsa 加密
-        'ES256' => Signer\Ecdsa\Sha256::class,
-        'ES384' => Signer\Ecdsa\Sha384::class,
-        'ES512' => Signer\Ecdsa\Sha512::class,
-        
-        // Eddsa 加密
-        'EdDSA'   => Signer\Eddsa::class,
-        
-        // Blake2b 加密
-        'Blake2b' => Signer\Blake2b::class,
-    ];
     
     /**
      * 设置 header
@@ -272,32 +245,13 @@ class Jwt
     }
     
     /**
-     * 注册签名方法
-     */
-    public function addSigningMethod($algorithm, $signer)
-    {
-        $this->algorithms[$algorithm] = $signer;
-        
-        return $this;
-    }
-    
-    /**
-     * 判断签名方法是否存在
-     */
-    public function hasSigningMethod($algorithm)
-    {
-        return isset($this->algorithms[$algorithm]);
-    }
-    
-    /**
      * 获取签名
      */
     public function getSigner()
     {
         // 加密方式
-        $algorithm = $this->signingMethod;
-        
-        if (! isset($this->algorithms[$algorithm])) {
+        $algorithm = Signer::getSigningMethod($this->signingMethod);
+        if (empty($algorithm)) {
             throw new JWTException(__('签名类型不存在'));
         }
         
@@ -308,7 +262,7 @@ class Jwt
             'public_key'  => $this->publicKey,
             'passphrase'  => $this->privateKeyPassword,
         ]);
-        $signer = new $this->algorithms[$algorithm]($config);
+        $signer = new $algorithm($config);
         
         return $signer;
     }
