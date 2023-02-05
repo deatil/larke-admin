@@ -5,6 +5,7 @@ declare (strict_types = 1);
 namespace Larke\Admin\Jwt;
 
 use Larke\Admin\Jwt\Signer; 
+use Larke\Admin\Jwt\Contracts\Signer as SignerContract; 
 
 /*
  * Signer
@@ -43,7 +44,7 @@ class Signer
     /**
      * 注册签名方法
      */
-    public static function addSigningMethod($algorithm, $signer)
+    public static function addSigningMethod(string $algorithm, SignerContract $signer)
     {
         static::$signers[$algorithm] = $signer;
     }
@@ -51,7 +52,7 @@ class Signer
     /**
      * 判断签名方法是否存在
      */
-    public static function hasSigningMethod($algorithm)
+    public static function hasSigningMethod(string $algorithm)
     {
         return isset(static::$signers[$algorithm]);
     }
@@ -59,7 +60,7 @@ class Signer
     /**
      * 获取签名方法
      */
-    public static function getSigningMethod($algorithm)
+    public static function getSigningMethod(string $algorithm)
     {
         if (isset(static::$signers[$algorithm])) {
             return static::$signers[$algorithm];
