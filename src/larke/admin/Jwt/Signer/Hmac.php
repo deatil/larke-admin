@@ -81,8 +81,7 @@ class Hmac implements Signer
         $secrect = $this->config->get("secrect");
         
         // base64 秘钥数据解码
-        $secrect = InMemory::base64Encoded($secrect)->getContent();
-        $secrect = InMemory::plainText($secrect);
+        $secrect = InMemory::base64Encoded($secrect);
 
         return $secrect;
     }

@@ -60,8 +60,7 @@ class Eddsa implements Signer
     {
         $privateKey = $this->config->get("private_key");
         
-        $secrect = InMemory::base64Encoded($privateKey)->getContent();
-        $secrect = InMemory::plainText($secrect);
+        $secrect = InMemory::base64Encoded($privateKey);
         
         return $secrect;
     }
@@ -75,8 +74,7 @@ class Eddsa implements Signer
     {
         $publicKey = $this->config->get("public_key");
         
-        $secrect = InMemory::base64Encoded($publicKey)->getContent();
-        $secrect = InMemory::plainText($secrect);
+        $secrect = InMemory::base64Encoded($publicKey);
         
         return $secrect;
     }
