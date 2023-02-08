@@ -31,9 +31,9 @@ return [
         'password_salt'      => env('LARKE_ADMIN_PASSPORT_PASSWORD_SALT', 'e6c2ea864004a461e744b28a394df50c'),
         'header_captcha_key' => env('LARKE_ADMIN_PASSPORT_HEADER_CAPTCHA_KEY', 'Larke-Admin-Captcha-Id'),
         'access_token_id'    => env('LARKE_ADMIN_PASSPORT_ACCESS_TOKEN_ID', 'larke-passport-access-token'),
-        'access_expires_in'  => env('LARKE_ADMIN_PASSPORT_ACCESS_EXPIRED_IN', 86400),
+        'access_expires_in'  => env('LARKE_ADMIN_PASSPORT_ACCESS_EXPIRED_IN', 48), // 单位：小时
         'refresh_token_id'   => env('LARKE_ADMIN_PASSPORT_REFRESH_TOKEN_ID', 'larke-passport-refresh-token'),
-        'refresh_expires_in' => env('LARKE_ADMIN_PASSPORT_REFRESH_EXPIRED_IN', 604800),
+        'refresh_expires_in' => env('LARKE_ADMIN_PASSPORT_REFRESH_EXPIRED_IN', 168), // 单位：小时
         
         // 验证码 
         'captcha_expose_headers' => env('LARKE_ADMIN_PASSPORT_CAPTCHA_EXPOSE_HEADERS', 'Larke-Admin-Captcha-Id'),
@@ -56,9 +56,9 @@ return [
         'aud'    => env('LARKE_ADMIN_JWT_AUD', !app()->runningInConsole() ? md5(request()->ip().request()->server('HTTP_USER_AGENT')) : ''),
         'sub'    => env('LARKE_ADMIN_JWT_SUB', 'larke-admin-passport'),
         'jti'    => env('LARKE_ADMIN_JWT_JTI', 'larke-admin-jid'),
-        'exp'    => env('LARKE_ADMIN_JWT_EXP', 3600),
-        'nbf'    => env('LARKE_ADMIN_JWT_NBF', 0),
-        'leeway' => env('LARKE_ADMIN_JWT_LEEWAY', 0),
+        'exp'    => env('LARKE_ADMIN_JWT_EXP', 24),   // 过期时间, 单位：小时
+        'nbf'    => env('LARKE_ADMIN_JWT_NBF', 0),    // 单位：分钟
+        'leeway' => env('LARKE_ADMIN_JWT_LEEWAY', 0), // 单位：分钟
         
         // 载荷加密秘钥，为空不加密，base64编码后
         'passphrase' => env('LARKE_ADMIN_JWT_PASSPHRASE', 'YTY5YmNiZTgxMzVhMWY2MTA3Njc3NGY1YTE3MWI2MjQ='),

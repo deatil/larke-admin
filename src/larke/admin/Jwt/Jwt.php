@@ -8,6 +8,7 @@ namespace Larke\Admin\Jwt;
 use Larke\JWT\Builder;
 use Larke\JWT\Parser;
 use Larke\JWT\ValidationData;
+use Larke\JWT\Clock\SystemClock;
 
 use Larke\Admin\Exception\JWTException;
 
@@ -162,8 +163,12 @@ class Jwt
     /**
      * 设置 issuedAt
      */
-    public function withIat($issuedAt)
+    public function withIat($issuedAt = null)
     {
+        if (empty($issuedAt)) {
+            $issuedAt = SystemClock::fromSystemTimezone()->now();
+        }
+        
         $this->issuedAt = $issuedAt;
         return $this;
     }
@@ -177,7 +182,7 @@ class Jwt
             $notBeforeTime = 0;
         }
         
-        $this->notBeforeTime = time() + $notBeforeTime;
+        $this->notBeforeTime = SystemClock::fromSystemTimezone()->now()->modify("+{$notBeforeTime} minute");
         return $this;
     }
     
@@ -186,7 +191,7 @@ class Jwt
      */
     public function withExp($expTime)
     {
-        $this->expTime = time() + $expTime;
+        $this->expTime = SystemClock::fromSystemTimezone()->now()->modify("+{$expTime} hour");
         return $this;
     }
     
@@ -282,7 +287,6 @@ class Jwt
         $builder->relatedTo($this->subject); 
         // 对当前token设置的标识
         $builder->identifiedBy($this->jti); 
-        
         // token创建时间
         $builder->issuedAt($this->issuedAt); 
         // 多少秒内无法使用

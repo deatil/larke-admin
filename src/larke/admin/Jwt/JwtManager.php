@@ -282,14 +282,8 @@ class JwtManager
         $this->jwt->withSub($this->configGet('sub', '')); 
         // 对当前token设置的标识
         $this->jwt->withJti($this->configGet('jti', '')); 
-        
-        $iat = $this->configGet('iat', 0);
-        if (empty($iat)) {
-            $iat = time();
-        }
-        
         // token创建时间
-        $this->jwt->withIat($iat); 
+        $this->jwt->withIat($this->configGet('iat', 0)); 
         // 多少秒内无法使用
         $this->jwt->withNbf($this->configGet('nbf', 0)); 
         // 过期时间
