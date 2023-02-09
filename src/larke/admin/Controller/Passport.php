@@ -311,7 +311,7 @@ class Passport extends Base
             // 单点登陆处理
             $loginType = config('larkeadmin.passport.login_type', 'many');
             if ($loginType == 'single') {
-                $iat = $decodeRefreshToken->getClaim('iat');
+                $iat = $decodeRefreshToken->getClaim('iat')->getTimestamp();
                 
                 // 账号信息
                 $adminInfo = AdminModel::where('id', $refreshAdminid)
@@ -323,7 +323,7 @@ class Passport extends Base
                 // 账号信息
                 $adminInfo = $adminInfo->toArray();
                
-                // 判断是否是单点登陆
+                // 判断是否是单端登陆
                 if ($adminInfo['last_active'] != $iat) {
                     return $this->error(__('刷新Token失败'), \ResponseCode::REFRESH_TOKEN_ERROR);
                 }
@@ -394,7 +394,7 @@ class Passport extends Base
             $refreshAdminid = $decodeRefreshToken->getData('adminid');
             
             // 过期时间
-            $refreshTokenExpiresIn = $decodeRefreshToken->getClaim('exp') - $decodeRefreshToken->getClaim('iat');
+            $refreshTokenExpiresIn = $decodeRefreshToken->getClaim('exp')->getTimestamp() - $decodeRefreshToken->getClaim('iat')->getTimestamp();
         } catch(\Exception $e) {
             return $this->error($e->getMessage(), \ResponseCode::LOGOUT_ERROR);
         }

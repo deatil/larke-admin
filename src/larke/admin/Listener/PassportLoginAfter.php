@@ -19,19 +19,17 @@ class PassportLoginAfter
         // jwt 数据
         $jwt = $event->jwt;
         
-        // token
-        $accessToken = $jwt['access_token'];
-        $refreshToken = $jwt['refresh_token'];
-        
         // 权限 token 签发时间
         $decodeAccessToken = app('larke-admin.auth-token')
-                ->decodeAccessToken($accessToken);
-        $decodeAccessTokenIat = $decodeAccessToken->getClaim('iat');
+                ->decodeAccessToken($jwt['access_token']);
+        $decodeAccessTokenIat = $decodeAccessToken->getClaim('iat')
+                ->getTimestamp();
         
         // 权限 token 签发时间
         $decodeRefreshToken = app('larke-admin.auth-token')
-                ->decodeRefreshToken($refreshToken);
-        $decodeRefreshTokenIat = $decodeRefreshToken->getClaim('iat');
+                ->decodeRefreshToken($jwt['refresh_token']);
+        $decodeRefreshTokenIat = $decodeRefreshToken->getClaim('iat')
+                ->getTimestamp();
         
         $event->admin->update([
             'refresh_time' => $decodeAccessTokenIat, 

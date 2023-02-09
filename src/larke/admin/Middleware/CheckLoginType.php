@@ -49,9 +49,9 @@ class CheckLoginType
         // 单点登陆处理
         $loginType = config('larkeadmin.passport.login_type', 'many');
         if ($loginType == 'single') {
-            $iat = $decodeAccessToken->getClaim('iat');
+            $iat = $decodeAccessToken->getClaim('iat')->getTimestamp();
             
-            // 判断是否是单点登陆
+            // 判断是否是单端登陆
             if ($adminInfo['refresh_time'] != $iat) {
                 return $this->error(__('token已失效'), \ResponseCode::ACCESS_TOKEN_TIMEOUT);
             }

@@ -81,7 +81,7 @@ class PassportLogout extends Command
             $refreshAdminid = $decodeRefreshToken->getData('adminid');
             
             // 过期时间
-            $refreshTokenExpiresIn = $decodeRefreshToken->getClaim('exp') - $decodeRefreshToken->getClaim('iat');
+            $refreshTokenExpiresIn = $decodeRefreshToken->getClaim('exp')->getTimestamp() - $decodeRefreshToken->getClaim('iat')->getTimestamp();
        } catch(\Exception $e) {
             $this->line("<error>".$e->getMessage()."</error> ");
 

@@ -58,7 +58,7 @@ return [
         'jti'    => env('LARKE_ADMIN_JWT_JTI', 'larke-admin-jid'),
         'exp'    => env('LARKE_ADMIN_JWT_EXP', 24),   // 过期时间, 单位：小时
         'nbf'    => env('LARKE_ADMIN_JWT_NBF', 0),    // 单位：分钟
-        'leeway' => env('LARKE_ADMIN_JWT_LEEWAY', 0), // 单位：分钟
+        'leeway' => env('LARKE_ADMIN_JWT_LEEWAY', 0), // 单位：秒
         
         // 载荷加密秘钥，为空不加密，base64编码后
         'passphrase' => env('LARKE_ADMIN_JWT_PASSPHRASE', 'YTY5YmNiZTgxMzVhMWY2MTA3Njc3NGY1YTE3MWI2MjQ='),

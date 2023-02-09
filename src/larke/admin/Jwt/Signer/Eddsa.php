@@ -59,6 +59,7 @@ class Eddsa implements Signer
     public function getSignSecrect() 
     {
         $privateKey = $this->config->get("private_key");
+        $privateKey = $this->formatSignSecrect($privateKey);
         
         $secrect = InMemory::base64Encoded($privateKey);
         
@@ -73,9 +74,43 @@ class Eddsa implements Signer
     public function getVerifySecrect() 
     {
         $publicKey = $this->config->get("public_key");
+        $publicKey = $this->formatSignSecrect($publicKey);
         
         $secrect = InMemory::base64Encoded($publicKey);
         
         return $secrect;
     }
+    
+    private function formatSignSecrect(string $key)
+    {
+        if (file_exists($key)) {
+            // key 需为解析出的 der 数据
+            $secretkey = sodium_crypto_sign_secretkey(
+                sodium_crypto_sign_seed_keypair(
+                    file_get_contents($key)
+                )
+            );
+            
+            return base64_encode($secretkey);
+        }
+        
+        return $key;
+    }
+    
+    private function formatVerifySecrect(string $key)
+    {
+        if (file_exists($key)) {
+            // key 需为解析出的 der 数据
+            $publickey = sodium_crypto_sign_publickey(
+                sodium_crypto_sign_seed_keypair(
+                    file_get_contents($key)
+                )
+            );
+            
+            return base64_encode($publickey);
+        }
+        
+        return $key;
+    }
+
 }

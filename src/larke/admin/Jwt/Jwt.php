@@ -4,6 +4,8 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Jwt;
 
+use DateTimeImmutable;
+
 // 文件夹引用
 use Larke\JWT\Builder;
 use Larke\JWT\Parser;
@@ -91,6 +93,19 @@ class Jwt
     private $privateKeyPassword = '';
     
     /**
+     * 当前时间
+     */
+    private $now;
+    
+    /**
+     * 构造函数
+     */
+    public function __construct(DateTimeImmutable $now = null) 
+    {
+        $this->now = $now ?: SystemClock::fromSystemTimezone()->now();
+    }
+    
+    /**
      * 设置 header
      */
     public function withHeader($name, $value = null)
@@ -166,7 +181,7 @@ class Jwt
     public function withIat($issuedAt = null)
     {
         if (empty($issuedAt)) {
-            $issuedAt = SystemClock::fromSystemTimezone()->now();
+            $issuedAt = $this->now;
         }
         
         $this->issuedAt = $issuedAt;
@@ -182,7 +197,7 @@ class Jwt
             $notBeforeTime = 0;
         }
         
-        $this->notBeforeTime = SystemClock::fromSystemTimezone()->now()->modify("+{$notBeforeTime} minute");
+        $this->notBeforeTime = $this->now->modify("+{$notBeforeTime} minute");
         return $this;
     }
     
@@ -191,7 +206,7 @@ class Jwt
      */
     public function withExp($expTime)
     {
-        $this->expTime = SystemClock::fromSystemTimezone()->now()->modify("+{$expTime} hour");
+        $this->expTime = $this->now->modify("+{$expTime} hour");
         return $this;
     }
     
@@ -325,7 +340,7 @@ class Jwt
      */
     public function validate($token)
     {
-        $data = new ValidationData(time(), $this->leeway); 
+        $data = new ValidationData($this->now, $this->leeway); 
         $data->issuedBy($this->issuer);
         $data->permittedFor($this->audience);
         $data->identifiedBy($this->jti);

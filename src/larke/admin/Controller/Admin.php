@@ -702,7 +702,7 @@ class Admin extends Base
             $refreshAdminid = $decodeRefreshToken->getData('adminid');
             
             // 过期时间
-            $refreshTokenExpiresIn = $decodeRefreshToken->getClaim('exp') - $decodeRefreshToken->getClaim('iat');
+            $refreshTokenExpiresIn = $decodeRefreshToken->getClaim('exp')->getTimestamp() - $decodeRefreshToken->getClaim('iat')->getTimestamp();
         } catch(\Exception $e) {
             return $this->error($e->getMessage());
         }
