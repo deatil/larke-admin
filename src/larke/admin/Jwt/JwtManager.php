@@ -443,9 +443,10 @@ class JwtManager
      */
     public function getData($name)
     {
-        $claim = $this->getClaim($name);
-        
-        $claim = $this->crypt->decrypt($claim, $this->base64Decode($this->configGet('passphrase', '')));
+        $claim = $this->crypt->decrypt(
+            $this->getClaim($name), 
+            $this->base64Decode($this->configGet('passphrase', ''))
+        );
         
         return $claim;
     }
@@ -469,7 +470,7 @@ class JwtManager
     }
     
     /**
-     * 数据获取
+     * 获取配置
      */
     protected function configGet($key, $default = null)
     {

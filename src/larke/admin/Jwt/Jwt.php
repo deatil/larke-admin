@@ -319,7 +319,7 @@ class Jwt
             $builder->withClaim($claimKey, $claim);
         }
         
-        $sign = $this->getSigner();
+        $sign  = $this->getSigner();
         $token = $builder->getToken($sign->getSigner(), $sign->getSignSecrect());
         
         return $token;
@@ -372,7 +372,7 @@ class Jwt
      */
     public function getHeaders($token)
     {
-        return $token->getHeaders();
+        return $token->getHeaders()->all();
     }
 
     /**
@@ -388,7 +388,7 @@ class Jwt
      */
     public function getClaims($token)
     {
-        $claims = $token->getClaims();
+        $claims = $token->getClaims()->all();
         
         $data = [];
         foreach ($claims as $claim) {
