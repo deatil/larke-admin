@@ -65,19 +65,19 @@ return [
         
         // 签名
         'signer' => [
-            // jwt 签名方式, 包括: HS... | RS... | ES... | EdDSA | Blake2b
-            'algorithm' => env('LARKE_ADMIN_JWT_SIGNER_ALGORITHM', 'HS256'),
+            // jwt 签名方式, 包括: none | HS... | RS... | ES... | EdDSA | Blake2b
+            'algorithm' => env('LARKE_ADMIN_JWT_SIGNER_ALGORITHM', 'HS512'),
             
             // 对称加密使用密码，base64编码后
-            // HS256,HS384,HS512
-            // Blake2b
+            // HS256, HS384, HS512
+            // Blake2b, none
             'secrect'   => env('LARKE_ADMIN_JWT_SIGNER_SECRECT', 'NzdjMTNmODU0YzA5ODg5ZjJiY2UzYWY4OTUwOWFkMzY='),
             
             // 非对称加密使用
             // 示例: storage_path('key/rsa/rsa-pkcs8')
             // EdDSA key 请填写 base64 编码的字符，其他的填写 key 路径即可
-            // RS256,RS384,RS512
-            // ES256,ES384,ES512
+            // RS256, RS384, RS512
+            // ES256, ES384, ES512
             // EdDSA
             'private_key' => env('LARKE_ADMIN_JWT_SIGNER_PRIVATE_KEY', ''),
             'public_key'  => env('LARKE_ADMIN_JWT_SIGNER_PUBLIC_KEY', ''),

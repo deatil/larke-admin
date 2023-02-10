@@ -19,6 +19,9 @@ class Signer
      * 签名类型列表
      */
     protected static $signers = [
+        // 空加密
+        'none' => Signer\None::class,
+        
         // Hmac 加密
         'HS256' => Signer\Hmac\Sha256::class,
         'HS384' => Signer\Hmac\Sha384::class,
