@@ -132,7 +132,7 @@ php artisan larke-admin:import-route
 
  - laravel/framework
 
- - lcobucci/jwt
+ - [lake/larke-jwt](https://github.com/deatil/larke-jwt) (代码修改自 lcobucci/jwt)
 
  - casbin/casbin
 
