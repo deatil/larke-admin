@@ -15,14 +15,14 @@ trait ExtensionServiceProvider
      *
      * @var array
      */
-    protected $startingCallbacks = [];
+    protected array $startingCallbacks = [];
 
     /**
      * All of the registered started callbacks.
      *
      * @var array
      */
-    protected $startedCallbacks = [];
+    protected array $startedCallbacks = [];
     
     /**
      * Register a starting callback to be run before the "start" method is called.
@@ -30,7 +30,7 @@ trait ExtensionServiceProvider
      * @param  \Closure  $callback
      * @return void
      */
-    public function starting(Closure $callback)
+    public function starting(Closure $callback): void
     {
         $this->startingCallbacks[] = $callback;
     }
@@ -41,7 +41,7 @@ trait ExtensionServiceProvider
      * @param  \Closure  $callback
      * @return void
      */
-    public function started(Closure $callback)
+    public function started(Closure $callback): void
     {
         $this->startedCallbacks[] = $callback;
     }
@@ -51,7 +51,7 @@ trait ExtensionServiceProvider
      *
      * @return void
      */
-    public function callStartingCallbacks()
+    public function callStartingCallbacks(): void
     {
         foreach ($this->startingCallbacks as $callback) {
             $this->app->call($callback);
@@ -63,7 +63,7 @@ trait ExtensionServiceProvider
      *
      * @return void
      */
-    public function callStartedCallbacks()
+    public function callStartedCallbacks(): void
     {
         foreach ($this->startedCallbacks as $callback) {
             $this->app->call($callback);
@@ -74,22 +74,22 @@ trait ExtensionServiceProvider
      * 登陆过滤
      *
      * @param array $excepts 权限列表
-     * @return mix
+     * @return void
      */
-    public function authenticateExcepts(array $excepts)
+    public function authenticateExcepts(array $excepts): void
     {
-        return Extension::authenticateExcepts($excepts);
+        Extension::authenticateExcepts($excepts);
     }
     
     /**
      * 权限过滤
      *
      * @param array $excepts 权限列表
-     * @return mix
+     * @return void
      */
-    public function permissionExcepts(array $excepts)
+    public function permissionExcepts(array $excepts): void
     {
-        return Extension::permissionExcepts($excepts);
+        Extension::permissionExcepts($excepts);
     }
     
 }

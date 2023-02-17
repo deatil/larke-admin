@@ -13,33 +13,34 @@ namespace Larke\Admin\Support;
 class ProgressBar
 {
     // 前缀
-    protected $prefix = '[x] ';
+    protected string $prefix = '[x] ';
 
     // 后缀
-    protected $suffix = '';
+    protected string $suffix = '';
 
     // 进度条
-    protected $progressString = '>';
+    protected string $progressString = '>';
 
     // 步行分割数
-    protected $length = 100;
+    protected int $length = 100;
 
     // 总数
-    protected $total = 0;
+    protected int $total = 0;
 
     // 当前数
-    protected $current = 0;
+    protected int $current = 0;
 
     // 分割数量
-    protected $average = 0;
+    protected int $average = 0;
 
     /**
      * 设置前缀
      *
-     * @param $prefix 前缀
+     * @param string $prefix 前缀
+     *
      * @return $this
      */
-    public function withPrefix($prefix)
+    public function withPrefix(string $prefix): self
     {
         $this->prefix = $prefix;
 
@@ -49,10 +50,11 @@ class ProgressBar
     /**
      * 设置后缀
      *
-     * @param $suffix 后缀
+     * @param string $suffix 后缀
+     *
      * @return $this
      */
-    public function withSuffix($suffix)
+    public function withSuffix(string $suffix): self
     {
         $this->suffix = $suffix;
 
@@ -62,10 +64,11 @@ class ProgressBar
     /**
      * 设置进度条
      *
-     * @param $progressString 前缀
+     * @param string $progressString 前缀
+     *
      * @return $this
      */
-    public function withProgressString($progressString)
+    public function withProgressString(string $progressString): self
     {
         $this->progressString = $progressString;
 
@@ -75,10 +78,11 @@ class ProgressBar
     /**
      * 设置步行分割数
      *
-     * @param $length
+     * @param int $length
+     *
      * @return $this
      */
-    public function withLength($length)
+    public function withLength(int $length): self
     {
         $this->length = $length;
 
@@ -88,10 +92,11 @@ class ProgressBar
     /**
      * 设置总数
      *
-     * @param $total
+     * @param int $total
+     *
      * @return $this
      */
-    public function withTotal($total)
+    public function withTotal(int $total): self
     {
         $this->total = $total;
 
@@ -101,9 +106,9 @@ class ProgressBar
     /**
      * 获取分割数量
      *
-     * @return void
+     * @return int
      */
-    public function getAverage()
+    public function getAverage(): int
     {
         $this->average = $this->length / $this->total;
         
@@ -115,7 +120,7 @@ class ProgressBar
      *
      * @return $this
      */
-    public function resetBar()
+    public function resetBar(): self
     {
         $this->current = 1;
         
@@ -126,9 +131,10 @@ class ProgressBar
      * 前进
      *
      * @param int $step
-     * @return void
+     *
+     * @return string
      */
-    public function advance($step = 1)
+    public function advance(int $step = 1): string
     {
         // 当前进度小于总数时
         if ($this->current < $this->total) {
@@ -141,10 +147,9 @@ class ProgressBar
     /**
      * 显示进度条内容
      *
-     * @param bool $end
      * @return string
      */
-    protected function showBar()
+    protected function showBar(): string
     {
         // \r 用在双引号内，回车，回到当前行首
         $bar = $this->bar()  . "\r";
@@ -157,7 +162,7 @@ class ProgressBar
      *
      * @return string
      */
-    protected function bar()
+    protected function bar(): string
     {
         // 取最小值
         $this->current = min($this->current, $this->total);

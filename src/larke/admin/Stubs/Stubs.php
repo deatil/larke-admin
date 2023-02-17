@@ -18,9 +18,9 @@ class Stubs
     /**
      * 快捷创建
      */
-    public static function create(): static
+    public static function create(): self
     {
-        return new static();
+        return new self();
     }
     
     /**
@@ -144,7 +144,7 @@ class Stubs
     /**
      * 生成文件夹
      */
-    public function makeDir($path, $mode = 0755, $recursive = false)
+    public function makeDir($path, $mode = 0755, $recursive = false): void
     {
         File::ensureDirectoryExists($path, $mode, $recursive);
     }

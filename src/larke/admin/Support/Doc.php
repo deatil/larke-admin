@@ -12,17 +12,17 @@ namespace Larke\Admin\Support;
  */
 Class Doc
 {
-    private $params = [];
+    private array $params = [];
     
     /**
      * 解析注释
      *
-     * @param   mixed  $doc
-     * @return  array
+     * @param  string $doc
+     * @return array
      */
-    public function parse($doc = ''): array
+    public function parse(string $doc): array
     {
-        if (empty($doc) || !is_string($doc)) {
+        if (empty($doc)) {
             return $this->params;
         }
         
@@ -44,8 +44,8 @@ Class Doc
     /**
      * 格式化数据
      *
-     * @param   array   $lines
-     * @return  void
+     * @param  array $lines
+     * @return void
      */
     protected function parseLines(array $lines): void
     {
@@ -63,7 +63,7 @@ Class Doc
                 
                 $desc = [];
             } elseif ($parsedLine !== false) {
-                $desc[] = $parsedLine;
+                $desc[] = trim($line);
             }
         }
         
@@ -77,10 +77,10 @@ Class Doc
     /**
      * 格式化单行注释
      *
-     * @param   string  $line
-     * @return  array|bool
+     * @param  string $line
+     * @return bool
      */
-    protected function parseLine(string $line)
+    protected function parseLine(string $line): bool
     {
         $line = trim($line);
         
@@ -102,15 +102,15 @@ Class Doc
             }
         }
         
-        return $line;
+        return true;
     }
     
     /**
      * 设置数据
      *
-     * @param   string  $lines
-     * @param   string  $value
-     * @return  bool
+     * @param  string $lines
+     * @param  string $value
+     * @return bool
      */
     protected function setParam(string $param, string $value): bool
     {
@@ -141,8 +141,8 @@ Class Doc
     /**
      * 格式化类
      *
-     * @param   string  $value
-     * @return  array
+     * @param  string $value
+     * @return array
      */
     protected function formatClass(string $value): array
     {
@@ -173,10 +173,10 @@ Class Doc
     /**
      * 格式化
      *
-     * @param   string  $string
-     * @return  array
+     * @param  string $string
+     * @return array
      */
-    protected function formatParam(string $string)
+    protected function formatParam(string $string): array
     {
         $string = $string." ";
         
@@ -195,22 +195,23 @@ Class Doc
     /**
      * 转换类型
      *
-     * @param   string  $type
-     * @return  array
+     * @param  string $type
+     * @return string
      */
     protected function getParamType(string $type): string
     {
         $typeMaps = [
-            'string' => 'String', // 字符串
-            'int' => 'Int', // 整型
-            'float' => 'Float', // 浮点型
+            'string'  => 'String',  // 字符串
+            'int'     => 'Int',     // 整型
+            'float'   => 'Float',   // 浮点型
             'boolean' => 'Boolean', // 布尔型
-            'date' => 'Date', // 日期
-            'array' => 'Array', // 数组
-            'fixed' => 'Fixed', // 固定值
-            'enum' => 'Enum', // 枚举类型
-            'object' => 'Object', // 对象
+            'date'    => 'Date',    // 日期
+            'array'   => 'Array',   // 数组
+            'fixed'   => 'Fixed',   // 固定值
+            'enum'    => 'Enum',    // 枚举类型
+            'object'  => 'Object',  // 对象
         ];
+        
         return array_key_exists($type, $typeMaps) 
             ? $typeMaps[$type] 
             : $type;

@@ -14,7 +14,7 @@ use Composer\Autoload\ClassLoader;
  */
 class Loader
 {
-    protected $loader;
+    protected ClassLoader $loader;
     
     public function __construct()
     {
@@ -24,7 +24,7 @@ class Loader
     /**
      * getLoader
      */
-    public function getLoader()
+    public function getLoader(): ClassLoader
     {
         return $this->loader;
     }
@@ -32,16 +32,17 @@ class Loader
     /**
      * class_map
      */
-    public function addClassMap(array $classMap)
+    public function addClassMap(array $classMap): self
     {
         $this->loader->addClassMap($classMap);
+        
         return $this;
     }
     
     /**
      * psr-0
      */
-    public function add($prefix, $paths = [], $prepend = false)
+    public function add(mixed $prefix, mixed $paths = [], bool $prepend = false): self
     {
         if (is_array($prefix)) {
             foreach ($prefix as $key => $value) {
@@ -52,13 +53,14 @@ class Loader
         }
         
         $this->loader->add($prefix, $paths, $prepend);
+        
         return $this;
     }
     
     /**
      * psr-4
      */
-    public function addPsr4($prefix, $paths = [], $prepend = false)
+    public function addPsr4(mixed $prefix, mixed $paths = [], bool $prepend = false): self
     {
         if (is_array($prefix)) {
             foreach ($prefix as $key => $value) {
@@ -69,13 +71,14 @@ class Loader
         }
         
         $this->loader->addPsr4($prefix, $paths, $prepend);
+        
         return $this;
     }
     
     /**
      * psr-0
      */
-    public function set($prefix, $paths = [])
+    public function set(string $prefix, mixed $paths = []): self
     {
         if (is_array($prefix)) {
             foreach ($prefix as $key => $value) {
@@ -86,13 +89,14 @@ class Loader
         }
         
         $this->loader->set($prefix, $paths);
+        
         return $this;
     }
     
     /**
      * psr-4
      */
-    public function setPsr4($prefix, $paths = [])
+    public function setPsr4(mixed $prefix, mixed $paths = []): self
     {
         if (is_array($prefix)) {
             foreach ($prefix as $key => $value) {
@@ -103,13 +107,14 @@ class Loader
         }
         
         $this->loader->setPsr4($prefix, $paths);
+        
         return $this;
     }
     
     /**
      * 注册
      */
-    public function register($prepend = true)
+    public function register(bool $prepend = true)
     {
         $this->loader->register($prepend);
     }

@@ -17,46 +17,48 @@ class Tree
      *
      * @var array
      */
-    public $data = [];
+    public array $data = [];
 
     /**
      * 生成树型结构所需修饰符号，可以换成图片
      *
      * @var array
      */
-    public $icon = ['│', '├', '└'];
-    public $blankspace = "&nbsp;";
+    public array $icon = ['│', '├', '└'];
+    public string $blankspace = "&nbsp;";
     
     // 查询
-    public $idKey = "id";
-    public $parentidKey = "parentid";
-    public $spacerKey = "spacer";
-    public $depthKey = "depth";
-    public $haschildKey = "haschild";
+    public string $idKey = "id";
+    public string $parentidKey = "parentid";
+    public string $spacerKey = "spacer";
+    public string $depthKey = "depth";
+    public string $haschildKey = "haschild";
     
     // 返回子级key
-    public $buildChildKey = "child";
+    public string $buildChildKey = "child";
     
     /**
      * 创建
      */
-    public static function create()
+    public static function create(): self
     {
-        return new static();
+        return new self();
     }
 
     /**
      * 设置配置
      *
-     * @param   array  $key     键值
-     * @param   string $value   内容
-     * @return array
+     * @param string $key   键值
+     * @param string $value 内容
+     *
+     * @return self
      */
-    public function withConfig($key, $value)
+    public function withConfig(string $key, string $value): self
     {
         if (isset($this->{$key})) {
             $this->{$key} = $value;
         }
+        
         return $this;
     }
 
@@ -74,7 +76,7 @@ class Tree
      *      7 => array('id'=>'7','parentid'=>3,'title'=>'三级栏目二')
      * )
      */
-    public function withData($data = [])
+    public function withData(array $data = []): self
     {
         $this->data = $data;
         return $this;
@@ -83,11 +85,13 @@ class Tree
     /**
      * 构建数组
      *
-     * @param   string  $id 要查询的ID
-     * @param   string  $itemprefix 前缀
-     * @return  string
+     * @param mixed  $id 要查询的ID
+     * @param string $itemprefix 前缀
+     * @param string $depth 深度
+     *
+     * @return array
      */
-    public function build($id = 0, $itemprefix = '', $depth = 0)
+    public function build(mixed $id = 0, string $itemprefix = '', int $depth = 0): array
     {
         $child = $this->getListChild($this->data, $id);
         if (!is_array($child)) {
@@ -134,12 +138,13 @@ class Tree
     /**
      * 所有父节点
      *
-     * @param   array       $list       数据集
-     * @param   string|int  $parentid   节点的parentid
-     * @param   string      $sort       排序
-     * @return  array
+     * @param  array      $list     数据集
+     * @param  string|int $parentid 节点的parentid
+     * @param  string     $sort     排序
+     *
+     * @return array
      */
-    public function getListParents($list = [], $parentid = '', $sort = 'desc')
+    public function getListParents(array $list = [], mixed $parentid = '', string $sort = 'desc'): array
     {
         if (empty($list) || !is_array($list)) {
             return [];
@@ -167,11 +172,12 @@ class Tree
     /**
      * 所有父节点的ID列表
      *
-     * @param   array       $list       数据集
-     * @param   string|int  $parentid   节点的parentid
-     * @return  array
+     * @param  array      $list     数据集
+     * @param  string|int $parentid 节点的parentid
+     *
+     * @return array
      */
-    public function getListParentsId($list = [], $parentid = '')
+    public function getListParentsId(array $list = [], mixed $parentid = ''): array
     {
         $parents = $this->getListParents($list, $parentid);
         if (empty($parents)) {
@@ -189,12 +195,13 @@ class Tree
     /**
      * 获取当前ID的所有子节点
      *
-     * @param   array       $list   数据集
-     * @param   string|int  $id     当前id
-     * @param   string      $sort   排序
-     * @return  array
+     * @param  array      $list 数据集
+     * @param  string|int $id   当前id
+     * @param  string     $sort 排序
+     *
+     * @return array
      */
-    public function getListChildren($list = [], $id = '', $sort = 'desc')
+    public function getListChildren(array $list = [], mixed $id = '', string $sort = 'desc'): array
     {
         if (empty($list) || !is_array($list)) {
             return [];
@@ -221,11 +228,12 @@ class Tree
     /**
      * 获取当前 ID 的所有子节点 id
      *
-     * @param   array       $list   数据集
-     * @param   string|int  $id     当前id
-     * @return  array
+     * @param  array      $list 数据集
+     * @param  string|int $id   当前id
+     *
+     * @return array
      */
-    public function getListChildrenId($list = [], $id = '')
+    public function getListChildrenId(array $list = [], mixed $id = ''): array
     {
         $childs = $this->getListChildren($list, $id);
         if (empty($childs)) {
@@ -243,11 +251,12 @@ class Tree
     /**
      * 得到子级第一级数组
      *
-     * @param   array       $list   数据集
-     * @param   string|int  $id     当前id
-     * @return  array
+     * @param  array      $list 数据集
+     * @param  string|int $id   当前id
+     *
+     * @return array
      */
-    public function getListChild($list = [], $id = '')
+    public function getListChild(array $list = [], mixed $id = ''): array
     {
         if (empty($list) || !is_array($list)) {
             return [];
@@ -268,11 +277,12 @@ class Tree
     /**
      * 获取ID自己的数据
      *
-     * @param   array       $list   数据集
-     * @param   string|int  $id     当前id
-     * @return  array
+     * @param  array      $list 数据集
+     * @param  string|int $id   当前id
+     *
+     * @return array
      */
-    public function getListSelf($list = [], $id = '')
+    public function getListSelf(array $list = [], mixed $id = ''): array
     {
         if (empty($list) || !is_array($list)) {
             return [];
@@ -292,11 +302,12 @@ class Tree
     /**
      * 将 build 的结果返回为二维数组
      *
-     * @param   array   $data       数据
-     * @param   int     $parentid   父级ID
-     * @return  array
+     * @param  array      $data     数据
+     * @param  string|int $parentid 父级ID
+     *
+     * @return array
      */
-    public function buildFormatList($data = [], $parentid = 0)
+    public function buildFormatList(array $data = [], mixed $parentid = 0): array
     {
         if (empty($data)) {
             return [];
