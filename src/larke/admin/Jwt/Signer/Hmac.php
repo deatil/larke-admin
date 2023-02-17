@@ -8,6 +8,8 @@ use Illuminate\Support\Collection;
 
 use Larke\JWT\Signer\Hmac as HmacSigner; 
 use Larke\JWT\Signer\Key\InMemory;
+use Larke\JWT\Contracts\Key as KeyContract;
+use Larke\JWT\Contracts\Signer as SignerContract;
 
 use Larke\Admin\Jwt\Contracts\Signer;
 
@@ -22,14 +24,14 @@ class Hmac implements Signer
     /**
      * 签名方法
      */
-    protected $signingMethod = HmacSigner\Sha256::class;
+    protected string $signingMethod = HmacSigner\Sha256::class;
     
     /**
      * 配置
      *
      * @var Collection
      */
-    private $config = [];
+    private Collection $config;
     
     /**
      * 构造方法
@@ -46,7 +48,7 @@ class Hmac implements Signer
      *
      * @return \Larke\JWT\Contracts\Signer
      */
-    public function getSigner() 
+    public function getSigner(): SignerContract
     {
         return new $this->signingMethod();
     }
@@ -56,7 +58,7 @@ class Hmac implements Signer
      *
      * @return string
      */
-    public function getSignSecrect() 
+    public function getSignSecrect(): KeyContract
     {
         return $this->getSecrect();
     }
@@ -66,7 +68,7 @@ class Hmac implements Signer
      *
      * @return string
      */
-    public function getVerifySecrect() 
+    public function getVerifySecrect(): KeyContract
     {
         return $this->getSecrect();
     }
@@ -76,7 +78,7 @@ class Hmac implements Signer
      *
      * @return string
      */
-    private function getSecrect() 
+    private function getSecrect(): KeyContract
     {
         $secrect = $this->config->get("secrect");
         

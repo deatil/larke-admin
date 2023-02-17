@@ -21,7 +21,7 @@ class AdminCheck
     public function handle($request, Closure $next)
     {
         $isSuperAdministrator = app('larke-admin.auth-admin')->isSuperAdministrator();
-        if (!$isSuperAdministrator) {
+        if (! $isSuperAdministrator) {
             $this->error(__('你没有权限进行该操作'), \ResponseCode::AUTH_ERROR);
         }
         

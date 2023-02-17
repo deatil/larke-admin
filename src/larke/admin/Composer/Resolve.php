@@ -23,30 +23,25 @@ class Resolve
     /**
      * @var string
      */
-    protected $directory = '';
+    protected string $directory = '';
     
     /**
      * @var string
      */
-    protected $composerName = 'composer.json';
+    protected string $composerName = 'composer.json';
     
     /**
      * 创建
-     *
-     * @return object
      */
-    public static function create()
+    public static function create(): self
     {
-        return new static();
+        return new self();
     }
     
     /**
      * 目录
-     *
-     * @param   string  $directory
-     * @return  object
      */
-    public function withDirectory($directory)
+    public function withDirectory(string $directory): self
     {
         $this->directory = $directory;
         
@@ -55,11 +50,8 @@ class Resolve
     
     /**
      * composer 文件名称
-     *
-     * @param   string  $composerName
-     * @return  object
      */
-    public function withComposerName($composerName)
+    public function withComposerName(string $composerName): self
     {
         $this->composerName = $composerName;
         
@@ -68,20 +60,16 @@ class Resolve
     
     /**
      * 获取文件路径
-     *
-     * @return string
      */
-    public function getComposerNamePath()
+    public function getComposerNamePath(): string
     {
         return $this->directory . '/' . $this->composerName;
     }
     
     /**
      * 获取composer信息
-     *
-     * @return array
      */
-    public function getData()
+    public function getData(): array
     {
         $info = $this->getInfo();
         $require = $this->getRequire();
@@ -94,22 +82,20 @@ class Resolve
         $aliases = $this->getAliases();
         
         return [
-            'info' => $info,
-            'require' => $require,
-            'require-dev' => $requireDev,
-            'autoload' => $formatAutoload,
+            'info'         => $info,
+            'require'      => $require,
+            'require-dev'  => $requireDev,
+            'autoload'     => $formatAutoload,
             'autoload-dev' => $formatAutoloadDev,
-            'providers' => $providers,
-            'aliases' => $aliases,
+            'providers'    => $providers,
+            'aliases'      => $aliases,
         ];
     }
     
     /**
-     * 获取composer
-     *
-     * @return array
+     * 获取 composer
      */
-    public function getComposer()
+    public function getComposer(): ComposerProperty
     {
         $composerFile = $this->getComposerNamePath();
         $composerProperty = Composer::parse($composerFile);
@@ -118,11 +104,9 @@ class Resolve
     }
     
     /**
-     * 获取composer信息
-     *
-     * @return array
+     * 获取 composer 信息
      */
-    public function getInfo()
+    public function getInfo(): array
     {
         $composerProperty = $this->getComposer();
         
@@ -144,10 +128,8 @@ class Resolve
     
     /**
      * 依赖
-     *
-     * @return array
      */
-    public function getRequire()
+    public function getRequire(): array
     {
         $composerProperty = $this->getComposer();
         
@@ -157,11 +139,9 @@ class Resolve
     }
     
     /**
-     * 依赖Dev
-     *
-     * @return array
+     * 依赖 Dev
      */
-    public function getRequireDev()
+    public function getRequireDev(): array
     {
         $composerProperty = $this->getComposer();
         
@@ -172,10 +152,8 @@ class Resolve
     
     /**
      * 获取格式化后的自动加载
-     *
-     * @return array
      */
-    public function getFormatAutoload()
+    public function getFormatAutoload(): array
     {
         $autoloads = $this->getAutoload('autoload');
         $data = $this->formatAutoload($autoloads, $this->directory);
@@ -185,10 +163,8 @@ class Resolve
     
     /**
      * 获取格式化后的自动加载dev
-     *
-     * @return array
      */
-    public function getFormatAutoloadDev()
+    public function getFormatAutoloadDev(): array
     {
         $autoloadDevs = $this->getAutoload('autoload-dev');
         $data = $this->formatAutoload($autoloadDevs, $this->directory);
@@ -198,10 +174,8 @@ class Resolve
     
     /**
      * 服务提供者
-     *
-     * @return array
      */
-    public function getProviders()
+    public function getProviders(): array
     {
         $composerProperty = $this->getComposer();
         
@@ -212,10 +186,8 @@ class Resolve
     
     /**
      * 别名
-     *
-     * @return array
      */
-    public function getAliases()
+    public function getAliases(): array
     {
         $composerProperty = $this->getComposer();
         
@@ -226,25 +198,22 @@ class Resolve
     
     /**
      * 自动加载信息
-     *
-     * @param   string  $autoload
-     * @return  array
      */
-    public function getAutoload(string $autoload = 'autoload')
+    public function getAutoload(string $autoload = 'autoload'): array
     {
         $composerProperty = $this->getComposer();
         
-        $psr0 = $composerProperty->get($autoload.'.psr-0');
-        $psr4 = $composerProperty->get($autoload.'.psr-4');
+        $psr0     = $composerProperty->get($autoload.'.psr-0');
+        $psr4     = $composerProperty->get($autoload.'.psr-4');
         $classmap = $composerProperty->get($autoload.'.classmap');
-        $files = $composerProperty->get($autoload.'.files');
-        $exclude = $composerProperty->get($autoload.'.exclude-from-classmap');
+        $files    = $composerProperty->get($autoload.'.files');
+        $exclude  = $composerProperty->get($autoload.'.exclude-from-classmap');
         
         $data = [
-            'psr-0' => $psr0,
-            'psr-4' => $psr4,
+            'psr-0'    => $psr0,
+            'psr-4'    => $psr4,
             'classmap' => $classmap,
-            'files' => $files,
+            'files'    => $files,
             'exclude-from-classmap' => $exclude,
         ];
         
@@ -253,22 +222,18 @@ class Resolve
     
     /**
      * 格式化自动加载信息
-     *
-     * @param   array   $autoload
-     * @param   string  $directory
-     * @return  array
      */
-    public function formatAutoload(array $autoload, string $directory)
+    public function formatAutoload(array $autoload, string $directory): array
     {
         if (empty($autoload) || empty($directory)) {
             return [];
         }
         
-        $psr0 = Arr::get($autoload, 'psr-0', []);
-        $psr4 = Arr::get($autoload, 'psr-4', []);
+        $psr0     = Arr::get($autoload, 'psr-0', []);
+        $psr4     = Arr::get($autoload, 'psr-4', []);
         $classmap = Arr::get($autoload, 'classmap', []);
-        $files = Arr::get($autoload, 'files', []);
-        $exclude = Arr::get($autoload, 'exclude-from-classmap', []);
+        $files    = Arr::get($autoload, 'files', []);
+        $exclude  = Arr::get($autoload, 'exclude-from-classmap', []);
         
         $newPsr0 = [];
         if (! empty($psr0)) {
@@ -322,10 +287,10 @@ class Resolve
         }
         
         $data = [
-            'psr-0' => $newPsr0,
-            'psr-4' => $newPsr4,
+            'psr-0'    => $newPsr0,
+            'psr-4'    => $newPsr4,
             'classmap' => $newClassmap,
-            'files' => $newFiles,
+            'files'    => $newFiles,
         ];
         
         return $data;
@@ -333,20 +298,17 @@ class Resolve
 
     /**
      * 注册自动加载
-     *
-     * @param   array   $autoload
-     * @return  object
      */
-    public function registerAutoload(array $autoload = [])
+    public function registerAutoload(array $autoload = []): self
     {
         if (empty($autoload)) {
             return $this;
         }
         
-        $psr0 = Arr::get($autoload, 'psr-0', []);
-        $psr4 = Arr::get($autoload, 'psr-4', []);
+        $psr0     = Arr::get($autoload, 'psr-0', []);
+        $psr4     = Arr::get($autoload, 'psr-4', []);
         $classmap = Arr::get($autoload, 'classmap', []);
-        $files = Arr::get($autoload, 'files', []);
+        $files    = Arr::get($autoload, 'files', []);
 
         $classLoader = new ClassLoader();
         
@@ -381,11 +343,8 @@ class Resolve
     
     /**
      * 注册服务提供者
-     *
-     * @param   array|string $provider
-     * @return  object
      */
-    public function registerProvider($provider)
+    public function registerProvider(mixed $provider): mixed
     {
         if (is_array($provider)) {
             $newClasses = [];
@@ -406,11 +365,8 @@ class Resolve
     
     /**
      * 注册别名
-     *
-     * @param   array|string $alias
-     * @return  object
      */
-    public function registerAlias($alias, $class = null)
+    public function registerAlias(mixed $alias, string $class = null): self
     {
         if (is_array($alias)) {
             foreach ($alias as $name => $class) {
@@ -427,11 +383,8 @@ class Resolve
     
     /**
      * 判断是否在仓库
-     *
-     * @param   string  $name
-     * @return  array
      */
-    public function hasRepository(string $name)
+    public function hasRepository(string $name): bool
     {
         $composerProperty = $this->getComposer();
         
@@ -440,12 +393,8 @@ class Resolve
     
     /**
      * 注册仓库
-     *
-     * @param   string  $name
-     * @param   array   $repository
-     * @return  array
      */
-    public function registerRepository(string $name, array $repository = [])
+    public function registerRepository(string $name, array $repository = []): array
     {
         $this->removeRepository($name);
         
@@ -457,11 +406,8 @@ class Resolve
     
     /**
      * 移除仓库
-     *
-     * @param   string  $name
-     * @return  array
      */
-    public function removeRepository(string $name)
+    public function removeRepository(string $name): array
     {
         $composerProperty = $this->getComposer();
         $data = $composerProperty->delete('repositories.'.$name);
@@ -471,11 +417,8 @@ class Resolve
     
     /**
      * 格式化为 json
-     *
-     * @param   array   $contents
-     * @return  string
      */
-    public function formatToJson(array $contents)
+    public function formatToJson(array $contents): string
     {
         $data = json_encode($contents, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
         $data = str_replace(': null', ': ""', $data);

@@ -4,6 +4,9 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Permission;
 
+use Casbin\Enforcer;
+use Illuminate\Cache\Repository;
+
 /**
  * 用户缓存权限后判断
  *
@@ -19,27 +22,27 @@ namespace Larke\Admin\Permission;
 class CachePermission
 {
     /**
-     * @var \Casbin\Enforcer 决策器
+     * @var Enforcer 决策器
      */
-    protected $enforcer = '';
+    protected Enforcer $enforcer = '';
     
     /**
-     * @var \Illuminate\Cache\Repository 缓存
+     * @var Repository 缓存
      */
-    protected $cache;
+    protected Repository $cache;
     
     /**
      * @var string 缓存前缀
      */
-    protected $cachePrefix = 'larke-permission';
+    protected string $cachePrefix = 'larke-permission';
     
     /**
      * 构造函数
      *
-     * @param string \Casbin\Enforcer 决策器
-     * @param string \Illuminate\Cache\Repository 缓存
+     * @param string Enforcer 决策器
+     * @param string Repository 缓存
      */
-    public function __construct($enforcer, $cache) 
+    public function __construct(Enforcer $enforcer, Repository $cache) 
     {
         // 决策器
         $this->enforcer = $enforcer;
@@ -51,7 +54,7 @@ class CachePermission
     /**
      * 设置决策器
      */
-    public function WithEnforcer($enforcer)
+    public function WithEnforcer(Enforcer $enforcer): self
     {
         $this->enforcer = $enforcer;
         
@@ -61,7 +64,7 @@ class CachePermission
     /**
      * 获取决策器
      */
-    public function getEnforcer()
+    public function getEnforcer(): Enforcer
     {
         return $this->enforcer;
     }
@@ -69,7 +72,7 @@ class CachePermission
     /**
      * 设置缓存
      */
-    public function WithCache($cache)
+    public function WithCache(Repository $cache): self
     {
         $this->cache = $cache;
         
@@ -79,7 +82,7 @@ class CachePermission
     /**
      * 获取缓存
      */
-    public function getCache()
+    public function getCache(): Repository
     {
         return $this->cache;
     }
@@ -87,7 +90,7 @@ class CachePermission
     /**
      * 设置缓存前缀
      */
-    public function WithCachePrefix(string $prefix)
+    public function WithCachePrefix(string $prefix): self
     {
         $this->cachePrefix = $prefix;
         
@@ -97,7 +100,7 @@ class CachePermission
     /**
      * 获取缓存前缀
      */
-    public function getCachePrefix()
+    public function getCachePrefix(): string
     {
         return $this->cachePrefix;
     }
@@ -105,7 +108,7 @@ class CachePermission
     /**
      * 验证用户权限
      */
-    public function enforce(string $user, string $slug, string $method)
+    public function enforce(string $user, string $slug, string $method): bool
     {
         $perms = $this->getPermissionsForUser($user);
         if (empty($perms)) {
@@ -125,7 +128,7 @@ class CachePermission
     /**
      * 用户全部缓存权限
      */
-    public function getPermissionsForUser(string $user)
+    public function getPermissionsForUser(string $user): mixed
     {
         $key = $this->wrapperCacheKey($user);
         
@@ -137,7 +140,7 @@ class CachePermission
     /**
      * 删除用户缓存的全部权限
      */
-    public function forgetCachePermissionsForUser(string $user)
+    public function forgetCachePermissionsForUser(string $user): bool
     {
         $key = $this->wrapperCacheKey($user);
         
@@ -147,7 +150,7 @@ class CachePermission
     /**
      * 包装缓存 key 值
      */
-    public function wrapperCacheKey(string $key)
+    public function wrapperCacheKey(string $key): string
     {
         $newKey = substr(md5($key), 8, 16);
         if (empty($this->cachePrefix)) {

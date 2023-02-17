@@ -18,7 +18,7 @@ class Signer
     /**
      * 签名类型列表
      */
-    protected static $signers = [
+    protected static array $signers = [
         // 空加密
         'none' => Signer\None::class,
         
@@ -47,7 +47,7 @@ class Signer
     /**
      * 注册签名方法
      */
-    public static function addSigningMethod(string $algorithm, SignerContract $signer)
+    public static function addSigningMethod(string $algorithm, SignerContract $signer): void
     {
         static::$signers[$algorithm] = $signer;
     }
@@ -55,7 +55,7 @@ class Signer
     /**
      * 判断签名方法是否存在
      */
-    public static function hasSigningMethod(string $algorithm)
+    public static function hasSigningMethod(string $algorithm): bool
     {
         return isset(static::$signers[$algorithm]);
     }
@@ -63,7 +63,7 @@ class Signer
     /**
      * 获取签名方法
      */
-    public static function getSigningMethod(string $algorithm)
+    public static function getSigningMethod(string $algorithm): mixed
     {
         if (isset(static::$signers[$algorithm])) {
             return static::$signers[$algorithm];
@@ -75,7 +75,7 @@ class Signer
     /**
      * 获取全部签名方法
      */
-    public static function getAllSigningMethod()
+    public static function getAllSigningMethod(): array
     {
         return static::$signers;
     }

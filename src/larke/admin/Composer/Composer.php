@@ -19,7 +19,7 @@ class Composer
     /**
      * @var array
      */
-    protected static $files = [];
+    protected static array $files = [];
 
     /**
      * 解析
@@ -27,7 +27,7 @@ class Composer
      * @param   $path
      * @return  ComposerProperty
      */
-    public static function parse(?string $path)
+    public static function parse(?string $path = null): ComposerProperty
     {
         return new ComposerProperty(static::fromJson($path));
     }
@@ -35,11 +35,11 @@ class Composer
     /**
      * 包用composer安装的版本
      *
-     * @param   null|string $packageName
-     * @param   null|string $lockFile
-     * @return  null
+     * @param  null|string $packageName
+     * @param  null|string $lockFile
+     * @return null|string
      */
-    public static function getVersion(?string $packageName, ?string $lockFile = null)
+    public static function getVersion(?string $packageName = null, ?string $lockFile = null): ?string
     {
         if (! $packageName) {
             return null;
@@ -61,7 +61,7 @@ class Composer
      * @param   null|string  $path
      * @return  array
      */
-    public static function fromJson(?string $path)
+    public static function fromJson(?string $path = null): array
     {
         $name = md5($path);
         

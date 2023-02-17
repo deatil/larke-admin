@@ -8,6 +8,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
+use Larke\JWT\Token;
+
 use Larke\Admin\Exception\JWTException;
 use Larke\Admin\Contracts\Crypt as CryptContract;
 
@@ -22,50 +24,50 @@ class JwtManager
     /**
      * jwt
      */
-    private $jwt = null;
+    private Jwt $jwt;
     
     /**
      * 加密
      */
-    private $crypt = null;
+    private CryptContract $crypt;
     
     /**
      * 配置
      *
      * @var Collection
      */
-    private $config = [];
+    private Collection $config;
     
     /**
      * headers
      */
-    private $headers = [];
+    private array $headers = [];
     
     /**
      * 载荷
      */
-    private $claims = [];
+    private array $claims = [];
     
     /**
      * 生成的 token
      */
-    private $enToken = '';
+    private string $enToken = '';
     
     /**
      * 需要解析的 token
      */
-    private $deToken = '';
+    private string $deToken = '';
     
     /**
      * 解析后的 token 句柄
      */
-    private $parsedToken;
+    private Token $parsedToken;
     
     /**
      * 构造函数
      */
     public function __construct(
-        $jwt, 
+        Jwt $jwt, 
         CryptContract $crypt,
         Collection $config
     ) {
@@ -77,7 +79,7 @@ class JwtManager
     /**
      * 设置 jwt
      */
-    public function withJwt($jwt)
+    public function withJwt(Jwt $jwt): self
     {
         $this->jwt = $jwt;
         return $this;
@@ -86,7 +88,7 @@ class JwtManager
     /**
      * 获取 jwt
      */
-    public function getJwt()
+    public function getJwt(): Jwt
     {
         return $this->jwt;
     }
@@ -94,7 +96,7 @@ class JwtManager
     /**
      * 设置加密
      */
-    public function withCrypt(CryptContract $crypt)
+    public function withCrypt(CryptContract $crypt): self
     {
         $this->crypt = $crypt;
         return $this;
@@ -103,7 +105,7 @@ class JwtManager
     /**
      * 获取加密
      */
-    public function getCrypt()
+    public function getCrypt(): CryptContract
     {
         return $this->crypt;
     }
@@ -111,7 +113,7 @@ class JwtManager
     /**
      * 设置配置
      */
-    public function withConfig($key, $value)
+    public function withConfig(string $key, mixed $value): self
     {
         $this->config[$key] = $value;
         return $this;
@@ -120,7 +122,7 @@ class JwtManager
     /**
      * 设置配置
      */
-    public function setConfig(Collection $config)
+    public function setConfig(Collection $config): self
     {
         $this->config = $config;
         return $this;
@@ -129,7 +131,7 @@ class JwtManager
     /**
      * 获取配置
      */
-    public function getConfig()
+    public function getConfig(): Collection
     {
         return $this->config;
     }
@@ -137,7 +139,7 @@ class JwtManager
     /**
      * 设置 header
      */
-    public function withHeader($name, $value = null)
+    public function withHeader(mixed $name, mixed $value = null): self
     {
         if (is_array($name)) {
             foreach ($name as $k => $v) {
@@ -154,7 +156,7 @@ class JwtManager
     /**
      * 设置 claim
      */
-    public function withClaim($claim, $value = null)
+    public function withClaim(mixed $claim, mixed $value = null): self
     {
         if (is_array($claim)) {
             foreach ($claim as $k => $v) {
@@ -171,7 +173,7 @@ class JwtManager
     /**
      * 设置 iss
      */
-    public function withIss($issuer)
+    public function withIss(string $issuer): self
     {
         $this->config['iss'] = $issuer;
         return $this;
@@ -180,7 +182,7 @@ class JwtManager
     /**
      * 设置 aud
      */
-    public function withAud($audience)
+    public function withAud(string $audience): self
     {
         $this->config['aud'] = $audience;
         return $this;
@@ -189,7 +191,7 @@ class JwtManager
     /**
      * 设置 subject
      */
-    public function withSub($subject)
+    public function withSub(string $subject): self
     {
         $this->config['sub'] = $subject;
         return $this;
@@ -198,7 +200,7 @@ class JwtManager
     /**
      * 设置 jti
      */
-    public function withJti($jti)
+    public function withJti(string $jti): self
     {
         $this->config['jti'] = $jti;
         return $this;
@@ -207,7 +209,7 @@ class JwtManager
     /**
      * 设置 issuedAt
      */
-    public function withIat($issuedAt)
+    public function withIat(int $issuedAt): self
     {
         $this->config['iat'] = $issuedAt;
         return $this;
@@ -216,7 +218,7 @@ class JwtManager
     /**
      * 设置 nbf
      */
-    public function withNbf($notBeforeTime)
+    public function withNbf(int $notBeforeTime): self
     {
         if ($notBeforeTime < 0) {
             $notBeforeTime = 0;
@@ -229,7 +231,7 @@ class JwtManager
     /**
      * 设置 expTime
      */
-    public function withExp($expTime)
+    public function withExp(int $expTime): self
     {
         $this->config['exp'] = $expTime;
         return $this;
@@ -238,7 +240,7 @@ class JwtManager
     /**
      * 设置 enToken
      */
-    public function withEnToken($enToken)
+    public function withEnToken(string $enToken): self
     {
         $this->enToken = $enToken;
         return $this;
@@ -247,15 +249,15 @@ class JwtManager
     /**
      * 获取 enToken
      */
-    public function getEnToken()
+    public function getEnToken(): string
     {
-        return (string) $this->enToken;
+        return $this->enToken;
     }
     
     /**
      * 设置 deToken
      */
-    public function withDeToken($deToken)
+    public function withDeToken(string $deToken): self
     {
         $this->deToken = $deToken;
         return $this;
@@ -264,15 +266,15 @@ class JwtManager
     /**
      * 获取 deToken
      */
-    public function getDeToken()
+    public function getDeToken(): string
     {
-        return (string) $this->deToken;
+        return $this->deToken;
     }
     
     /**
      * 设置 JWT
      */
-    public function loadJwt()
+    public function loadJwt(): self
     {
         // 发布者
         $this->jwt->withIss($this->configGet('iss', '')); 
@@ -317,7 +319,7 @@ class JwtManager
     /**
      * 编码 jwt token
      */
-    public function encode()
+    public function encode(): self
     {
         $this->loadJwt();
         
@@ -330,7 +332,7 @@ class JwtManager
         }
         
         try {
-            $this->enToken = $this->jwt->makeToken();
+            $this->enToken = $this->jwt->makeToken()->toString();
         } catch(\Exception $e) {
             Log::error('larke-admin-jwt-makeToken: '.$e->getMessage());
             
@@ -343,10 +345,10 @@ class JwtManager
     /**
      * 解码
      */
-    public function decode()
+    public function decode(): self
     {
         try {
-            $this->parsedToken = $this->jwt->parseToken((string) $this->deToken); 
+            $this->parsedToken = $this->jwt->parseToken($this->deToken); 
         } catch(\Exception $e) {
             Log::error('larke-admin-jwt-parsedToken: '.$e->getMessage());
             
@@ -359,7 +361,7 @@ class JwtManager
     /**
      * 验证
      */
-    public function validate()
+    public function validate(): bool
     {
         $this->loadJwt();
         
@@ -369,7 +371,7 @@ class JwtManager
     /**
      * 检测
      */
-    public function verify()
+    public function verify(): bool
     {
         $this->loadJwt();
     
@@ -379,7 +381,7 @@ class JwtManager
     /**
      * 获取 parsedToken
      */
-    public function getParsedToken()
+    public function getParsedToken(): Token
     {
         return $this->parsedToken;
     }
@@ -387,7 +389,7 @@ class JwtManager
     /**
      * 获取 Header
      */
-    public function getHeader($name)
+    public function getHeader(string $name): mixed
     {
         return $this->jwt->getHeader($this->parsedToken, $name);
     }
@@ -395,7 +397,7 @@ class JwtManager
     /**
      * 获取 Headers
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->jwt->getHeaders($this->parsedToken);
     }
@@ -403,7 +405,7 @@ class JwtManager
     /**
      * 获取 token 存储数据
      */
-    public function getClaim($name)
+    public function getClaim(string $name): mixed
     {
         return $this->jwt->getClaim($this->parsedToken, $name);
     }
@@ -411,7 +413,7 @@ class JwtManager
     /**
      * 获取 Claims
      */
-    public function getClaims()
+    public function getClaims(): array
     {
         return $this->jwt->getClaims($this->parsedToken);
     }
@@ -419,7 +421,7 @@ class JwtManager
     /**
      * 加密载荷数据
      */
-    public function withData($claim, $value = null)
+    public function withData(mixed $claim, mixed $value = null): self
     {
         if (is_array($claim)) {
             foreach ($claim as $k => $v) {
@@ -441,7 +443,7 @@ class JwtManager
     /**
      * 载荷解密后数据
      */
-    public function getData($name)
+    public function getData(string $name): mixed
     {
         $claim = $this->crypt->decrypt(
             $this->getClaim($name), 
@@ -454,7 +456,7 @@ class JwtManager
     /**
      * base64 解密
      */
-    public function base64Decode($contents)
+    public function base64Decode(string $contents): string
     {
         if (empty($contents)) {
             return '';
@@ -472,7 +474,7 @@ class JwtManager
     /**
      * 获取配置
      */
-    protected function configGet($key, $default = null)
+    protected function configGet(string $key, mixed $default = null): mixed
     {
         return Arr::get($this->config, $key, $default);
     }

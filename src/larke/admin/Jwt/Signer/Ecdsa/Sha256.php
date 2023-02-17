@@ -18,5 +18,5 @@ class Sha256 extends Ecdsa
     /**
      * 签名方法
      */
-    protected $signingMethod = EcdsaSigner\Sha256::class;
+    protected string $signingMethod = EcdsaSigner\Sha256::class;
 }

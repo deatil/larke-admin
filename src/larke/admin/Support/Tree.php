@@ -28,10 +28,10 @@ class Tree
     public string $blankspace = "&nbsp;";
     
     // 查询
-    public string $idKey = "id";
+    public string $idKey       = "id";
     public string $parentidKey = "parentid";
-    public string $spacerKey = "spacer";
-    public string $depthKey = "depth";
+    public string $spacerKey   = "spacer";
+    public string $depthKey    = "depth";
     public string $haschildKey = "haschild";
     
     // 返回子级key
@@ -124,7 +124,7 @@ class Tree
             $info[$this->depthKey] = $depth;
             
             $childList = $this->build($value[$this->idKey], $itemprefix . $k . $this->blankspace, $depth + 1);
-            if (!empty($childList)) {
+            if (! empty($childList)) {
                 $info[$this->buildChildKey] = $childList;
             }
             
@@ -152,7 +152,7 @@ class Tree
         
         $result = [];
         foreach ($list as $value) {
-            if ((string) $value[$this->idKey] == (string) $parentid) {
+            if (isset($value[$this->idKey]) && (string) $value[$this->idKey] == (string) $parentid) {
                 $result[] = $value;
                 
                 $parent = $this->getListParents($list, $value[$this->parentidKey], $sort);
@@ -186,7 +186,9 @@ class Tree
         
         $ids = [];
         foreach ($parents as $parent) {
-            $ids[] = $parent[$this->idKey];
+            if (isset($data[$this->idKey])) {
+                $ids[] = $parent[$this->idKey];
+            }
         }
         
         return $ids;
@@ -209,7 +211,7 @@ class Tree
         
         $result = [];
         foreach ($list as $value) {
-            if ((string) $value[$this->parentidKey] == (string) $id) {
+            if (isset($value[$this->parentidKey]) && (string) $value[$this->parentidKey] == (string) $id) {
                 $result[] = $value;
                 
                 $child = $this->getListChildren($list, $value[$this->idKey], $sort);
@@ -222,6 +224,7 @@ class Tree
                 }
             }
         }
+        
         return $result;
     }
 
@@ -242,7 +245,9 @@ class Tree
         
         $ids = [];
         foreach ($childs as $child) {
-            $ids[] = $child[$this->idKey];
+            if (isset($data[$this->idKey])) {
+                $ids[] = $child[$this->idKey];
+            }
         }
         
         return $ids;
@@ -265,9 +270,11 @@ class Tree
         $id = (string) $id;
         $newData = [];
         foreach ($list as $key => $data) {
-            $dataParentId = (string) $data[$this->parentidKey];
-            if ($dataParentId == $id) {
-                $newData[$key] = $data;
+            if (isset($data[$this->parentidKey])) {
+                $dataParentId = (string) $data[$this->parentidKey];
+                if ($dataParentId == $id) {
+                    $newData[$key] = $data;
+                }
             }
         }
         
@@ -290,9 +297,11 @@ class Tree
         
         $id = (string) $id;
         foreach ($list as $key => $data) {
-            $dataId = (string) $data[$this->idKey];
-            if ($dataId == $id) {
-                return $data;
+            if (isset($data[$this->idKey])) {
+                $dataId = (string) $data[$this->idKey];
+                if ($dataId == $id) {
+                    return $data;
+                }
             }
         }
         

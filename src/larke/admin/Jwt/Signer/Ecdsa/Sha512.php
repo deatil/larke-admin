@@ -18,5 +18,5 @@ class Sha512 extends Ecdsa
     /**
      * 签名方法
      */
-    protected $signingMethod = EcdsaSigner\Sha512::class;
+    protected string $signingMethod = EcdsaSigner\Sha512::class;
 }

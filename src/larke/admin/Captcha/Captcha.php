@@ -17,16 +17,16 @@ use Larke\Admin\Contracts\Captcha as CaptchaContract;
 class Captcha implements CaptchaContract
 {
     // 图形资源句柄
-    protected $img = ''; 
+    protected object $img; 
     
     // 验证码
-    protected $code = ''; 
+    protected string $code = ''; 
     
     // 唯一序号
-    protected $uniqid = ''; 
+    protected string $uniqid = ''; 
     
     // 设置
-    protected $config = [
+    protected array $config = [
         // 随机因子
         'charset' => 'abcdefghkmnprstuvwxyzABCDEFGHKMNPRSTUVWXYZ23456789',
         
@@ -52,10 +52,10 @@ class Captcha implements CaptchaContract
     /**
      * 设置验证码
      * 
-     * @param   string  $code
-     * @return  object  $this
+     * @param  string $code
+     * @return object self
      */
-    public function withCode($code)
+    public function withCode(string $code): self
     {
         $this->code = $code;
         
@@ -65,10 +65,10 @@ class Captcha implements CaptchaContract
     /**
      * 设置唯一序号
      * 
-     * @param   string  $uniqid
-     * @return  object  $this
+     * @param  string $uniqid
+     * @return object self
      */
-    public function withUniqid($uniqid)
+    public function withUniqid(string $uniqid): self
     {
         $this->uniqid = $uniqid;
         
@@ -78,23 +78,13 @@ class Captcha implements CaptchaContract
     /**
      * 设置配置
      * 
-     * @param   string|array    $name   键 | 键值对列表
-     * @param   string          $value  值
-     * @return  object          $this
+     * @param array $config 键值对列表
+     * 
+     * @return object self
      */
-    public function withConfig($name, $value = null)
+    public function withConfig(array $config): self
     {
-        if (is_array($name)) {
-            foreach ($name as $k => $v) {
-                $this->withConfig($k, $v);
-            }
-            
-            return $this;
-        }
-        
-        if (isset($this->config[$name])) {
-            $this->config[$name] = $value;
-        }
+        $this->config = array_merge($this->config, $config);
         
         return $this;
     }
@@ -102,9 +92,9 @@ class Captcha implements CaptchaContract
     /**
      * 生成验证码信息
      *
-     * @return object $this
+     * @return object self
      */
-    public function makeCode()
+    public function makeCode(): self
     {
         // 生成验证码序号
         if (empty($this->uniqid)) {
@@ -133,7 +123,7 @@ class Captcha implements CaptchaContract
      * 
      * @return string
      */
-    private function createImage()
+    private function createImage(): string
     {
         // 生成背景
         $this->img = imagecreatetruecolor($this->config['width'], $this->config['height']);
@@ -174,7 +164,7 @@ class Captcha implements CaptchaContract
      *
      * @return array
      */
-    public function getAttr()
+    public function getAttr(): array
     {
         return [
             'code' => $this->code,
@@ -188,7 +178,7 @@ class Captcha implements CaptchaContract
      *
      * @return string
      */
-    public function getCode()
+    public function getCode(): string
     {
         return $this->code;
     }
@@ -198,7 +188,7 @@ class Captcha implements CaptchaContract
      *
      * @return string
      */
-    public function getUniqid()
+    public function getUniqid(): string
     {
         return $this->uniqid;
     }
@@ -208,7 +198,7 @@ class Captcha implements CaptchaContract
      *
      * @return string
      */
-    public function getData()
+    public function getData(): string
     {
         return "data:image/png;base64,{$this->createImage()}";
     }
@@ -216,11 +206,12 @@ class Captcha implements CaptchaContract
     /**
      * 检查验证码是否正确
      *
-     * @param   string  $code   需要验证的值
-     * @param   string  $uniqid 验证码编号
-     * @return  boolean
+     * @param  string $code   需要验证的值
+     * @param  string $uniqid 验证码编号
+     *
+     * @return boolean
      */
-    public function check($code, $uniqid = null)
+    public function check(string $code, string $uniqid): bool
     {
         if (empty($uniqid)) {
             return false;

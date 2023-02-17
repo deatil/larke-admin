@@ -18,5 +18,5 @@ class Sha256 extends Hmac
     /**
      * 签名方法
      */
-    protected $signingMethod = HmacSigner\Sha256::class;
+    protected string $signingMethod = HmacSigner\Sha256::class;
 }

@@ -18,5 +18,5 @@ class Sha512 extends Hmac
     /**
      * 签名方法
      */
-    protected $signingMethod = HmacSigner\Sha512::class;
+    protected string $signingMethod = HmacSigner\Sha512::class;
 }

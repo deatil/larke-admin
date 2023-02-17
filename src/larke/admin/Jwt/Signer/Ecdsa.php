@@ -9,6 +9,8 @@ use Illuminate\Support\Collection;
 use Larke\JWT\Signer\Ecdsa as EcdsaSigner; 
 use Larke\JWT\Signer\Key\InMemory;
 use Larke\JWT\Signer\Key\LocalFileReference;
+use Larke\JWT\Contracts\Key as KeyContract;
+use Larke\JWT\Contracts\Signer as SignerContract;
 
 use Larke\Admin\Jwt\Contracts\Signer;
 
@@ -23,14 +25,14 @@ class Ecdsa implements Signer
     /**
      * 签名方法
      */
-    protected $signingMethod = EcdsaSigner\Sha256::class;
+    protected string $signingMethod = EcdsaSigner\Sha256::class;
     
     /**
      * 配置
      *
      * @var Collection
      */
-    private $config = [];
+    private Collection $config;
     
     /**
      * 构造方法
@@ -45,9 +47,9 @@ class Ecdsa implements Signer
     /**
      * 签名类
      *
-     * @return \Larke\JWT\Contracts\Signer
+     * @return SignerContract
      */
-    public function getSigner() 
+    public function getSigner(): SignerContract
     {
         return new $this->signingMethod();
     }
@@ -57,7 +59,7 @@ class Ecdsa implements Signer
      *
      * @return string
      */
-    public function getSignSecrect() 
+    public function getSignSecrect(): KeyContract
     {
         $privateKey = $this->config->get("private_key");
         
@@ -76,7 +78,7 @@ class Ecdsa implements Signer
      *
      * @return string
      */
-    public function getVerifySecrect() 
+    public function getVerifySecrect(): KeyContract
     {
         $publicKey = $this->config->get("public_key");
         $secrect = LocalFileReference::file($publicKey);

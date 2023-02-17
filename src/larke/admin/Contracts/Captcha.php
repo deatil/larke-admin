@@ -15,33 +15,34 @@ interface Captcha
     /**
      * 设置配置
      * 
-     * @param   string|array    $name
-     * @return  string          $value
-     * @return  object          $this
+     * @param array $config 键值对列表
+     * 
+     * @return object self
      */
-    public function withConfig($name, $value = null);
+    public function withConfig(array $config): self;
 
     /**
      * 生成验证码信息
      *
      * @return object
      */
-    public function makeCode();
+    public function makeCode(): self;
 
     /**
      * 获取验证码
      *
      * @return array
      */
-    public function getAttr();
+    public function getAttr(): array;
 
     /**
      * 检查验证码是否正确
      *
-     * @param   string  $code   需要验证的值
-     * @param   string  $uniqid 验证码编号
-     * @return  boolean
+     * @param  string $code   需要验证的值
+     * @param  string $uniqid 验证码编号
+     *
+     * @return boolean
      */
-    public function check($code, $uniqid = null);
+    public function check(string $code, string $uniqid): bool;
 
 }

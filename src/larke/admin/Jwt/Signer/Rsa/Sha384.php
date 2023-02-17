@@ -18,5 +18,5 @@ class Sha384 extends Rsa
     /**
      * 签名方法
      */
-    protected $signingMethod = RsaSigner\Sha384::class;
+    protected string $signingMethod = RsaSigner\Sha384::class;
 }

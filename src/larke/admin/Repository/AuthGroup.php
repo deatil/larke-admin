@@ -20,7 +20,7 @@ class AuthGroup
     /**
      * 获取全部用户组
      */
-    public static function getAllGroup()
+    public static function getAllGroup(): array
     {
         $data = AuthGroupModel::query()
             ->where('status', 1)
@@ -35,7 +35,7 @@ class AuthGroup
     /**
      * 获取 Children
      */
-    public static function getChildren($groupid = null)
+    public static function getChildren(mixed $groupid = null): array
     {
         if (is_array($groupid)) {
             $data = [];
@@ -75,7 +75,7 @@ class AuthGroup
     /**
      * 获取 ChildrenIds
      */
-    public static function getChildrenIds($groupid = null)
+    public static function getChildrenIds(mixed $groupid = null): array
     {
         $list = self::getChildren($groupid);
         return collect($list)->pluck('id')->toArray();
@@ -84,12 +84,12 @@ class AuthGroup
     /**
      * 获取 Children
      */
-    public static function getChildrenFromData($data = [], $parentid = '')
+    public static function getChildrenFromData(mixed $data = [], mixed $parentid = ''): array
     {
         $Tree = new Tree();
         $res = $Tree
             ->withConfig('buildChildKey', 'children')
-            ->withData($data)
+            ->withData((array) $data)
             ->build($parentid);
         
         $list = $Tree->buildFormatList($res, $parentid);
@@ -100,9 +100,9 @@ class AuthGroup
     /**
      * 获取 ChildrenIds
      */
-    public static function getChildrenIdsFromData($data = [], $parentid = '')
+    public static function getChildrenIdsFromData(mixed $data = [], mixed $parentid = ''): array
     {
-        $list = self::getChildrenFromData($data, $parentid);
+        $list = self::getChildrenFromData((array) $data, $parentid);
         
         return collect($list)->pluck('id')->toArray();
     }

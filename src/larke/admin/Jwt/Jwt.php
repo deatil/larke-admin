@@ -7,11 +7,13 @@ namespace Larke\Admin\Jwt;
 use DateTimeImmutable;
 
 // 文件夹引用
-use Larke\JWT\Builder;
+use Larke\JWT\Token;
 use Larke\JWT\Parser;
+use Larke\JWT\Builder;
 use Larke\JWT\ValidationData;
 use Larke\JWT\Clock\SystemClock;
 
+use Larke\Admin\Jwt\Contracts\Signer as SignerContract;
 use Larke\Admin\Exception\JWTException;
 
 /**
@@ -25,77 +27,77 @@ class Jwt
     /**
      * headers
      */
-    private $headers = [];
+    private array $headers = [];
     
     /**
      * 载荷
      */
-    private $claims = [];
+    private array $claims = [];
     
     /**
      * 载荷 issuer
      */
-    private $issuer = '';
+    private string $issuer = '';
     
     /**
      * 载荷 audience
      */
-    private $audience = '';
+    private string $audience = '';
     
     /**
      * 载荷 subject
      */
-    private $subject = '';
+    private string $subject = '';
     
     /**
      * jwt 签发时间
      */
-    private $issuedAt = 0;
+    private DateTimeImmutable $issuedAt;
     
     /**
      * jwt 过期时间
      */
-    private $expTime = 3600;
+    private DateTimeImmutable $expTime;
     
     /**
      * 时间内不能访问
      */
-    private $notBeforeTime = 0;
+    private DateTimeImmutable $notBeforeTime;
     
     /**
      * 时间差兼容
      */
-    private $leeway = 0;
+    private int $leeway = 0;
     
     /**
      * 签名方法
      */
-    private $signingMethod = '';
+    private string $signingMethod = '';
     
     /**
      * 秘钥
      */
-    private $secret = '';
+    private string $secret = '';
     
     /**
      * 私钥
      */
-    private $privateKey = '';
+    private string $privateKey = '';
     
     /**
      * 公钥
      */
-    private $publicKey = '';
+    private string $publicKey = '';
     
     /**
      * 私钥密码
      */
-    private $privateKeyPassword = '';
+    private string $privateKeyPassword = '';
     
     /**
      * 当前时间
      */
-    private $now;
+    private DateTimeImmutable $now;
     
     /**
      * 构造函数
@@ -108,7 +110,7 @@ class Jwt
     /**
      * 设置 header
      */
-    public function withHeader($name, $value = null)
+    public function withHeader(mixed $name, mixed $value = null)
     {
         if (is_array($name)) {
             foreach ($name as $k => $v) {
@@ -125,7 +127,7 @@ class Jwt
     /**
      * 设置 claim
      */
-    public function withClaim($claim, $value = null)
+    public function withClaim(mixed $claim, mixed $value = null)
     {
         if (is_array($claim)) {
             foreach ($claim as $k => $v) {
@@ -142,7 +144,7 @@ class Jwt
     /**
      * 设置 iss
      */
-    public function withIss($issuer)
+    public function withIss(string $issuer): self
     {
         $this->issuer = $issuer;
         return $this;
@@ -151,7 +153,7 @@ class Jwt
     /**
      * 设置 aud
      */
-    public function withAud($audience)
+    public function withAud(string $audience): self
     {
         $this->audience = $audience;
         return $this;
@@ -160,7 +162,7 @@ class Jwt
     /**
      * 设置 subject
      */
-    public function withSub($subject)
+    public function withSub(string $subject): self
     {
         $this->subject = $subject;
         return $this;
@@ -169,7 +171,7 @@ class Jwt
     /**
      * 设置 jti
      */
-    public function withJti($jti)
+    public function withJti(string $jti): self
     {
         $this->jti = $jti;
         return $this;
@@ -178,10 +180,12 @@ class Jwt
     /**
      * 设置 issuedAt
      */
-    public function withIat($issuedAt = null)
+    public function withIat(int $iat = 0): self
     {
-        if (empty($issuedAt)) {
+        if ($iat == 0) {
             $issuedAt = $this->now;
+        } else {
+            $issuedAt = $this->now->setTimestamp($iat);
         }
         
         $this->issuedAt = $issuedAt;
@@ -191,7 +195,7 @@ class Jwt
     /**
      * 设置 nbf
      */
-    public function withNbf($notBeforeTime)
+    public function withNbf(int $notBeforeTime): self
     {
         if ($notBeforeTime < 0) {
             $notBeforeTime = 0;
@@ -204,7 +208,7 @@ class Jwt
     /**
      * 设置 expTime
      */
-    public function withExp($expTime)
+    public function withExp(int $expTime): self
     {
         $this->expTime = $this->now->modify("+{$expTime} hour");
         return $this;
@@ -213,7 +217,7 @@ class Jwt
     /**
      * 设置 leeway
      */
-    public function withLeeway($leeway)
+    public function withLeeway(int $leeway): self
     {
         $this->leeway = $leeway;
         return $this;
@@ -222,7 +226,7 @@ class Jwt
     /**
      * 签名方法
      */
-    public function withSigningMethod($signingMethod)
+    public function withSigningMethod(string $signingMethod): self
     {
         $this->signingMethod = $signingMethod;
         return $this;
@@ -231,7 +235,7 @@ class Jwt
     /**
      * 秘钥
      */
-    public function withSecret($secret)
+    public function withSecret(string $secret): self
     {
         $this->secret = $secret;
         return $this;
@@ -240,7 +244,7 @@ class Jwt
     /**
      * 私钥
      */
-    public function withPrivateKey($privateKey)
+    public function withPrivateKey(string $privateKey): self
     {
         $this->privateKey = $privateKey;
         return $this;
@@ -249,7 +253,7 @@ class Jwt
     /**
      * 公钥
      */
-    public function withPublicKey($publicKey)
+    public function withPublicKey(string $publicKey): self
     {
         $this->publicKey = $publicKey;
         return $this;
@@ -258,7 +262,7 @@ class Jwt
     /**
      * 私钥密码
      */
-    public function withPrivateKeyPassword($privateKeyPassword)
+    public function withPrivateKeyPassword(string $privateKeyPassword): self
     {
         $this->privateKeyPassword = $privateKeyPassword;
         return $this;
@@ -267,7 +271,7 @@ class Jwt
     /**
      * 获取签名
      */
-    public function getSigner()
+    public function getSigner(): SignerContract
     {
         // 加密方式
         $algorithm = Signer::getSigningMethod($this->signingMethod);
@@ -290,7 +294,7 @@ class Jwt
     /**
      * 生成 token
      */
-    public function makeToken()
+    public function makeToken(): Token
     {
         $builder = new Builder();
         
@@ -328,9 +332,9 @@ class Jwt
     /**
      * 解析 token
      */
-    public function parseToken($token)
+    public function parseToken(string $token): Token
     {
-        $token = (new Parser())->parse((string) $token); 
+        $token = (new Parser())->parse($token); 
         
         return $token;
     }
@@ -338,7 +342,7 @@ class Jwt
     /**
      * 验证
      */
-    public function validate($token)
+    public function validate(Token $token): bool
     {
         $data = new ValidationData($this->now, $this->leeway); 
         $data->issuedBy($this->issuer);
@@ -352,7 +356,7 @@ class Jwt
     /**
      * 检测
      */
-    public function verify($token)
+    public function verify(Token $token): bool
     {
         $sign = $this->getSigner();
         
@@ -362,7 +366,7 @@ class Jwt
     /**
      * 获取 Header
      */
-    public function getHeader($token, $name)
+    public function getHeader(Token $token, string $name): mixed
     {
         return $token->getHeader($name);
     }
@@ -370,7 +374,7 @@ class Jwt
     /**
      * 获取 Headers
      */
-    public function getHeaders($token)
+    public function getHeaders(Token $token): array
     {
         return $token->getHeaders()->all();
     }
@@ -378,7 +382,7 @@ class Jwt
     /**
      * 获取 token 存储数据
      */
-    public function getClaim($token, $name)
+    public function getClaim(Token $token, string $name): mixed
     {
         return $token->getClaim($name);
     }
@@ -386,7 +390,7 @@ class Jwt
     /**
      * 获取 Claims
      */
-    public function getClaims($token)
+    public function getClaims(Token $token): array
     {
         $claims = $token->getClaims()->all();
         

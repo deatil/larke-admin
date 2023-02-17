@@ -31,7 +31,7 @@ class ComposerProperty implements Arrayable
     /**
      * @var array
      */
-    protected $attributes = [];
+    protected array $attributes = [];
 
     public function __construct(array $attributes = [])
     {
@@ -40,35 +40,24 @@ class ComposerProperty implements Arrayable
 
     /**
      * 判断存在
-     *
-     * @param $key
-     * @return bool
      */
-    public function has($key)
+    public function has(string $key): bool
     {
         return Arr::has($this->attributes, $key);
     }
 
     /**
      * 获取
-     *
-     * @param   $key
-     * @param   null    $default
-     * @return  mixed
      */
-    public function get($key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         return Arr::get($this->attributes, $key, $default);
     }
 
     /**
      * 设置
-     *
-     * @param   $key
-     * @param   $val
-     * @return  $this
      */
-    public function set($key, $val)
+    public function set(string $key, mixed $val): static
     {
         $new = $this->attributes;
 
@@ -79,11 +68,8 @@ class ComposerProperty implements Arrayable
 
     /**
      * 删除
-     *
-     * @param $key
-     * @return $this
      */
-    public function delete($key)
+    public function delete(string $key): static
     {
         $new = $this->attributes;
 
@@ -93,33 +79,26 @@ class ComposerProperty implements Arrayable
     }
 
     /**
-     * 获取
-     *
-     * @param $name
-     * @return mixed
-     */
-    public function __get($name)
-    {
-        return $this->get(str_replace('_', '-', $name));
-    }
-
-    /**
      * 返回数组
-     *
-     * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         return $this->attributes;
     }
 
     /**
      * 返回 json 字符
-     *
-     * @return string
      */
-    public function toJson()
+    public function toJson(): string
     {
         return json_encode($this->toArray());
+    }
+
+    /**
+     * 获取
+     */
+    public function __get(string $name): mixed
+    {
+        return $this->get(str_replace('_', '-', $name));
     }
 }

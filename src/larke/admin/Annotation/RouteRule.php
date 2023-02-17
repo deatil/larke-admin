@@ -62,11 +62,11 @@ class RouteRule
      */
     public function __construct(
         string $parent = "",
-        string $slug = "",
-        string $title = "",
-        string $desc = "",
-        int $order = 10000,
-        bool $auth = true,
+        string $slug   = "",
+        string $title  = "",
+        string $desc   = "",
+        int    $order  = 10000,
+        bool   $auth   = true,
     ) {
         $this->parent = $parent;
         $this->slug   = $slug;

@@ -5,6 +5,7 @@ declare (strict_types = 1);
 namespace Larke\Admin\Permission;
 
 use Larke\Auth\Facades\Enforcer;
+use Casbin\Enforcer as CasbinEnforcer;
 
 /**
  * 权限
@@ -17,19 +18,19 @@ class Manager
     /**
      * @var string 默认决策器
      */
-    protected $defaultGuard = 'larke';
+    protected string $defaultGuard = 'larke';
     
     /**
      * @var \Casbin\Enforcer 决策器
      */
-    protected $enforcer = '';
+    protected CasbinEnforcer $enforcer;
     
     /**
      * 构造函数
      *
      * @param string $guard 决策器名称
      */
-    public function __construct(string $guard = 'larke') 
+    public function __construct(string $guard = '') 
     {
         if (empty($guard)) {
             $guard = $this->defaultGuard;
@@ -43,20 +44,22 @@ class Manager
      * 读取自定义配置
      * 
      * @param  string $guard 决策器名称
-     * @return \Larke\Admin\Permission\Manager
+     * 
+     * @return self
      */
-    public static function guard(string $name = '')
+    public static function guard(string $name = ''): self
     {
-        return new static($name);
+        return new self($name);
     }
     
     /**
      * 设置决策器
      *
-     * @param  $enforcer 决策器
-     * @return \Larke\Admin\Permission\Manager
+     * @param CasbinEnforcer $enforcer 决策器
+     *
+     * @return self
      */
-    public function withEnforcer($enforcer) 
+    public function withEnforcer(CasbinEnforcer $enforcer): self
     {
         // 决策器
         $this->enforcer = $enforcer;
@@ -67,9 +70,9 @@ class Manager
     /**
      * 获取决策器
      *
-     * @return $enforcer 决策器
+     * @return CasbinEnforcer 决策器
      */
-    public function getEnforcer() 
+    public function getEnforcer(): CasbinEnforcer
     {
         return $this->enforcer;
     }
@@ -79,7 +82,7 @@ class Manager
     /**
      * 用户添加角色
      */
-    public function addRoleForUser(string $user, string $role, string ...$domain)
+    public function addRoleForUser(string $user, string $role, string ...$domain): mixed
     {
         return $this->enforcer->addRoleForUser($user, $role, ...$domain);
     }
@@ -87,7 +90,7 @@ class Manager
     /**
      * 用户批量添加角色
      */
-    public function addRolesForUser(string $user, array $roles, string ...$domain)
+    public function addRolesForUser(string $user, array $roles, string ...$domain): mixed
     {
         return $this->enforcer->addRolesForUser($user, $roles, ...$domain);
     }
@@ -95,7 +98,7 @@ class Manager
     /**
      * 用户是否拥有某角色
      */
-    public function hasRoleForUser(string $user, string $role, string ...$domain)
+    public function hasRoleForUser(string $user, string $role, string ...$domain): bool
     {
         return $this->enforcer->hasRoleForUser($user, $role, ...$domain);
     }
@@ -103,7 +106,7 @@ class Manager
     /**
      * 用户拥有的所有角色
      */
-    public function getRolesForUser(string $user, string ...$domain)
+    public function getRolesForUser(string $user, string ...$domain): mixed
     {
         return $this->enforcer->getRolesForUser($user, ...$domain);
     }
@@ -111,7 +114,7 @@ class Manager
     /**
      * 角色拥有的所有用户
      */
-    public function getUsersForRole(string $role, string ...$domain)
+    public function getUsersForRole(string $role, string ...$domain): mixed
     {
         return $this->enforcer->getUsersForRole($role, ...$domain);
     }
@@ -119,7 +122,7 @@ class Manager
     /**
      * 删除用户的一个角色
      */
-    public function deleteRoleForUser(string $user, string $role, string ...$domain)
+    public function deleteRoleForUser(string $user, string $role, string ...$domain): mixed
     {
         return $this->enforcer->deleteRoleForUser($user, $role, ...$domain);
     }
@@ -127,7 +130,7 @@ class Manager
     /**
      * 删除用户所有角色
      */
-    public function deleteRolesForUser(string $user, string ...$domain)
+    public function deleteRolesForUser(string $user, string ...$domain): mixed
     {
         return $this->enforcer->deleteRolesForUser($user, ...$domain);
     }
@@ -135,7 +138,7 @@ class Manager
     /**
      * 删除用户信息
      */
-    public function deleteUser(string $user)
+    public function deleteUser(string $user): mixed
     {
         return $this->enforcer->deleteUser($user);
     }
@@ -143,7 +146,7 @@ class Manager
     /**
      * 删除角色信息
      */
-    public function deleteRole(string $role)
+    public function deleteRole(string $role): mixed
     {
         return $this->enforcer->deleteRole($role);
     }
@@ -151,7 +154,7 @@ class Manager
     /**
      * 删除权限信息
      */
-    public function deletePermission(string ...$permission)
+    public function deletePermission(string ...$permission): mixed
     {
         return $this->enforcer->deletePermission(...$permission);
     }
@@ -161,7 +164,7 @@ class Manager
     /**
      * 添加权限
      */
-    public function addPolicy(string $name, string $type, string $rule)
+    public function addPolicy(string $name, string $type, string $rule): mixed
     {
         return $this->enforcer->addPolicy($name, $type, $rule);
     }
@@ -171,7 +174,7 @@ class Manager
      * 
      * $rules array<name, type, rule>
      */
-    public function addPolicies(array $rules)
+    public function addPolicies(array $rules): mixed
     {
         return $this->enforcer->addPolicies($rules);
     }
@@ -179,7 +182,7 @@ class Manager
     /**
      * 删除权限
      */
-    public function deletePolicy(string $name, string $type, string $rule)
+    public function deletePolicy(string $name, string $type, string $rule): mixed
     {
         return $this->enforcer->deletePermissionForUser($name, $type, $rule);
     }
@@ -187,7 +190,7 @@ class Manager
     /**
      * 删除标识所有权限
      */
-    public function deletePolicies(string $name)
+    public function deletePolicies(string $name): mixed
     {
         return $this->enforcer->deletePermissionsForUser($name);
     }
@@ -195,7 +198,7 @@ class Manager
     /**
      * 判断是否有权限
      */
-    public function hasPolicyForUser(string $name, string $type, string $rule)
+    public function hasPolicyForUser(string $name, string $type, string $rule): bool
     {
         return $this->enforcer->hasPermissionForUser($name, $type, $rule);
     }
@@ -223,7 +226,7 @@ class Manager
     /**
      * 判断是否有权限
      */
-    public function hasPermissionForUser(string $name, string $type, string $rule)
+    public function hasPermissionForUser(string $name, string $type, string $rule): mixed
     {
         return $this->enforcer->hasPermissionForUser($name, $type, $rule);
     }
@@ -233,7 +236,7 @@ class Manager
     /**
      * 全部权限，只包含对用户直接授权的权限
      */
-    public function getPermissionsForUser(string $user, string ...$domain)
+    public function getPermissionsForUser(string $user, string ...$domain): mixed
     {
         return $this->enforcer->getPermissionsForUser($user, ...$domain);
     }
@@ -241,7 +244,7 @@ class Manager
     /**
      * 全部权限，包含用户授权的用户组包含权限及自定义权限
      */
-    public function getImplicitPermissionsForUser(string $user)
+    public function getImplicitPermissionsForUser(string $user): mixed
     {
         return $this->enforcer->getImplicitPermissionsForUser($user);
     }
@@ -249,7 +252,7 @@ class Manager
     /**
      * 权限所有的用户
      */
-    public function getImplicitUsersForPermission(string ...$permission)
+    public function getImplicitUsersForPermission(string ...$permission): mixed
     {
         return $this->enforcer->getImplicitUsersForPermission(...$permission);
     }
@@ -257,7 +260,7 @@ class Manager
     /**
      * 用户所有的角色
      */
-    public function getImplicitRolesForUser(string $name, string ...$domain)
+    public function getImplicitRolesForUser(string $name, string ...$domain): mixed
     {
         return $this->enforcer->getImplicitRolesForUser($name, ...$domain);
     }
@@ -265,7 +268,7 @@ class Manager
     /**
      * 角色所有的用户
      */
-    public function getImplicitUsersForRole(string $name, string ...$domain)
+    public function getImplicitUsersForRole(string $name, string ...$domain): mixed
     {
         return $this->enforcer->getImplicitUsersForRole($name, ...$domain);
     }
@@ -273,7 +276,7 @@ class Manager
     /**
      * 用户所有的策略
      */
-    public function getImplicitResourcesForUser(string $user, string ...$domain)
+    public function getImplicitResourcesForUser(string $user, string ...$domain): mixed
     {
         return $this->enforcer->getImplicitResourcesForUser($user, ...$domain);
     }
@@ -281,7 +284,7 @@ class Manager
     /**
      * 域名所有的用户
      */
-    public function getAllUsersByDomain(string $domain)
+    public function getAllUsersByDomain(string $domain): mixed
     {
         return $this->enforcer->getAllUsersByDomain($domain);
     }
@@ -291,7 +294,7 @@ class Manager
     /**
      * 验证用户权限
      */
-    public function enforce(string $user, string $type, string $rule)
+    public function enforce(string $user, string $type, string $rule): bool
     {
         return $this->enforcer->enforce($user, $type, $rule);
     }
@@ -306,7 +309,7 @@ class Manager
      *
      * @return mixed
      */
-    public function __call($method, $parameters)
+    public function __call(string $method, array $parameters): mixed
     {
         return $this->enforcer->{$method}(...$parameters);
     }

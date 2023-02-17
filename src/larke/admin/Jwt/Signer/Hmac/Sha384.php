@@ -18,5 +18,5 @@ class Sha384 extends Hmac
     /**
      * 签名方法
      */
-    protected $signingMethod = HmacSigner\Sha384::class;
+    protected string $signingMethod = HmacSigner\Sha384::class;
 }

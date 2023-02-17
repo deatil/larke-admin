@@ -19,36 +19,30 @@ class Repository
     /**
      * @var string
      */
-    protected $directory = '';
+    protected string $directory = '';
     
     /**
      * 创建
-     *
-     * @return object
      */
-    public static function create()
+    public static function create(): self
     {
-        return new static();
+        return new self();
     }
     
     /**
      * 目录
-     *
-     * @param string $directory
-     * @return object
      */
-    public function withDirectory($directory)
+    public function withDirectory(string $directory): self
     {
         $this->directory = $directory;
+        
         return $this;
     }
     
     /**
-     * Resolve对象
-     *
-     * @return Resolve
+     * Resolve 对象
      */
-    public function getResolve()
+    public function getResolve(): self
     {
         $resolve = Resolve::create()
             ->withDirectory($this->directory);
@@ -58,11 +52,8 @@ class Repository
     
     /**
      * 判断
-     *
-     * @param   string  $name
-     * @return  bool
      */
-    public function has(string $name)
+    public function has(string $name): bool
     {
         $resolve = $this->getResolve();
         
@@ -71,12 +62,8 @@ class Repository
     
     /**
      * 注册仓库
-     *
-     * @param   string  $name
-     * @param   array   $repository
-     * @return  bool
      */
-    public function register(string $name, array $repository = [])
+    public function register(string $name, array $repository = []): bool
     {
         $resolve = $this->getResolve();
         
@@ -87,11 +74,8 @@ class Repository
     
     /**
      * 移除仓库
-     *
-     * @param   string  $name
-     * @return  bool
      */
-    public function remove(string $name)
+    public function remove(string $name): bool
     {
         $resolve = $this->getResolve();
         
@@ -102,12 +86,8 @@ class Repository
     
     /**
      * 更新composer信息
-     *
-     * @param   Resolve $resolve
-     * @param   array   $contents
-     * @return  bool
      */
-    public function updateComposer(Resolve $resolve, array $contents)
+    public function updateComposer(Resolve $resolve, array $contents): bool
     {
         if (empty($contents)) {
             return false;

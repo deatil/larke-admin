@@ -21,27 +21,27 @@ class Admin
     /**
      * 鉴权Token
      */
-    protected $accessToken = null;
+    protected string $accessToken = '';
     
     /**
      * 用户id
      */
-    protected $id = null;
+    protected string $id = '';
     
     /**
      * 数据
      */
-    protected $data = [];
+    protected array $data = [];
     
     /**
      * 全部用户组
      */
-    protected $allGroup = [];
+    protected array $allGroup = [];
     
     /**
      * 设置 accessToken
      */
-    public function withAccessToken($accessToken)
+    public function withAccessToken(string $accessToken): self
     {
         $this->accessToken = $accessToken;
         
@@ -51,7 +51,7 @@ class Admin
     /**
      * 获取 accessToken
      */
-    public function getAccessToken()
+    public function getAccessToken(): string
     {
         return $this->accessToken;
     }
@@ -59,7 +59,7 @@ class Admin
     /**
      * 设置 id
      */
-    public function withId($id)
+    public function withId($id): self
     {
         $this->id = $id;
         
@@ -69,7 +69,7 @@ class Admin
     /**
      * 获取 id
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
@@ -77,7 +77,7 @@ class Admin
     /**
      * 设置 data
      */
-    public function withData($data)
+    public function withData($data): self
     {
         $this->data = $data;
         
@@ -87,7 +87,7 @@ class Admin
     /**
      * 获取 data
      */
-    public function getData()
+    public function getData(): array
     {
         return $this->data;
     }
@@ -95,7 +95,7 @@ class Admin
     /**
      * 设置全部用户组
      */
-    public function withAllGroup(array $data)
+    public function withAllGroup(array $data): self
     {
         $this->allGroup = $data;
         
@@ -105,7 +105,7 @@ class Admin
     /**
      * 获取全部用户组
      */
-    public function getAllGroup()
+    public function getAllGroup(): array
     {
         if (empty($this->allGroup)) {
             $this->allGroup = AuthGroupRepository::getAllGroup();
@@ -117,7 +117,7 @@ class Admin
     /**
      * 获取个人信息
      */
-    public function getProfile()
+    public function getProfile(): array
     {
         if (empty($this->data)) {
             return [];
@@ -145,13 +145,13 @@ class Admin
                 ];
             });
         
-        return $data;
+        return $data->toArray();
     }
 
     /**
      * 是否为超级管理员
      */
-    public function isSuperAdministrator()
+    public function isSuperAdministrator(): bool
     {
         if (empty($this->data)) {
             return false;
@@ -169,7 +169,7 @@ class Admin
     /**
      * 是否启用
      */
-    public function isActive()
+    public function isActive(): bool
     {
         if ($this->isSuperAdministrator()) {
             return true;
@@ -181,7 +181,7 @@ class Admin
     /**
      * 是否用户分组启用
      */
-    public function isGroupActive()
+    public function isGroupActive(): bool
     {
         if ($this->isSuperAdministrator()) {
             return true;
@@ -197,7 +197,7 @@ class Admin
     /**
      * 是否为匿名用户
      */
-    public function isGuest()
+    public function isGuest(): bool
     {
         return empty($this->id) ? true : false;
     }
@@ -205,7 +205,7 @@ class Admin
     /**
      * 判断是否有权限
      */
-    public function hasAccess($slug, $method = 'GET')
+    public function hasAccess(string $slug, string $method = 'GET'): bool
     {
         if ($this->isSuperAdministrator()) {
             return true;
@@ -221,7 +221,7 @@ class Admin
     /*
      * 获取用户组列表
      */
-    public function getGroups()
+    public function getGroups(): array
     {
         if ($this->isSuperAdministrator()) {
             return $this->getAllGroup();
@@ -234,7 +234,7 @@ class Admin
     /*
      * 获取用户组ID列表
      */
-    public function getGroupids()
+    public function getGroupids(): array
     {
         $groups = $this->getGroups();
         return collect($groups)
@@ -246,7 +246,7 @@ class Admin
     /*
      * 获取 GroupChildren
      */
-    public function getGroupChildren()
+    public function getGroupChildren(): array
     {
         $groupids = $this->getGroupids();
         if (empty($groupids)) {
@@ -264,13 +264,13 @@ class Admin
             ];
         });
         
-        return $list;
+        return $list->toArray();
     }
     
     /*
      * 获取 GroupChildrenIds
      */
-    public function getGroupChildrenIds()
+    public function getGroupChildrenIds(): array
     {
         $list = $this->getGroupChildren();
         return collect($list)
@@ -282,7 +282,7 @@ class Admin
     /*
      * 获取 rules
      */
-    public function getRules()
+    public function getRules(): array
     {
         if ($this->isSuperAdministrator()) {
             $rules = AdminRepository::getAllRules();
@@ -301,7 +301,7 @@ class Admin
     /*
      * 获取 ruleids
      */
-    public function getRuleids()
+    public function getRuleids(): array
     {
         $rules = $this->getRules();
         
@@ -315,7 +315,7 @@ class Admin
     /*
      * 获取 slugs
      */
-    public function getRuleSlugs()
+    public function getRuleSlugs(): array
     {
         $rules = $this->getRules();
         return collect($rules)

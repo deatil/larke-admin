@@ -8,6 +8,8 @@ use Illuminate\Support\Collection;
 
 use Larke\JWT\Signer\Key\InMemory;
 use Larke\JWT\Signer\Eddsa as EddsaSigner; 
+use Larke\JWT\Contracts\Key as KeyContract;
+use Larke\JWT\Contracts\Signer as SignerContract;
 
 use Larke\Admin\Jwt\Contracts\Signer;
 
@@ -22,14 +24,14 @@ class Eddsa implements Signer
     /**
      * 签名方法
      */
-    protected $signingMethod = EddsaSigner::class;
+    protected string $signingMethod = EddsaSigner::class;
     
     /**
      * 配置
      *
      * @var Collection
      */
-    private $config = [];
+    private Collection $config;
     
     /**
      * 构造方法
@@ -46,7 +48,7 @@ class Eddsa implements Signer
      *
      * @return \Larke\JWT\Contracts\Signer
      */
-    public function getSigner() 
+    public function getSigner(): SignerContract
     {
         return new $this->signingMethod();
     }
@@ -56,7 +58,7 @@ class Eddsa implements Signer
      *
      * @return string
      */
-    public function getSignSecrect() 
+    public function getSignSecrect(): KeyContract
     {
         $privateKey = $this->config->get("private_key");
         $privateKey = $this->formatSignSecrect($privateKey);
@@ -71,7 +73,7 @@ class Eddsa implements Signer
      *
      * @return string
      */
-    public function getVerifySecrect() 
+    public function getVerifySecrect(): KeyContract
     {
         $publicKey = $this->config->get("public_key");
         $publicKey = $this->formatSignSecrect($publicKey);
@@ -81,7 +83,7 @@ class Eddsa implements Signer
         return $secrect;
     }
     
-    private function formatSignSecrect(string $key)
+    private function formatSignSecrect(string $key): string
     {
         if (file_exists($key)) {
             // key 需为解析出的 der 数据
@@ -97,7 +99,7 @@ class Eddsa implements Signer
         return $key;
     }
     
-    private function formatVerifySecrect(string $key)
+    private function formatVerifySecrect(string $key): string
     {
         if (file_exists($key)) {
             // key 需为解析出的 der 数据

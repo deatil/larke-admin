@@ -20,7 +20,7 @@ class AuthRule
     /*
      * 获取 AllRules
      */
-    public static function getAllRules()
+    public static function getAllRules(): array
     {
         $rules = AuthRuleModel::select([
             'id', 
@@ -42,7 +42,7 @@ class AuthRule
     /*
      * 获取 Children
      */
-    public static function getChildren($ruleid = null)
+    public static function getChildren(mixed $ruleid = null): array
     {
         if (is_array($ruleid)) {
             $data = [];
@@ -82,7 +82,7 @@ class AuthRule
     /*
      * 获取 ChildrenIds
      */
-    public static function getChildrenIds($ruleid = null)
+    public static function getChildrenIds(mixed $ruleid = null): array
     {
         $list = self::getChildren($ruleid);
         return collect($list)->pluck('id')->toArray();
@@ -91,12 +91,12 @@ class AuthRule
     /*
      * 获取 Children
      */
-    public static function getChildrenFromData($data = [], $parentid = '')
+    public static function getChildrenFromData(mixed $data = [], mixed $parentid = ''): array
     {
         $Tree = new Tree();
         $res = $Tree
             ->withConfig('buildChildKey', 'children')
-            ->withData($data)
+            ->withData((array) $data)
             ->build($parentid);
         
         $list = $Tree->buildFormatList($res, $parentid);
@@ -107,9 +107,9 @@ class AuthRule
     /*
      * 获取 ChildrenIds
      */
-    public static function getChildrenIdsFromData($data = [], $parentid = '')
+    public static function getChildrenIdsFromData(mixed $data = [], mixed $parentid = ''): array
     {
-        $list = self::getChildrenFromData($data, $parentid);
+        $list = self::getChildrenFromData((array) $data, $parentid);
         
         return collect($list)->pluck('id')->toArray();
     }

@@ -18,5 +18,5 @@ class Sha384 extends Ecdsa
     /**
      * 签名方法
      */
-    protected $signingMethod = EcdsaSigner\Sha384::class;
+    protected string $signingMethod = EcdsaSigner\Sha384::class;
 }

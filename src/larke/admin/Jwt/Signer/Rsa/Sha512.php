@@ -18,5 +18,5 @@ class Sha512 extends Rsa
     /**
      * 签名方法
      */
-    protected $signingMethod = RsaSigner\Sha512::class;
+    protected string $signingMethod = RsaSigner\Sha512::class;
 }

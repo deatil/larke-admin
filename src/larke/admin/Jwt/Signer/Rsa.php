@@ -23,14 +23,14 @@ class Rsa implements Signer
     /**
      * 签名方法
      */
-    protected $signingMethod = RsaSigner\Sha256::class;
+    protected string $signingMethod = RsaSigner\Sha256::class;
     
     /**
      * 配置
      *
      * @var Collection
      */
-    private $config = [];
+    private Collection $config;
     
     /**
      * 构造方法

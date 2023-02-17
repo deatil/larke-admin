@@ -18,5 +18,5 @@ class Sha256 extends Rsa
     /**
      * 签名方法
      */
-    protected $signingMethod = RsaSigner\Sha256::class;
+    protected string $signingMethod = RsaSigner\Sha256::class;
 }
