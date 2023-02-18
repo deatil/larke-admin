@@ -32,7 +32,36 @@ class Zip
         }
         
         $this->archive = $archive ?: new ZipArchive();
-
+    }
+    
+    /**
+     * Open a zip file
+     */
+    public static function openFile(string $filename): self
+    {
+        $zip = new self();
+        
+        $msg = $zip->open($filename);
+        if (! empty($msg)) {
+            throw new Exception("Error: Failed to open {$filename}! Error: {$msg}");
+        }
+        
+        return $zip;
+    }
+    
+    /**
+     * Create a zip file
+     */
+    public static function createFile(string $filename): self
+    {
+        $zip = new self();
+        
+        $msg = $zip->create($filename);
+        if (! empty($msg)) {
+            throw new Exception("Error: Failed to open {$filename}! Error: {$msg}");
+        }
+        
+        return $zip;
     }
     
     /**
@@ -47,28 +76,32 @@ class Zip
      *  ZipArchive::EXCL
      *  ZipArchive::CHECKCONS
      */
-    public function open(string $filename, int $flags = 0): void
+    public function open(string $filename, int $flags = 0): string
     {
         $res = $this->archive->open($filename, $flags);
         
         if ($res !== true) {
-            throw new Exception("Error: Failed to open {$filePath}! Error: ".$this->getErrorMessage($res));
+            return $this->getErrorMessage($res);
         }
+        
+        return "";
     }
     
     /**
      * Create a zip
      *
-     * @param $path
+     * @param $filename
      * @param $flags
      */
-    public function create(string $filename, int $flags = ZipArchive::CREATE): void
+    public function create(string $filename, int $flags = ZipArchive::CREATE): string
     {
         $res = $this->archive->open($filename, $flags);
         
         if ($res !== true) {
-            throw new Exception("Error: Failed to open {$filePath}! Error: ".$this->getErrorMessage($res));
+            return $this->getErrorMessage($res);
         }
+        
+        return "";
     }
 
     /**
@@ -124,9 +157,25 @@ class Zip
      * @param int $flags
      * Bitmask consisting of ZipArchive::FL_OVERWRITE, ZipArchive::FL_ENC_GUESS, ZipArchive::FL_ENC_UTF_8, ZipArchive::FL_ENC_CP437. The behaviour of these constants is described on the ZIP constants page.
      */
-    public function addFromString(string $name, string $content, int $flags = ZipArchive::FL_OVERWRITE)): void
+    public function addFromString(string $name, string $content, int $flags = ZipArchive::FL_OVERWRITE): void
     {
         $this->archive->addFromString($name, $content, $flags);
+    }
+
+    /**
+     * Delete an entry in the archive using its name.
+     *
+     * @param string $name
+     * Name of the entry.
+     * @param int $method 
+     * ZipArchive::EM_AES_256
+     * The encryption method defined by one of the ZipArchive::EM_ constants.
+     * @param string|null $password 
+     * Optional password, default used when missing.
+     */
+    public function setEncryptionName(string $name, int $method, ?string $password = null): bool
+    {
+        return $this->archive->setEncryptionName($name, $method, $password);
     }
 
     /**
@@ -180,6 +229,21 @@ class Zip
     public function getStream(string $name): mixed
     {
         return $this->archive->getStream($name);
+    }
+
+    /**
+     * Extract the complete archive or the given files to the specified destination.
+     *
+     *  @param string $pathto
+     *  Location where to extract the files.
+     *  @param array|string|null $files
+     *  The entries to extract. It accepts either a single entry name or an array of names.
+     *
+     * @return bool
+     */
+    public function extractTo(string $pathto, array|string|null $files = null): bool
+    {
+        return $this->archive->extractTo($pathto, $files);
     }
 
     /**
@@ -276,5 +340,18 @@ class Zip
             ZipArchive::ER_SEEK => 'ZipArchive::ER_SEEK - Seek error.',
             default => "An unknown error [$resultCode] has occurred.",
         };
+    }
+
+    /**
+     * Dynamically call the default archive instance.
+     *
+     * @param string $method
+     * @param array  $parameters
+     *
+     * @return mixed
+     */
+    public function __call($method, $parameters): mixed
+    {
+        return $this->archive->{$method}(...$parameters);
     }
 }

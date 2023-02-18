@@ -176,7 +176,7 @@ Class Doc
      * @param  string $string
      * @return array
      */
-    protected function formatParam(string $string): array
+    protected function formatParam(string $string): mixed
     {
         $string = $string." ";
         

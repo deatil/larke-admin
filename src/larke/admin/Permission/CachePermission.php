@@ -4,7 +4,6 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Permission;
 
-use Casbin\Enforcer;
 use Illuminate\Cache\Repository;
 
 /**
@@ -22,9 +21,9 @@ use Illuminate\Cache\Repository;
 class CachePermission
 {
     /**
-     * @var Enforcer 决策器
+     * @var Manager 决策器
      */
-    protected Enforcer $enforcer = '';
+    protected Manager $enforcer;
     
     /**
      * @var Repository 缓存
@@ -39,10 +38,10 @@ class CachePermission
     /**
      * 构造函数
      *
-     * @param string Enforcer 决策器
+     * @param string Manager    决策器
      * @param string Repository 缓存
      */
-    public function __construct(Enforcer $enforcer, Repository $cache) 
+    public function __construct(Manager $enforcer, Repository $cache) 
     {
         // 决策器
         $this->enforcer = $enforcer;
@@ -54,7 +53,7 @@ class CachePermission
     /**
      * 设置决策器
      */
-    public function WithEnforcer(Enforcer $enforcer): self
+    public function WithEnforcer(Manager $enforcer): self
     {
         $this->enforcer = $enforcer;
         
@@ -64,7 +63,7 @@ class CachePermission
     /**
      * 获取决策器
      */
-    public function getEnforcer(): Enforcer
+    public function getEnforcer(): Manager
     {
         return $this->enforcer;
     }
