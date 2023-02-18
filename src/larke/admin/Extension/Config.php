@@ -19,8 +19,8 @@ class Config
     /**
      * 获取配置列表
      *
-     * @param   string $name 扩展包名
-     * @return  \Illuminate\Support\Collection 配置列表
+     * @param  string $name 扩展包名
+     * @return \Illuminate\Support\Collection 配置列表
      */
     public static function name(string $name = "") 
     {
@@ -34,12 +34,12 @@ class Config
     /**
      * 获取扩展配置
      *
-     * @param   string  $name       扩展包名
-     * @param   string  $key        配置关键字
-     * @param   string  $default    默认值
-     * @return  mixed 配置数据
+     * @param  string $name    扩展包名
+     * @param  string $key     配置关键字
+     * @param  mixed  $default 默认值
+     * @return mixed 配置数据
      */
-    public static function get(string $name = "", ?string $key = null, ?string $default = null) 
+    public static function get(string $name = "", ?string $key = null, mixed $default = null) 
     {
         $data = static::name($name);
         if (empty($key)) {

@@ -175,11 +175,11 @@ class Info
     /**
      * 获取信息
      *
-     * @param   string  $name       字段
-     * @param   mixed   $default    默认值
-     * @return  \Illuminate\Support\Collection
+     * @param  string $name    字段
+     * @param  mixed  $default 默认值
+     * @return \Illuminate\Support\Collection
      */
-    public function getInfo(string $name = "", $default = null) 
+    public function getInfo(string $name = "", mixed  $default = null) 
     {
         if (empty($name)) {
             return collect($this->info);
@@ -193,11 +193,11 @@ class Info
     /**
      * 获取配置
      *
-     * @param   string  $name       字段
-     * @param   mixed   $default    默认值
-     * @return  \Illuminate\Support\Collection
+     * @param  string $name    字段
+     * @param  mixed  $default 默认值
+     * @return \Illuminate\Support\Collection
      */
-    public function getConfig(string $name = "", $default = null) 
+    public function getConfig(string $name = "", mixed $default = null) 
     {
         if (empty($name)) {
             return collect($this->config);
@@ -211,7 +211,7 @@ class Info
     /**
      * 获取扩展图标
      *
-     * @return  string
+     * @return string
      */
     public function getIcon() 
     {
@@ -221,7 +221,7 @@ class Info
     /**
      * 返回服务提供者名称
      *
-     * @return  string
+     * @return string
      */
     public function __toString() 
     {

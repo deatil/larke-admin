@@ -5,7 +5,6 @@ declare (strict_types = 1);
 namespace Larke\Admin\Http;
 
 use Illuminate\Support\Traits\Macroable;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
 use Larke\Admin\Contracts\Response as ResponseContract;
 
@@ -179,11 +178,11 @@ class Response implements ResponseContract
     /**
      * 输出成功响应
      *
-     * @param   int         $code
-     * @param   string|null $message
-     * @param   array|null  $data
-     * @param   array       $userHeader
-     * @return  string      json
+     * @param  int         $code
+     * @param  string|null $message
+     * @param  array|null  $data
+     * @param  array       $userHeader
+     * @return \Illuminate\Http\Response|\Illuminate\Contracts\Routing\ResponseFactory
      */
     public function success(
         $message = "", 
@@ -197,11 +196,11 @@ class Response implements ResponseContract
     /**
      * 输出失败响应
      *
-     * @param   string|null   $message
-     * @param   int           $code
-     * @param   array|null    $data
-     * @param   array         $userHeader
-     * @return  string        json
+     * @param  string|null $message
+     * @param  int         $code
+     * @param  array|null  $data
+     * @param  array       $userHeader
+     * @return \Illuminate\Http\Response|\Illuminate\Contracts\Routing\ResponseFactory
      */
     public function error(
         $message = "", 
@@ -215,12 +214,12 @@ class Response implements ResponseContract
     /**
      * 输出响应
      *
-     * @param   boolen      $success
-     * @param   int         $code
-     * @param   string|null $message
-     * @param   array|null  $data
-     * @param   array       $userHeader
-     * @return  string      json
+     * @param  boolen      $success
+     * @param  int         $code
+     * @param  string|null $message
+     * @param  array|null  $data
+     * @param  array       $userHeader
+     * @return \Illuminate\Http\Response|\Illuminate\Contracts\Routing\ResponseFactory
      */
     public function json(
         $success = true, 
@@ -242,29 +241,29 @@ class Response implements ResponseContract
         }
         
         // 返回 JSON 
-        $this->returnJson($result, $userHeader);
+        return $this->returnJson($result, $userHeader);
     }
     
     /**
      * 将数组以标准 json 格式返回
      * 
-     * @param   array    $data
-     * @param   array    $userHeader
-     * @return  string   json
+     * @param  array $data
+     * @param  array $userHeader
+     * @return \Illuminate\Http\Response|\Illuminate\Contracts\Routing\ResponseFactory
      */
     public function returnJson(array $data, $userHeader = []) 
     {
         $contents = json_encode($data, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
         
-        $this->returnJsonFromString($contents, $userHeader);
+        return $this->returnJsonFromString($contents, $userHeader);
     }
     
     /**
      * 将 json 字符串以标准 json 格式返回
      * 
-     * @param   string|null  $contents
-     * @param   array        $userHeader
-     * @return  string       json
+     * @param  string|null $contents
+     * @param  array       $userHeader
+     * @return \Illuminate\Http\Response|\Illuminate\Contracts\Routing\ResponseFactory
      */
     public function returnJsonFromString($contents, $userHeader = []) 
     {
@@ -273,15 +272,15 @@ class Response implements ResponseContract
             'Content-Type' => 'application/json; charset=utf-8',
         ]);
         
-        $this->returnData($contents, $header);
+        return $this->returnData($contents, $header);
     }
     
     /**
      * 返回字符
      * 
-     * @param   string|null   $contents
-     * @param   array         $userHeader
-     * @return  string
+     * @param  string|null   $contents
+     * @param  array         $userHeader
+     * @return \Illuminate\Http\Response|\Illuminate\Contracts\Routing\ResponseFactory
      */
     public function returnString($contents, $userHeader = []) 
     {
@@ -290,23 +289,22 @@ class Response implements ResponseContract
             'Content-Type' => 'text/html',
         ]);
         
-        $this->returnData($contents, $header);
+        return $this->returnData($contents, $header);
     }
     
     /**
      * 返回数据
      * 
-     * @param   string|null   $contents
-     * @param   array         $userHeader
-     * @return  string
+     * @param  string|null $contents
+     * @param  array       $userHeader
+     * @return \Illuminate\Http\Response|\Illuminate\Contracts\Routing\ResponseFactory
      */
     public function returnData($contents, $userHeader = []) 
     {
         $this->mergeCorsHeaders()->withHeader($userHeader);
         $header = $this->getHeaders();
         
-        $response = response($contents, 200, $header);
-        throw new HttpResponseException($response);
+        return response($contents, 200, $header);
     }
 
 }

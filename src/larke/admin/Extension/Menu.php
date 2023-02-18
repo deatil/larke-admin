@@ -9,17 +9,22 @@ use Illuminate\Support\Arr;
 use Larke\Admin\Support\Tree;
 use Larke\Admin\Service\Menu as MenuModel;
 
+/*
+ * 菜单
+ *
+ * @create 2021-6-6
+ * @author deatil
+ */
 class Menu
 {
     /**
      * 创建菜单
      *
-     * @return $data array
-     * @return $parentId int|string
-     * @return $children array
+     * @return array      $data 
+     * @return int|string $parentId 
      * @return array
      */
-    public static function create($data = [], $parentId = 0) 
+    public static function create(array $data = [], mixed $parentId = 0) 
     {
         if (empty($data)) {
             return false;
@@ -53,7 +58,7 @@ class Menu
      * @param string $slug 规则slug
      * @return boolean
      */
-    public static function delete($slug)
+    public static function delete(string $slug)
     {
         $ids = self::getMenuIdsBySlug($slug);
         if (!$ids) {
@@ -74,7 +79,7 @@ class Menu
      * @param string $slug
      * @return boolean
      */
-    public static function enable($slug)
+    public static function enable(string $slug)
     {
         $ids = self::getMenuIdsBySlug($slug);
         if (!$ids) {
@@ -100,7 +105,7 @@ class Menu
      * @param string $slug
      * @return boolean
      */
-    public static function disable($slug)
+    public static function disable(string $slug)
     {
         $ids = self::getMenuIdsBySlug($slug);
         if (!$ids) {
@@ -126,7 +131,7 @@ class Menu
      * @param string $slug
      * @return array
      */
-    public static function export($slug)
+    public static function export(string $slug)
     {
         $ids = self::getMenuIdsBySlug($slug);
         if (!$ids) {
@@ -170,7 +175,7 @@ class Menu
      * @param string $slug
      * @return array
      */
-    public static function getMenuIdsBySlug($slug)
+    public static function getMenuIdsBySlug(string $slug)
     {
         $menuModel = new MenuModel();
         $list = $menuModel->read();

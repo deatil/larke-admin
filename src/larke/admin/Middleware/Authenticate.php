@@ -6,8 +6,8 @@ namespace Larke\Admin\Middleware;
 
 use Closure;
 
-use Larke\Admin\Service\Route as RouteService;
 use Larke\Admin\Model\Admin as AdminModel;
+use Larke\Admin\Service\Route as RouteService;
 use Larke\Admin\Traits\ResponseJson as ResponseJsonTrait;
 
 /**
@@ -23,7 +23,9 @@ class Authenticate
     public function handle($request, Closure $next)
     {
         if (! $this->shouldPassThrough($request)) {
-            $this->jwtCheck();
+            if (($res = $this->jwtCheck()) !== null) {
+                return $res;
+            }
         }
         
         return $next($request);
@@ -36,35 +38,35 @@ class Authenticate
     {
         $authorization = request()->header('Authorization');
         if (!$authorization) {
-            $this->error(__('token不能为空'), \ResponseCode::ACCESS_TOKEN_ERROR);
+            return $this->error(__('token不能为空'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
         $authorizationArr = explode(' ', $authorization);
         if (count($authorizationArr) != 2) {
-            $this->error(__('token不能为空'), \ResponseCode::ACCESS_TOKEN_ERROR);
+            return $this->error(__('token不能为空'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         if ($authorizationArr[0] != 'Bearer') {
-            $this->error(__('token格式错误'), \ResponseCode::ACCESS_TOKEN_ERROR);
+            return $this->error(__('token格式错误'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
         $accessToken = $authorizationArr[1];
         if (!$accessToken) {
-            $this->error(__('token不能为空'), \ResponseCode::ACCESS_TOKEN_ERROR);
+            return $this->error(__('token不能为空'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
         if (count(explode('.', $accessToken)) <> 3) {
-            $this->error(__('token格式错误'), \ResponseCode::ACCESS_TOKEN_ERROR);
+            return $this->error(__('token格式错误'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
         if (app('larke-admin.cache')->has(md5($accessToken))) {
-            $this->error(__('token已失效'), \ResponseCode::ACCESS_TOKEN_ERROR);
+            return $this->error(__('token已失效'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
         try {
             $decodeAccessToken = app('larke-admin.auth-token')
                 ->decodeAccessToken($accessToken);
         } catch(\Exception $e) {
-            $this->error(__('token格式错误'), \ResponseCode::ACCESS_TOKEN_ERROR);
+            return $this->error(__('token格式错误'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
         try {
@@ -74,20 +76,20 @@ class Authenticate
             // 签名
             app('larke-admin.auth-token')->verify($decodeAccessToken);
         } catch(\Exception $e) {
-            $this->error(__('token已过期'), \ResponseCode::ACCESS_TOKEN_TIMEOUT);
+            return $this->error(__('token已过期'), \ResponseCode::ACCESS_TOKEN_TIMEOUT);
         }
         
         try {
             $adminid = $decodeAccessToken->getData('adminid');
         } catch(\Exception $e) {
-            $this->error(__('token已失效'), \ResponseCode::ACCESS_TOKEN_ERROR);
+            return $this->error(__('token已失效'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
         $adminInfo = AdminModel::where('id', $adminid)
             ->with(['groups'])
             ->first();
         if (empty($adminInfo)) {
-            $this->error(__('帐号不存在或者已被锁定'), \ResponseCode::AUTH_ERROR);
+            return $this->error(__('帐号不存在或者已被锁定'), \ResponseCode::AUTH_ERROR);
         }
         
         // 账号信息
@@ -99,12 +101,14 @@ class Authenticate
             ->withData($adminInfo);
         
         if (! app('larke-admin.auth-admin')->isActive()) {
-            $this->error(__('帐号不存在或者已被锁定'), \ResponseCode::AUTH_ERROR);
+            return $this->error(__('帐号不存在或者已被锁定'), \ResponseCode::AUTH_ERROR);
         }
         
         if (! app('larke-admin.auth-admin')->isGroupActive()) {
-            $this->error(__('帐号用户组不存在或者已被锁定'), \ResponseCode::AUTH_ERROR);
+            return $this->error(__('帐号用户组不存在或者已被锁定'), \ResponseCode::AUTH_ERROR);
         }
+        
+        return null;
     }
 
     /**

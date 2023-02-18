@@ -20,11 +20,11 @@ class Rule
     /**
      * 创建
      *
-     * @param   array       $data 
-     * @param   int|string  $parentId 
-     * @return  array
+     * @param  array      $data 
+     * @param  int|string $parentId 
+     * @return array
      */
-    public static function create($data = [], $parentId = 0) 
+    public static function create(array $data = [], mixed $parentId = 0) 
     {
         if (empty($data)) {
             return false;
@@ -53,10 +53,10 @@ class Rule
     /**
      * 删除
      *
-     * @param   string  $slug 规则slug
-     * @return  boolean
+     * @param  string  $slug 规则slug
+     * @return boolean
      */
-    public static function delete($slug)
+    public static function delete(string $slug)
     {
         $ids = self::getAuthRuleIdsBySlug($slug);
         if (!$ids) {
@@ -75,10 +75,10 @@ class Rule
     /**
      * 启用
      *
-     * @param   string  $slug
-     * @return  boolean
+     * @param  string  $slug
+     * @return boolean
      */
-    public static function enable($slug)
+    public static function enable(string $slug)
     {
         $ids = self::getAuthRuleIdsBySlug($slug);
         if (! $ids) {
@@ -97,10 +97,10 @@ class Rule
     /**
      * 禁用
      *
-     * @param   string  $slug
-     * @return  boolean
+     * @param  string  $slug
+     * @return boolean
      */
-    public static function disable($slug)
+    public static function disable(string $slug)
     {
         $ids = self::getAuthRuleIdsBySlug($slug);
         if (!$ids) {
@@ -119,10 +119,10 @@ class Rule
     /**
      * 导出指定slug的规则
      *
-     * @param   string  $slug
-     * @return  array
+     * @param  string $slug
+     * @return array
      */
-    public static function export($slug)
+    public static function export(string $slug)
     {
         $ids = self::getAuthRuleIdsBySlug($slug);
         if (!$ids) {
@@ -152,10 +152,10 @@ class Rule
     /**
      * 根据slug获取规则IDS
      *
-     * @param   string  $slug
-     * @return  array
+     * @param  string $slug
+     * @return array
      */
-    public static function getAuthRuleIdsBySlug($slug)
+    public static function getAuthRuleIdsBySlug(string $slug)
     {
         $ids = [];
         $rule = AuthRuleModel::where('slug', '=', $slug)

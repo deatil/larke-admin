@@ -22,7 +22,7 @@ class Request
      *
      * @return bool
      */
-    public static function matchPath($path, ?string $current = null)
+    public static function matchPath(string $path, ?string $current = null)
     {
         $request = request();
         $current = $current ?: $request->decodedPath();

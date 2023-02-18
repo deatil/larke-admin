@@ -24,7 +24,9 @@ class Permission
     public function handle($request, Closure $next)
     {
         if (! $this->shouldPassThrough($request)) {
-            $this->permissionCheck();
+            if (($res = $this->permissionCheck()) !== null) {
+                return $res;
+            }
         }
         
         return $next($request);
@@ -39,8 +41,10 @@ class Permission
         $requestMethod = request()->getMethod();
         
         if (! app('larke-admin.auth-admin')->hasAccess($requestUrl, $requestMethod)) {
-            $this->error(__('你没有访问权限'), \ResponseCode::AUTH_ERROR);
+            return $this->error(__('你没有访问权限'), \ResponseCode::AUTH_ERROR);
         }
+        
+        return null;
     }
 
     /**

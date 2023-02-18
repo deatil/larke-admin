@@ -18,9 +18,9 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Traits\Macroable;
 
-use Larke\Admin\Composer\Resolve as ComposerResolve;
 use Larke\Admin\Model\AuthRule as AuthRuleModel;
 use Larke\Admin\Model\Extension as ExtensionModel;
+use Larke\Admin\Composer\Resolve as ComposerResolve;
 use Larke\Admin\Extension\ServiceProvider as ExtensionServiceProvider;
 
 /**
@@ -77,22 +77,22 @@ class Manager
      */
     public function __construct(
         $extensionsDirectory = 'extension', 
-        $extensionsCacheId = 'larke-admin-local-extensions', 
+        $extensionsCacheId   = 'larke-admin-local-extensions', 
         $extensionsCacheTime = 10080
     ) {
         $this->extensionsDirectory = $extensionsDirectory;
-        $this->extensionsCacheId = $extensionsCacheId;
+        $this->extensionsCacheId   = $extensionsCacheId;
         $this->extensionsCacheTime = $extensionsCacheTime;
     }
 
     /**
      * 添加扩展
      *
-     * @param   string    $name
-     * @param   Info      $info
-     * @return  self
+     * @param  string $name
+     * @param  Info   $info
+     * @return self
      */
-    public function extend($name, Info $info = null)
+    public function extend(string $name, Info $info = null)
     {
         if (!empty($name) && !empty($info)) {
             $this->forget($name);
@@ -109,7 +109,7 @@ class Manager
      * @param string|array $name
      * @return Info|array|null
      */
-    public function getExtend($name = null)
+    public function getExtend(mixed $name = null)
     {
         if (is_array($name)) {
             $extensions = [];
@@ -143,7 +143,7 @@ class Manager
      * @param string|array $name
      * @return Info|array|null
      */
-    public function forget($name)
+    public function forget(mixed $name)
     {
         if (is_array($name)) {
             $forgetExtensions = [];
@@ -170,7 +170,7 @@ class Manager
      * @param string $name 扩展包名
      * @return bool
      */
-    public function checkLocal($name)
+    public function checkLocal(string $name)
     {
         $extensionDirectory = $this->getExtensionPath($name);
         
@@ -187,7 +187,7 @@ class Manager
      * @param string $name 扩展包名
      * @return string
      */
-    public function composerRequireCommand($name)
+    public function composerRequireCommand(string $name)
     {
         $directory = $this->getExtensionPath($name);
         if (! File::exists($directory)) {
@@ -213,7 +213,7 @@ class Manager
      * @param string $name 扩展包名
      * @return string
      */
-    public function composerRemoveCommand($name)
+    public function composerRemoveCommand(string $name)
     {
         $directory = $this->getExtensionPath($name);
         if (! File::exists($directory)) {
@@ -235,7 +235,7 @@ class Manager
     /**
      * @param callable $callback
      */
-    public function booting($callback)
+    public function booting(callable $callback)
     {
         Event::listen($this->eventBootingName, $callback);
     }
@@ -243,7 +243,7 @@ class Manager
     /**
      * @param callable $callback
      */
-    public function booted($callback)
+    public function booted(callable $callback)
     {
         Event::listen($this->eventBootedName, $callback);
     }
@@ -267,15 +267,15 @@ class Manager
     /**
      * 设置扩展路由
      *
-     * @param $callback
-     * @param $config
+     * @param callable $callback
+     * @param array    $config
      * @return object $this
      */
-    public function routes($callback, $config = [])
+    public function routes(callable $callback, array $config = [])
     {
         $attributes = array_merge(
             [
-                'prefix' => config('larkeadmin.route.prefix'),
+                'prefix'     => config('larkeadmin.route.prefix'),
                 'middleware' => config('larkeadmin.route.middleware'),
             ],
             $config
@@ -289,11 +289,11 @@ class Manager
     /**
      * 设置命名空间
      *
-     * @param $prefix
-     * @param $paths
+     * @param mixed $prefix
+     * @param mixed $paths
      * @return object $this
      */
-    public function namespaces($prefix, $paths = [])
+    public function namespaces(mixed $prefix, mixed $paths = [])
     {
         app('larke-admin.loader')
             ->setPsr4($prefix, $paths)
@@ -505,7 +505,6 @@ class Manager
     /**
      * 扩展存放文件夹
      *
-     * @param string $path
      * @return string
      */
     public function getExtensionDirectory()
@@ -522,6 +521,7 @@ class Manager
     public function getExtensionPath(string $path = '')
     {
         $extensionPath = base_path($this->getExtensionDirectory());
+        
         return $extensionPath.($path ? DIRECTORY_SEPARATOR.$path : $path);
     }
     
@@ -698,7 +698,7 @@ class Manager
      * @param string|null $icon
      * @return string
      */    
-    public function getIcon($icon = '')
+    public function getIcon(?string $icon = null)
     {
         if (! File::exists($icon) || ! File::isFile($icon)) {
             $icon = $this->defaultIcon;

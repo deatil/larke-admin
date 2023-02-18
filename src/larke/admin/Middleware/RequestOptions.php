@@ -28,7 +28,7 @@ class RequestOptions
         if ($this->isTrueRequest($request) 
             && $request->isMethod('OPTIONS')
         ) {
-            $this->success('');
+            return $this->success('');
         }
         
         return $next($request);

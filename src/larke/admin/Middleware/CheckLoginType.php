@@ -20,7 +20,9 @@ class CheckLoginType
     
     public function handle($request, Closure $next)
     {
-        $this->check();
+        if (($res = $this->check()) !== null) {
+            return $res;
+        }
         
         return $next($request);
     }
@@ -33,14 +35,14 @@ class CheckLoginType
         // 只在登录后判断
         $accessToken = app('larke-admin.auth-admin')->getAccessToken();
         if (empty($accessToken)) {
-            return ;
+            return null;
         }
         
         try {
             $decodeAccessToken = app('larke-admin.auth-token')
                 ->decodeAccessToken($accessToken);
         } catch(\Exception $e) {
-            $this->error(__('token格式错误'), \ResponseCode::ACCESS_TOKEN_ERROR);
+            return $this->error(__('token格式错误'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
         // 账号信息
@@ -56,6 +58,8 @@ class CheckLoginType
                 return $this->error(__('token已失效'), \ResponseCode::ACCESS_TOKEN_TIMEOUT);
             }
         }
+        
+        return null;
     }
 
 }
