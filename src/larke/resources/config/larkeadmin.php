@@ -6,8 +6,8 @@ return [
         'name'      => "LarkeAdmin",
         'name_mini' => "Larke",
         'logo'      => "<b>Larke</b> admin",
-        'release'   => "20230215",
-        'version'   => "1.6.0",
+        'release'   => "20230226",
+        'version'   => "1.6.1",
     ],
     
     // 是否使用 https 方式
@@ -21,9 +21,14 @@ return [
         'as'        => env('LARKE_ADMIN_ROUTE_AS', 'larke-admin.'),
         
         // 中间件
-        'middleware'       => env('LARKE_ADMIN_ROUTE_MIDDLEWARE') ? explode(',', env('LARKE_ADMIN_ROUTE_MIDDLEWARE')) : ['larke-admin'],
+        'middleware' => [
+            'larke-admin',
+        ],
+        
         // 超级管理员检测
-        'admin_middleware' => env('LARKE_ADMIN_ROUTE_ADMIN_MIDDLEWARE') ? explode(',', env('LARKE_ADMIN_ROUTE_ADMIN_MIDDLEWARE')) : ['larke-admin.admin-auth'],
+        'admin_middleware' => [
+            'larke-admin.admin-auth',
+        ],
     ],
     
     // 登陆器
@@ -100,17 +105,15 @@ return [
     
     // 响应
     'response' => [
-        'json' => [
-            'is_allow_origin'   => env('LARKE_ADMIN_RESPONSE_JSON_IS_ALLOW_ORIGIN', 1),
-            'allow_origin'      => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_ORIGIN', '*'),
-            'allow_credentials' => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_CREDENTIALS', 0),
-            'allow_methods'     => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_METHODS', 'GET,POST,PATCH,PUT,DELETE,OPTIONS'),
-            // 发送数据到服务器可携带的请求头字段 [Access-Control-Allow-Headers]
-            'allow_headers'     => env('LARKE_ADMIN_RESPONSE_JSON_ALLOW_HEADERS', 'X-Requested-With,X_Requested_With,Content-Type,Authorization,Locale-Language,Larke-Admin-Captcha-Id'),
-            // 客户端可获取请求头字段 [Access-Control-Expose-Headers]
-            'expose_headers'    => env('LARKE_ADMIN_RESPONSE_JSON_EXPOSE_HEADERS', ''),
-            'max_age'           => env('LARKE_ADMIN_RESPONSE_JSON_MAX_AGE', ''),
-        ],
+        'is_allow_origin'   => env('LARKE_ADMIN_RESPONSE_IS_ALLOW_ORIGIN', true),
+        'allow_origin'      => env('LARKE_ADMIN_RESPONSE_ALLOW_ORIGIN', '*'),
+        'allow_credentials' => env('LARKE_ADMIN_RESPONSE_ALLOW_CREDENTIALS', false),
+        'allow_methods'     => env('LARKE_ADMIN_RESPONSE_ALLOW_METHODS', 'GET,POST,PATCH,PUT,DELETE,OPTIONS'),
+        // 发送数据到服务器可携带的请求头字段 [Access-Control-Allow-Headers]
+        'allow_headers'     => env('LARKE_ADMIN_RESPONSE_ALLOW_HEADERS', 'X-Requested-With,X_Requested_With,Content-Type,Authorization,Locale-Language,Larke-Admin-Captcha-Id'),
+        // 客户端可获取请求头字段 [Access-Control-Expose-Headers]
+        'expose_headers'    => env('LARKE_ADMIN_RESPONSE_EXPOSE_HEADERS', 'Authorization'),
+        'max_age'           => env('LARKE_ADMIN_RESPONSE_MAX_AGE', ''),
     ],
     
     // 权限
@@ -119,10 +122,10 @@ return [
         'enforcer_guard'       => env('LARKE_ADMIN_AUTH_ENFORCER_GUARD', 'larke'),
         
         // 登陆过滤
-        'authenticate_excepts' => env('LARKE_ADMIN_AUTH_AUTHENTICATE_EXCEPTS') ? explode(',', env('LARKE_ADMIN_AUTH_AUTHENTICATE_EXCEPTS')) : [],
+        'authenticate_excepts' => [],
         
         // 权限过滤
-        'permission_excepts'   => env('LARKE_ADMIN_AUTH_PERMISSION_EXCEPTS') ? explode(',', env('LARKE_ADMIN_AUTH_PERMISSION_EXCEPTS')) : [],
+        'permission_excepts'   => [],
         
         // 超级管理员
         'admin_id'             => env('LARKE_ADMIN_AUTH_ADMIN_ID', '9b09f6b6-5808-4234-a7ff-0316838ed467'),

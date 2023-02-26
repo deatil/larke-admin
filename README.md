@@ -13,8 +13,8 @@ larke-admin 是一套使用 Laravel、JWT 和 RBAC鉴权的通用后台管理系
 
 ## 环境要求
 
- - PHP >= 8.0.2
- - Laravel >= 9.0.0
+ - PHP >= 8.1
+ - Laravel >= 10.0
  - Fileinfo PHP Extension
 
 

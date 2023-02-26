@@ -238,15 +238,16 @@ class ServiceProvider extends BaseServiceProvider
         $this->app->bind(Contracts\Response::class, function() {
             $httpResponse = new Http\Response();
             
-            $config = config('larkeadmin.response.json');
-            $httpResponse
-                ->withIsAllowOrigin($config['is_allow_origin'])
-                ->withAllowOrigin($config['allow_origin'])
-                ->withAllowCredentials($config['allow_credentials'])
-                ->withMaxAge($config['max_age'])
-                ->withAllowMethods($config['allow_methods'])
-                ->withAllowHeaders($config['allow_headers'])
-                ->withExposeHeaders($config['expose_headers']);
+            $config = config('larkeadmin.response');
+            
+            if ($config['is_allow_origin']) {
+                $httpResponse->withAllowOrigin($config['allow_origin'])
+                    ->withAllowCredentials($config['allow_credentials'])
+                    ->withMaxAge($config['max_age'])
+                    ->withAllowMethods($config['allow_methods'])
+                    ->withAllowHeaders($config['allow_headers'])
+                    ->withExposeHeaders($config['expose_headers']);
+            }
             
             return $httpResponse;
         });

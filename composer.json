@@ -20,8 +20,8 @@
         }
     ],
     "require": {
-        "php": "^8.0",
-        "laravel/framework": "^9.0|^10.0",
+        "php": "^8.1",
+        "laravel/framework": "^10.0",
         "composer/semver": "^3.2",
         "phpseclib/phpseclib": "^3.0",
         "ramsey/uuid": "^4.3",
