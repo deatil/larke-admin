@@ -4,6 +4,8 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Jwt;
 
+use Exception;
+
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
@@ -113,18 +115,18 @@ class JwtManager
     /**
      * 设置配置
      */
-    public function withConfig(string $key, mixed $value): self
+    public function withConfig(Collection $config): self
     {
-        $this->config[$key] = $value;
+        $this->config = $config;
         return $this;
     }
     
     /**
      * 设置配置
      */
-    public function setConfig(Collection $config): self
+    public function setConfig(string $key, mixed $value): self
     {
-        $this->config = $config;
+        $this->config[$key] = $value;
         return $this;
     }
     
@@ -139,34 +141,44 @@ class JwtManager
     /**
      * 设置 header
      */
-    public function withHeader(mixed $name, mixed $value = null): self
+    public function withHeader(string $name, mixed $value): self
     {
-        if (is_array($name)) {
-            foreach ($name as $k => $v) {
-                $this->withHeader($k, $v);
-            }
-            
-            return $this;
+        $this->headers[$name] = $value;
+        
+        return $this;
+    }
+    
+    /**
+     * 批量设置 header
+     */
+    public function withHeaders(array $headers): self
+    {
+        foreach ($headers as $name => $value) {
+            $this->withHeader((string) $name, $value);
         }
         
-        $this->headers[(string) $name] = $value;
         return $this;
     }
     
     /**
      * 设置 claim
      */
-    public function withClaim(mixed $claim, mixed $value = null): self
+    public function withClaim(string $claim, mixed $value): self
     {
-        if (is_array($claim)) {
-            foreach ($claim as $k => $v) {
-                $this->withClaim($k, $v);
-            }
-            
-            return $this;
+        $this->claims[$claim] = $value;
+        
+        return $this;
+    }
+    
+    /**
+     * 批量设置 claim
+     */
+    public function withClaims(array $claims): self
+    {
+        foreach ($claims as $claim => $value) {
+            $this->withClaim((string) $claim, $value);
         }
         
-        $this->claims[(string) $claim] = $value;
         return $this;
     }
     
@@ -333,7 +345,7 @@ class JwtManager
         
         try {
             $this->enToken = $this->jwt->makeToken()->toString();
-        } catch(\Exception $e) {
+        } catch(Exception $e) {
             Log::error('larke-admin-jwt-makeToken: '.$e->getMessage());
             
             throw new JWTException(__('JWT编码失败'));
@@ -349,7 +361,7 @@ class JwtManager
     {
         try {
             $this->parsedToken = $this->jwt->parseToken($this->deToken); 
-        } catch(\Exception $e) {
+        } catch(Exception $e) {
             Log::error('larke-admin-jwt-parsedToken: '.$e->getMessage());
             
             throw new JWTException(__('JWT解析失败'));
@@ -421,20 +433,29 @@ class JwtManager
     /**
      * 加密载荷数据
      */
-    public function withData(mixed $claim, mixed $value = null): self
+    public function withData(string $claim, mixed $value): self
     {
-        if (is_array($claim)) {
-            foreach ($claim as $k => $v) {
-                $this->withData($k, $v);
-            }
-            
-            return $this;
-        }
-        
-        if (! empty($claim) && ! empty($value)) {
-            $value = $this->crypt->encrypt($value, $this->base64Decode($this->configGet('passphrase', '')));
+        if (!empty($claim) && !empty($value)) {
+            $value = $this->crypt->encrypt(
+                $value, 
+                $this->base64Decode(
+                    $this->configGet('passphrase', '')
+                )
+            );
             
             $this->withClaim($claim, $value);
+        }
+        
+        return $this;
+    }
+    
+    /**
+     * 加密载荷数据
+     */
+    public function withDatas(array $claims): self
+    {
+        foreach ($claims as $claim => $value) {
+            $this->withData((string) $claim, $value);
         }
         
         return $this;
@@ -447,7 +468,9 @@ class JwtManager
     {
         $claim = $this->crypt->decrypt(
             $this->getClaim($name), 
-            $this->base64Decode($this->configGet('passphrase', ''))
+            $this->base64Decode(
+                $this->configGet('passphrase', '')
+            )
         );
         
         return $claim;
@@ -458,17 +481,7 @@ class JwtManager
      */
     public function base64Decode(string $contents): string
     {
-        if (empty($contents)) {
-            return '';
-        }
-        
-        $decoded = base64_decode($contents, true);
-        
-        if ($decoded === false) {
-            throw new JWTException(__('JWT载荷解析失败'));
-        }
-        
-        return $decoded;
+        return base64_decode($contents, true);
     }
     
     /**

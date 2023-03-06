@@ -44,7 +44,7 @@ class Token
         $jti = config('larkeadmin.passport.access_token_id');
         
         $token = app('larke-admin.jwt')
-            ->withData($data)
+            ->withDatas($data)
             ->withExp($expiresIn)
             ->withJti($jti)
             ->encode()
@@ -62,7 +62,7 @@ class Token
         $jti = config('larkeadmin.passport.refresh_token_id');
         
         $token = app('larke-admin.jwt')
-            ->withData($data)
+            ->withDatas($data)
             ->withExp($expiresIn)
             ->withJti($jti)
             ->encode()

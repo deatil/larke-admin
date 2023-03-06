@@ -110,34 +110,20 @@ class Jwt
     /**
      * 设置 header
      */
-    public function withHeader(mixed $name, mixed $value = null)
+    public function withHeader(string $name, mixed $value = null)
     {
-        if (is_array($name)) {
-            foreach ($name as $k => $v) {
-                $this->withHeader($k, $v);
-            }
-            
-            return $this;
-        }
+        $this->headers[$name] = $value;
         
-        $this->headers[(string) $name] = $value;
         return $this;
     }
     
     /**
      * 设置 claim
      */
-    public function withClaim(mixed $claim, mixed $value = null)
+    public function withClaim(string $claim, mixed $value = null)
     {
-        if (is_array($claim)) {
-            foreach ($claim as $k => $v) {
-                $this->withClaim($k, $v);
-            }
-            
-            return $this;
-        }
+        $this->claims[$claim] = $value;
         
-        $this->claims[(string) $claim] = $value;
         return $this;
     }
     
@@ -368,7 +354,7 @@ class Jwt
      */
     public function getHeader(Token $token, string $name): mixed
     {
-        return $token->getHeader($name);
+        return $token->getHeaders()->get($name)->getValue();
     }
     
     /**
@@ -384,7 +370,7 @@ class Jwt
      */
     public function getClaim(Token $token, string $name): mixed
     {
-        return $token->getClaim($name);
+        return $token->getClaims()->get($name)->getValue();
     }
     
     /**
