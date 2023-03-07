@@ -354,7 +354,7 @@ class Jwt
      */
     public function getHeader(Token $token, string $name): mixed
     {
-        return $token->getHeaders()->get($name)->getValue();
+        return $token->headers()->get($name)->getValue();
     }
     
     /**
@@ -362,7 +362,7 @@ class Jwt
      */
     public function getHeaders(Token $token): array
     {
-        return $token->getHeaders()->all();
+        return $token->headers()->all();
     }
 
     /**
@@ -370,7 +370,7 @@ class Jwt
      */
     public function getClaim(Token $token, string $name): mixed
     {
-        return $token->getClaims()->get($name)->getValue();
+        return $token->claims()->get($name)->getValue();
     }
     
     /**
@@ -378,7 +378,7 @@ class Jwt
      */
     public function getClaims(Token $token): array
     {
-        $claims = $token->getClaims()->all();
+        $claims = $token->claims()->all();
         
         $data = [];
         foreach ($claims as $claim) {
