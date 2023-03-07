@@ -362,7 +362,14 @@ class Jwt
      */
     public function getHeaders(Token $token): array
     {
-        return $token->headers()->all();
+        $headers = $token->headers()->all();
+        
+        $data = [];
+        foreach ($headers as $header) {
+            $data[$header->getName()] = $header->getValue();
+        }
+        
+        return $data;
     }
 
     /**

@@ -141,14 +141,14 @@ class Passport extends Base
         
         $data = $request->all();
         $validator = Validator::make($data, [
-            'name' => 'required',
+            'name'     => 'required',
             'password' => 'required',
-            'captcha' => 'required|size:4',
+            'captcha'  => 'required|size:4',
         ], [
-            'name.required' => __('账号不能为空'),
+            'name.required'     => __('账号不能为空'),
             'password.required' => __('密码不能为空'),
-            'captcha.required' => __('验证码不能为空'),
-            'captcha.size' => __('验证码位数错误'),
+            'captcha.required'  => __('验证码不能为空'),
+            'captcha.size'      => __('验证码位数错误'),
         ]);
         
         if ($validator->fails()) {
