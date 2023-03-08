@@ -10,6 +10,7 @@ use DateTimeImmutable;
 use Larke\JWT\Token;
 use Larke\JWT\Parser;
 use Larke\JWT\Builder;
+use Larke\JWT\Validator;
 use Larke\JWT\ValidationData;
 use Larke\JWT\Clock\SystemClock;
 
@@ -336,7 +337,9 @@ class Jwt
         $data->identifiedBy($this->jti);
         $data->relatedTo($this->subject);
         
-        return $token->validate($data);
+        $validation = new Validator();
+        
+        return $validation->validate($token, $data);
     }
 
     /**
@@ -346,7 +349,9 @@ class Jwt
     {
         $sign = $this->getSigner();
         
-        return $token->verify($sign->getSigner(), $sign->getVerifySecrect());
+        $validation = new Validator();
+        
+        return $validation->verify($token, $sign->getSigner(), $sign->getVerifySecrect());
     }
     
     /**
@@ -354,7 +359,7 @@ class Jwt
      */
     public function getHeader(Token $token, string $name): mixed
     {
-        return $token->headers()->get($name)->getValue();
+        return $token->headers()->get($name);
     }
     
     /**
@@ -362,14 +367,7 @@ class Jwt
      */
     public function getHeaders(Token $token): array
     {
-        $headers = $token->headers()->all();
-        
-        $data = [];
-        foreach ($headers as $header) {
-            $data[$header->getName()] = $header->getValue();
-        }
-        
-        return $data;
+        return $token->headers()->all();
     }
 
     /**
@@ -377,7 +375,7 @@ class Jwt
      */
     public function getClaim(Token $token, string $name): mixed
     {
-        return $token->claims()->get($name)->getValue();
+        return $token->claims()->get($name);
     }
     
     /**
@@ -385,13 +383,6 @@ class Jwt
      */
     public function getClaims(Token $token): array
     {
-        $claims = $token->claims()->all();
-        
-        $data = [];
-        foreach ($claims as $claim) {
-            $data[$claim->getName()] = $claim->getValue();
-        }
-        
-        return $data;
+        return $token->claims()->all();
     }
 }
