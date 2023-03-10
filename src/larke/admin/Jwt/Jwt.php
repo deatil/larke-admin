@@ -4,27 +4,43 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Jwt;
 
-use DateTimeImmutable;
+use Exception;
 
-// 文件夹引用
-use Larke\JWT\Token;
-use Larke\JWT\Parser;
-use Larke\JWT\Builder;
-use Larke\JWT\Validator;
-use Larke\JWT\ValidationData;
-use Larke\JWT\Clock\SystemClock;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
-use Larke\Admin\Jwt\Contracts\Signer as SignerContract;
+use Larke\JWT\Contracts\UnencryptedToken;
+
 use Larke\Admin\Exception\JWTException;
+use Larke\Admin\Contracts\Crypt as CryptContract;
+use Larke\Admin\Jwt\Contracts\JWT as JWTContract;
 
 /**
- * jwt
+ * jwt 管理器
  *
- * @create 2020-10-19
+ * @create 2022-3-13
  * @author deatil
  */
-class Jwt
+class JWT
 {
+    /**
+     * jwt
+     */
+    private JWTContract $jwt;
+    
+    /**
+     * 加密
+     */
+    private CryptContract $crypt;
+    
+    /**
+     * 配置
+     *
+     * @var Collection
+     */
+    private Collection $config;
+    
     /**
      * headers
      */
@@ -36,82 +52,87 @@ class Jwt
     private array $claims = [];
     
     /**
-     * 载荷 issuer
+     * 解析后的 token 句柄
      */
-    private string $issuer = '';
-    
-    /**
-     * 载荷 audience
-     */
-    private string $audience = '';
-    
-    /**
-     * 载荷 subject
-     */
-    private string $subject = '';
-    
-    /**
-     * jwt 签发时间
-     */
-    private DateTimeImmutable $issuedAt;
-    
-    /**
-     * jwt 过期时间
-     */
-    private DateTimeImmutable $expTime;
-    
-    /**
-     * 时间内不能访问
-     */
-    private DateTimeImmutable $notBeforeTime;
-    
-    /**
-     * 时间差兼容
-     */
-    private int $leeway = 0;
-    
-    /**
-     * 签名方法
-     */
-    private string $signingMethod = '';
-    
-    /**
-     * 秘钥
-     */
-    private string $secret = '';
-    
-    /**
-     * 私钥
-     */
-    private string $privateKey = '';
-    
-    /**
-     * 公钥
-     */
-    private string $publicKey = '';
-    
-    /**
-     * 私钥密码
-     */
-    private string $privateKeyPassword = '';
-    
-    /**
-     * 当前时间
-     */
-    private DateTimeImmutable $now;
+    private UnencryptedToken $parsedToken;
     
     /**
      * 构造函数
      */
-    public function __construct(DateTimeImmutable $now = null) 
+    public function __construct(
+        JWTContract   $jwt, 
+        CryptContract $crypt,
+        Collection    $config
+    ) {
+        $this->jwt    = $jwt;
+        $this->crypt  = $crypt;
+        $this->config = $config;
+    }
+    
+    /**
+     * 设置 jwt
+     */
+    public function withJwt(JWTContract $jwt): self
     {
-        $this->now = $now ?: SystemClock::fromSystemTimezone()->now();
+        $this->jwt = $jwt;
+        return $this;
+    }
+    
+    /**
+     * 获取 jwt
+     */
+    public function getJwt(): JWTContract
+    {
+        return $this->jwt;
+    }
+    
+    /**
+     * 设置加密
+     */
+    public function withCrypt(CryptContract $crypt): self
+    {
+        $this->crypt = $crypt;
+        return $this;
+    }
+    
+    /**
+     * 获取加密
+     */
+    public function getCrypt(): CryptContract
+    {
+        return $this->crypt;
+    }
+    
+    /**
+     * 设置配置
+     */
+    public function withConfig(Collection $config): self
+    {
+        $this->config = $config;
+        return $this;
+    }
+    
+    /**
+     * 设置配置
+     */
+    public function setConfig(string $key, mixed $value): self
+    {
+        $this->config[$key] = $value;
+        return $this;
+    }
+    
+    /**
+     * 获取配置
+     */
+    public function getConfig(): Collection
+    {
+        return $this->config;
     }
     
     /**
      * 设置 header
      */
-    public function withHeader(string $name, mixed $value = null)
+    public function withHeader(string $name, mixed $value): self
     {
         $this->headers[$name] = $value;
         
@@ -119,11 +140,35 @@ class Jwt
     }
     
     /**
+     * 批量设置 header
+     */
+    public function withHeaders(array $headers): self
+    {
+        foreach ($headers as $name => $value) {
+            $this->withHeader((string) $name, $value);
+        }
+        
+        return $this;
+    }
+    
+    /**
      * 设置 claim
      */
-    public function withClaim(string $claim, mixed $value = null)
+    public function withClaim(string $claim, mixed $value): self
     {
         $this->claims[$claim] = $value;
+        
+        return $this;
+    }
+    
+    /**
+     * 批量设置 claim
+     */
+    public function withClaims(array $claims): self
+    {
+        foreach ($claims as $claim => $value) {
+            $this->withClaim((string) $claim, $value);
+        }
         
         return $this;
     }
@@ -133,7 +178,7 @@ class Jwt
      */
     public function withIss(string $issuer): self
     {
-        $this->issuer = $issuer;
+        $this->config['iss'] = $issuer;
         return $this;
     }
     
@@ -142,7 +187,7 @@ class Jwt
      */
     public function withAud(string $audience): self
     {
-        $this->audience = $audience;
+        $this->config['aud'] = $audience;
         return $this;
     }
     
@@ -151,7 +196,7 @@ class Jwt
      */
     public function withSub(string $subject): self
     {
-        $this->subject = $subject;
+        $this->config['sub'] = $subject;
         return $this;
     }
     
@@ -160,22 +205,16 @@ class Jwt
      */
     public function withJti(string $jti): self
     {
-        $this->jti = $jti;
+        $this->config['jti'] = $jti;
         return $this;
     }
     
     /**
      * 设置 issuedAt
      */
-    public function withIat(int $iat = 0): self
+    public function withIat(int $issuedAt): self
     {
-        if ($iat == 0) {
-            $issuedAt = $this->now;
-        } else {
-            $issuedAt = $this->now->setTimestamp($iat);
-        }
-        
-        $this->issuedAt = $issuedAt;
+        $this->config['iat'] = $issuedAt;
         return $this;
     }
     
@@ -188,7 +227,7 @@ class Jwt
             $notBeforeTime = 0;
         }
         
-        $this->notBeforeTime = $this->now->modify("+{$notBeforeTime} minute");
+        $this->config['nbf'] = $notBeforeTime;
         return $this;
     }
     
@@ -197,192 +236,217 @@ class Jwt
      */
     public function withExp(int $expTime): self
     {
-        $this->expTime = $this->now->modify("+{$expTime} hour");
+        $this->config['exp'] = $expTime;
         return $this;
     }
     
     /**
-     * 设置 leeway
+     * 设置 JWT
      */
-    public function withLeeway(int $leeway): self
+    private function loadJwt(): self
     {
-        $this->leeway = $leeway;
-        return $this;
-    }
-    
-    /**
-     * 签名方法
-     */
-    public function withSigningMethod(string $signingMethod): self
-    {
-        $this->signingMethod = $signingMethod;
-        return $this;
-    }
-    
-    /**
-     * 秘钥
-     */
-    public function withSecret(string $secret): self
-    {
-        $this->secret = $secret;
-        return $this;
-    }
-    
-    /**
-     * 私钥
-     */
-    public function withPrivateKey(string $privateKey): self
-    {
-        $this->privateKey = $privateKey;
-        return $this;
-    }
-    
-    /**
-     * 公钥
-     */
-    public function withPublicKey(string $publicKey): self
-    {
-        $this->publicKey = $publicKey;
-        return $this;
-    }
-    
-    /**
-     * 私钥密码
-     */
-    public function withPrivateKeyPassword(string $privateKeyPassword): self
-    {
-        $this->privateKeyPassword = $privateKeyPassword;
-        return $this;
-    }
-    
-    /**
-     * 获取签名
-     */
-    public function getSigner(): SignerContract
-    {
-        // 加密方式
-        $algorithm = Signer::getSigningMethod($this->signingMethod);
-        if (empty($algorithm)) {
-            throw new JWTException(__('签名类型不存在'));
-        }
-        
-        // 加密方式
-        $config = collect([
-            'secrect'     => $this->secret,
-            'private_key' => $this->privateKey,
-            'public_key'  => $this->publicKey,
-            'passphrase'  => $this->privateKeyPassword,
-        ]);
-        $signer = new $algorithm($config);
-        
-        return $signer;
-    }
-    
-    /**
-     * 生成 token
-     */
-    public function makeToken(): Token
-    {
-        $builder = new Builder();
-        
         // 发布者
-        $builder->issuedBy($this->issuer); 
+        $this->jwt->withIss($this->configGet('iss', '')); 
         // 接收者
-        $builder->permittedFor($this->audience); 
+        $this->jwt->withAud($this->configGet('aud', '')); 
         // 主题
-        $builder->relatedTo($this->subject); 
+        $this->jwt->withSub($this->configGet('sub', '')); 
         // 对当前token设置的标识
-        $builder->identifiedBy($this->jti); 
+        $this->jwt->withJti($this->configGet('jti', '')); 
         // token创建时间
-        $builder->issuedAt($this->issuedAt); 
+        $this->jwt->withIat($this->configGet('iat', 0)); 
         // 多少秒内无法使用
-        $builder->canOnlyBeUsedAfter($this->notBeforeTime); 
+        $this->jwt->withNbf($this->configGet('nbf', 0)); 
         // 过期时间
-        $builder->expiresAt($this->expTime); 
+        $this->jwt->withExp($this->configGet('exp', 0)); 
+        // leeway
+        $this->jwt->withLeeway($this->configGet('leeway', 0)); 
+
+        // 加密方式
+        $algorithm = $this->configGet('signer.algorithm', 'HS256');
+        $this->jwt->withSigningMethod($algorithm);
         
-        // 添加 header 信息
+        // 密码
+        $secrect = $this->configGet('signer.secrect', '');
+        $this->jwt->withSecret($secrect);
+        
+        // 私钥
+        $privateKey = $this->configGet('signer.private_key', '');
+        $this->jwt->withPrivateKey($privateKey);
+        
+        // 私钥密码
+        $passphrase = $this->configGet('signer.passphrase', null);
+        $this->jwt->withPrivateKeyPassword($passphrase);
+
+        // 公钥
+        $publicKey = $this->configGet('signer.public_key', '');
+        $this->jwt->withPublicKey($publicKey);
+        
+        return $this;
+    }
+    
+    /**
+     * 编码 jwt token
+     */
+    public function buildToken(): string
+    {
+        $this->loadJwt();
+        
         foreach ($this->headers as $headerKey => $header) {
-            $builder->withHeader($headerKey, $header);
+            $this->jwt->withHeader($headerKey, $header);
         }
         
-        // 添加载荷信息
         foreach ($this->claims as $claimKey => $claim) {
-            $builder->withClaim($claimKey, $claim);
+            $this->jwt->withClaim($claimKey, $claim);
         }
         
-        $sign  = $this->getSigner();
-        $token = $builder->getToken($sign->getSigner(), $sign->getSignSecrect());
+        try {
+            $token = $this->jwt->createToken()->toString();
+        } catch(Exception $e) {
+            Log::error('larke-admin-jwt-createToken: '.$e->getMessage());
+            
+            throw new JWTException(__('JWT编码失败'));
+        }
         
         return $token;
     }
     
     /**
-     * 解析 token
+     * 解码
      */
-    public function parseToken(string $token): Token
+    public function parseToken(string $token): self
     {
-        $token = (new Parser())->parse($token); 
+        try {
+            $this->parsedToken = $this->jwt->parseToken($token); 
+        } catch(Exception $e) {
+            Log::error('larke-admin-jwt-parsedToken: '.$e->getMessage());
+            
+            throw new JWTException(__('JWT解析失败'));
+        }
         
-        return $token;
+        return $this;
     }
     
     /**
      * 验证
      */
-    public function validate(Token $token): bool
+    public function validate(): bool
     {
-        $data = new ValidationData($this->now, $this->leeway); 
-        $data->issuedBy($this->issuer);
-        $data->permittedFor($this->audience);
-        $data->identifiedBy($this->jti);
-        $data->relatedTo($this->subject);
+        $this->loadJwt();
         
-        $validation = new Validator();
-        
-        return $validation->validate($token, $data);
+        return $this->jwt->validate($this->parsedToken);
     }
 
     /**
      * 检测
      */
-    public function verify(Token $token): bool
+    public function verify(): bool
     {
-        $sign = $this->getSigner();
-        
-        $validation = new Validator();
-        
-        return $validation->verify($token, $sign->getSigner(), $sign->getVerifySecrect());
+        $this->loadJwt();
+    
+        return $this->jwt->verify($this->parsedToken);
+    }
+
+    /**
+     * 获取 parsedToken
+     */
+    public function getParsedToken(): UnencryptedToken
+    {
+        return $this->parsedToken;
     }
     
     /**
      * 获取 Header
      */
-    public function getHeader(Token $token, string $name): mixed
+    public function getHeader(string $name): mixed
     {
-        return $token->headers()->get($name);
+        return $this->jwt->getHeader($this->parsedToken, $name);
     }
     
     /**
      * 获取 Headers
      */
-    public function getHeaders(Token $token): array
+    public function getHeaders(): array
     {
-        return $token->headers()->all();
+        return $this->jwt->getHeaders($this->parsedToken);
     }
 
     /**
      * 获取 token 存储数据
      */
-    public function getClaim(Token $token, string $name): mixed
+    public function getClaim(string $name): mixed
     {
-        return $token->claims()->get($name);
+        return $this->jwt->getClaim($this->parsedToken, $name);
     }
     
     /**
      * 获取 Claims
      */
-    public function getClaims(Token $token): array
+    public function getClaims(): array
     {
-        return $token->claims()->all();
+        return $this->jwt->getClaims($this->parsedToken);
     }
+    
+    /**
+     * 加密载荷数据
+     */
+    public function withData(string $claim, mixed $value): self
+    {
+        if (!empty($claim) && !empty($value)) {
+            $value = $this->crypt->encrypt(
+                $value, 
+                $this->base64Decode(
+                    $this->configGet('passphrase', '')
+                )
+            );
+            
+            $this->withClaim($claim, $value);
+        }
+        
+        return $this;
+    }
+    
+    /**
+     * 加密载荷数据
+     */
+    public function withDatas(array $claims): self
+    {
+        foreach ($claims as $claim => $value) {
+            $this->withData((string) $claim, $value);
+        }
+        
+        return $this;
+    }
+
+    /**
+     * 载荷解密后数据
+     */
+    public function getData(string $name): mixed
+    {
+        $claim = $this->crypt->decrypt(
+            $this->getClaim($name), 
+            $this->base64Decode(
+                $this->configGet('passphrase', '')
+            )
+        );
+        
+        return $claim;
+    }
+    
+    /**
+     * base64 解密
+     */
+    public function base64Decode(string $contents): string
+    {
+        return base64_decode($contents, true);
+    }
+    
+    /**
+     * 获取配置
+     */
+    protected function configGet(string $key, mixed $default = null): mixed
+    {
+        return Arr::get($this->config, $key, $default);
+    }
+
 }

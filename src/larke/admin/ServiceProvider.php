@@ -11,8 +11,9 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
-use Larke\Admin\Jwt\Jwt;
-use Larke\Admin\Jwt\JwtManager;
+use Larke\Admin\Jwt\JWT;
+use Larke\Admin\Jwt\Driver\LarkeJWT;
+use Larke\Admin\Jwt\Contracts\JWT as JWTContract;
 use Larke\Admin\Service\Cache;
 use Larke\Admin\Support\Crypt;
 use Larke\Admin\Support\Loader;
@@ -259,20 +260,22 @@ class ServiceProvider extends BaseServiceProvider
         });
         
         // 加密数据
-        $this->app->bind('larke-admin.crypto', Crypt::class);
+        $this->app->bind('larke-admin.crypto', Contracts\Crypt::class);
+        $this->app->bind(Contracts\Crypt::class, Crypt::class);
         
         // Jwt 底层驱动
-        $this->app->bind('larke-admin.jwt-driver', Jwt::class);
+        $this->app->bind('larke-admin.jwt-driver', JWTContract::class);
+        $this->app->bind(JWTContract::class, LarkeJWT::class);
         
         // jwt
         $this->app->bind('larke-admin.jwt', function($app) {
-            $jwtManager = new JwtManager(
+            $jwt = new JWT(
                 $app['larke-admin.jwt-driver'],
                 $app['larke-admin.crypto'],
                 collect(config('larkeadmin.jwt'))
             );
             
-            return $jwtManager;
+            return $jwt;
         });
         
         // 扩展
