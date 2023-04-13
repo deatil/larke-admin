@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 use Larke\Admin\Jwt\JWT;
-use Larke\Admin\Jwt\Driver\LarkeJWT;
+use Larke\Admin\Jwt\Driver\Larke as LarkeJWT;
 use Larke\Admin\Jwt\Contracts\JWT as JWTContract;
 use Larke\Admin\Service\Cache;
 use Larke\Admin\Support\Crypt;

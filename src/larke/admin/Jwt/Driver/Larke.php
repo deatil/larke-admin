@@ -25,7 +25,7 @@ use Larke\Admin\Exception\JWTException;
  * @create 2020-10-19
  * @author deatil
  */
-class LarkeJWT implements JWTContract
+class Larke implements JWTContract
 {
     /**
      * headers
