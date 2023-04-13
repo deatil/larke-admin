@@ -1,0 +1,56 @@
+{
+    "name": "{authorName}/{extensionName}",
+    "description": "{extensionTitle} 扩展描述。",
+    "keywords": [
+        "larke",
+        "larke-admin",
+        "larke-admin-extension",
+        "{extensionName}"
+    ],
+    "homepage": "https://github.com/{authorName}/{extensionName}",
+    "type": "library",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "{authorName}",
+            "email": "{authorName}@github.com",
+            "homepage": "https://github.com/{authorName}"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "lake/larke-admin":"^1.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "{composerNamespace}\\": ["src"]
+        }
+    },
+    "extra" : {
+        "larke": {
+            "title": "{extensionTitle} 扩展",
+            "keywords": [
+                "larke",
+                "larke-admin",
+                "larke-admin-extension",
+                "{extensionName}"
+            ],
+            "homepage": "https://github.com/{authorName}/{extensionName}",
+            "authors": [
+                {
+                    "name": "{authorName}",
+                    "email": "{authorName}@github.com",
+                    "homepage": "https://github.com/{authorName}"
+                }
+            ],
+            "version": "1.0.1",
+            "adaptation": ">=1.4.0",
+            "require": {}
+        },
+        "laravel" : {
+            "providers" : [
+                "{composerNamespace}\\ServiceProvider"
+            ]
+        }
+    }
+}
