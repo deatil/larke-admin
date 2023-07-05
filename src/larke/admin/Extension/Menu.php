@@ -180,11 +180,11 @@ class Menu
         $menuModel = new MenuModel();
         $list = $menuModel->read();
         
-        $menu = collect($list)
+        $menus = collect($list)
             ->where('slug', '=', $slug)
             ->toArray();
         
-        $idsList = collect($menu)->map(function($menu) use($list) {
+        $idsList = collect($menus)->map(function($menu) use($list) {
             $ids = [];
             if ($menu) {
                 $menuId = $menu['id'];

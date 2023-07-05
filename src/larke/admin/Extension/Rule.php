@@ -33,12 +33,12 @@ class Rule
         $lastOrder = AuthRuleModel::max('listorder');
         
         $rule = AuthRuleModel::create([
-            'parentid' => $parentId,
-            'listorder' => $lastOrder + 1,
-            'title' => Arr::get($data, 'title'),
-            'url' => Arr::get($data, 'url'),
-            'method' => Arr::get($data, 'method'),
-            'slug' => Arr::get($data, 'slug'),
+            'parentid'    => $parentId,
+            'listorder'   => $lastOrder + 1,
+            'title'       => Arr::get($data, 'title'),
+            'url'         => Arr::get($data, 'url'),
+            'method'      => Arr::get($data, 'method'),
+            'slug'        => Arr::get($data, 'slug'),
             'description' => Arr::get($data, 'description', ''),
         ]);
         
@@ -63,11 +63,9 @@ class Rule
             return false;
         }
         
-        collect($ids)->each(function($id) {
-            AuthRuleModel::where('id', '=', $id)
-                ->first()
-                ->delete();
-        });
+        AuthRuleModel::whereIn('id', $ids)
+            ->first()
+            ->delete();
         
         return true;
     }
@@ -85,11 +83,9 @@ class Rule
             return false;
         }
         
-        collect($ids)->each(function($id) {
-            AuthRuleModel::where('id', '=', $id)
-                ->first()
-                ->enable();
-        });
+        AuthRuleModel::whereIn('id', $ids)
+            ->first()
+            ->enable();
         
         return true;
     }
@@ -107,11 +103,9 @@ class Rule
             return false;
         }
         
-        collect($ids)->each(function($id) {
-            AuthRuleModel::where('id', '=', $id)
-                ->first()
-                ->disable();
-        });
+        AuthRuleModel::whereIn('id', $ids)
+            ->first()
+            ->disable();
         
         return true;
     }
@@ -158,17 +152,18 @@ class Rule
     public static function getAuthRuleIdsBySlug(string $slug)
     {
         $ids = [];
-        $rule = AuthRuleModel::where('slug', '=', $slug)
+        $rules = AuthRuleModel::where('slug', '=', $slug)
             ->get()
             ->toArray();
-            
-        $idsList = collect($rule)->map(function($rule) {
+        
+        $ruleList = AuthRuleModel::orderBy('listorder', 'ASC')
+            ->select(['id', 'parentid', 'slug'])
+            ->get()
+            ->toArray();
+        
+        $idsList = collect($rules)->map(function($rule) use($ruleList) {
             $ids = [];
             if ($rule) {
-                $ruleList = AuthRuleModel::orderBy('listorder', 'ASC')
-                    ->select(['id', 'parentid', 'slug'])
-                    ->get()
-                    ->toArray();
                 $ids = Tree::create()
                     ->getListChildrenId($ruleList, $rule['id']);
                 $ids[] = $rule['id'];
