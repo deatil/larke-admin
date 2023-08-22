@@ -25,9 +25,9 @@
         "composer/semver": "^3.2",
         "phpseclib/phpseclib": "^3.0",
         "ramsey/uuid": "^4.3",
-        "lake/larke-pclzip": "^1.0",
-        "lake/larke-jwt": "^1.2.0",
-        "lake/larke-auth": "^1.3"
+        "lake/larke-pclzip": "~1.0.0",
+        "lake/larke-jwt": "~1.2.2",
+        "lake/larke-auth": "~1.3.0"
     },
     "autoload": {
         "psr-4": {

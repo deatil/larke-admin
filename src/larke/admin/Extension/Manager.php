@@ -553,7 +553,7 @@ class Manager
      * @param string|null $className
      * @return object
      */
-    public function getNewClass(?string $className = null)
+    public function newClass(?string $className = null)
     {
         if (! class_exists($className)) {
             return false;
@@ -575,13 +575,13 @@ class Manager
      * @param array $param 
      * @return mixed
      */
-    public function getNewClassMethod(?string $className = null, ?string $method = null, array $param = [])
+    public function newClassMethod(?string $className = null, ?string $method = null, array $param = [])
     {
         if (empty($className) || empty($method)) {
             return false;
         }
         
-        $newClass = $this->getNewClass($className);
+        $newClass = $this->newClass($className);
         if (! $newClass) {
             return false;
         }
@@ -595,16 +595,16 @@ class Manager
     }
     
     /**
-     * 扩展的实例化类
+     * 实例化扩展的类
      *
      * @param string|null $name
      * @return mixed|object
      */
-    public function getExtensionNewClass(?string $name = null)
+    public function newExtensionClass(?string $name = null)
     {
         $className = $this->getExtensionClass($name);
         
-        return $this->getNewClass($className);
+        return $this->newClass($className);
     }
     
     /**
@@ -634,18 +634,18 @@ class Manager
         $className = $data->getName();
         
         return [
-            'name' => $name,
-            'title' => Arr::get($info, 'title'),
+            'name'        => $name,
+            'title'       => Arr::get($info, 'title'),
             'description' => Arr::get($info, 'description'),
-            'keywords' => Arr::get($info, 'keywords'),
-            'homepage' => Arr::get($info, 'homepage'),
-            'authors' => Arr::get($info, 'authors', []), 
-            'version' => Arr::get($info, 'version'),
-            'adaptation' => Arr::get($info, 'adaptation'),
-            'require' => Arr::get($info, 'require', []),
-            'config' => $config,
-            'icon' => $icon,
-            'class_name' => $className,
+            'keywords'    => Arr::get($info, 'keywords'),
+            'homepage'    => Arr::get($info, 'homepage'),
+            'authors'     => Arr::get($info, 'authors', []), 
+            'version'     => Arr::get($info, 'version'),
+            'adaptation'  => Arr::get($info, 'adaptation'),
+            'require'     => Arr::get($info, 'require', []),
+            'config'      => $config,
+            'icon'        => $icon,
+            'class_name'  => $className,
         ];
     }
     
