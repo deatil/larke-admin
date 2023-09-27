@@ -33,9 +33,9 @@ class PassportLoginAfter
         
         $event->admin->update([
             'refresh_time' => $decodeAccessTokenIat, 
-            'refresh_ip' => request()->ip(),
-            'last_active' => $decodeRefreshTokenIat, 
-            'last_ip' => request()->ip(),
+            'refresh_ip'   => request()->ip(),
+            'last_active'  => $decodeRefreshTokenIat, 
+            'last_ip'      => request()->ip(),
         ]);
     }
 }

@@ -49,7 +49,7 @@ class Info
         'version' => '1.0.2',
         // 适配系统版本
         'adaptation' => '1.1.*',
-        // 依赖扩展[选填]。用 composer.josn 时字段为 required
+        // 依赖扩展[选填]
         'require' => [
             // 'larke/log-viewer' => '1.0.*'
         ], 
@@ -74,9 +74,9 @@ class Info
      * @param   array   $config 扩展配置
      */
     public function __construct(
-        string $name = '', 
-        array $info = [], 
-        string $icon = '', 
+        string $name  = '',
+        array $info   = [],
+        string $icon  = '',
         array $config = []
     ) {
         $this->withName($name);
@@ -88,11 +88,11 @@ class Info
     /**
      * 使用
      *
-     * @param   string|array    $name       服务提供者名称
-     * @param   array           $info       扩展信息
-     * @param   string          $icon       扩展图标
-     * @param   array           $config     扩展配置
-     * @return  object          $this
+     * @param   string|array $name   服务提供者名称
+     * @param   array        $info   扩展信息
+     * @param   string       $icon   扩展图标
+     * @param   array        $config 扩展配置
+     * @return  object       $this
      */
     public static function make(
         $name = null, 
@@ -179,7 +179,7 @@ class Info
      * @param  mixed  $default 默认值
      * @return \Illuminate\Support\Collection
      */
-    public function getInfo(string $name = "", mixed  $default = null) 
+    public function getInfo(string $name = "", mixed $default = null) 
     {
         if (empty($name)) {
             return collect($this->info);

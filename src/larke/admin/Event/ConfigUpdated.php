@@ -19,7 +19,7 @@ class ConfigUpdated
      * 
      * @var \Larke\Admin\Model\Config
      */
-    public $config;
+    public ConfigModel $config;
     
     /**
      * 构造方法

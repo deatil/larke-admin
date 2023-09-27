@@ -53,7 +53,7 @@ withExtensionFromComposer(
 ### 添加扩展信息
 
 ```php
-withExtensionInfo(
+makeExtensionInfo(
     $name = null, 
     array  $info = [], 
     string $icon = '', 

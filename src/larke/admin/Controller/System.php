@@ -45,14 +45,14 @@ class System extends Base
     public function info()
     {
         $info = [
-            'admin' => config('larkeadmin.admin'),
+            'admin'  => config('larkeadmin.admin'),
             'system' => $this->getSysInfo(),
         ];
         
-        $eventInfo = event(new SystemInfoEvent($info));
-        if (!empty($eventInfo) && is_array($eventInfo)) {
-            $info = array_merge($info, $eventInfo);
-        }
+        $siEvent = new SystemInfoEvent($info);
+        event($siEvent);
+        
+        $info = $siEvent->info;
         
         return $this->success(__('获取成功'), $info);
     }

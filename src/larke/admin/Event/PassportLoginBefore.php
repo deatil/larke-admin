@@ -19,7 +19,7 @@ class PassportLoginBefore
      * 
      * @var \Illuminate\Http\Request
      */
-    public $request;
+    public Request $request;
     
     /**
      * 构造方法

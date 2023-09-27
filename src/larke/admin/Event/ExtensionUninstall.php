@@ -17,14 +17,14 @@ class ExtensionUninstall
      * 
      * @var string
      */
-    public $name;
+    public string $name;
     
     /**
      * 扩展信息
      * 
      * @var array
      */
-    public $info;
+    public array $info;
     
     /**
      * 构造方法

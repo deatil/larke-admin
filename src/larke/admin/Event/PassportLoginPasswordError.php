@@ -19,7 +19,7 @@ class PassportLoginPasswordError
      * 
      * @var \Larke\Admin\Model\Admin
      */
-    public $admin;
+    public AdminModel $admin;
     
     /**
      * 构造方法

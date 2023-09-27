@@ -19,14 +19,14 @@ class ExtensionConfigBefore
      * 
      * @var string
      */
-    public $name;
+    public string $name;
     
     /**
      * 请求数据
      * 
      * @var Request
      */
-    public $request;
+    public Request $request;
     
     /**
      * 构造方法

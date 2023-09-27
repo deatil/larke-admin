@@ -19,21 +19,21 @@ class ExtensionUpgrade
      * 
      * @var string
      */
-    public $name;
+    public string $name;
     
     /**
      * 扩展旧的信息
      * 
      * @var array
      */
-    public $oldInfo;
+    public array $oldInfo;
     
     /**
      * 扩展新的信息
      * 
      * @var array
      */
-    public $newInfo;
+    public array $newInfo;
     
     /**
      * 构造方法

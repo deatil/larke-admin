@@ -42,7 +42,7 @@ class Repository
     /**
      * Resolve 对象
      */
-    public function getResolve(): self
+    public function getResolve(): Resolve
     {
         $resolve = Resolve::create()
             ->withDirectory($this->directory);

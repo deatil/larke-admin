@@ -17,7 +17,7 @@ class PassportRefreshTokenAfter
      * 
      * @var array
      */
-    public $jwt;
+    public array $jwt;
     
     /**
      * 构造方法

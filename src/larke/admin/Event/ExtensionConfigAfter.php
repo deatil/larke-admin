@@ -19,14 +19,14 @@ class ExtensionConfigAfter
      * 
      * @var string
      */
-    public $name;
+    public string $name;
     
     /**
      * 请求数据
      * 
      * @var Larke\Admin\Model\Extension
      */
-    public $extension;
+    public ExtensionModel $extension;
     
     /**
      * 构造方法

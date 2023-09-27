@@ -17,14 +17,14 @@ class SystemInfo
      * 
      * @var array
      */
-    public $info;
+    public array $info;
     
     /**
      * 构造方法
      * 
      * @access public
      */
-    public function __construct($info)
+    public function __construct(array $info)
     {
         $this->info = $info;
     }

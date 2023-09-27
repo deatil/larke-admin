@@ -17,7 +17,7 @@ class ConfigSettingAfter
      * 
      * @var Array
      */
-    public $fields;
+    public array $fields;
     
     /**
      * 构造方法

@@ -23,10 +23,10 @@ use Larke\Admin\Traits\ExtensionServiceProvider as ExtensionServiceProviderTrait
  * @author deatil
  */
 abstract class ServiceProvider extends BaseServiceProvider
-{    
+{
     use Macroable, 
         ExtensionServiceProviderTrait;
-    
+
     /**
      * 启动，只有启用后加载
      */
@@ -34,18 +34,18 @@ abstract class ServiceProvider extends BaseServiceProvider
     {
         // 业务代码
     }
-    
+
     /**
      * 添加扩展
      *
      * @param string $pkgName 扩展包名
      * @param Info   $info    扩展信息
      */
-    protected function withExtension(string $pkgName, Info $info = null)
+    protected function withExtension(string $pkgName, Info $info)
     {
         AdminExtension::extend($pkgName, $info);
     }
-    
+
     /**
      * 添加扩展
      *
@@ -55,10 +55,10 @@ abstract class ServiceProvider extends BaseServiceProvider
      * @param array  $config       扩展配置
      */
     protected function withExtensionFromComposer(
-        string $name = null, 
-        string $composerFile = '', 
-        string $icon = '', 
-        array  $config = []
+        string $name         = null,
+        string $composerFile = '',
+        string $icon         = '',
+        array  $config       = []
     ) {
         $info = $this->fromComposer($composerFile);
         
@@ -70,7 +70,7 @@ abstract class ServiceProvider extends BaseServiceProvider
         
         $this->withExtension(
             $pkgName,
-            $this->withExtensionInfo(
+            $this->makeExtensionInfo(
                 $name, 
                 $info, 
                 $icon, 
@@ -78,25 +78,7 @@ abstract class ServiceProvider extends BaseServiceProvider
             )
         );
     }
-    
-    /**
-     * 添加扩展信息
-     *
-     * @param  string|array $name   服务提供者名称
-     * @param  array        $info   扩展信息
-     * @param  string       $icon   扩展图标
-     * @param  array        $config 扩展配置
-     * @return Info         
-     */
-    protected function withExtensionInfo(
-        $name = null, 
-        array  $info = [], 
-        string $icon = '', 
-        array  $config = []
-    ) {
-        return Info::make($name, $info, $icon, $config);
-    }
-    
+
     /**
      * 设置命名空间
      *
@@ -107,7 +89,7 @@ abstract class ServiceProvider extends BaseServiceProvider
     {
         AdminExtension::namespaces($prefix, $paths);
     }
-    
+
     /**
      * 设置扩展路由
      *
@@ -118,7 +100,7 @@ abstract class ServiceProvider extends BaseServiceProvider
     {
         AdminExtension::routes($callback, $config);
     }
-    
+
     /**
      * 添加登陆过滤
      *
@@ -128,7 +110,7 @@ abstract class ServiceProvider extends BaseServiceProvider
     {
         AdminExtension::authenticateExcepts($excepts);
     }
-    
+
     /**
      * 添加权限过滤
      *
@@ -137,6 +119,24 @@ abstract class ServiceProvider extends BaseServiceProvider
     protected function withPermissionExcepts(array $excepts = [])
     {
         AdminExtension::permissionExcepts($excepts);
+    }
+
+    /**
+     * 生成扩展信息
+     *
+     * @param  string|array $name   服务提供者名称
+     * @param  array        $info   扩展信息
+     * @param  string       $icon   扩展图标
+     * @param  array        $config 扩展配置
+     * @return Info         
+     */
+    protected function makeExtensionInfo(
+        $name = null, 
+        array  $info   = [],
+        string $icon   = '',
+        array  $config = []
+    ) {
+        return Info::make($name, $info, $icon, $config);
     }
 
     /**
@@ -162,10 +162,7 @@ abstract class ServiceProvider extends BaseServiceProvider
     protected function onInatll(Closure $callback)
     {
         Event::listen(function (AdminEvent\ExtensionInstall $event) use($callback) {
-            $name = $event->name;
-            $info = $event->info;
-            
-            $callback($name, $info);
+            $callback($event->name, $event->info);
         });
     }
     
@@ -175,10 +172,7 @@ abstract class ServiceProvider extends BaseServiceProvider
     protected function onUninstall(Closure $callback)
     {
         Event::listen(function (AdminEvent\ExtensionUninstall $event) use($callback) {
-            $name = $event->name;
-            $info = $event->info;
-            
-            $callback($name, $info);
+            $callback($event->name, $event->info);
         });
     }
     
@@ -188,11 +182,7 @@ abstract class ServiceProvider extends BaseServiceProvider
     protected function onUpgrade(Closure $callback)
     {
         Event::listen(function (AdminEvent\ExtensionUpgrade $event) use($callback) {
-            $name = $event->name;
-            $oldInfo = $event->oldInfo;
-            $newInfo = $event->newInfo;
-            
-            $callback($name, $oldInfo, $newInfo);
+            $callback($event->name, $event->oldInfo, $event->newInfo);
         });
     }
     
@@ -202,10 +192,7 @@ abstract class ServiceProvider extends BaseServiceProvider
     protected function onEnable(Closure $callback)
     {
         Event::listen(function (AdminEvent\ExtensionEnable $event) use($callback) {
-            $name = $event->name;
-            $info = $event->info;
-            
-            $callback($name, $info);
+            $callback($event->name, $event->info);
         });
     }
     
@@ -215,10 +202,7 @@ abstract class ServiceProvider extends BaseServiceProvider
     protected function onDisable(Closure $callback)
     {
         Event::listen(function (AdminEvent\ExtensionDisable $event) use($callback) {
-            $name = $event->name;
-            $info = $event->info;
-            
-            $callback($name, $info);
+            $callback($event->name, $event->info);
         });
     }
 }

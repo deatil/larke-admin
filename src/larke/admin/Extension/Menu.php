@@ -36,12 +36,12 @@ class Menu
         $lastOrder = collect($list)->max('sort');
         
         $menu = $menuModel->insert([
-            'pid' => $parentId,
-            'sort' => $lastOrder + 1,
-            'title' => Arr::get($data, 'title'),
-            'url' => Arr::get($data, 'url'),
+            'pid'    => $parentId,
+            'sort'   => $lastOrder + 1,
+            'title'  => Arr::get($data, 'title'),
+            'url'    => Arr::get($data, 'url'),
             'method' => Arr::get($data, 'method'),
-            'slug' => Arr::get($data, 'slug'),
+            'slug'   => Arr::get($data, 'slug'),
         ]);
         
         $children = Arr::get($data, 'children', []);
@@ -153,8 +153,8 @@ class Menu
                 ->sortBy('listorder')
                 ->map(function($item) {
                     return [
-                        'id' => $item['id'],
-                        'pid' => $item['pid'],
+                        'id'   => $item['id'],
+                        'pid'  => $item['pid'],
                         'slug' => $item['slug'],
                     ];
                 })
@@ -192,8 +192,8 @@ class Menu
                     ->sortBy('listorder')
                     ->map(function($item) {
                         return [
-                            'id' => $item['id'],
-                            'pid' => $item['pid'],
+                            'id'   => $item['id'],
+                            'pid'  => $item['pid'],
                             'slug' => $item['slug'],
                         ];
                     })

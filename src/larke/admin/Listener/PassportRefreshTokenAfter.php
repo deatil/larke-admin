@@ -30,7 +30,7 @@ class PassportRefreshTokenAfter
         // 更新信息
         AdminModel::where('id', $adminid)->update([
             'refresh_time' => $iat, 
-            'refresh_ip' => request()->ip(),
+            'refresh_ip'   => request()->ip(),
         ]);
     }
 }
