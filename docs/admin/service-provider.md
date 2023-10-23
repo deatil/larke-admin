@@ -50,7 +50,7 @@ withExtensionFromComposer(
 )
 ```
 
-### 添加扩展信息
+### 生成扩展信息
 
 ```php
 makeExtensionInfo(
