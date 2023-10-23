@@ -118,7 +118,7 @@ php artisan larke-admin:import-route
 
 | 名称 | 描述 |
 | --- | --- |
-| [JWT国密SM@驱动](https://github.com/deatil/larke-jwt-sm2) | larke-admin 后台管理系统 JWT 的 SM2 驱动 |
+| [JWT国密SM2驱动](https://github.com/deatil/larke-jwt-sm2) | larke-admin 后台管理系统 JWT 的 SM2 驱动 |
 
 
 ## 扩展推荐
