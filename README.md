@@ -114,13 +114,6 @@ php artisan larke-admin:import-route
 5. 后台登录账号及密码：`admin` / `123456`
 
 
-## 库推荐
-
-| 名称 | 描述 |
-| --- | --- |
-| [JWT国密SM2驱动](https://github.com/deatil/larke-jwt-sm2) | larke-admin 后台管理系统 JWT 的 SM2 驱动 |
-
-
 ## 扩展推荐
 
 | 名称 | 描述 |
@@ -131,6 +124,13 @@ php artisan larke-admin:import-route
 | [demo](https://github.com/deatil/larke-admin-demo) | 扩展示例 |
 
 注：扩展目录默认为 `/extension` 目录
+
+
+## 库推荐
+
+| 名称 | 描述 |
+| --- | --- |
+| [JWT国密SM2驱动](https://github.com/deatil/larke-jwt-sm2) | larke-admin 后台管理系统 JWT 的 SM2 驱动 |
 
 
 ## 特别鸣谢
