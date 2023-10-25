@@ -56,7 +56,7 @@ class Eddsa implements Signer
     /**
      * 签名密钥
      *
-     * @return string
+     * @return \Larke\JWT\Contracts\Key
      */
     public function getSignSecrect(): KeyContract
     {
@@ -71,12 +71,12 @@ class Eddsa implements Signer
     /**
      * 验证密钥
      *
-     * @return string
+     * @return \Larke\JWT\Contracts\Key
      */
     public function getVerifySecrect(): KeyContract
     {
         $publicKey = $this->config->get("public_key");
-        $publicKey = $this->formatSignSecrect($publicKey);
+        $publicKey = $this->formatVerifySecrect($publicKey);
         
         $secrect = InMemory::base64Encoded($publicKey);
         
@@ -86,14 +86,7 @@ class Eddsa implements Signer
     private function formatSignSecrect(string $key): string
     {
         if (file_exists($key)) {
-            // key 需为解析出的 der 数据
-            $secretkey = sodium_crypto_sign_secretkey(
-                sodium_crypto_sign_seed_keypair(
-                    file_get_contents($key)
-                )
-            );
-            
-            return base64_encode($secretkey);
+            return file_get_contents($key);
         }
         
         return $key;
@@ -102,17 +95,9 @@ class Eddsa implements Signer
     private function formatVerifySecrect(string $key): string
     {
         if (file_exists($key)) {
-            // key 需为解析出的 der 数据
-            $publickey = sodium_crypto_sign_publickey(
-                sodium_crypto_sign_seed_keypair(
-                    file_get_contents($key)
-                )
-            );
-            
-            return base64_encode($publickey);
+            return file_get_contents($key);
         }
         
         return $key;
     }
-
 }

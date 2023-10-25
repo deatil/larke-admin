@@ -56,7 +56,7 @@ class Hmac implements Signer
     /**
      * 签名密钥
      *
-     * @return string
+     * @return \Larke\JWT\Contracts\Key
      */
     public function getSignSecrect(): KeyContract
     {
@@ -66,7 +66,7 @@ class Hmac implements Signer
     /**
      * 验证密钥
      *
-     * @return string
+     * @return \Larke\JWT\Contracts\Key
      */
     public function getVerifySecrect(): KeyContract
     {
@@ -76,7 +76,7 @@ class Hmac implements Signer
     /**
      * 密钥
      *
-     * @return string
+     * @return \Larke\JWT\Contracts\Key
      */
     private function getSecrect(): KeyContract
     {

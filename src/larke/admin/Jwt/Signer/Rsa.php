@@ -55,7 +55,7 @@ class Rsa implements Signer
     /**
      * 签名密钥
      *
-     * @return string
+     * @return \Larke\JWT\Contracts\Key
      */
     public function getSignSecrect() 
     {
@@ -74,7 +74,7 @@ class Rsa implements Signer
     /**
      * 验证密钥
      *
-     * @return string
+     * @return \Larke\JWT\Contracts\Key
      */
     public function getVerifySecrect() 
     {
