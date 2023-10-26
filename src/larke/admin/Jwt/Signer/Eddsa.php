@@ -6,6 +6,8 @@ namespace Larke\Admin\Jwt\Signer;
 
 use Illuminate\Support\Collection;
 
+use phpseclib3\File\ASN1;
+
 use Larke\JWT\Signer\Key\InMemory;
 use Larke\JWT\Signer\Eddsa as EddsaSigner; 
 use Larke\JWT\Contracts\Key as KeyContract;
@@ -86,7 +88,20 @@ class Eddsa implements Signer
     private function formatSignSecrect(string $key): string
     {
         if (file_exists($key)) {
-            return file_get_contents($key);
+            $key = $this->pem2der(file_get_contents($key));
+            
+            $der = ASN1::decodeBER($key);
+            
+            $bytes = (string) ($der[0]['content'][2]['content'] ?: "");
+            
+            $hex = substr(bin2hex($bytes), 4);
+            $bytes = hex2bin($hex);
+            
+            $secretkey = sodium_crypto_sign_secretkey(
+                sodium_crypto_sign_seed_keypair($bytes)
+            );
+            
+            return base64_encode($secretkey);
         }
         
         return $key;
@@ -95,9 +110,28 @@ class Eddsa implements Signer
     private function formatVerifySecrect(string $key): string
     {
         if (file_exists($key)) {
-            return file_get_contents($key);
+            $key = $this->pem2der(file_get_contents($key));
+            
+            $der = ASN1::decodeBER($key);
+            
+            $bytes = (string) ($der[0]['content'][1]['content'] ?: "");
+
+            $hex = substr(bin2hex($bytes), 2);
+            $bytes = hex2bin($hex);
+
+            return base64_encode($bytes);
         }
         
         return $key;
+    }
+    
+    private function pem2der($pem_data)
+    {
+        $begin = "-----";
+        $end   = "-----END";
+        $pem_data = substr($pem_data, strpos($pem_data, $begin, 6) + strlen($begin));
+        $pem_data = substr($pem_data, 0, strpos($pem_data, $end));
+        $der = base64_decode($pem_data);
+        return $der;
     }
 }

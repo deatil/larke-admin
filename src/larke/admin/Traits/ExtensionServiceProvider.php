@@ -6,8 +6,6 @@ namespace Larke\Admin\Traits;
 
 use Closure;
 
-use Larke\Admin\Facade\Extension;
-
 trait ExtensionServiceProvider
 {
     /**
@@ -68,28 +66,6 @@ trait ExtensionServiceProvider
         foreach ($this->startedCallbacks as $callback) {
             $this->app->call($callback);
         }
-    }
-    
-    /**
-     * 登陆过滤
-     *
-     * @param array $excepts 权限列表
-     * @return void
-     */
-    public function authenticateExcepts(array $excepts): void
-    {
-        Extension::authenticateExcepts($excepts);
-    }
-    
-    /**
-     * 权限过滤
-     *
-     * @param array $excepts 权限列表
-     * @return void
-     */
-    public function permissionExcepts(array $excepts): void
-    {
-        Extension::permissionExcepts($excepts);
     }
     
 }

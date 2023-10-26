@@ -9,6 +9,8 @@ use Illuminate\Support\Collection;
 use Larke\JWT\Signer\Rsa as RsaSigner; 
 use Larke\JWT\Signer\Key\InMemory;
 use Larke\JWT\Signer\Key\LocalFileReference;
+use Larke\JWT\Contracts\Key as KeyContract;
+use Larke\JWT\Contracts\Signer as SignerContract;
 
 use Larke\Admin\Jwt\Contracts\Signer;
 
@@ -47,7 +49,7 @@ class Rsa implements Signer
      *
      * @return \Larke\JWT\Contracts\Signer
      */
-    public function getSigner() 
+    public function getSigner(): SignerContract
     {
         return new $this->signingMethod();
     }
@@ -57,7 +59,7 @@ class Rsa implements Signer
      *
      * @return \Larke\JWT\Contracts\Key
      */
-    public function getSignSecrect() 
+    public function getSignSecrect(): KeyContract
     {
         $privateKey = $this->config->get("private_key");
         
@@ -76,7 +78,7 @@ class Rsa implements Signer
      *
      * @return \Larke\JWT\Contracts\Key
      */
-    public function getVerifySecrect() 
+    public function getVerifySecrect(): KeyContract
     {
         $publicKey = $this->config->get("public_key");
         $secrect = LocalFileReference::file($publicKey);

@@ -7,7 +7,7 @@ return [
         'name_mini' => "Larke",
         'logo'      => "<b>Larke</b> admin",
         'release'   => "20231023",
-        'version'   => "1.7.1",
+        'version'   => "1.7.2",
     ],
     
     // 是否使用 https 方式
@@ -80,7 +80,8 @@ return [
             
             // 非对称加密使用
             // 示例: storage_path('key/rsa/rsa-pkcs8') | MTIz
-            // EdDSA key 请填写 base64 编码的字符，其他的填写 key 路径即可
+            // EdDSA key 请填写 base64 编码的字符或者文件路径，文件为 PKCS8 编码的公钥和私钥
+            // 其他的填写 key 的文件路径
             // RS256, RS384, RS512
             // ES256, ES384, ES512
             // EdDSA

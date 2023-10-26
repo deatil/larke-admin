@@ -38,23 +38,12 @@ abstract class ServiceProvider extends BaseServiceProvider
     /**
      * 添加扩展
      *
-     * @param string $pkgName 扩展包名
-     * @param Info   $info    扩展信息
-     */
-    protected function withExtension(string $pkgName, Info $info)
-    {
-        AdminExtension::extend($pkgName, $info);
-    }
-
-    /**
-     * 添加扩展
-     *
-     * @param string $name         服务提供者名称
-     * @param string $composerFile composer.json 文件
+     * @param string $name         服务提供者名称，通常为设置时取用 __CLASS__
+     * @param string $composerFile 扩展 composer.json 文件
      * @param string $icon         扩展图标
      * @param array  $config       扩展配置
      */
-    protected function withExtensionFromComposer(
+    protected function addExtension(
         string $name         = null,
         string $composerFile = '',
         string $icon         = '',
@@ -68,7 +57,7 @@ abstract class ServiceProvider extends BaseServiceProvider
             return ;
         }
         
-        $this->withExtension(
+        $this->registerExtension(
             $pkgName,
             $this->makeExtensionInfo(
                 $name, 
@@ -80,23 +69,12 @@ abstract class ServiceProvider extends BaseServiceProvider
     }
 
     /**
-     * 设置命名空间
-     *
-     * @param mixed $prefix
-     * @param mixed $paths
-     */
-    protected function withNamespace(mixed $prefix, mixed $paths = [])
-    {
-        AdminExtension::namespaces($prefix, $paths);
-    }
-
-    /**
-     * 设置扩展路由
+     * 添加路由
      *
      * @param callable $callback
      * @param array    $config
      */
-    protected function withRoute(callable $callback, array $config = [])
+    protected function addRoute(callable $callback, array $config = [])
     {
         AdminExtension::routes($callback, $config);
     }
@@ -106,7 +84,7 @@ abstract class ServiceProvider extends BaseServiceProvider
      *
      * @param array $excepts
      */
-    protected function withAuthenticateExcepts(array $excepts = [])
+    protected function addAuthenticateExcepts(array $excepts = [])
     {
         AdminExtension::authenticateExcepts($excepts);
     }
@@ -116,9 +94,31 @@ abstract class ServiceProvider extends BaseServiceProvider
      *
      * @param array $excepts
      */
-    protected function withPermissionExcepts(array $excepts = [])
+    protected function addPermissionExcepts(array $excepts = [])
     {
         AdminExtension::permissionExcepts($excepts);
+    }
+
+    /**
+     * 注册新命名空间
+     *
+     * @param mixed $prefix
+     * @param mixed $paths
+     */
+    protected function registerNamespace(mixed $prefix, mixed $paths = [])
+    {
+        AdminExtension::namespaces($prefix, $paths);
+    }
+
+    /**
+     * 注册扩展
+     *
+     * @param string $pkgName 扩展包名
+     * @param Info   $info    扩展信息
+     */
+    protected function registerExtension(string $pkgName, Info $info)
+    {
+        AdminExtension::extend($pkgName, $info);
     }
 
     /**
