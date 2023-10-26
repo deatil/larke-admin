@@ -91,11 +91,10 @@ class Eddsa implements Signer
             $key = $this->pem2der(file_get_contents($key));
             
             $der = ASN1::decodeBER($key);
-            
             $bytes = (string) ($der[0]['content'][2]['content'] ?: "");
             
-            $hex = substr(bin2hex($bytes), 4);
-            $bytes = hex2bin($hex);
+            $der = ASN1::decodeBER($bytes);
+            $bytes = (string) ($der[0]['content'] ?: "");
             
             $secretkey = sodium_crypto_sign_secretkey(
                 sodium_crypto_sign_seed_keypair($bytes)
@@ -113,11 +112,8 @@ class Eddsa implements Signer
             $key = $this->pem2der(file_get_contents($key));
             
             $der = ASN1::decodeBER($key);
-            
             $bytes = (string) ($der[0]['content'][1]['content'] ?: "");
-
-            $hex = substr(bin2hex($bytes), 2);
-            $bytes = hex2bin($hex);
+            $bytes = substr($bytes, 1);
 
             return base64_encode($bytes);
         }
