@@ -13,20 +13,6 @@ starting(Closure $callback)
 started(Closure $callback)
 ```
 
-### 登陆过滤
-
-```php
-authenticateExcepts(array $excepts)
-withAuthenticateExcepts(array $excepts = [])
-```
-
-### 权限过滤
-
-```php
-permissionExcepts(array $excepts)
-withPermissionExcepts(array $excepts = [])
-```
-
 ### 启动，只有启用后加载
 
 ```php
@@ -36,13 +22,7 @@ start()
 ### 添加扩展
 
 ```php
-withExtension($pkgName, Info $info = null)
-```
-
-### 从 composer.json 添加扩展
-
-```php
-withExtensionFromComposer(
+addExtension(
     string $name = null, 
     string $composerFile = '', 
     string $icon = '', 
@@ -50,27 +30,28 @@ withExtensionFromComposer(
 )
 ```
 
-### 生成扩展信息
+### 添加路由
 
 ```php
-makeExtensionInfo(
-    $name = null, 
-    array  $info = [], 
-    string $icon = '', 
-    array  $config = []
-)
+addRoute($callback, $config = [])
 ```
 
-### 设置命名空间
+### 添加登陆过滤
 
 ```php
-withNamespace($prefix, $paths = [])
+addAuthenticateExcepts(array $excepts)
 ```
 
-### 设置扩展路由
+### 添加权限过滤
 
 ```php
-withRoute($callback, $config = [])
+addPermissionExcepts(array $excepts)
+```
+
+### 注册新命名空间
+
+```php
+registerNamespace($prefix, $paths = [])
 ```
 
 ### 事件，安装后
