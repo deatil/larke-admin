@@ -38,18 +38,18 @@ abstract class ServiceProvider extends BaseServiceProvider
     /**
      * 添加扩展
      *
-     * @param string $name         服务提供者名称，通常为设置时取用 __CLASS__
-     * @param string $composerFile 扩展 composer.json 文件
-     * @param string $icon         扩展图标
-     * @param array  $config       扩展配置
+     * @param string $name     服务提供者名称，通常为设置时取用 __CLASS__
+     * @param string $composer 扩展 composer.json 文件
+     * @param string $icon     扩展图标
+     * @param array  $config   扩展配置
      */
     protected function addExtension(
-        string $name         = null,
-        string $composerFile = '',
-        string $icon         = '',
-        array  $config       = []
+        string $name     = '',
+        string $composer = '',
+        string $icon     = '',
+        array  $config   = [],
     ) {
-        $info = $this->fromComposer($composerFile);
+        $info = $this->fromComposer($composer);
         
         // 扩展包名
         $pkgName = Arr::get($info, 'name', "");
