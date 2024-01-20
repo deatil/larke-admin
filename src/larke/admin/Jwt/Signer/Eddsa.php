@@ -5,6 +5,7 @@ declare (strict_types = 1);
 namespace Larke\Admin\Jwt\Signer;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\File;
 
 use phpseclib3\File\ASN1;
 
@@ -88,7 +89,8 @@ class Eddsa implements Signer
     private function formatSignSecrect(string $key): string
     {
         if (file_exists($key)) {
-            $key = $this->pem2der(file_get_contents($key));
+            $key = File::get($key);
+            $key = $this->pem2der($key);
             
             $der = ASN1::decodeBER($key);
             $bytes = (string) ($der[0]['content'][2]['content'] ?: "");
@@ -109,7 +111,8 @@ class Eddsa implements Signer
     private function formatVerifySecrect(string $key): string
     {
         if (file_exists($key)) {
-            $key = $this->pem2der(file_get_contents($key));
+            $key = File::get($key);
+            $key = $this->pem2der($key);
             
             $der = ASN1::decodeBER($key);
             $bytes = (string) ($der[0]['content'][1]['content'] ?: "");

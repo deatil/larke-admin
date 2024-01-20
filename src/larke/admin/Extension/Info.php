@@ -27,30 +27,30 @@ class Info
      */
     protected $info = [
         // 扩展名称
-        'title' => '',
+        'title'       => '',
         // 扩展描述
         'description' => '',
         // 扩展关键字
-        'keywords' => [
+        'keywords'    => [
             'larke',
             'extension',
         ],
         // 扩展主页
         'homepage' => 'http://github.com/deatil',
         // 作者
-        'authors' => [
+        'authors'  => [
             [
-                'name' => 'deatil', 
-                'email' => 'deatil@github.com', 
+                'name'     => 'deatil', 
+                'email'    => 'deatil@github.com', 
                 'homepage' => 'http://github.com/deatil', 
             ],
         ],
         // 版本号
-        'version' => '1.0.2',
+        'version'    => '1.0.2',
         // 适配系统版本
         'adaptation' => '1.1.*',
         // 依赖扩展[选填]
-        'require' => [
+        'require'    => [
             // 'larke/log-viewer' => '1.0.*'
         ], 
     ];
@@ -74,10 +74,10 @@ class Info
      * @param   array   $config 扩展配置
      */
     public function __construct(
-        string $name  = '',
-        array $info   = [],
-        string $icon  = '',
-        array $config = []
+        string $name   = '',
+        array  $info   = [],
+        string $icon   = '',
+        array  $config = [],
     ) {
         $this->withName($name);
         $this->withInfo($info);
@@ -96,14 +96,14 @@ class Info
      */
     public static function make(
         $name = null, 
-        array $info = [], 
-        string $icon = '', 
-        array $config = []
+        array  $info   = [], 
+        string $icon   = '', 
+        array  $config = []
     ) {
         if (is_array($name)) {
-            $name = Arr::get($name, "name", "");
-            $info = Arr::get($name, "info", []);
-            $icon = Arr::get($name, "icon", "");
+            $name   = Arr::get($name, "name", "");
+            $info   = Arr::get($name, "info", []);
+            $icon   = Arr::get($name, "icon", "");
             $config = Arr::get($name, "config", []);
         }
         

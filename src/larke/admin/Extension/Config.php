@@ -25,8 +25,8 @@ class Config
     public static function name(string $name = "") 
     {
         $extensions = ExtensionModel::getExtensions();
-        $data = Arr::get($extensions, $name, []);
-        $config = Arr::get($data, 'config_datas', []);
+        $data       = Arr::get($extensions, $name, []);
+        $config     = Arr::get($data, 'config_datas', []);
         
         return collect($config);
     }
