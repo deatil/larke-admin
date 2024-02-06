@@ -88,33 +88,26 @@ class Info
     /**
      * 使用
      *
-     * @param   string|array $name   服务提供者名称
-     * @param   array        $info   扩展信息
-     * @param   string       $icon   扩展图标
-     * @param   array        $config 扩展配置
-     * @return  object       $this
+     * @param  string $name   服务提供者名称
+     * @param  array  $info   扩展信息
+     * @param  string $icon   扩展图标
+     * @param  array  $config 扩展配置
+     * @return object $this
      */
     public static function make(
-        $name = null, 
+        string $name   = '', 
         array  $info   = [], 
         string $icon   = '', 
         array  $config = []
     ) {
-        if (is_array($name)) {
-            $name   = Arr::get($name, "name", "");
-            $info   = Arr::get($name, "info", []);
-            $icon   = Arr::get($name, "icon", "");
-            $config = Arr::get($name, "config", []);
-        }
-        
         return new static($name, $info, $icon, $config);
     }
     
     /**
      * 设置服务提供者名称
      *
-     * @param   string  $name 服务提供者名称
-     * @return  object  $this
+     * @param  string $name 服务提供者名称
+     * @return object $this
      */
     public function withName(string $name = "") 
     {
@@ -126,8 +119,8 @@ class Info
     /**
      * 设置扩展信息
      *
-     * @param   array   $info   扩展信息
-     * @return  object  $this
+     * @param  array  $info 扩展信息
+     * @return object $this
      */
     public function withInfo(array $info = []) 
     {
@@ -139,8 +132,8 @@ class Info
     /**
      * 设置扩展配置
      *
-     * @param   array   $config   扩展配置
-     * @return  object  $this
+     * @param  array  $config   扩展配置
+     * @return object $this
      */
     public function withConfig(array $config = []) 
     {
@@ -152,8 +145,8 @@ class Info
     /**
      * 设置扩展图标
      *
-     * @param   string  $icon   扩展图标
-     * @return  object  $this
+     * @param  string $icon 扩展图标
+     * @return object $this
      */
     public function withIcon(string $icon = "") 
     {
@@ -165,7 +158,7 @@ class Info
     /**
      * 获取服务提供者名称
      *
-     * @return  string
+     * @return string
      */
     public function getName() 
     {

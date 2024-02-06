@@ -36,37 +36,37 @@ class Manager
     /**
      * @var string 扩展存放文件夹
      */
-    protected $extensionsDirectory = 'extension';
+    protected string $extensionsDirectory = 'extension';
     
     /**
      * @var string 本地扩展缓存id
      */
-    protected $extensionsCacheId = 'larke-admin-local-extensions';
+    protected string $extensionsCacheId = 'larke-admin-local-extensions';
     
     /**
      * @var string 本地扩展缓存时间
      */
-    protected $extensionsCacheTime = 10080;
+    protected int $extensionsCacheTime = 10080;
     
     /**
      * @var array<string, Info>
      */
-    protected $extensions = [];
+    protected array $extensions = [];
     
     /**
      * @var string 默认图标
      */
-    protected $defaultIcon = __DIR__ . '/../../resources/icon/larke.png';
+    protected string $defaultIcon = __DIR__ . '/../../resources/icon/larke.png';
     
     /**
      * @var string 事件名称
      */
-    protected $eventBootingName = "larke-admin:booting";
+    protected string $eventBootingName = "larke-admin:booting";
     
     /**
      * @var string 事件名称
      */
-    protected $eventBootedName = "larke-admin:booted";
+    protected string $eventBootedName = "larke-admin:booted";
 
     /**
      * 构造函数
@@ -76,9 +76,9 @@ class Manager
      * @param int    $extensionsCacheTime
      */
     public function __construct(
-        $extensionsDirectory = 'extension', 
-        $extensionsCacheId   = 'larke-admin-local-extensions', 
-        $extensionsCacheTime = 10080
+        string $extensionsDirectory = 'extension', 
+        string $extensionsCacheId   = 'larke-admin-local-extensions', 
+        int    $extensionsCacheTime = 10080
     ) {
         $this->extensionsDirectory = $extensionsDirectory;
         $this->extensionsCacheId   = $extensionsCacheId;

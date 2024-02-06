@@ -113,25 +113,25 @@ abstract class ServiceProvider extends BaseServiceProvider
     /**
      * 注册扩展
      *
-     * @param string $pkgName 扩展包名
-     * @param Info   $info    扩展信息
+     * @param string $name 扩展包名
+     * @param Info   $info 扩展信息
      */
-    protected function registerExtension(string $pkgName, Info $info)
+    protected function registerExtension(string $name, Info $info)
     {
-        AdminExtension::extend($pkgName, $info);
+        AdminExtension::extend($name, $info);
     }
 
     /**
      * 生成扩展信息
      *
-     * @param  string|array $name   服务提供者名称
-     * @param  array        $info   扩展信息
-     * @param  string       $icon   扩展图标
-     * @param  array        $config 扩展配置
-     * @return Info         
+     * @param  string $name   服务提供者名称
+     * @param  array  $info   扩展信息
+     * @param  string $icon   扩展图标
+     * @param  array  $config 扩展配置
+     * @return Info 
      */
     protected function makeExtensionInfo(
-        $name = null, 
+        string $name   = '',
         array  $info   = [],
         string $icon   = '',
         array  $config = []
@@ -144,9 +144,9 @@ abstract class ServiceProvider extends BaseServiceProvider
      *
      * @return array
      */
-    protected function fromComposer(string $composerFile, bool $isOriginal = false) 
+    protected function fromComposer(string $file, bool $isOriginal = false) 
     {
-        $data = Composer::parse($composerFile)->toArray();
+        $data = Composer::parse($file)->toArray();
         
         if (! $isOriginal) {
             $extensionData = Arr::get($data, "extra.larke", []);

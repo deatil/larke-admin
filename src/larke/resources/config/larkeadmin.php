@@ -6,8 +6,8 @@ return [
         'name'      => "LarkeAdmin",
         'name_mini' => "Larke",
         'logo'      => "<b>Larke</b> admin",
-        'release'   => "20240120",
-        'version'   => "1.7.3",
+        'release'   => "20240203",
+        'version'   => "1.7.5",
     ],
     
     // 是否使用 https 方式
@@ -79,7 +79,7 @@ return [
             'secrect'   => env('LARKE_ADMIN_JWT_SIGNER_SECRECT', 'NzdjMTNmODU0YzA5ODg5ZjJiY2UzYWY4OTUwOWFkMzY='),
             
             // 非对称加密使用
-            // 示例: storage_path('key/rsa/rsa-pkcs8') | MTIz
+            // 示例: storage_path('key/rsa/rsa-pkcs8') 或者 MTIz
             // EdDSA key 请填写 base64 编码的字符或者文件路径，文件为 PKCS8 编码的公钥和私钥
             // 其他的填写 key 的文件路径
             // RS256, RS384, RS512
