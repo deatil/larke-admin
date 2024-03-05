@@ -5,6 +5,7 @@ declare (strict_types = 1);
 namespace Larke\Admin\Extension;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 
 use Larke\Admin\Support\Tree;
 use Larke\Admin\Model\AuthRule as AuthRuleModel;
@@ -22,9 +23,9 @@ class Rule
      *
      * @param  array      $data 
      * @param  int|string $parentId 
-     * @return array
+     * @return mixed(array|model)
      */
-    public static function create(array $data = [], mixed $parentId = 0) 
+    public static function create(array $data = [], mixed $parentId = 0): mixed 
     {
         if (empty($data)) {
             return false;
@@ -56,7 +57,7 @@ class Rule
      * @param  string  $slug 规则slug
      * @return boolean
      */
-    public static function delete(string $slug)
+    public static function delete(string $slug): bool
     {
         $ids = self::getAuthRuleIdsBySlug($slug);
         if (!$ids) {
@@ -76,7 +77,7 @@ class Rule
      * @param  string  $slug
      * @return boolean
      */
-    public static function enable(string $slug)
+    public static function enable(string $slug): bool
     {
         $ids = self::getAuthRuleIdsBySlug($slug);
         if (! $ids) {
@@ -96,7 +97,7 @@ class Rule
      * @param  string  $slug
      * @return boolean
      */
-    public static function disable(string $slug)
+    public static function disable(string $slug): bool
     {
         $ids = self::getAuthRuleIdsBySlug($slug);
         if (!$ids) {
@@ -116,7 +117,7 @@ class Rule
      * @param  string $slug
      * @return array
      */
-    public static function export(string $slug)
+    public static function export(string $slug): array
     {
         $ids = self::getAuthRuleIdsBySlug($slug);
         if (!$ids) {
@@ -147,9 +148,9 @@ class Rule
      * 根据slug获取规则IDS
      *
      * @param  string $slug
-     * @return array
+     * @return Collection
      */
-    public static function getAuthRuleIdsBySlug(string $slug)
+    public static function getAuthRuleIdsBySlug(string $slug): Collection
     {
         $ids = [];
         $rules = AuthRuleModel::where('slug', '=', $slug)

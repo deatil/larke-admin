@@ -20,8 +20,11 @@ abstract class Controller
     
     /**
      * 状态通用转换
+     *
+     * @return string|null $name 
+     * @return mixed
      */
-    protected function switchStatus($name = '')
+    protected function switchStatus(?string $name = null): mixed
     {
         if (empty($name)) {
             return false;
@@ -41,8 +44,11 @@ abstract class Controller
     
     /**
      * 时间格式化到时间戳
+     *
+     * @return string|null $date 
+     * @return mixed
      */
-    protected function formatDate($date = '')
+    protected function formatDate(?string $date = null): mixed
     {
         if (empty($date)) {
             return false;
@@ -53,8 +59,12 @@ abstract class Controller
     
     /**
      * 格式化排序
+     *
+     * @return string $order 
+     * @return string $default 
+     * @return array
      */
-    protected function formatOrderBy($order = '', $default = 'create_time__ASC')
+    protected function formatOrderBy(string $order = '', string $default = 'create_time__ASC'): array
     {
         if (empty($order)) {
             $order = $default;

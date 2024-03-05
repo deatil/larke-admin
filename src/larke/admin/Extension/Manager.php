@@ -92,7 +92,7 @@ class Manager
      * @param  Info   $info
      * @return self
      */
-    public function extend(string $name, Info $info = null)
+    public function extend(string $name, Info $info = null): self
     {
         if (!empty($name) && !empty($info)) {
             $this->forget($name);
@@ -109,7 +109,7 @@ class Manager
      * @param string|array $name
      * @return Info|array|null
      */
-    public function getExtend(mixed $name = null)
+    public function getExtend(mixed $name = null): mixed
     {
         if (is_array($name)) {
             $extensions = [];
@@ -132,7 +132,7 @@ class Manager
      *
      * @return array
      */
-    public function getAllExtend()
+    public function getAllExtend(): array
     {
         return $this->extensions;
     }
@@ -143,7 +143,7 @@ class Manager
      * @param string|array $name
      * @return Info|array|null
      */
-    public function forget(mixed $name)
+    public function forget(mixed $name): mixed
     {
         if (is_array($name)) {
             $forgetExtensions = [];
@@ -170,7 +170,7 @@ class Manager
      * @param string $name 扩展包名
      * @return bool
      */
-    public function checkLocal(string $name)
+    public function checkLocal(string $name): bool
     {
         $extensionDirectory = $this->getExtensionPath($name);
         
@@ -187,7 +187,7 @@ class Manager
      * @param string $name 扩展包名
      * @return string
      */
-    public function composerRequireCommand(string $name)
+    public function composerRequireCommand(string $name): string
     {
         $directory = $this->getExtensionPath($name);
         if (! File::exists($directory)) {
@@ -213,7 +213,7 @@ class Manager
      * @param string $name 扩展包名
      * @return string
      */
-    public function composerRemoveCommand(string $name)
+    public function composerRemoveCommand(string $name): string
     {
         $directory = $this->getExtensionPath($name);
         if (! File::exists($directory)) {
@@ -235,7 +235,7 @@ class Manager
     /**
      * @param callable $callback
      */
-    public function booting(callable $callback)
+    public function booting(callable $callback): void
     {
         Event::listen($this->eventBootingName, $callback);
     }
@@ -243,7 +243,7 @@ class Manager
     /**
      * @param callable $callback
      */
-    public function booted(callable $callback)
+    public function booted(callable $callback): void
     {
         Event::listen($this->eventBootedName, $callback);
     }
@@ -251,7 +251,7 @@ class Manager
     /**
      * @return void
      */
-    public function callBooting()
+    public function callBooting(): void
     {
         Event::dispatch($this->eventBootingName);
     }
@@ -259,7 +259,7 @@ class Manager
     /**
      * @return void
      */
-    public function callBooted()
+    public function callBooted(): void
     {
         Event::dispatch($this->eventBootedName);
     }
@@ -271,7 +271,7 @@ class Manager
      * @param array    $config
      * @return object $this
      */
-    public function routes(callable $callback, array $config = [])
+    public function routes(callable $callback, array $config = []): self
     {
         $attributes = array_merge(
             [
@@ -293,7 +293,7 @@ class Manager
      * @param mixed $paths
      * @return object $this
      */
-    public function namespaces(mixed $prefix, mixed $paths = [])
+    public function namespaces(mixed $prefix, mixed $paths = []): self
     {
         app('larke-admin.loader')
             ->setPsr4($prefix, $paths)
@@ -308,7 +308,7 @@ class Manager
      * @param array $excepts
      * @return void
      */
-    public function authenticateExcepts(array $excepts = [])
+    public function authenticateExcepts(array $excepts = []): void
     {
         if (empty($excepts)) {
             return ;
@@ -330,7 +330,7 @@ class Manager
      * @param array $excepts
      * @return void
      */
-    public function permissionExcepts(array $excepts = [])
+    public function permissionExcepts(array $excepts = []): void
     {
         if (empty($excepts)) {
             return ;
@@ -351,13 +351,13 @@ class Manager
      *
      * @return void
      */
-    public function bootExtension()
+    public function bootExtension(): void
     {
         // 数据库检测
         try {
             $list = ExtensionModel::getExtensions();
         } catch(\Exception $e) {
-            return ;
+            return;
         }
         
         $extensionDirectory = $this->getExtensionPath();
@@ -425,7 +425,7 @@ class Manager
      *
      * @return void
      */
-    protected function startService(ExtensionServiceProvider $service)
+    protected function startService(ExtensionServiceProvider $service): void
     {
         $service->callStartingCallbacks();
 
@@ -441,7 +441,7 @@ class Manager
      *
      * @return object $this
      */
-    public function loadExtension()
+    public function loadExtension(): self
     {
         $extensions = Cache::get($this->extensionsCacheId);
         if (! $extensions) {
@@ -480,7 +480,7 @@ class Manager
      *
      * @return object $this
      */
-    public function refresh()
+    public function refresh(): self
     {
         Cache::forget($this->extensionsCacheId);
         
@@ -493,7 +493,7 @@ class Manager
      * @param string $name
      * @return object $this
      */
-    public function forgetExtensionCache(string $name)
+    public function forgetExtensionCache(string $name): self
     {
         // 清除缓存
         $cacheId = md5(str_replace('\\', '/', $name));
@@ -507,7 +507,7 @@ class Manager
      *
      * @return string
      */
-    public function getExtensionDirectory()
+    public function getExtensionDirectory(): string
     {
         return $this->extensionsDirectory;
     }
@@ -518,7 +518,7 @@ class Manager
      * @param string $path
      * @return string
      */
-    public function getExtensionPath(string $path = '')
+    public function getExtensionPath(string $path = ''): string
     {
         $extensionPath = base_path($this->getExtensionDirectory());
         
@@ -531,7 +531,7 @@ class Manager
      * @param string|null $name
      * @return string
      */
-    public function getExtensionClass(?string $name = null)
+    public function getExtensionClass(?string $name = null): string
     {
         if (empty($name)) {
             return '';
@@ -553,7 +553,7 @@ class Manager
      * @param string|null $className
      * @return object
      */
-    public function newClass(?string $className = null)
+    public function newClass(?string $className = null): object
     {
         if (! class_exists($className)) {
             return false;
@@ -575,7 +575,7 @@ class Manager
      * @param array $param 
      * @return mixed
      */
-    public function newClassMethod(?string $className = null, ?string $method = null, array $param = [])
+    public function newClassMethod(?string $className = null, ?string $method = null, array $param = []): mixed
     {
         if (empty($className) || empty($method)) {
             return false;
@@ -598,9 +598,9 @@ class Manager
      * 实例化扩展的类
      *
      * @param string|null $name
-     * @return mixed|object
+     * @return object
      */
-    public function newExtensionClass(?string $name = null)
+    public function newExtensionClass(?string $name = null): object
     {
         $className = $this->getExtensionClass($name);
         
@@ -613,7 +613,7 @@ class Manager
      * @param string|null $name
      * @return array
      */
-    public function getExtension(?string $name = null)
+    public function getExtension(?string $name = null): array
     {
         $data = $this->getExtend($name);
         if (empty($data)) {
@@ -655,7 +655,7 @@ class Manager
      * @param string|null $name
      * @return array
      */
-    public function getExtensionConfig(?string $name = null)
+    public function getExtensionConfig(?string $name = null): array
     {
         $info = $this->getExtension($name);
         if (empty($info)) {
@@ -674,7 +674,7 @@ class Manager
      *
      * @return array
      */
-    public function getExtensions()
+    public function getExtensions(): array
     {
         $extensions = $this->extensions;
         
@@ -698,7 +698,7 @@ class Manager
      * @param string|null $icon
      * @return string
      */    
-    public function getIcon(?string $icon = null)
+    public function getIcon(?string $icon = null): string
     {
         if (! File::exists($icon) || ! File::isFile($icon)) {
             $icon = $this->defaultIcon;
@@ -718,7 +718,7 @@ class Manager
      * @param array $info
      * @return boolen
      */
-    public function validateInfo(array $info)
+    public function validateInfo(array $info): bool
     {
         $mustInfo = [
             'title',
@@ -744,7 +744,7 @@ class Manager
      * @param string|null $dirPath
      * @return array
      */
-    public function getDirectories(?string $dirPath = null)
+    public function getDirectories(?string $dirPath = null): array
     {
         $extensions = [];
         
@@ -775,10 +775,10 @@ class Manager
     /**
      * 根据类名获取类所在文件夹
      *
-     * @param string|object|null $class
-     * @return string|bool
+     * @param string|object $class
+     * @return string
      */
-    public function getPathFromClass($class = null)
+    public function getPathFromClass($class): string
     {
         if (is_object($class)) {
             $class = get_class($class);

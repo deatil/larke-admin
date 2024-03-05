@@ -22,7 +22,7 @@ class Request
      *
      * @return bool
      */
-    public static function matchPath(string $path, ?string $current = null)
+    public static function matchPath(string $path, ?string $current = null): bool
     {
         $request = request();
         $current = $current ?: $request->decodedPath();
@@ -50,7 +50,7 @@ class Request
 
         $path = str_replace(['*', '/'], ['([0-9a-z-_,])*', "\/"], $path);
 
-        return preg_match("/$path/i", $current);
+        return preg_match("/$path/i", $current) == 1;
     }
 
 }

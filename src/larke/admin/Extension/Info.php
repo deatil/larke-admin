@@ -5,6 +5,7 @@ declare (strict_types = 1);
 namespace Larke\Admin\Extension;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Traits\Macroable;
 
 /*
@@ -20,12 +21,12 @@ class Info
     /**
      * 服务提供者名称
      */
-    protected $name = '';
+    protected string $name = '';
     
     /**
      * 扩展信息
      */
-    protected $info = [
+    protected array $info = [
         // 扩展名称
         'title'       => '',
         // 扩展描述
@@ -58,12 +59,12 @@ class Info
     /**
      * 扩展图标
      */
-    protected $icon = '';
+    protected string $icon = '';
     
     /**
      * 扩展配置[选填]
      */
-    protected $config = [];
+    protected array $config = [];
     
     /**
      * 构造函数
@@ -99,7 +100,7 @@ class Info
         array  $info   = [], 
         string $icon   = '', 
         array  $config = []
-    ) {
+    ): static {
         return new static($name, $info, $icon, $config);
     }
     
@@ -109,7 +110,7 @@ class Info
      * @param  string $name 服务提供者名称
      * @return object $this
      */
-    public function withName(string $name = "") 
+    public function withName(string $name = ""): static
     {
         $this->name = $name;
         
@@ -122,7 +123,7 @@ class Info
      * @param  array  $info 扩展信息
      * @return object $this
      */
-    public function withInfo(array $info = []) 
+    public function withInfo(array $info = []): static
     {
         $this->info = array_merge($this->info, $info);
         
@@ -135,7 +136,7 @@ class Info
      * @param  array  $config   扩展配置
      * @return object $this
      */
-    public function withConfig(array $config = []) 
+    public function withConfig(array $config = []): static
     {
         $this->config = array_merge($this->config, $config);
         
@@ -148,7 +149,7 @@ class Info
      * @param  string $icon 扩展图标
      * @return object $this
      */
-    public function withIcon(string $icon = "") 
+    public function withIcon(string $icon = ""): static
     {
         $this->icon = $icon;
         
@@ -160,7 +161,7 @@ class Info
      *
      * @return string
      */
-    public function getName() 
+    public function getName(): string
     {
         return $this->name;
     }
@@ -172,7 +173,7 @@ class Info
      * @param  mixed  $default 默认值
      * @return \Illuminate\Support\Collection
      */
-    public function getInfo(string $name = "", mixed $default = null) 
+    public function getInfo(string $name = "", mixed $default = null): Collection
     {
         if (empty($name)) {
             return collect($this->info);
@@ -190,7 +191,7 @@ class Info
      * @param  mixed  $default 默认值
      * @return \Illuminate\Support\Collection
      */
-    public function getConfig(string $name = "", mixed $default = null) 
+    public function getConfig(string $name = "", mixed $default = null): Collection
     {
         if (empty($name)) {
             return collect($this->config);
@@ -206,7 +207,7 @@ class Info
      *
      * @return string
      */
-    public function getIcon() 
+    public function getIcon(): string
     {
         return $this->icon;
     }
@@ -216,7 +217,7 @@ class Info
      *
      * @return string
      */
-    public function __toString() 
+    public function __toString(): string
     {
         return $this->name;
     }

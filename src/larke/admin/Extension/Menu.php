@@ -5,6 +5,7 @@ declare (strict_types = 1);
 namespace Larke\Admin\Extension;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 
 use Larke\Admin\Support\Tree;
 use Larke\Admin\Service\Menu as MenuModel;
@@ -22,9 +23,9 @@ class Menu
      *
      * @return array      $data 
      * @return int|string $parentId 
-     * @return array
+     * @return mixed
      */
-    public static function create(array $data = [], mixed $parentId = 0) 
+    public static function create(array $data = [], mixed $parentId = 0): mixed
     {
         if (empty($data)) {
             return false;
@@ -58,7 +59,7 @@ class Menu
      * @param string $slug 规则slug
      * @return boolean
      */
-    public static function delete(string $slug)
+    public static function delete(string $slug): bool
     {
         $ids = self::getMenuIdsBySlug($slug);
         if (!$ids) {
@@ -79,7 +80,7 @@ class Menu
      * @param string $slug
      * @return boolean
      */
-    public static function enable(string $slug)
+    public static function enable(string $slug): bool
     {
         $ids = self::getMenuIdsBySlug($slug);
         if (!$ids) {
@@ -105,7 +106,7 @@ class Menu
      * @param string $slug
      * @return boolean
      */
-    public static function disable(string $slug)
+    public static function disable(string $slug): bool
     {
         $ids = self::getMenuIdsBySlug($slug);
         if (!$ids) {
@@ -126,12 +127,12 @@ class Menu
     }
 
     /**
-     * 导出指定slug的菜单规则
+     * 导出指定 slug 的菜单规则
      *
      * @param string $slug
      * @return array
      */
-    public static function export(string $slug)
+    public static function export(string $slug): array
     {
         $ids = self::getMenuIdsBySlug($slug);
         if (!$ids) {
@@ -170,12 +171,12 @@ class Menu
     }
 
     /**
-     * 根据 slug 获取规则 IDS
+     * 根据 slug 获取规则 ID 列表
      *
      * @param string $slug
-     * @return array
+     * @return Collection
      */
-    public static function getMenuIdsBySlug(string $slug)
+    public static function getMenuIdsBySlug(string $slug): Collection
     {
         $menuModel = new MenuModel();
         $list = $menuModel->read();

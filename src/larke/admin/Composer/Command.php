@@ -9,8 +9,9 @@ use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * 命令
@@ -25,21 +26,21 @@ class Command
      *
      * @var string
      */
-    private $basePath;
+    private string $basePath;
 
     /**
      * Memory limit for composer.
      *
      * @var string
      */
-    private $memoryLimit = '2048M';
+    private string $memoryLimit = '2048M';
 
     /**
      * 设置根目录
      *
      * @param string $basePath
      */
-    public function withBasePath($basePath = null)
+    public function withBasePath(?string $basePath = null): self
     {
         $this->basePath = $basePath ?? base_path();
         
@@ -51,7 +52,7 @@ class Command
      *
      * @param string $memoryLimit
      */
-    public function withMemoryLimit($memoryLimit = null)
+    public function withMemoryLimit(?string $memoryLimit = null): self
     {
         $this->memoryLimit = $memoryLimit;
         
@@ -61,12 +62,11 @@ class Command
     /**
      * Runs `composer require` command.
      *
-     * @param   mixed   $packages
-     * @param   array   $flags
-     *
+     * @param  mixed $packages
+     * @param  array $flags
      * @return void
      */
-    public function require($packages, array $flags = [])
+    public function require(mixed $packages, array $flags = []): void
     {
         $this->run(
             'require '.implode(' ', Arr::wrap($packages)),
@@ -77,11 +77,11 @@ class Command
     /**
      * Runs `composer update` command.
      *
-     * @param   mixed   $packages
-     * @param   array   $flags
-     * @return  void
+     * @param  mixed $packages
+     * @param  array $flags
+     * @return void
      */
-    public function update($packages, array $flags = [])
+    public function update(mixed $packages, array $flags = []): void
     {
         $this->run(
             'update '.implode(' ', Arr::wrap($packages)),
@@ -92,11 +92,11 @@ class Command
     /**
      * Runs `composer remove` command.
      *
-     * @param   mixed   $packages
-     * @param   array   $flags
-     * @return  void
+     * @param  mixed $packages
+     * @param  array $flags
+     * @return void
      */
-    public function remove($packages, array $flags = [])
+    public function remove(mixed $packages, array $flags = []): void
     {
         $this->run(
             'remove '.implode(' ', Arr::wrap($packages)),
@@ -109,7 +109,7 @@ class Command
      *
      * @return array
      */
-    public function installed()
+    public function installed(): array
     {
         return $this->all()->toArray();
     }
@@ -117,11 +117,11 @@ class Command
     /**
      * Returns package version.
      *
-     * @param string $package
+     * @param  string $package
      *
      * @return string
      */
-    public function version($package)
+    public function version(string $package): string
     {
         return $this->standardize(
             $this->all()->get($package)->version
@@ -135,7 +135,7 @@ class Command
      *
      * @return mixed
      */
-    public function path($package)
+    public function path(string $package): mixed
     {
         return $this->paths()->get($package, null);
     }
@@ -145,9 +145,9 @@ class Command
      *
      * @param string $package
      *
-     * @return array
+     * @return mixed
      */
-    public function get($package)
+    public function get(string $package): mixed
     {
         return $this->all()->get($package);
     }
@@ -159,7 +159,7 @@ class Command
      *
      * @return bool
      */
-    public function has($package)
+    public function has(string $package): bool
     {
         return $this->all()->has($package);
     }
@@ -169,7 +169,7 @@ class Command
      *
      * @return \Illuminate\Support\Collection
      */
-    private function all()
+    private function all(): Collection
     {
         return Cache::rememberForever('larke-admin.composer-packages', function () {
             $process = $this->process('show', [
@@ -194,7 +194,7 @@ class Command
      *
      * @return \Illuminate\Support\Collection
      */
-    private function paths()
+    private function paths(): Collection
     {
         return Cache::rememberForever('larke-admin.composer-paths', function () {
             $process = $this->process('show', [
@@ -224,7 +224,7 @@ class Command
      *
      * @return void
      */
-    private function bustCache()
+    private function bustCache(): void
     {
         Cache::forget('larke-admin.composer-packages');
         Cache::forget('larke-admin.composer-paths');
@@ -239,7 +239,7 @@ class Command
      *
      * @return void
      */
-    private function run($command, array $flags = [])
+    private function run(string $command, array $flags = []): void
     {
         try {
             $this
@@ -262,7 +262,7 @@ class Command
      *
      * @@return \Symfony\Component\Process\Process
      */
-    private function process($command, $flags = [])
+    private function process(string $command, array $flags = []): Process
     {
         $command = array_merge(
             [
@@ -285,9 +285,9 @@ class Command
      *
      * @param string $input
      *
-     * @return mixed
+     * @return string
      */
-    public function standardize($input)
+    public function standardize(string $input): string
     {
         $pattern = "/(\d+)(?:\.(\d+))?(?:\.(\d+))?(.*)?/";
         $output  = [];

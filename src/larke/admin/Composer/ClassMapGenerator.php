@@ -11,7 +11,7 @@ class ClassMapGenerator
     /**
      * 创建map列表
      */
-    public static function createMap($path, $excluded = null)
+    public static function createMap(mixed $path, string $excluded = null): array
     {
         $basePath = $path;
         if (is_string($path)) {
@@ -78,7 +78,7 @@ class ClassMapGenerator
     /**
      * 格式化
      */
-    public static function excluded($exclude)
+    public static function excluded(array $exclude = []): ?string
     {
         if (empty($exclude)) {
             return null;
@@ -91,15 +91,17 @@ class ClassMapGenerator
     /**
      * 检测路径
      */
-    public static function isAbsolutePath($path)
+    public static function isAbsolutePath(string $path): bool
     {
-        return strpos($path, '/') === 0 || substr($path, 1, 1) === ':' || strpos($path, '\\\\') === 0;
+        return strpos($path, '/') === 0 
+            || substr($path, 1, 1) === ':' 
+            || strpos($path, '\\\\') === 0;
     }
     
     /**
      * 规范化路径
      */
-    public static function normalizePath($path)
+    public static function normalizePath(string $path): string
     {
         $parts = [];
         $path = strtr($path, '\\', '/');
@@ -133,7 +135,7 @@ class ClassMapGenerator
     /**
      * 从路径找出类
      */
-    private static function findClasses($path)
+    private static function findClasses(string $path): array
     {
         $extraTypes = PHP_VERSION_ID < 50400 ? '' : '|trait';
         if (defined('HHVM_VERSION') && version_compare(HHVM_VERSION, '3.3', '>=')) {
@@ -217,12 +219,12 @@ class ClassMapGenerator
      * 从命名空间找出类位置
      */
     public static function filterByNamespace(
-        $classes, 
-        $filePath, 
-        $baseNamespace = '', 
-        $namespaceType = 'psr-0', 
-        $basePath = ''
-    ) {
+        array  $classes, 
+        string $filePath, 
+        string $baseNamespace = '', 
+        string $namespaceType = 'psr-0', 
+        string $basePath = ''
+    ): array {
         $validClasses = [];
         $rejectedClasses = [];
 
