@@ -1,11 +1,11 @@
-# larke-admin通用后台管理系统
+# larke-admin 通用后台管理系统
 
-larke-admin 是一套使用 Laravel、JWT 和 RBAC鉴权的通用后台管理系统
+larke-admin 是一套使用 Laravel、JWT 和 RBAC 鉴权的通用后台管理系统
 
 
 ## 项目介绍
 
-*  `larke-admin` 是基于 `laravel` 框架的后台管理系统，完全api接口化，适用于前后端分离的项目
+*  `larke-admin` 是基于 `laravel` 框架的后台管理系统，完全 api 接口化，适用于前后端分离的项目
 *  基于 `JWT` 的用户登录态管理
 *  权限判断基于 `php-casbin` 的 `RBAC` 授权
 *  本项目为 `后台api服务`，`后台前端页面` 可查看 [Larke Admin Frontend](https://github.com/deatil/larke-admin-frontend) 项目
@@ -13,8 +13,8 @@ larke-admin 是一套使用 Laravel、JWT 和 RBAC鉴权的通用后台管理系
 
 ## 环境要求
 
- - PHP >= 8.1
- - Laravel >= 10.0
+ - PHP >= 8.2
+ - Laravel >= 11.0
  - Fileinfo PHP Extension
 
 
