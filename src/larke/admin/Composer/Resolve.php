@@ -229,11 +229,11 @@ class Resolve
             return [];
         }
         
-        $psr0     = Arr::get($autoload, 'psr-0', []);
-        $psr4     = Arr::get($autoload, 'psr-4', []);
-        $classmap = Arr::get($autoload, 'classmap', []);
-        $files    = Arr::get($autoload, 'files', []);
-        $exclude  = Arr::get($autoload, 'exclude-from-classmap', []);
+        $psr0     = (array) Arr::get($autoload, 'psr-0', []);
+        $psr4     = (array) Arr::get($autoload, 'psr-4', []);
+        $classmap = (array) Arr::get($autoload, 'classmap', []);
+        $files    = (array) Arr::get($autoload, 'files', []);
+        $exclude  = (array) Arr::get($autoload, 'exclude-from-classmap', []);
         
         $newPsr0 = [];
         if (! empty($psr0)) {
@@ -305,10 +305,10 @@ class Resolve
             return $this;
         }
         
-        $psr0     = Arr::get($autoload, 'psr-0', []);
-        $psr4     = Arr::get($autoload, 'psr-4', []);
-        $classmap = Arr::get($autoload, 'classmap', []);
-        $files    = Arr::get($autoload, 'files', []);
+        $psr0     = (array) Arr::get($autoload, 'psr-0', []);
+        $psr4     = (array) Arr::get($autoload, 'psr-4', []);
+        $classmap = (array) Arr::get($autoload, 'classmap', []);
+        $files    = (array) Arr::get($autoload, 'files', []);
 
         $classLoader = new ClassLoader();
         
