@@ -157,7 +157,7 @@ class Response implements ResponseContract
         string $message = "", 
         mixed  $data    = [], 
         int    $code    = \ResponseCode::SUCCESS, 
-        array  $headers = []
+        array  $headers = [],
     ): mixed {
         return $this->json(true, $code, $message, $data, $headers);
     }
@@ -175,7 +175,7 @@ class Response implements ResponseContract
         string $message = "", 
         int    $code    = \ResponseCode::ERROR, 
         mixed  $data    = [], 
-        array  $headers = []
+        array  $headers = [],
     ): mixed {
         return $this->json(false, $code, $message, $data, $headers);
     }
@@ -195,7 +195,7 @@ class Response implements ResponseContract
         int    $code    = \ResponseCode::INVALID, 
         string $message = "", 
         mixed  $data    = [], 
-        array  $headers = []
+        array  $headers = [],
     ): mixed {
         $result = [
             'success' => $success,

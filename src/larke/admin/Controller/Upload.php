@@ -122,15 +122,15 @@ class Upload extends Base
             ->first()
             ->attachments();
         $attachment = $attachmentModel->create([
-            'name' => $name,
-            'path' => $path,
-            'mime' => $mimeType,
+            'name'      => $name,
+            'path'      => $path,
+            'mime'      => $mimeType,
             'extension' => $extension,
-            'size' => $size,
-            'md5' => $md5,
-            'sha1' => $sha1,
-            'driver' => $driver,
-            'status' => 1,
+            'size'      => $size,
+            'md5'       => $md5,
+            'sha1'      => $sha1,
+            'driver'    => $driver,
+            'status'    => 1,
         ]);
         if ($attachment === false) {
             // 入库信息失败删除已上传文件

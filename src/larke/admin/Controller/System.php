@@ -73,8 +73,10 @@ class System extends Base
         Artisan::call('cache:clear');
         Artisan::call('view:clear');
         
-        // > php artisan config:clear
+        // > php artisan route:clear
         // Artisan::call('route:clear');
+        
+        // > php artisan config:clear
         // Artisan::call('config:clear');
         
         event(new SystemClearCacheEvent());

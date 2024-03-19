@@ -97,7 +97,7 @@ class AuthRule extends Base
             'start' => $start,
             'limit' => $limit,
             'total' => $total,
-            'list' => $list,
+            'list'  => $list,
         ]);
     }
     

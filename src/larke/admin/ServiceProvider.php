@@ -261,7 +261,12 @@ class ServiceProvider extends BaseServiceProvider
         
         // 加密数据
         $this->app->bind('larke-admin.crypto', Contracts\Crypt::class);
-        $this->app->bind(Contracts\Crypt::class, Crypt::class);
+        $this->app->bind(Contracts\Crypt::class, function($app) {
+            $crypt = new Crypt();
+            $crypt->withMode(config('larkeadmin.crypto.mode'));
+            $crypt->withIv(config('larkeadmin.crypto.iv'));
+            return $crypt;
+        });
         
         // Jwt 底层驱动
         $this->app->bind('larke-admin.jwt-driver', JWTContract::class);

@@ -6,8 +6,8 @@ return [
         'name'      => "LarkeAdmin",
         'name_mini' => "Larke",
         'logo'      => "<b>Larke</b> admin",
-        'release'   => "202403013",
-        'version'   => "1.8.0",
+        'release'   => "202403017",
+        'version'   => "1.8.1",
     ],
     
     // 是否使用 https 方式
@@ -53,6 +53,14 @@ return [
 
         // 登陆方式 [ single - 单端登陆 | many - 多端登陆 ]
         'login_type' => env('LARKE_ADMIN_PASSPORT_LOGIN_TYPE', 'many'),
+    ],
+    
+    // 数据加密参数
+    'crypto' => [
+        // 加密模式 [cbc | cfb | cfb8 | ctr | ofb | ofb8]
+        'mode' => 'cbc',
+        // IV 向量, AES 向量 16 个字符
+        'iv'   => 'a91ebd0f3c65209y',
     ],
     
     // JWT

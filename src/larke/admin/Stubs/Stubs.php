@@ -152,8 +152,12 @@ class Stubs
     /**
      * 复制文件
      */
-    public function copyFile(string $src, string $dst, array $data = [], bool $force = false): mixed
-    {
+    public function copyFile(
+        string $src, 
+        string $dst, 
+        array  $data = [], 
+        bool   $force = false,
+    ): mixed {
         if (! File::exists($src)) {
             return "[{$src}] not exists !";
         }

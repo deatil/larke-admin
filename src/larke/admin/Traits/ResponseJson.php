@@ -21,7 +21,7 @@ trait ResponseJson
         string $message, 
         mixed  $data = [], 
         array  $headers = [],
-        int    $code = 0
+        int    $code = 0,
     ): mixed {
         return Response::json(true, $code, $message, $data, $headers);
     }
@@ -33,7 +33,7 @@ trait ResponseJson
         string $message, 
         int    $code = 1, 
         mixed  $data = [], 
-        array  $headers = []
+        array  $headers = [],
     ): mixed {
         return Response::json(false, $code, $message, $data, $headers);
     }

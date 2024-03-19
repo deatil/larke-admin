@@ -108,7 +108,7 @@ class Admin extends Base
             'start' => $start,
             'limit' => $limit,
             'total' => $total,
-            'list' => $list,
+            'list'  => $list,
         ]);
     }
     
