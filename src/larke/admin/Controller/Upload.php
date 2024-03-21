@@ -45,7 +45,7 @@ class Upload extends Base
     {
         $requestFile = $request->file('file');
         if (empty($requestFile)) {
-            return $this->error(__('上传文件不能为空'));
+            return $this->error(__('larke-admin::attachment.upload_file_dont_empty'));
         }
         
         // 上传的文件临时位置
@@ -70,7 +70,7 @@ class Upload extends Base
         try {
             $uploadService = UploadService::create();
         } catch(Exception $e) {
-            return $this->error(__('上传文件失败'));
+            return $this->error(__('larke-admin::attachment.upload_file_fail'));
         }
         
         $uploadDisk = config('larkeadmin.upload.disk');
@@ -97,7 +97,7 @@ class Upload extends Base
                 $res['url'] = $fileInfo['url'];
             }
             
-            return $this->success(__('上传文件成功'), $res);
+            return $this->success(__('larke-admin::attachment.upload_file_success'), $res);
         }
         
         if ($filetype == 'image') {
@@ -113,7 +113,7 @@ class Upload extends Base
                 ->uniqueName()
                 ->upload($requestFile);
         } catch(Exception $e) {
-            return $this->error(__('上传文件失败'));
+            return $this->error(__('larke-admin::attachment.upload_file_fail'));
         }
 
         // 附件入库数据库
@@ -136,7 +136,7 @@ class Upload extends Base
             // 入库信息失败删除已上传文件
             $uploadService->destroy($path);
             
-            return $this->error(__('上传文件失败'));
+            return $this->error(__('larke-admin::attachment.upload_file_fail'));
         }
         
         $res = [
@@ -148,6 +148,6 @@ class Upload extends Base
             $res['url'] = $url;
         }
         
-        return $this->success(__('上传文件成功'), $res);
+        return $this->success(__('larke-admin::attachment.upload_file_success'), $res);
     }
 }

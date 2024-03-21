@@ -41,7 +41,7 @@ class Profile extends Base
     {
         $data = app('larke-admin.auth-admin')->getProfile();
         
-        return $this->success(__('获取成功'), $data);
+        return $this->success(__('larke-admin::common.get_success'), $data);
     }
     
     /**
@@ -65,13 +65,13 @@ class Profile extends Base
             'email' => 'required|email|max:100',
             'introduce' => 'required|max:500',
         ], [
-            'nickname.required' => __('昵称不能为空'),
-            'nickname.max' => __('昵称字数超过了限制'),
-            'email.required' => __('邮箱不能为空'),
-            'email.email' => __('邮箱格式错误'),
-            'email.max' => __('邮箱字数超过了限制'),
-            'introduce.required' => __('简介不能为空'),
-            'introduce.max' => __('简介字数超过了限制'),
+            'nickname.required' => __('larke-admin::profile.nickname_required'),
+            'nickname.max' => __('larke-admin::profile.nickname_max'),
+            'email.required' => __('larke-admin::profile.email_required'),
+            'email.email' => __('larke-admin::profile.email_error'),
+            'email.max' => __('larke-admin::profile.email_max'),
+            'introduce.required' => __('larke-admin::profile.introduce_required'),
+            'introduce.max' => __('larke-admin::profile.introduce_max'),
         ]);
 
         if ($validator->fails()) {
@@ -89,10 +89,10 @@ class Profile extends Base
         $status = AdminModel::where('id', $adminid)
             ->update($updateData);
         if ($status === false) {
-            return $this->error(__('修改信息失败'));
+            return $this->error(__('larke-admin::profile.update_fail'));
         }
         
-        return $this->success(__('修改信息成功'));
+        return $this->success(__('larke-admin::profile.update_success'));
     }
 
     /**
@@ -114,8 +114,8 @@ class Profile extends Base
         $validator = Validator::make($data, [
             'avatar' => 'required|size:36',
         ], [
-            'avatar.required' => __('头像数据不能为空'),
-            'avatar.size' => __('头像数据错误'),
+            'avatar.required' => __('larke-admin::profile.avatar_dont_empty'),
+            'avatar.size' => __('larke-admin::profile.avatar_error'),
         ]);
 
         if ($validator->fails()) {
@@ -127,10 +127,10 @@ class Profile extends Base
             ->first()
             ->updateAvatar($data['avatar']);
         if ($status === false) {
-            return $this->error(__('修改信息失败'));
+            return $this->error(__('larke-admin::profile.update_avatar_fail'));
         }
         
-        return $this->success(__('修改头像成功'));
+        return $this->success(__('larke-admin::profile.update_avatar_success'));
     }
 
     /**
@@ -150,35 +150,35 @@ class Profile extends Base
         // 密码长度错误
         $oldPassword = $request->input('oldpassword');
         if (strlen($oldPassword) != 32) {
-            return $this->error(__('旧密码错误'));
+            return $this->error(__('larke-admin::profile.old_password_error'));
         }
 
         // 密码长度错误
         $newPassword = $request->input('newpassword');
         if (strlen($newPassword) != 32) {
-            return $this->error(__('新密码错误'));
+            return $this->error(__('larke-admin::profile.new_password_error'));
         }
 
         $newPasswordConfirm = $request->input('newpassword_confirm');
         if (strlen($newPasswordConfirm) != 32) {
-            return $this->error(__('确认密码错误'));
+            return $this->error(__('larke-admin::profile.password_confirm_error'));
         }
 
         if ($newPassword != $newPasswordConfirm) {
-            return $this->error(__('两次密码输入不一致'));
+            return $this->error(__('larke-admin::profile.two_password_dont_equal'));
         }
 
         $adminid = app('larke-admin.auth-admin')->getId();
         $adminInfo = AdminModel::where('id', $adminid)
             ->first();
         if (empty($adminInfo)) {
-            return $this->error(__('帐号错误'));
+            return $this->error(__('larke-admin::profile.passport_dont_exists'));
         }
         
         $adminInfo = $adminInfo->makeVisible(['password', 'password_salt']);
         $encryptPassword = AdminModel::checkPassword($adminInfo->toArray(), $oldPassword); 
         if (! $encryptPassword) {
-            return $this->error(__('用户密码错误'));
+            return $this->error(__('larke-admin::profile.password_error'));
         }
 
         // 新密码
@@ -190,10 +190,10 @@ class Profile extends Base
                 'password_salt' => $newPasswordInfo['encrypt'],
             ]);
         if ($status === false) {
-            return $this->error(__('密码修改失败'));
+            return $this->error(__('larke-admin::profile.update_password_fail'));
         }
         
-        return $this->success(__('密码修改成功'));
+        return $this->success(__('larke-admin::profile.update_password_success'));
     }
 
     /**
@@ -211,7 +211,7 @@ class Profile extends Base
     {
         $rules = app('larke-admin.auth-admin')->getRules();
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'list' => $rules,
         ]);
     }
@@ -232,7 +232,7 @@ class Profile extends Base
     {
         $list = app('larke-admin.auth-admin')->getRuleSlugs();
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'list' => $list,
         ]);
     }

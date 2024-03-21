@@ -26,7 +26,7 @@ class JsonHandler extends ExceptionHandler
         if ($this->isHttpException($exception)) {
             if ($exception->getStatusCode() != 200) {
                 if ($exception->getStatusCode() == 404) {
-                    $message = __('没有发现页面');
+                    $message = __('larke-admin::common.not_find');
                 } else {
                     $message = $exception->getMessage();
                 }

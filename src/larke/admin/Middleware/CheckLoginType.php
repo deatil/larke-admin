@@ -42,7 +42,7 @@ class CheckLoginType
             $decodeAccessToken = app('larke-admin.auth-token')
                 ->decodeAccessToken($accessToken);
         } catch(\Exception $e) {
-            return $this->error(__('token格式错误'), \ResponseCode::ACCESS_TOKEN_ERROR);
+            return $this->error(__('larke-admin::auth.token_error'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
         // 账号信息
@@ -55,7 +55,7 @@ class CheckLoginType
             
             // 判断是否是单端登陆
             if ($adminInfo['refresh_time'] != $iat) {
-                return $this->error(__('token已失效'), \ResponseCode::ACCESS_TOKEN_TIMEOUT);
+                return $this->error(__('larke-admin::auth.token_no_use'), \ResponseCode::ACCESS_TOKEN_TIMEOUT);
             }
         }
         

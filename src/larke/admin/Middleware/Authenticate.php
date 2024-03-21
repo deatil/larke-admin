@@ -38,35 +38,35 @@ class Authenticate
     {
         $authorization = request()->header('Authorization');
         if (!$authorization) {
-            return $this->error(__('token不能为空'), \ResponseCode::ACCESS_TOKEN_ERROR);
+            return $this->error(__('larke-admin::auth.token_dont_empty'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
         $authorizationArr = explode(' ', $authorization);
         if (count($authorizationArr) != 2) {
-            return $this->error(__('token不能为空'), \ResponseCode::ACCESS_TOKEN_ERROR);
+            return $this->error(__('larke-admin::auth.token_dont_empty'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         if ($authorizationArr[0] != 'Bearer') {
-            return $this->error(__('token格式错误'), \ResponseCode::ACCESS_TOKEN_ERROR);
+            return $this->error(__('larke-admin::auth.token_error'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
         $accessToken = $authorizationArr[1];
         if (!$accessToken) {
-            return $this->error(__('token不能为空'), \ResponseCode::ACCESS_TOKEN_ERROR);
+            return $this->error(__('larke-admin::auth.token_dont_empty'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
         if (count(explode('.', $accessToken)) <> 3) {
-            return $this->error(__('token格式错误'), \ResponseCode::ACCESS_TOKEN_ERROR);
+            return $this->error(__('larke-admin::auth.token_error'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
         if (app('larke-admin.cache')->has(md5($accessToken))) {
-            return $this->error(__('token已失效'), \ResponseCode::ACCESS_TOKEN_ERROR);
+            return $this->error(__('larke-admin::auth.token_no_use'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
         try {
             $decodeAccessToken = app('larke-admin.auth-token')
                 ->decodeAccessToken($accessToken);
         } catch(\Exception $e) {
-            return $this->error(__('token格式错误'), \ResponseCode::ACCESS_TOKEN_ERROR);
+            return $this->error(__('larke-admin::auth.token_error'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
         try {
@@ -76,20 +76,20 @@ class Authenticate
             // 签名
             app('larke-admin.auth-token')->verify($decodeAccessToken);
         } catch(\Exception $e) {
-            return $this->error(__('token已过期'), \ResponseCode::ACCESS_TOKEN_TIMEOUT);
+            return $this->error(__('larke-admin::auth.token_timeout'), \ResponseCode::ACCESS_TOKEN_TIMEOUT);
         }
         
         try {
             $adminid = $decodeAccessToken->getData('adminid');
         } catch(\Exception $e) {
-            return $this->error(__('token已失效'), \ResponseCode::ACCESS_TOKEN_ERROR);
+            return $this->error(__('larke-admin::auth.token_no_use'), \ResponseCode::ACCESS_TOKEN_ERROR);
         }
         
         $adminInfo = AdminModel::where('id', $adminid)
             ->with(['groups'])
             ->first();
         if (empty($adminInfo)) {
-            return $this->error(__('帐号不存在或者已被锁定'), \ResponseCode::AUTH_ERROR);
+            return $this->error(__('larke-admin::auth.passport_error'), \ResponseCode::AUTH_ERROR);
         }
         
         // 账号信息
@@ -101,11 +101,11 @@ class Authenticate
             ->withData($adminInfo);
         
         if (! app('larke-admin.auth-admin')->isActive()) {
-            return $this->error(__('帐号不存在或者已被锁定'), \ResponseCode::AUTH_ERROR);
+            return $this->error(__('larke-admin::auth.passport_error'), \ResponseCode::AUTH_ERROR);
         }
         
         if (! app('larke-admin.auth-admin')->isGroupActive()) {
-            return $this->error(__('帐号用户组不存在或者已被锁定'), \ResponseCode::AUTH_ERROR);
+            return $this->error(__('larke-admin::auth.group_error'), \ResponseCode::AUTH_ERROR);
         }
         
         return null;

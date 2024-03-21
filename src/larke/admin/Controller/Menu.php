@@ -44,7 +44,7 @@ class Menu extends BaseController
     {
         $list = $menuModel->getList();
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'list' => $list,
         ]);
     }
@@ -76,7 +76,7 @@ class Menu extends BaseController
             ->withData($result)
             ->build(0);
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'list' => $list,
         ]);
     }
@@ -97,7 +97,7 @@ class Menu extends BaseController
     {
         $id = $request->input('id', 0);
         if (is_array($id)) {
-            return $this->error(__('父级ID错误'));
+            return $this->error(__('larke-admin::menu.parentid_error'));
         }
         
         $type = $request->input('type');
@@ -127,7 +127,7 @@ class Menu extends BaseController
                 ->getListChildrenId($result, $id);
         }
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'list' => $list,
         ]);
     }
@@ -149,15 +149,15 @@ class Menu extends BaseController
     {
         $data = $request->all();
         if (empty($data)) {
-            return $this->error(__('创建的菜单数据不能为空'));
+            return $this->error(__('larke-admin::menu.menu_dont_empty'));
         }
         
         $insertStatus = $menuModel->insert($data);
         if ($insertStatus === false) {
-            return $this->error(__('添加菜单失败'));
+            return $this->error(__('larke-admin::menu.create_fail'));
         }
         
-        return $this->success(__('添加菜单成功'));
+        return $this->success(__('larke-admin::menu.create_success'));
     }
     
     /**
@@ -177,12 +177,12 @@ class Menu extends BaseController
     public function update(String $id, Request $request, MenuModel $menuModel)
     {
         if (empty($id)) {
-            return $this->error(__('菜单ID不能为空'));
+            return $this->error(__('larke-admin::menu.menuid_dont_empty'));
         }
         
         $info = $menuModel->find($id);
         if (empty($info)) {
-            return $this->error(__('菜单不存在'));
+            return $this->error(__('larke-admin::menu.menu_not_exists'));
         }
         
         $data = $request->all();
@@ -191,8 +191,8 @@ class Menu extends BaseController
             'pid' => 'required',
             'sort' => 'required',
         ], [
-            'pid.required' => __('父级菜单不能为空'),
-            'sort.required' => __('排序不能为空'),
+            'pid.required' => __('larke-admin::menu.parent_menu_dont_empty'),
+            'sort.required' => __('larke-admin::menu.sort_dont_empty'),
         ]);
 
         if ($validator->fails()) {
@@ -202,10 +202,10 @@ class Menu extends BaseController
         // 更新信息
         $status = $menuModel->update($id, $data);
         if ($status === false) {
-            return $this->error(__('菜单修改失败'));
+            return $this->error(__('larke-admin::menu.update_fail'));
         }
         
-        return $this->success(__('菜单修改成功'));
+        return $this->success(__('larke-admin::menu.update_success'));
     }
     
     /**
@@ -225,25 +225,25 @@ class Menu extends BaseController
     public function delete(String $id, Request $request, MenuModel $menuModel)
     {
         if (empty($id)) {
-            return $this->error(__('菜单ID不能为空'));
+            return $this->error(__('larke-admin::menu.menuid_dont_empty'));
         }
         
         $info = $menuModel->find($id);
         if (empty($info)) {
-            return $this->error(__('菜单不存在'));
+            return $this->error(__('larke-admin::menu.menu_not_exists'));
         }
         
         $menuChildren = $menuModel->findChildren($id);
         if (! empty($menuChildren)) {
-            return $this->error(__('菜单有子菜单，请删除子菜单'));
+            return $this->error(__('larke-admin::menu.menu_dont_delete'));
         }
         
         $status = $menuModel->delete($id);
         if ($status === false) {
-            return $this->error(__('菜单删除失败'));
+            return $this->error(__('larke-admin::menu.delete_fail'));
         }
         
-        return $this->success(__('菜单删除成功'));
+        return $this->success(__('larke-admin::menu.delete_success'));
     }
     
     /**
@@ -262,7 +262,7 @@ class Menu extends BaseController
     {
         $json = $menuModel->getFileData();
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'json' => $json,
         ]);
     }
@@ -283,18 +283,18 @@ class Menu extends BaseController
     {
         $json = $request->input('json');
         if (empty($json)) {
-            return $this->error(__('json不能为空'));
+            return $this->error(__('larke-admin::menu.json_dont_empty'));
         }
         
         if (empty(json_decode($json, true))) {
-            return $this->error(__('json格式错误'));
+            return $this->error(__('larke-admin::menu.json_error'));
         }
         
         $status = $menuModel->saveFileData($json);
         if ($status === false) {
-            return $this->error(__('保存数据失败'));
+            return $this->error(__('larke-admin::menu.save_fail'));
         }
         
-        return $this->success(__('保存数据成功'));
+        return $this->success(__('larke-admin::menu.save_success'));
     }
 }

@@ -34,8 +34,8 @@ class CheckLang
         ], [
             'locale' => 'required|alpha_dash',
         ], [
-            'locale.required' => __('请选择要查询的语言'),
-            'locale.alpha_dash' => __('语言名称格式错误'),
+            'locale.required' => __('larke-admin::system.lang_locale_select'),
+            'locale.alpha_dash' => __('larke-admin::system.lang_locale_error'),
         ]);
         
         if (! $validator->fails() && ! App::isLocale($locale)) {

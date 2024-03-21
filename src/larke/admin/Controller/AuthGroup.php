@@ -88,7 +88,7 @@ class AuthGroup extends Base
             ->get()
             ->toArray(); 
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'start' => $start,
             'limit' => $limit,
             'total' => $total,
@@ -121,7 +121,7 @@ class AuthGroup extends Base
             ->withData($result)
             ->build(0);
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'list' => $list,
         ]);
     }
@@ -142,7 +142,7 @@ class AuthGroup extends Base
     {
         $id = $request->input('id', 0);
         if (! is_string($id)) {
-            return $this->error(__('ID错误'));
+            return $this->error(__('larke-admin::common.id_error'));
         }
         
         $type = $request->input('type');
@@ -152,7 +152,7 @@ class AuthGroup extends Base
             $data = AuthGroupRepository::getChildrenIds($id);
         }
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'list' => $data,
         ]);
     }
@@ -172,14 +172,14 @@ class AuthGroup extends Base
     public function detail(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('ID不能为空'));
+            return $this->error(__('larke-admin::common.id_dont_empty'));
         }
         
         $info = AuthGroupModel::where(['id' => $id])
             ->with('ruleAccesses')
             ->first();
         if (empty($info)) {
-            return $this->error(__('信息不存在'));
+            return $this->error(__('larke-admin::common.info_not_exists'));
         }
         
         $ruleAccesses = collect($info['ruleAccesses'])
@@ -191,7 +191,7 @@ class AuthGroup extends Base
         unset($info['ruleAccesses']);
         $info['rule_accesses'] = $ruleAccesses;
         
-        return $this->success(__('获取成功'), $info);
+        return $this->success(__('larke-admin::common.get_success'), $info);
     }
     
     /**
@@ -209,31 +209,31 @@ class AuthGroup extends Base
     public function delete(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('ID不能为空'));
+            return $this->error(__('larke-admin::common.id_dont_empty'));
         }
         
         $info = AuthGroupModel::where(['id' => $id])
             ->first();
         if (empty($info)) {
-            return $this->error(__('信息不存在'));
+            return $this->error(__('larke-admin::common.info_not_exists'));
         }
         
         $childInfo = AuthGroupModel::where(['parentid' => $id])
             ->first();
         if (!empty($childInfo)) {
-            return $this->error(__('还有子分组存在，请删除子分组后再操作'));
+            return $this->error(__('larke-admin::auth_group.group_dont_delete'));
         }
         
         if ($info->is_system == 1) {
-            return $this->error(__('系统信息不能删除'));
+            return $this->error(__('larke-admin::auth_group.system_info_dont_delete'));
         }
         
         $deleteStatus = $info->delete();
         if ($deleteStatus === false) {
-            return $this->error(__('信息删除失败'));
+            return $this->error(__('larke-admin::common.delete_fail'));
         }
         
-        return $this->success(__('信息删除成功'));
+        return $this->success(__('larke-admin::common.delete_success'));
     }
     
     /**
@@ -257,10 +257,10 @@ class AuthGroup extends Base
             'title' => 'required|max:50',
             'status' => 'required',
         ], [
-            'parentid.required' => __('父级分类不能为空'),
-            'title.required' => __('名称不能为空'),
-            'title.max' => __('名称最大字符需要50个'),
-            'status.required' => __('状态选项不能为空'),
+            'parentid.required' => __('larke-admin::auth_group.parent_cate_dont_empty'),
+            'title.required' => __('larke-admin::auth_group.title_dont_empty'),
+            'title.max' => __('larke-admin::auth_group.title_max'),
+            'status.required' => __('larke-admin::auth_group.status_dont_empty'),
         ]);
         
         if ($validator->fails()) {
@@ -278,10 +278,10 @@ class AuthGroup extends Base
         
         $group = AuthGroupModel::create($insertData);
         if ($group === false) {
-            return $this->error(__('信息添加失败'));
+            return $this->error(__('larke-admin::auth_group.create_fail'));
         }
         
-        return $this->success(__('信息添加成功'), [
+        return $this->success(__('larke-admin::auth_group.create_success'), [
             'id' => $group->id,
         ]);
     }
@@ -302,14 +302,14 @@ class AuthGroup extends Base
     public function update(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->error(__('ID不能为空'));
+            return $this->error(__('larke-admin::common.id_dont_empty'));
         }
         
         $info = AuthGroupModel::with('children')
             ->where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('信息不存在'));
+            return $this->error(__('larke-admin::common.info_not_exists'));
         }
         
         $data = $request->all();
@@ -318,10 +318,10 @@ class AuthGroup extends Base
             'title' => 'required|max:50',
             'status' => 'required',
         ], [
-            'parentid.required' => __('父级分类不能为空'),
-            'title.required' => __('名称不能为空'),
-            'title.max' => __('名称最大字符需要50个'),
-            'status.required' => __('状态选项不能为空'),
+            'parentid.required' => __('larke-admin::auth_group.parent_cate_dont_empty'),
+            'title.required' => __('larke-admin::auth_group.title_dont_empty'),
+            'title.max' => __('larke-admin::auth_group.title_max'),
+            'status.required' => __('larke-admin::auth_group.status_dont_empty'),
         ]);
 
         if ($validator->fails()) {
@@ -331,7 +331,7 @@ class AuthGroup extends Base
         $childrenIds = AuthGroupRepository::getChildrenIdsFromData($info['children']);
         $childrenIds[] = $id;
         if (in_array($data['parentid'], $childrenIds)) {
-            return $this->error(__('父级ID设置错误'));
+            return $this->error(__('larke-admin::auth_group.parentid_error'));
         }
         
         $updateData = [
@@ -346,10 +346,10 @@ class AuthGroup extends Base
         // 更新信息
         $status = $info->update($updateData);
         if ($status === false) {
-            return $this->error(__('信息修改失败'));
+            return $this->error(__('larke-admin::auth_group.update_fail'));
         }
         
-        return $this->success(__('信息修改成功'));
+        return $this->success(__('larke-admin::auth_group.update_success'));
     }
     
     /**
@@ -368,23 +368,23 @@ class AuthGroup extends Base
     public function listorder(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->error(__('ID不能为空'));
+            return $this->error(__('larke-admin::common.id_dont_empty'));
         }
         
         $info = AuthGroupModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('信息不存在'));
+            return $this->error(__('larke-admin::common.info_not_exists'));
         }
         
         $listorder = $request->input('listorder', 100);
         
         $status = $info->updateListorder($listorder);
         if ($status === false) {
-            return $this->error(__('更新排序失败'));
+            return $this->error(__('larke-admin::auth_group.update_sort_fail'));
         }
         
-        return $this->success(__('更新排序成功'));
+        return $this->success(__('larke-admin::auth_group.update_sort_success'));
     }
     
     /**
@@ -402,25 +402,25 @@ class AuthGroup extends Base
     public function enable(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('ID不能为空'));
+            return $this->error(__('larke-admin::common.id_dont_empty'));
         }
         
         $info = AuthGroupModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('信息不存在'));
+            return $this->error(__('larke-admin::common.info_not_exists'));
         }
         
         if ($info->status == 1) {
-            return $this->error(__('信息已启用'));
+            return $this->error(__('larke-admin::common.info_enabled'));
         }
         
         $status = $info->enable();
         if ($status === false) {
-            return $this->error(__('启用失败'));
+            return $this->error(__('larke-admin::common.enable_fail'));
         }
         
-        return $this->success(__('启用成功'));
+        return $this->success(__('larke-admin::common.enable_success'));
     }
     
     /**
@@ -438,25 +438,25 @@ class AuthGroup extends Base
     public function disable(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('ID不能为空'));
+            return $this->error(__('larke-admin::common.id_dont_empty'));
         }
         
         $info = AuthGroupModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('信息不存在'));
+            return $this->error(__('larke-admin::common.info_not_exists'));
         }
         
         if ($info->status == 0) {
-            return $this->error(__('信息已禁用'));
+            return $this->error(__('larke-admin::common.info_disabled'));
         }
         
         $status = $info->disable();
         if ($status === false) {
-            return $this->error(__('禁用失败'));
+            return $this->error(__('larke-admin::common.disable_fail'));
         }
         
-        return $this->success(__('禁用成功'));
+        return $this->success(__('larke-admin::common.disable_success'));
     }
     
     /**
@@ -475,13 +475,13 @@ class AuthGroup extends Base
     public function access(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->error(__('ID不能为空'));
+            return $this->error(__('larke-admin::common.id_dont_empty'));
         }
         
         $info = AuthGroupModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('信息不存在'));
+            return $this->error(__('larke-admin::common.info_not_exists'));
         }
         
         // 删除
@@ -524,7 +524,7 @@ class AuthGroup extends Base
             Permission::addPolicies($policies);
         }
         
-        return $this->success(__('授权成功'));
+        return $this->success(__('larke-admin::auth_group.access_success'));
     }
     
 }

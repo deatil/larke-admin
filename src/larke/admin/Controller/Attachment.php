@@ -88,7 +88,7 @@ class Attachment extends Base
             ->get()
             ->toArray(); 
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'start' => $start,
             'limit' => $limit,
             'total' => $total,
@@ -111,16 +111,16 @@ class Attachment extends Base
     public function detail(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('文件ID不能为空'));
+            return $this->error(__('larke-admin::attachment.fileid_dont_empty'));
         }
         
         $fileInfo = AttachmentModel::where(['id' => $id])
             ->first();
         if (empty($fileInfo)) {
-            return $this->error(__('文件信息不存在'));
+            return $this->error(__('larke-admin::attachment.file_empty'));
         }
         
-        return $this->success(__('获取成功'), $fileInfo->toArray());
+        return $this->success(__('larke-admin::common.get_success'), $fileInfo->toArray());
     }
     
     /**
@@ -138,28 +138,28 @@ class Attachment extends Base
     public function delete(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('文件ID不能为空'));
+            return $this->error(__('larke-admin::attachment.fileid_dont_empty'));
         }
         
         $fileInfo = AttachmentModel::where(['id' => $id])
             ->first();
         if (empty($fileInfo)) {
-            return $this->error(__('文件信息不存在'));
+            return $this->error(__('larke-admin::attachment.file_empty'));
         }
         
         $uploadService = UploadService::create();
         if ($uploadService === false) {
-            return $this->error(__('文件删除失败'));
+            return $this->error(__('larke-admin::attachment.file_delete_fail'));
         }
         
         $deleteStatus = $fileInfo->delete();
         if ($deleteStatus === false) {
-            return $this->error(__('文件删除失败'));
+            return $this->error(__('larke-admin::attachment.file_delete_fail'));
         }
         
         $uploadService->destroy($fileInfo['path']);
         
-        return $this->success(__('文件删除成功'));
+        return $this->success(__('larke-admin::attachment.file_delete_success'));
     }
     
     /**
@@ -177,25 +177,25 @@ class Attachment extends Base
     public function enable(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('文件ID不能为空'));
+            return $this->error(__('larke-admin::attachment.fileid_dont_empty'));
         }
         
         $info = AttachmentModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('文件信息不存在'));
+            return $this->error(__('larke-admin::attachment.file_empty'));
         }
         
         if ($info->status == 1) {
-            return $this->error(__('文件已启用'));
+            return $this->error(__('larke-admin::attachment.file_enabled'));
         }
         
         $status = $info->enable();
         if ($status === false) {
-            return $this->error(__('文件启用失败'));
+            return $this->error(__('larke-admin::attachment.file_enable_fail'));
         }
         
-        return $this->success(__('文件启用成功'));
+        return $this->success(__('larke-admin::attachment.file_enable_success'));
     }
     
     /**
@@ -213,25 +213,25 @@ class Attachment extends Base
     public function disable(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('文件ID不能为空'));
+            return $this->error(__('larke-admin::attachment.fileid_dont_empty'));
         }
         
         $info = AttachmentModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('文件信息不存在'));
+            return $this->error(__('larke-admin::attachment.file_empty'));
         }
         
         if ($info->status == 0) {
-            return $this->error(__('文件已禁用'));
+            return $this->error(__('larke-admin::attachment.file_disabled'));
         }
         
         $status = $info->disable();
         if ($status === false) {
-            return $this->error(__('文件禁用失败'));
+            return $this->error(__('larke-admin::attachment.file_disable_fail'));
         }
         
-        return $this->success(__('文件禁用成功'));
+        return $this->success(__('larke-admin::attachment.file_disable_success'));
     }
     
     /**
@@ -249,19 +249,19 @@ class Attachment extends Base
     public function downloadCode(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('文件ID不能为空'));
+            return $this->error(__('larke-admin::attachment.fileid_dont_empty'));
         }
         
         $fileInfo = AttachmentModel::where(['id' => $id])
             ->first();
         if (empty($fileInfo)) {
-            return $this->error(__('文件信息不存在'));
+            return $this->error(__('larke-admin::attachment.file_empty'));
         }
         
         $code = md5(mt_rand(10000, 99999) . microtime());
         Cache::put($code, $fileInfo->id, 300);
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'code' => $code,
         ]);
     }
@@ -281,27 +281,27 @@ class Attachment extends Base
     public function download(string $code)
     {
         if (empty($code)) {
-            return $this->returnString(__('code值不能为空'));
+            return $this->returnString(__('larke-admin::attachment.code_dont_empty'));
         }
         
         $fileId = Cache::pull($code);
         if (empty($fileId)) {
-            return $this->returnString(__('文件信息不存在'));
+            return $this->returnString(__('larke-admin::attachment.file_empty'));
         }
         
         $fileInfo = AttachmentModel::where(['id' => $fileId])
             ->first();
         if (empty($fileInfo)) {
-            return $this->returnString(__('文件信息不存在'));
+            return $this->returnString(__('larke-admin::attachment.file_empty'));
         }
         
         $uploadService = UploadService::create();
         if ($uploadService === false) {
-            return $this->returnString(__('下载文件失败'));
+            return $this->returnString(__('larke-admin::attachment.download_file_fail'));
         }
         
         if (! $uploadService->exists($fileInfo['path'])) {
-            return $this->returnString(__('文件不存在'));
+            return $this->returnString(__('larke-admin::attachment.file_dont_exists'));
         }
         
         return $uploadService->getStorage()->download($fileInfo['path'], $fileInfo['name']);

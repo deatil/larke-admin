@@ -68,7 +68,7 @@ class Index extends BaseController
             ];
         }
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'start' => $start,
             'limit' => $limit,
             'total' => $total,
@@ -92,7 +92,7 @@ class Index extends BaseController
     public function detail(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('数据ID不能为空'));
+            return $this->error(__('larke-admin::common.id_dont_empty'));
         }
         
         $info = [
@@ -102,10 +102,10 @@ class Index extends BaseController
             'time' => time(),
         ];
         if (empty($info)) {
-            return $this->error(__('数据不存在'));
+            return $this->error(__('larke-admin::common.info_not_exists'));
         }
         
-        return $this->success(__('获取成功'), $info);
+        return $this->success(__('larke-admin::common.get_success'), $info);
     }
     
     /**
@@ -124,10 +124,10 @@ class Index extends BaseController
     public function delete(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('数据ID不能为空'));
+            return $this->error(__('larke-admin::common.id_dont_empty'));
         }
         
-        return $this->success(__('数据删除成功'));
+        return $this->success(__('larke-admin::common.delete_success'));
     }
     
 }

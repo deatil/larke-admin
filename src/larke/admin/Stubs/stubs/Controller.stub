@@ -80,7 +80,7 @@ class {controllerName}Controller extends BaseController
             ];
         }
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'start' => $start,
             'limit' => $limit,
             'total' => $total,
@@ -107,7 +107,7 @@ class {controllerName}Controller extends BaseController
         
         $createId = 10000;
         
-        return $this->success(__('信息添加成功'), [
+        return $this->success(__('larke-admin::common.create_success'), [
             'id' => $createId,
         ]);
     }
@@ -129,10 +129,10 @@ class {controllerName}Controller extends BaseController
     public function update(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->error(__('ID不能为空'));
+            return $this->error(__('larke-admin::common.id_dont_empty'));
         }
         
-        return $this->success(__('信息修改成功'));
+        return $this->success(__('larke-admin::common.update_success'));
     }
     
     /**
@@ -151,7 +151,7 @@ class {controllerName}Controller extends BaseController
     public function detail(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('数据ID不能为空'));
+            return $this->error(__('larke-admin::common.id_dont_empty'));
         }
         
         $info = [
@@ -161,10 +161,10 @@ class {controllerName}Controller extends BaseController
             'time' => time(),
         ];
         if (empty($info)) {
-            return $this->error(__('数据不存在'));
+            return $this->error(__('larke-admin::common.info_not_exists'));
         }
         
-        return $this->success(__('获取成功'), $info);
+        return $this->success(__('larke-admin::common.get_success'), $info);
     }
     
     /**
@@ -184,10 +184,10 @@ class {controllerName}Controller extends BaseController
     public function listorder(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->error(__('ID不能为空'));
+            return $this->error(__('larke-admin::common.id_dont_empty'));
         }
         
-        return $this->success(__('更新排序成功'));
+        return $this->success(__('larke-admin::common.sort_update_success'));
     }
     
     /**
@@ -206,10 +206,10 @@ class {controllerName}Controller extends BaseController
     public function delete(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('数据ID不能为空'));
+            return $this->error(__('larke-admin::common.id_dont_empty'));
         }
         
-        return $this->success(__('数据删除成功'));
+        return $this->success(__('larke-admin::common.delete_success'));
     }
     
     /**
@@ -228,10 +228,10 @@ class {controllerName}Controller extends BaseController
     public function enable(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('ID不能为空'));
+            return $this->error(__('larke-admin::common.id_dont_empty'));
         }
         
-        return $this->success(__('启用成功'));
+        return $this->success(__('larke-admin::common.enable_success'));
     }
     
     /**
@@ -250,10 +250,10 @@ class {controllerName}Controller extends BaseController
     public function disable(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('ID不能为空'));
+            return $this->error(__('larke-admin::common.id_dont_empty'));
         }
         
-        return $this->success(__('禁用成功'));
+        return $this->success(__('larke-admin::common.disable_success'));
     }
 
 }

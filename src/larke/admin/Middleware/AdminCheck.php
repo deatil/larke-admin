@@ -22,7 +22,7 @@ class AdminCheck
     {
         $isSuperAdministrator = app('larke-admin.auth-admin')->isSuperAdministrator();
         if (! $isSuperAdministrator) {
-            return $this->error(__('你没有权限进行该操作'), \ResponseCode::AUTH_ERROR);
+            return $this->error(__('larke-admin::auth.no_permission'), \ResponseCode::AUTH_ERROR);
         }
         
         return $next($request);

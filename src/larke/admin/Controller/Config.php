@@ -81,8 +81,8 @@ class Config extends Base
             ], [
                 'group' => 'required|alpha_num',
             ], [
-                'group.required' => __('分组不能为空'),
-                'group.alpha_num' => __('分组格式错误'),
+                'group.required' => __('larke-admin::config.group_dont_empty'),
+                'group.alpha_num' => __('larke-admin::config.group_error'),
             ]);
             
             if ($validator->fails()) {
@@ -104,7 +104,7 @@ class Config extends Base
             ->get()
             ->toArray(); 
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'start' => $start,
             'limit' => $limit,
             'total' => $total,
@@ -127,17 +127,17 @@ class Config extends Base
     public function detail(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('ID不能为空'));
+            return $this->error(__('larke-admin::common.id_dont_empty'));
         }
         
         $info = ConfigModel::where('id', '=', $id)
             ->orWhere('name', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('信息不存在'));
+            return $this->error(__('larke-admin::common.info_not_exists'));
         }
         
-        return $this->success(__('获取成功'), $info);
+        return $this->success(__('larke-admin::common.get_success'), $info);
     }
     
     /**
@@ -155,21 +155,21 @@ class Config extends Base
     public function delete(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('ID不能为空'));
+            return $this->error(__('larke-admin::common.id_dont_empty'));
         }
         
         $info = ConfigModel::where(['id' => $id])
             ->first();
         if (empty($info)) {
-            return $this->error(__('信息不存在'));
+            return $this->error(__('larke-admin::common.info_not_exists'));
         }
         
         $deleteStatus = $info->delete();
         if ($deleteStatus === false) {
-            return $this->error(__('信息删除失败'));
+            return $this->error(__('larke-admin::common.delete_fail'));
         }
         
-        return $this->success(__('信息删除成功'));
+        return $this->success(__('larke-admin::common.delete_success'));
     }
     
     /**
@@ -195,12 +195,12 @@ class Config extends Base
             'name' => 'required|max:30|unique:'.ConfigModel::class,
             'status' => 'required',
         ], [
-            'group.required' => __('分组不能为空'),
-            'group.alpha_num' => __('分组格式错误'),
-            'type.required' => __('类型不能为空'),
-            'title.required' => __('标题不能为空'),
-            'name.required' => __('名称不能为空'),
-            'status.required' => __('状态选项不能为空'),
+            'group.required' => __('larke-admin::config.group_dont_empty'),
+            'group.alpha_num' => __('larke-admin::config.group_error'),
+            'type.required' => __('larke-admin::config.type_dont_empty'),
+            'title.required' => __('larke-admin::config.title_dont_empty'),
+            'name.required' => __('larke-admin::config.name_dont_empty'),
+            'status.required' => __('larke-admin::config.status_dont_empty'),
         ]);
 
         if ($validator->fails()) {
@@ -223,13 +223,13 @@ class Config extends Base
         
         $config = ConfigModel::create($insertData);
         if ($config === false) {
-            return $this->error(__('信息添加失败'));
+            return $this->error(__('larke-admin::config.create_fail'));
         }
         
         // 监听事件
         event(new Event\ConfigCreated($config));
         
-        return $this->success(__('信息添加成功'), [
+        return $this->success(__('larke-admin::config.create_success'), [
             'id' => $config->id,
         ]);
     }
@@ -250,13 +250,13 @@ class Config extends Base
     public function update(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->error(__('ID不能为空'));
+            return $this->error(__('larke-admin::common.id_dont_empty'));
         }
         
         $info = ConfigModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('信息不存在'));
+            return $this->error(__('larke-admin::common.info_not_exists'));
         }
         
         $data = $request->all();
@@ -267,12 +267,12 @@ class Config extends Base
             'name' => 'required|max:30',
             'status' => 'required',
         ], [
-            'group.required' => __('分组不能为空'),
-            'group.alpha_num' => __('分组格式错误'),
-            'type.required' => __('类型不能为空'),
-            'title.required' => __('标题不能为空'),
-            'name.required' => __('名称不能为空'),
-            'status.required' => __('状态选项不能为空'),
+            'group.required' => __('larke-admin::config.group_dont_empty'),
+            'group.alpha_num' => __('larke-admin::config.group_error'),
+            'type.required' => __('larke-admin::config.type_dont_empty'),
+            'title.required' => __('larke-admin::config.title_dont_empty'),
+            'name.required' => __('larke-admin::config.name_dont_empty'),
+            'status.required' => __('larke-admin::config.status_dont_empty'),
         ]);
 
         if ($validator->fails()) {
@@ -283,7 +283,7 @@ class Config extends Base
             ->where('id', '!=', $id)
             ->first();
         if (!empty($nameInfo)) {
-            return $this->error(__('要修改成的名称已经存在'));
+            return $this->error(__('larke-admin::config.name_exists'));
         }
         
         $updateData = [
@@ -303,13 +303,13 @@ class Config extends Base
         // 更新信息
         $status = $info->update($updateData);
         if ($status === false) {
-            return $this->error(__('信息修改失败'));
+            return $this->error(__('larke-admin::config.update_fail'));
         }
         
         // 监听事件
         event(new Event\ConfigUpdated($info));
         
-        return $this->success(__('信息修改成功'));
+        return $this->success(__('larke-admin::config.update_success'));
     }
     
     /**
@@ -342,7 +342,7 @@ class Config extends Base
             ->get()
             ->toArray(); 
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'list' => $list,
         ]);
         
@@ -371,7 +371,7 @@ class Config extends Base
         
         event(new Event\ConfigSettingAfter($fields));
         
-        return $this->success(__('设置更新成功'));
+        return $this->success(__('larke-admin::config.setting_update_success'));
     }
     
     /**
@@ -391,7 +391,7 @@ class Config extends Base
         
         event(new Event\ConfigSettingsAfter($settings));
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'settings' => $settings,
         ]);
     }
@@ -412,23 +412,23 @@ class Config extends Base
     public function listorder(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->error(__('ID不能为空'));
+            return $this->error(__('larke-admin::common.id_dont_empty'));
         }
         
         $info = ConfigModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('信息不存在'));
+            return $this->error(__('larke-admin::common.info_not_exists'));
         }
         
         $listorder = $request->input('listorder', 100);
         
         $status = $info->updateListorder($listorder);
         if ($status === false) {
-            return $this->error(__('更新排序失败'));
+            return $this->error(__('larke-admin::config.sort_update_fail'));
         }
         
-        return $this->success(__('更新排序成功'));
+        return $this->success(__('larke-admin::config.sort_update_success'));
     }
     
     /**
@@ -446,25 +446,25 @@ class Config extends Base
     public function enable(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('ID不能为空'));
+            return $this->error(__('larke-admin::common.id_dont_empty'));
         }
         
         $info = ConfigModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('信息不存在'));
+            return $this->error(__('larke-admin::common.info_not_exists'));
         }
         
         if ($info->status == 1) {
-            return $this->error(__('信息已启用'));
+            return $this->error(__('larke-admin::common.info_enabled'));
         }
         
         $status = $info->enable();
         if ($status === false) {
-            return $this->error(__('启用失败'));
+            return $this->error(__('larke-admin::common.enable_fail'));
         }
         
-        return $this->success(__('启用成功'));
+        return $this->success(__('larke-admin::common.enable_success'));
     }
     
     /**
@@ -482,25 +482,25 @@ class Config extends Base
     public function disable(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('ID不能为空'));
+            return $this->error(__('larke-admin::common.id_dont_empty'));
         }
         
         $info = ConfigModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('信息不存在'));
+            return $this->error(__('larke-admin::common.info_not_exists'));
         }
         
         if ($info->status == 0) {
-            return $this->error(__('信息已禁用'));
+            return $this->error(__('larke-admin::common.info_disabled'));
         }
         
         $status = $info->disable();
         if ($status === false) {
-            return $this->error(__('禁用失败'));
+            return $this->error(__('larke-admin::common.disable_fail'));
         }
         
-        return $this->success(__('禁用成功'));
+        return $this->success(__('larke-admin::common.disable_success'));
     }
     
 }

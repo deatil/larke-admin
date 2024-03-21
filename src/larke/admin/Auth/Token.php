@@ -109,7 +109,7 @@ class Token
     public function validate(JWT $token): void
     {
         if (! $token->validate()) {
-            throw new JWTException(__('token数据错误'));
+            throw new JWTException(__('larke-admin::auth.token_validate_error'));
         }
     }
     
@@ -121,7 +121,7 @@ class Token
     public function verify(JWT $token): void
     {
         if (! $token->verify()) {
-            throw new JWTException(__('token验证失败'));
+            throw new JWTException(__('larke-admin::auth.token_verify_fail'));
         }
     }
     
@@ -131,11 +131,11 @@ class Token
     public function checkToken(string $token): void
     {
         if (empty($token)) {
-            throw new JWTException(__('token格式错误'));
+            throw new JWTException(__('larke-admin::auth.token_error'));
         }
         
         if (count(explode('.', $token)) <> 3) {
-            throw new JWTException(__('token格式错误'));
+            throw new JWTException(__('larke-admin::auth.token_error'));
         }
     }
     

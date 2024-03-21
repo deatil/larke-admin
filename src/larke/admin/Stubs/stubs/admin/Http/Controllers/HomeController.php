@@ -39,7 +39,7 @@ class HomeController extends BaseController
     )]
     public function index(Request $request)
     {
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'data' => "home controller",
         ]);
     }

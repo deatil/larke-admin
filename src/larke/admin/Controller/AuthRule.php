@@ -93,7 +93,7 @@ class AuthRule extends Base
             ->get()
             ->toArray(); 
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'start' => $start,
             'limit' => $limit,
             'total' => $total,
@@ -127,7 +127,7 @@ class AuthRule extends Base
             ->withData($result)
             ->build(0);
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'list' => $list,
         ]);
     }
@@ -148,7 +148,7 @@ class AuthRule extends Base
     {
         $id = $request->input('id', 0);
         if (is_array($id)) {
-            return $this->error(__('ID错误'));
+            return $this->error(__('larke-admin::common.id_error'));
         }
         
         $type = $request->input('type');
@@ -158,7 +158,7 @@ class AuthRule extends Base
             $data = AuthRuleRepository::getChildrenIds($id);
         }
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'list' => $data,
         ]);
     }
@@ -178,16 +178,16 @@ class AuthRule extends Base
     public function detail(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('ID不能为空'));
+            return $this->error(__('larke-admin::common.id_dont_empty'));
         }
         
         $info = AuthRuleModel::where(['id' => $id])
             ->first();
         if (empty($info)) {
-            return $this->error(__('信息不存在'));
+            return $this->error(__('larke-admin::common.info_not_exists'));
         }
         
-        return $this->success(__('获取成功'), $info);
+        return $this->success(__('larke-admin::common.get_success'), $info);
     }
     
     /**
@@ -205,31 +205,31 @@ class AuthRule extends Base
     public function delete(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('ID不能为空'));
+            return $this->error(__('larke-admin::common.id_dont_empty'));
         }
         
         $info = AuthRuleModel::where(['id' => $id])
             ->first();
         if (empty($info)) {
-            return $this->error(__('信息不存在'));
+            return $this->error(__('larke-admin::common.info_not_exists'));
         }
         
         $childInfo = AuthRuleModel::where(['parentid' => $id])
             ->first();
         if (!empty($childInfo)) {
-            return $this->error(__('还有子权限链接存在，请删除子权限链接后再操作'));
+            return $this->error(__('larke-admin::auth_rule.rule_dont_delete'));
         }
         
         if ($info->is_system == 1) {
-            return $this->error(__('系统权限不能删除'));
+            return $this->error(__('larke-admin::auth_rule.system_rule_dont_delete'));
         }
         
         $deleteStatus = $info->delete();
         if ($deleteStatus === false) {
-            return $this->error(__('信息删除失败'));
+            return $this->error(__('larke-admin::common.delete_fail'));
         }
         
-        return $this->success(__('信息删除成功'));
+        return $this->success(__('larke-admin::common.delete_success'));
     }
     
     /**
@@ -248,7 +248,7 @@ class AuthRule extends Base
     {
         $ids = $request->input('ids');
         if (empty($ids)) {
-            return $this->error(__('权限ID列表不能为空'));
+            return $this->error(__('larke-admin::auth_rule.rule_list_dont_empty'));
         }
         
         $ids = explode(',', $ids);
@@ -272,7 +272,7 @@ class AuthRule extends Base
             $info->delete();
         }
         
-        return $this->success(__('删除特定权限成功'));
+        return $this->success(__('larke-admin::auth_rule.delete_rule_success'));
     }
     
     /**
@@ -303,12 +303,12 @@ class AuthRule extends Base
             'slug' => 'required',
             'status' => 'required',
         ], [
-            'parentid.required' => __('父级分类不能为空'),
-            'title.required' => __('名称不能为空'),
-            'url.required' => __('权限链接不能为空'),
-            'method.required' => __('请求类型不能为空'),
-            'slug.required' => __('链接标识不能为空'),
-            'status.required' => __('状态选项不能为空'),
+            'parentid.required' => __('larke-admin::auth_rule.parent_cate_dont_empty'),
+            'title.required' => __('larke-admin::auth_rule.title_dont_empty'),
+            'url.required' => __('larke-admin::auth_rule.rule_dont_empty'),
+            'method.required' => __('larke-admin::auth_rule.method_dont_empty'),
+            'slug.required' => __('larke-admin::auth_rule.slug_dont_empty'),
+            'status.required' => __('larke-admin::auth_rule.status_dont_empty'),
         ]);
 
         if ($validator->fails()) {
@@ -319,7 +319,7 @@ class AuthRule extends Base
             ->where('method', $data['method'])
             ->first();
         if (!empty($slugInfo)) {
-            return $this->error(__('链接标识已经存在'));
+            return $this->error(__('larke-admin::auth_rule.slug_exists'));
         }
         
         $insertData = [
@@ -337,10 +337,10 @@ class AuthRule extends Base
         
         $rule = AuthRuleModel::create($insertData);
         if ($rule === false) {
-            return $this->error(__('信息添加失败'));
+            return $this->error(__('larke-admin::auth_rule.create_fail'));
         }
         
-        return $this->success(__('信息添加成功'), [
+        return $this->success(__('larke-admin::auth_rule.create_success'), [
             'id' => $rule->id,
         ]);
     }
@@ -361,14 +361,14 @@ class AuthRule extends Base
     public function update(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->error(__('ID不能为空'));
+            return $this->error(__('larke-admin::common.id_dont_empty'));
         }
         
         $info = AuthRuleModel::with('children')
             ->where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('信息不存在'));
+            return $this->error(__('larke-admin::common.info_not_exists'));
         }
         
         $requestData = $request->all();
@@ -384,12 +384,12 @@ class AuthRule extends Base
             'slug' => 'required',
             'status' => 'required',
         ], [
-            'parentid.required' => __('父级分类不能为空'),
-            'title.required' => __('名称不能为空'),
-            'url.required' => __('权限链接不能为空'),
-            'method.required' => __('请求类型不能为空'),
-            'slug.required' => __('链接标识不能为空'),
-            'status.required' => __('状态选项不能为空'),
+            'parentid.required' => __('larke-admin::auth_rule.parent_cate_dont_empty'),
+            'title.required' => __('larke-admin::auth_rule.title_dont_empty'),
+            'url.required' => __('larke-admin::auth_rule.rule_dont_empty'),
+            'method.required' => __('larke-admin::auth_rule.method_dont_empty'),
+            'slug.required' => __('larke-admin::auth_rule.slug_dont_empty'),
+            'status.required' => __('larke-admin::auth_rule.status_dont_empty'),
         ]);
 
         if ($validator->fails()) {
@@ -401,13 +401,13 @@ class AuthRule extends Base
             ->where('id', '!=', $id)
             ->first();
         if (!empty($slugInfo)) {
-            return $this->error(__('链接标识已经存在'));
+            return $this->error(__('larke-admin::auth_rule.slug_exists'));
         }
         
         $childrenIds = AuthRuleRepository::getChildrenIdsFromData($info['children'], $id);
         $childrenIds[] = $id;
         if (in_array($requestData['parentid'], $childrenIds)) {
-            return $this->error(__('父级ID设置错误'));
+            return $this->error(__('larke-admin::auth_rule.parentid_error'));
         }
         
         $updateData = [
@@ -426,10 +426,10 @@ class AuthRule extends Base
         // 更新信息
         $status = $info->update($updateData);
         if ($status === false) {
-            return $this->error(__('信息修改失败'));
+            return $this->error(__('larke-admin::auth_rule.update_fail'));
         }
         
-        return $this->success(__('信息修改成功'));
+        return $this->success(__('larke-admin::auth_rule.update_success'));
         
     }
     
@@ -449,23 +449,23 @@ class AuthRule extends Base
     public function listorder(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->error(__('ID不能为空'));
+            return $this->error(__('larke-admin::common.id_dont_empty'));
         }
         
         $info = AuthRuleModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('信息不存在'));
+            return $this->error(__('larke-admin::common.info_not_exists'));
         }
         
         $listorder = $request->input('listorder', 100);
         
         $status = $info->updateListorder($listorder);
         if ($status === false) {
-            return $this->error(__('更新排序失败'));
+            return $this->error(__('larke-admin::auth_rule.sort_update_fail'));
         }
         
-        return $this->success(__('更新排序成功'));
+        return $this->success(__('larke-admin::auth_rule.sort_update_success'));
     }
     
     /**
@@ -483,25 +483,25 @@ class AuthRule extends Base
     public function enable(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('ID不能为空'));
+            return $this->error(__('larke-admin::common.id_dont_empty'));
         }
         
         $info = AuthRuleModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('信息不存在'));
+            return $this->error(__('larke-admin::common.info_not_exists'));
         }
         
         if ($info->status == 1) {
-            return $this->error(__('信息已启用'));
+            return $this->error(__('larke-admin::common.info_enabled'));
         }
         
         $status = $info->enable();
         if ($status === false) {
-            return $this->error(__('启用失败'));
+            return $this->error(__('larke-admin::common.enable_fail'));
         }
         
-        return $this->success(__('启用成功'));
+        return $this->success(__('larke-admin::common.enable_success'));
     }
     
     /**
@@ -519,25 +519,25 @@ class AuthRule extends Base
     public function disable(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('ID不能为空'));
+            return $this->error(__('larke-admin::common.id_dont_empty'));
         }
         
         $info = AuthRuleModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('信息不存在'));
+            return $this->error(__('larke-admin::common.info_not_exists'));
         }
         
         if ($info->status == 0) {
-            return $this->error(__('信息已禁用'));
+            return $this->error(__('larke-admin::common.info_disabled'));
         }
         
         $status = $info->disable();
         if ($status === false) {
-            return $this->error(__('禁用失败'));
+            return $this->error(__('larke-admin::common.disable_fail'));
         }
         
-        return $this->success(__('禁用成功'));
+        return $this->success(__('larke-admin::common.disable_success'));
     }
     
 }

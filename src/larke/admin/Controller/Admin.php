@@ -104,7 +104,7 @@ class Admin extends Base
             ->get()
             ->toArray(); 
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'start' => $start,
             'limit' => $limit,
             'total' => $total,
@@ -127,7 +127,7 @@ class Admin extends Base
     public function detail(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('账号ID不能为空'));
+            return $this->error(__('larke-admin::admin.userid_dont_empty'));
         }
         
         $info = AdminModel::withAccess()
@@ -149,7 +149,7 @@ class Admin extends Base
             ])
             ->first();
         if (empty($info)) {
-            return $this->error(__('账号不存在'));
+            return $this->error(__('larke-admin::admin.user_not_exists'));
         }
         
         $adminGroups = $info['groups'];
@@ -164,7 +164,7 @@ class Admin extends Base
                 ];
             });
         
-        return $this->success(__('获取成功'), $info);
+        return $this->success(__('larke-admin::common.get_success'), $info);
     }
     
     /**
@@ -182,7 +182,7 @@ class Admin extends Base
     public function rules(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('账号ID不能为空'));
+            return $this->error(__('larke-admin::admin.userid_dont_empty'));
         }
         
         $info = AdminModel::withAccess()
@@ -195,13 +195,13 @@ class Admin extends Base
             ])
             ->first();
         if (empty($info)) {
-            return $this->error(__('账号不存在'));
+            return $this->error(__('larke-admin::admin.user_not_exists'));
         }
         
         $groupids = collect($info['groups'])->pluck('id')->toArray();
         
         $rules = AdminRepository::getRules($groupids);
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'list' => $rules,
         ]);
     }
@@ -221,31 +221,31 @@ class Admin extends Base
     public function delete(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('账号ID不能为空'));
+            return $this->error(__('larke-admin::admin.userid_dont_empty'));
         }
         
         $adminid = app('larke-admin.auth-admin')->getId();
         if ($id == $adminid) {
-            return $this->error(__('你不能删除自己的账号'));
+            return $this->error(__('larke-admin::admin.dont_delete_self_passport'));
         }
         
         $info = AdminModel::withAccess()
             ->where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('账号信息不存在'));
+            return $this->error(__('larke-admin::admin.passport_not_exists'));
         }
         
         if ($info['id'] == config('larkeadmin.auth.admin_id')) {
-            return $this->error(__('当前账号不能被删除'));
+            return $this->error(__('larke-admin::admin.passport_dont_delete'));
         }
         
         $deleteStatus = $info->delete();
         if ($deleteStatus === false) {
-            return $this->error(__('账号删除失败'));
+            return $this->error(__('larke-admin::admin.delete_fail'));
         }
         
-        return $this->success(__('账号删除成功'));
+        return $this->success(__('larke-admin::admin.delete_success'));
     }
     
     /**
@@ -291,7 +291,7 @@ class Admin extends Base
             $list = app('larke-admin.auth-admin')->getGroupChildren();
         }
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'list' => $list,
         ]);
     }
@@ -319,22 +319,22 @@ class Admin extends Base
             'introduce' => 'required|max:500',
             'status' => 'required',
         ], [
-            'group_id.required' => __('账号所属分组不能为空'),
-            'name.required' => __('账号不能为空'),
-            'name.unique' => __('账号已经存在'),
-            'name.min' => __('账号最小字符需要2个'),
-            'name.max' => __('账号最大字符需要20个'),
-            'nickname.required' => __('昵称不能为空'),
-            'nickname.min' => __('昵称最小字符需要2个'),
-            'nickname.max' => __('昵称最大字符需要150个'),
-            'email.required' => __('邮箱不能为空'),
-            'email.email' => __('邮箱格式错误'),
-            'email.unique' => __('邮箱已经存在'),
-            'email.min' => __('邮箱最小字符需要5个'),
-            'email.max' => __('邮箱最大字符需要100个'),
-            'introduce.required' => __('简介不能为空'),
-            'introduce.max' => __('简介字数最大字符需要500个'),
-            'status.required' => __('状态选项不能为空'),
+            'group_id.required' => __('larke-admin::admin.group_dont_empty'),
+            'name.required' => __('larke-admin::admin.passport_dont_empty'),
+            'name.unique' => __('larke-admin::admin.passport_exists'),
+            'name.min' => __('larke-admin::admin.name_min'),
+            'name.max' => __('larke-admin::admin.name_max'),
+            'nickname.required' => __('larke-admin::admin.nickname_dont_empty'),
+            'nickname.min' => __('larke-admin::admin.nickname_min'),
+            'nickname.max' => __('larke-admin::admin.nickname_max'),
+            'email.required' => __('larke-admin::admin.email_dont_empty'),
+            'email.email' => __('larke-admin::admin.email_error'),
+            'email.unique' => __('larke-admin::admin.email_exists'),
+            'email.min' => __('larke-admin::admin.email_min'),
+            'email.max' => __('larke-admin::admin.email_max'),
+            'introduce.required' => __('larke-admin::admin.introduce_dont_empty'),
+            'introduce.max' => __('larke-admin::admin.introduce_max'),
+            'status.required' => __('larke-admin::admin.status_dont_empty'),
         ]);
 
         if ($validator->fails()) {
@@ -354,8 +354,8 @@ class Admin extends Base
             ], [
                 'avatar' => 'required|size:36',
             ], [
-                'avatar.required' => __('头像数据不能为空'),
-                'avatar.size' => __('头像数据错误'),
+                'avatar.required' => __('larke-admin::admin.avatar_dont_empty'),
+                'avatar.size' => __('larke-admin::admin.avatar_error'),
             ]);
 
             if ($validatorAvatar->fails()) {
@@ -367,7 +367,7 @@ class Admin extends Base
         
         $admin = AdminModel::create($insertData);
         if ($admin === false) {
-            return $this->error(__('添加账号失败'));
+            return $this->error(__('larke-admin::admin.create_passport_fail'));
         }
         
         // 添加关联
@@ -376,7 +376,7 @@ class Admin extends Base
             'group_id' => $data['group_id'],
         ]);
         
-        return $this->success(__('添加账号成功'), [
+        return $this->success(__('larke-admin::admin.create_passport_success'), [
             'id' => $admin->id,
         ]);
     }
@@ -397,19 +397,19 @@ class Admin extends Base
     public function update(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->error(__('账号ID不能为空'));
+            return $this->error(__('larke-admin::admin.userid_dont_empty'));
         }
         
         $adminid = app('larke-admin.auth-admin')->getId();
         if ($id == $adminid) {
-            return $this->error(__('你不能修改自己的账号'));
+            return $this->error(__('larke-admin::admin.dont_update_passport'));
         }
         
         $adminInfo = AdminModel::withAccess()
             ->where('id', '=', $id)
             ->first();
         if (empty($adminInfo)) {
-            return $this->error(__('账号不存在'));
+            return $this->error(__('larke-admin::admin.user_not_exists'));
         }
         
         $data = $request->all();
@@ -420,13 +420,13 @@ class Admin extends Base
             'introduce' => 'required|max:500',
             'status' => 'required',
         ], [
-            'name.required' => __('管理员不能为空'),
-            'nickname.required' => __('昵称不能为空'),
-            'email.required' => __('邮箱不能为空'),
-            'email.email' => __('邮箱格式错误'),
-            'introduce.required' => __('简介不能为空'),
-            'introduce.max' => __('简介字数超过了限制'),
-            'status.required' => __('状态选项不能为空'),
+            'name.required' => __('larke-admin::admin.name_required'),
+            'nickname.required' => __('larke-admin::admin.nickname_dont_empty'),
+            'email.required' => __('larke-admin::admin.email_dont_empty'),
+            'email.email' => __('larke-admin::admin.email_error'),
+            'introduce.required' => __('larke-admin::admin.introduce_dont_empty'),
+            'introduce.max' => __('larke-admin::admin.introduce_too_long'),
+            'status.required' => __('larke-admin::admin.status_dont_empty'),
         ]);
         if ($validator->fails()) {
             return $this->error($validator->errors()->first());
@@ -442,7 +442,7 @@ class Admin extends Base
             })
             ->first();
         if (! empty($nameInfo)) {
-            return $this->error(__('管理员账号或者邮箱已经存在'));
+            return $this->error(__('larke-admin::admin.name_or_email_exists'));
         }
         
         $updateData = [
@@ -459,8 +459,8 @@ class Admin extends Base
             ], [
                 'avatar' => 'required|size:36',
             ], [
-                'avatar.required' => __('头像数据不能为空'),
-                'avatar.size' => __('头像数据错误'),
+                'avatar.required' => __('larke-admin::admin.avatar_dont_empty'),
+                'avatar.size' => __('larke-admin::admin.avatar_error'),
             ]);
 
             if ($validatorAvatar->fails()) {
@@ -473,10 +473,10 @@ class Admin extends Base
         // 更新信息
         $status = $adminInfo->update($updateData);
         if ($status === false) {
-            return $this->error(__('账号修改失败'));
+            return $this->error(__('larke-admin::admin.update_fail'));
         }
         
-        return $this->success(__('账号修改成功'));
+        return $this->success(__('larke-admin::admin.update_success'));
     }
 
     /**
@@ -495,19 +495,19 @@ class Admin extends Base
     public function updateAvatar(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->error(__('账号ID不能为空'));
+            return $this->error(__('larke-admin::admin.userid_dont_empty'));
         }
         
         $adminid = app('larke-admin.auth-admin')->getId();
         if ($id == $adminid) {
-            return $this->error(__('你不能修改自己的账号'));
+            return $this->error(__('larke-admin::admin.dont_update_passport'));
         }
         
         $adminInfo = AdminModel::withAccess()
             ->where('id', '=', $id)
             ->first();
         if (empty($adminInfo)) {
-            return $this->error(__('账号不存在'));
+            return $this->error(__('larke-admin::admin.user_not_exists'));
         }
         
         $data = $request->only(['avatar']);
@@ -515,8 +515,8 @@ class Admin extends Base
         $validator = Validator::make($data, [
             'avatar' => 'required|size:36',
         ], [
-            'avatar.required' => __('头像数据不能为空'),
-            'avatar.size' => __('头像数据错误'),
+            'avatar.required' => __('larke-admin::admin.avatar_dont_empty'),
+            'avatar.size' => __('larke-admin::admin.avatar_error'),
         ]);
 
         if ($validator->fails()) {
@@ -525,10 +525,10 @@ class Admin extends Base
         
         $status = $adminInfo->updateAvatar($data['avatar']);
         if ($status === false) {
-            return $this->error(__('修改头像失败'));
+            return $this->error(__('larke-admin::admin.update_avatar_fail'));
         }
         
-        return $this->success(__('修改头像成功'));
+        return $this->success(__('larke-admin::admin.update_avatar_success'));
     }
     
     /**
@@ -547,25 +547,25 @@ class Admin extends Base
     public function updatePasssword(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->error(__('账号ID不能为空'));
+            return $this->error(__('larke-admin::admin.userid_dont_empty'));
         }
         
         $adminid = app('larke-admin.auth-admin')->getId();
         if ($id == $adminid) {
-            return $this->error(__('你不能修改自己的账号'));
+            return $this->error(__('larke-admin::admin.dont_update_passport'));
         }
         
         $adminInfo = AdminModel::withAccess()
             ->where('id', '=', $id)
             ->first();
         if (empty($adminInfo)) {
-            return $this->error(__('账号不存在'));
+            return $this->error(__('larke-admin::admin.user_not_exists'));
         }
 
         // 密码长度错误
         $password = $request->input('password');
         if (strlen($password) != 32) {
-            return $this->error(__('密码格式错误'));
+            return $this->error(__('larke-admin::admin.password_error'));
         }
 
         // 新密码
@@ -577,10 +577,10 @@ class Admin extends Base
                 'password_salt' => $newPasswordInfo['encrypt'],
             ]);
         if ($status === false) {
-            return $this->error(__('密码修改失败'));
+            return $this->error(__('larke-admin::admin.password_update_fail'));
         }
         
-        return $this->success(__('密码修改成功'));
+        return $this->success(__('larke-admin::admin.password_update_success'));
     }
     
     /**
@@ -598,31 +598,31 @@ class Admin extends Base
     public function enable(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('账号ID不能为空'));
+            return $this->error(__('larke-admin::admin.userid_dont_empty'));
         }
         
         $adminid = app('larke-admin.auth-admin')->getId();
         if ($id == $adminid) {
-            return $this->error(__('你不能修改自己的账号'));
+            return $this->error(__('larke-admin::admin.dont_update_passport'));
         }
         
         $info = AdminModel::withAccess()
             ->where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('账号不存在'));
+            return $this->error(__('larke-admin::admin.user_not_exists'));
         }
         
         if ($info->status == 1) {
-            return $this->error(__('账号已启用'));
+            return $this->error(__('larke-admin::admin.passport_enabled'));
         }
         
         $status = $info->enable();
         if ($status === false) {
-            return $this->error(__('启用账号失败'));
+            return $this->error(__('larke-admin::admin.passport_enable_fail'));
         }
         
-        return $this->success(__('启用账号成功'));
+        return $this->success(__('larke-admin::admin.passport_enable_success'));
     }
     
     /**
@@ -640,31 +640,31 @@ class Admin extends Base
     public function disable(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('账号ID不能为空'));
+            return $this->error(__('larke-admin::admin.userid_dont_empty'));
         }
         
         $adminid = app('larke-admin.auth-admin')->getId();
         if ($id == $adminid) {
-            return $this->error(__('你不能修改自己的账号'));
+            return $this->error(__('larke-admin::admin.dont_update_passport'));
         }
         
         $info = AdminModel::withAccess()
             ->where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('账号不存在'));
+            return $this->error(__('larke-admin::admin.user_not_exists'));
         }
         
         if ($info->status == 0) {
-            return $this->error(__('账号已禁用'));
+            return $this->error(__('larke-admin::admin.passport_disabled'));
         }
         
         $status = $info->disable();
         if ($status === false) {
-            return $this->error(__('禁用账号失败'));
+            return $this->error(__('larke-admin::admin.passport_disable_fail'));
         }
         
-        return $this->success(__('禁用账号成功'));
+        return $this->success(__('larke-admin::admin.passport_disable_success'));
     }
     
     /**
@@ -682,11 +682,11 @@ class Admin extends Base
     public function logout(string $refreshToken)
     {
         if (empty($refreshToken)) {
-            return $this->error(__('refreshToken不能为空'));
+            return $this->error(__('larke-admin::admin.refresh_token_not_empty'));
         }
         
         if (app('larke-admin.cache')->has(md5($refreshToken))) {
-            return $this->error(__('refreshToken已失效'));
+            return $this->error(__('larke-admin::admin.refresh_token_error'));
         }
         
         try {
@@ -709,7 +709,7 @@ class Admin extends Base
         
         $adminid = app('larke-admin.auth-admin')->getId();
         if ($refreshAdminid == $adminid) {
-            return $this->error(__('你不能退出你的账号'));
+            return $this->error(__('larke-admin::admin.self_passport_dont_logout'));
         }
         
         // 添加缓存黑名单
@@ -721,7 +721,7 @@ class Admin extends Base
             'refresh_ip' => request()->ip(),
         ]);
         
-        return $this->success(__('账号退出成功'));
+        return $this->success(__('larke-admin::admin.passport_logout_success'));
     }
     
     /**
@@ -740,14 +740,14 @@ class Admin extends Base
     public function access(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->error(__('账号ID不能为空'));
+            return $this->error(__('larke-admin::admin.userid_dont_empty'));
         }
         
         $info = AdminModel::withAccess()
             ->where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('账号不存在'));
+            return $this->error(__('larke-admin::admin.user_not_exists'));
         }
         
         // 删除
@@ -794,7 +794,7 @@ class Admin extends Base
             Permission::addRolesForUser($id, $roles);
         }
         
-        return $this->success(__('账号授权分组成功'));
+        return $this->success(__('larke-admin::admin.group_access_success'));
     }
     
     /**
@@ -814,7 +814,7 @@ class Admin extends Base
         $guard = config('larkeauth.default');
         $table = config('larkeauth.guards.'.$guard.'.database.rules_table');
         if (empty($table)) {
-            return $this->error(__('重设权限缓存失败'));
+            return $this->error(__('larke-admin::admin.reset_permission_fail'));
         }
         
         DB::table($table)->truncate();
@@ -841,7 +841,7 @@ class Admin extends Base
                 Permission::addRoleForUser($data['admin_id'], $data['group_id']);
             });
         
-        return $this->success(__('重设权限缓存成功'));
+        return $this->success(__('larke-admin::admin.reset_permission_success'));
     }
 
 }

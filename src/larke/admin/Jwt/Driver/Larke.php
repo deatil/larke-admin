@@ -265,7 +265,7 @@ class Larke implements JWTContract
         // 加密方式
         $algorithm = Signer::getSigningMethod($this->signingMethod);
         if (empty($algorithm)) {
-            throw new JWTException(__('签名类型不存在'));
+            throw new JWTException(__('larke-admin::jwt.signing_method_not_exists'));
         }
         
         // 加密方式

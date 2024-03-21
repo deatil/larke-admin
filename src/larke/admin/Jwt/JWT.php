@@ -305,7 +305,7 @@ class JWT
         } catch(Exception $e) {
             Log::error('larke-admin-jwt-createToken: '.$e->getMessage());
             
-            throw new JWTException(__('JWT编码失败'));
+            throw new JWTException(__('larke-admin::jwt.encode_fail'));
         }
         
         return $token;
@@ -321,7 +321,7 @@ class JWT
         } catch(Exception $e) {
             Log::error('larke-admin-jwt-parsedToken: '.$e->getMessage());
             
-            throw new JWTException(__('JWT解析失败'));
+            throw new JWTException(__('larke-admin::jwt.decode_fail'));
         }
         
         return $this;

@@ -60,7 +60,7 @@ class Passport extends Base
         // 请求头信息
         $headerExposeHeaders = config('larkeadmin.passport.captcha_expose_headers');
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'captcha' => $captchaImage,
         ], [
             "Access-Control-Expose-Headers" => $headerExposeHeaders,
@@ -113,7 +113,7 @@ class Passport extends Base
         // 请求头信息
         $headerExposeHeaders = config('larkeadmin.passport.passkey_expose_headers');
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'key' => $publicKey,
         ], [
             "Access-Control-Expose-Headers" => $headerExposeHeaders,
@@ -145,10 +145,10 @@ class Passport extends Base
             'password' => 'required',
             'captcha'  => 'required|size:4',
         ], [
-            'name.required'     => __('账号不能为空'),
-            'password.required' => __('密码不能为空'),
-            'captcha.required'  => __('验证码不能为空'),
-            'captcha.size'      => __('验证码位数错误'),
+            'name.required'     => __('larke-admin::passport.passport_dont_empty'),
+            'password.required' => __('larke-admin::passport.password_dont_empty'),
+            'captcha.required'  => __('larke-admin::passport.captcha_dont_empty'),
+            'captcha.size'      => __('larke-admin::passport.captcha_error'),
         ]);
         
         if ($validator->fails()) {
@@ -159,7 +159,7 @@ class Passport extends Base
         $captchaUniq = $request->header($captchaKey);
         $captcha = $request->input('captcha');
         if (! app('larke-admin.captcha')->check($captcha, $captchaUniq)) {
-            return $this->error(__('验证码错误'), \ResponseCode::LOGIN_ERROR);
+            return $this->error(__('larke-admin::passport.captcha_check_fail'), \ResponseCode::LOGIN_ERROR);
         }
         
         // 校验密码
@@ -167,7 +167,7 @@ class Passport extends Base
         $admin = AdminModel::where('name', $name)
             ->first();
         if (empty($admin)) {
-            return $this->error(__('帐号错误'), \ResponseCode::LOGIN_ERROR);
+            return $this->error(__('larke-admin::passport.passport_dont_exists'), \ResponseCode::LOGIN_ERROR);
         }
         
         $adminInfo = $admin
@@ -176,7 +176,7 @@ class Passport extends Base
         
         $password = $request->input('password');
         if (strlen($password) <= 16) {
-            return $this->error(__('密码错误'), \ResponseCode::LOGIN_ERROR);
+            return $this->error(__('larke-admin::passport.password_error'), \ResponseCode::LOGIN_ERROR);
         }
         
         // 取出 RSA 缓存ID
@@ -188,7 +188,7 @@ class Passport extends Base
         // 解出密码
         $password = base64_decode($password);
         if (empty($password)) {
-            return $this->error(__('密码错误'), \ResponseCode::LOGIN_ERROR);
+            return $this->error(__('larke-admin::passport.password_error'), \ResponseCode::LOGIN_ERROR);
         }
 
         try {
@@ -204,20 +204,20 @@ class Passport extends Base
         } catch(\Exception $e) {
             Log::error('larke-admin-login: ' . $e->getMessage());
             
-            return $this->error(__('密码错误'), \ResponseCode::LOGIN_ERROR);
+            return $this->error(__('larke-admin::passport.password_error'), \ResponseCode::LOGIN_ERROR);
         }
 
         $encryptPassword = AdminModel::checkPassword($adminInfo, $password); 
         if (! $encryptPassword) {
             event(new Event\PassportLoginPasswordError($admin));
             
-            return $this->error(__('账号密码错误'), \ResponseCode::LOGIN_ERROR);
+            return $this->error(__('larke-admin::passport.password_check_fail'), \ResponseCode::LOGIN_ERROR);
         }
         
         if ($adminInfo['status'] != 1) {
             event(new Event\PassportLoginInactive($admin));
             
-            return $this->error(__('用户已被禁用或者不存在'), \ResponseCode::LOGIN_ERROR);
+            return $this->error(__('larke-admin::passport.passport_disabled_or_not_exists'), \ResponseCode::LOGIN_ERROR);
         }
         
         try {
@@ -229,11 +229,11 @@ class Passport extends Base
         } catch(\Exception $e) {
             Log::error('larke-admin-login: ' . $e->getMessage());
             
-            return $this->error(__('登陆失败'), \ResponseCode::LOGIN_ERROR);
+            return $this->error(__('larke-admin::passport.login_fail'), \ResponseCode::LOGIN_ERROR);
         }
         
         if (empty($accessToken)) {
-            return $this->error(__('登陆失败'), \ResponseCode::LOGIN_ERROR);
+            return $this->error(__('larke-admin::passport.login_fail'), \ResponseCode::LOGIN_ERROR);
         }
         
         try {
@@ -249,7 +249,7 @@ class Passport extends Base
         }
         
         if (empty($refreshToken)) {
-            return $this->error(__('登陆失败'), \ResponseCode::LOGIN_ERROR);
+            return $this->error(__('larke-admin::passport.login_fail'), \ResponseCode::LOGIN_ERROR);
         }
         
         // 清空 RSA 缓存
@@ -268,7 +268,7 @@ class Passport extends Base
         // 监听事件
         event(new Event\PassportLoginAfter($admin, $data));
         
-        return $this->success(__('登录成功'), $data);
+        return $this->success(__('larke-admin::passport.login_success'), $data);
     }
     
     /**
@@ -287,11 +287,11 @@ class Passport extends Base
     {
         $refreshToken = $request->input('refresh_token');
         if (empty($refreshToken)) {
-            return $this->error(__('refreshToken不能为空'), \ResponseCode::REFRESH_TOKEN_ERROR);
+            return $this->error(__('larke-admin::passport.refresh_token_dont_empty'), \ResponseCode::REFRESH_TOKEN_ERROR);
         }
         
         if (app('larke-admin.cache')->has(md5($refreshToken))) {
-            return $this->error(__('refreshToken已失效'), \ResponseCode::REFRESH_TOKEN_ERROR);
+            return $this->error(__('larke-admin::passport.refresh_token_timeout'), \ResponseCode::REFRESH_TOKEN_ERROR);
         }
         
         try {
@@ -317,7 +317,7 @@ class Passport extends Base
                 $adminInfo = AdminModel::where('id', $refreshAdminid)
                     ->first();
                 if (empty($adminInfo)) {
-                    return $this->error(__('帐号不存在或者已被锁定'), \ResponseCode::REFRESH_TOKEN_ERROR);
+                    return $this->error(__('larke-admin::auth.passport_error'), \ResponseCode::REFRESH_TOKEN_ERROR);
                 }
                 
                 // 账号信息
@@ -325,7 +325,7 @@ class Passport extends Base
                
                 // 判断是否是单端登陆
                 if ($adminInfo['last_active'] != $iat) {
-                    return $this->error(__('刷新Token失败'), \ResponseCode::REFRESH_TOKEN_ERROR);
+                    return $this->error(__('larke-admin::auth.refresh_token_fail'), \ResponseCode::REFRESH_TOKEN_ERROR);
                 }
             }
             
@@ -339,7 +339,7 @@ class Passport extends Base
         }
 
         if (empty($newAccessToken)) {
-            return $this->error(__('刷新Token失败'), \ResponseCode::REFRESH_TOKEN_ERROR);
+            return $this->error(__('larke-admin::auth.refresh_token_fail'), \ResponseCode::REFRESH_TOKEN_ERROR);
         }
         
         // 过期时间
@@ -354,7 +354,7 @@ class Passport extends Base
         // 监听事件
         event(new Event\PassportRefreshTokenAfter($data));
         
-        return $this->success(__('刷新Token成功'), $data);
+        return $this->success(__('larke-admin::auth.refresh_token_success'), $data);
     }
     
     /**
@@ -373,11 +373,11 @@ class Passport extends Base
     {
         $refreshToken = $request->input('refresh_token');
         if (empty($refreshToken)) {
-            return $this->error(__('refreshToken不能为空'), \ResponseCode::LOGOUT_ERROR);
+            return $this->error(__('larke-admin::passport.refresh_token_dont_empty'), \ResponseCode::LOGOUT_ERROR);
         }
         
         if (app('larke-admin.cache')->has(md5($refreshToken))) {
-            return $this->error(__('refreshToken已失效'), \ResponseCode::LOGOUT_ERROR);
+            return $this->error(__('larke-admin::passport.refresh_token_timeout'), \ResponseCode::LOGOUT_ERROR);
         }
         
         try {
@@ -401,7 +401,7 @@ class Passport extends Base
         
         $accessAdminid = app('larke-admin.auth-admin')->getId();
         if ($accessAdminid != $refreshAdminid) {
-            return $this->error(__('退出失败'), \ResponseCode::LOGOUT_ERROR);
+            return $this->error(__('larke-admin::passport.logout_fail'), \ResponseCode::LOGOUT_ERROR);
         }
         
         $accessToken = app('larke-admin.auth-admin')->getAccessToken();
@@ -417,7 +417,7 @@ class Passport extends Base
             'refresh_token' => $refreshToken,
         ]));
         
-        return $this->success(__('退出成功'));
+        return $this->success(__('larke-admin::passport.logout_success'));
     }
     
 }

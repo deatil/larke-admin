@@ -33,7 +33,7 @@ class JsonExceptionHandler
     /**
      * 系统请求检测
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return bool
      */
     protected function isLarkeAdminRequest($request)

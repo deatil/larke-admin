@@ -41,7 +41,7 @@ class Permission
         $requestMethod = request()->getMethod();
         
         if (! app('larke-admin.auth-admin')->hasAccess($requestUrl, $requestMethod)) {
-            return $this->error(__('你没有访问权限'), \ResponseCode::AUTH_ERROR);
+            return $this->error(__('larke-admin::auth.not_permission'), \ResponseCode::AUTH_ERROR);
         }
         
         return null;

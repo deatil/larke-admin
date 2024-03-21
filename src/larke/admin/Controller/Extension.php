@@ -110,7 +110,7 @@ class Extension extends Base
             })
             ->toArray();
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'start' => $start,
             'limit' => $limit,
             'total' => $total,
@@ -153,7 +153,7 @@ class Extension extends Base
             return $data;
         });
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'list' => $extensions,
         ]);
     }
@@ -173,7 +173,7 @@ class Extension extends Base
     {
         AdminExtension::refresh();
         
-        return $this->success(__('扩展刷新成功'));
+        return $this->success(__('larke-admin::extension.extension_refresh_success'));
     }
     
     /**
@@ -191,13 +191,13 @@ class Extension extends Base
     public function command(string $name)
     {
         if (empty($name)) {
-            return $this->error(__('扩展包名不能为空'));
+            return $this->error(__('larke-admin::extension.extension_package_name_dont_empty'));
         }
         
         $installInfo = ExtensionModel::where(['name' => $name])
             ->first();
         if (empty($installInfo)) {
-            return $this->error(__('扩展未安装'));
+            return $this->error(__('larke-admin::extension.extension_dont_install'));
         }
         
         $require = AdminExtension::composerRequireCommand($name);
@@ -214,7 +214,7 @@ class Extension extends Base
             'has_repository' => $hasRepository,
         ];
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'command' => $command,
         ]);
     }
@@ -234,31 +234,31 @@ class Extension extends Base
     public function install(string $name)
     {
         if (empty($name)) {
-            return $this->error(__('扩展包名不能为空'));
+            return $this->error(__('larke-admin::extension.extension_package_name_dont_empty'));
         }
         
         $installInfo = ExtensionModel::where(['name' => $name])
             ->first();
         if (! empty($installInfo)) {
-            return $this->error(__('扩展已经安装'));
+            return $this->error(__('larke-admin::extension.extension_installed'));
         }
         
         AdminExtension::loadExtension();
         
         $info = AdminExtension::getExtension($name);
         if (empty($info)) {
-            return $this->error(__('扩展信息不存在'));
+            return $this->error(__('larke-admin::extension.extension_info_empty'));
         }
         
         $checkInfo = AdminExtension::validateInfo($info);
         if (!$checkInfo) {
-            return $this->error(__('扩展信息错误'));
+            return $this->error(__('larke-admin::extension.extension_info_error'));
         }
         
         try {
             $infoVersion = (new VersionParser())->normalize($info['version']);
         } catch(\Exception $e) {
-            return $this->error(__('扩展版本信息错误'));
+            return $this->error(__('larke-admin::extension.extension_version_error'));
         }
         
         $adminVersion = config('larkeadmin.admin.version');
@@ -266,11 +266,11 @@ class Extension extends Base
         try {
             $versionCheck = Semver::satisfies($adminVersion, $info['adaptation']);
         } catch(\Exception $e) {
-            return $this->error(__('扩展适配系统版本错误'));
+            return $this->error(__('larke-admin::extension.extension_adaptation_error'));
         }
         
         if (! $versionCheck) {
-            return $this->error(__('扩展适配系统版本错误，当前系统版本：:version', [
+            return $this->error(__('larke-admin::extension.extension_adaptation_info_error', [
                 'version' => $adminVersion,
             ]));
         }
@@ -281,7 +281,7 @@ class Extension extends Base
                 return ($data['match'] === false);
             });
             if ($match) {
-                return $this->error(__('扩展依赖出现错误，需要依赖版本: :require', [
+                return $this->error(__('larke-admin::extension.extension_require_error', [
                     'require' => $requireExtensions[0]['name'] . '[' . $requireExtensions[0]['version'] . ']',
                 ]), \ResponseCode::EXTENSION_NOT_MATCH);
             }
@@ -301,7 +301,7 @@ class Extension extends Base
             'class_name' => Arr::get($info, 'class_name'),
         ]);
         if ($extension === false) {
-            return $this->error(__('安装扩展失败'));
+            return $this->error(__('larke-admin::extension.instell_extension_fail'));
         }
         
         // 清除缓存
@@ -310,7 +310,7 @@ class Extension extends Base
         // 安装事件
         event(new Event\ExtensionInstall($name, $info));
         
-        return $this->success(__('安装扩展成功'), [
+        return $this->success(__('larke-admin::extension.instell_extension_success'), [
             'name' => $extension->name
         ]);
     }
@@ -330,22 +330,22 @@ class Extension extends Base
     public function uninstall(string $name)
     {
         if (empty($name)) {
-            return $this->error(__('扩展包名不能为空'));
+            return $this->error(__('larke-admin::extension.extension_package_name_dont_empty'));
         }
         
         $info = ExtensionModel::where(['name' => $name])
             ->first();
         if (empty($info)) {
-            return $this->error(__('扩展未安装'));
+            return $this->error(__('larke-admin::extension.extension_dont_install'));
         }
         
         if ($info->status == 1) {
-            return $this->error(__('扩展需要禁用后才能卸载'));
+            return $this->error(__('larke-admin::extension.uninstell_extension_need_disable'));
         }
 
         $deleteStatus = $info->delete();
         if ($deleteStatus === false) {
-            return $this->error(__('扩展卸载失败'));
+            return $this->error(__('larke-admin::extension.uninstell_extension_fail'));
         }
         
         // 清除缓存
@@ -356,7 +356,7 @@ class Extension extends Base
         // 卸载事件
         event(new Event\ExtensionUninstall($name, $info->toArray()));
         
-        return $this->success(__('扩展卸载成功'));
+        return $this->success(__('larke-admin::extension.uninstell_extension_success'));
     }
     
     /**
@@ -374,28 +374,28 @@ class Extension extends Base
     public function upgrade(string $name)
     {
         if (empty($name)) {
-            return $this->error(__('扩展包名不能为空'));
+            return $this->error(__('larke-admin::extension.extension_package_name_dont_empty'));
         }
         
         $installInfo = ExtensionModel::where(['name' => $name])
             ->first();
         if (empty($installInfo)) {
-            return $this->error(__('扩展未安装'));
+            return $this->error(__('larke-admin::extension.extension_dont_install'));
         }
         
         if ($installInfo->status == 1) {
-            return $this->error(__('扩展需要禁用后才能更新'));
+            return $this->error(__('larke-admin::extension.upgrade_extension_need_disable'));
         }
 
         AdminExtension::loadExtension();
         $info = AdminExtension::getExtension($name);
         if (empty($info)) {
-            return $this->error(__('扩展信息不存在'));
+            return $this->error(__('larke-admin::extension.extension_info_empty'));
         }
         
         $checkInfo = AdminExtension::validateInfo($info);
         if (!$checkInfo) {
-            return $this->error(__('扩展信息错误'));
+            return $this->error(__('larke-admin::extension.extension_info_error'));
         }
         
         $adminVersion = config('larkeadmin.admin.version');
@@ -403,11 +403,11 @@ class Extension extends Base
         try {
             $versionCheck = Semver::satisfies($adminVersion, $info['adaptation']);
         } catch(\Exception $e) {
-            return $this->error(__('扩展适配系统版本错误'));
+            return $this->error(__('larke-admin::extension.extension_adaptation_error'));
         }
         
         if (! $versionCheck) {
-            return $this->error(__('扩展适配系统版本错误，当前系统版本：:version', [
+            return $this->error(__('larke-admin::extension.extension_adaptation_info_error', [
                 'version' => $adminVersion,
             ]));
         }
@@ -415,13 +415,13 @@ class Extension extends Base
         try {
             $infoVersion = (new VersionParser())->normalize($info['version']);
         } catch(\Exception $e) {
-            return $this->error(__('扩展版本信息不正确'));
+            return $this->error(__('larke-admin::extension.extension_version_info_error'));
         }
         
         $infoVersion = Arr::get($info, 'version', 0);
         $installVersion = Arr::get($installInfo, 'version', 0);
         if (!Comparator::greaterThan($infoVersion, $installVersion)) {
-            return $this->error(__('扩展不需要更新'));
+            return $this->error(__('larke-admin::extension.extension_dont_need_upgrade'));
         }
         
         $requireExtensions = ExtensionModel::checkRequireExtension($info['require']);
@@ -430,7 +430,7 @@ class Extension extends Base
                 return ($data['match'] === false);
             });
             if ($match) {
-                return $this->error(__('扩展依赖出现错误，需要依赖版本: :require', [
+                return $this->error(__('larke-admin::extension.extension_require_error', [
                     'require' => $requireExtensions[0]['name'] . '[' . $requireExtensions[0]['version'] . ']',
                 ]), \ResponseCode::EXTENSION_NOT_MATCH);
             }
@@ -451,7 +451,7 @@ class Extension extends Base
             'upgradetime' => time(),
         ]);
         if ($updateInfo === false) {
-            return $this->error(__('更新扩展失败'));
+            return $this->error(__('larke-admin::extension.upgrade_extension_fail'));
         }
         
         // 清除缓存
@@ -460,7 +460,7 @@ class Extension extends Base
         // 更新事件
         event(new Event\ExtensionUpgrade($name, $installInfo->toArray(), $info));
         
-        return $this->success(__('更新扩展成功'));
+        return $this->success(__('larke-admin::extension.upgrade_extension_success'));
     }
     
     /**
@@ -479,23 +479,23 @@ class Extension extends Base
     public function listorder(string $name, Request $request)
     {
         if (empty($name)) {
-            return $this->error(__('扩展包名不能为空'));
+            return $this->error(__('larke-admin::extension.extension_package_name_dont_empty'));
         }
         
         $info = ExtensionModel::where(['name' => $name])
             ->first();
         if (empty($info)) {
-            return $this->error(__('扩展未安装'));
+            return $this->error(__('larke-admin::extension.extension_dont_install'));
         }
         
         $listorder = $request->input('listorder', 100);
         
         $status = $info->updateListorder($listorder);
         if ($status === false) {
-            return $this->error(__('更新扩展排序失败'));
+            return $this->error(__('larke-admin::extension.upgrade_extension_sort_fail'));
         }
         
-        return $this->success(__('更新扩展排序成功'));
+        return $this->success(__('larke-admin::extension.upgrade_extension_sort_success'));
     }
     
     /**
@@ -513,22 +513,22 @@ class Extension extends Base
     public function enable(string $name)
     {
         if (empty($name)) {
-            return $this->error(__('扩展包名不能为空'));
+            return $this->error(__('larke-admin::extension.extension_package_name_dont_empty'));
         }
         
         $installInfo = ExtensionModel::where(['name' => $name])
             ->first();
         if (empty($installInfo)) {
-            return $this->error(__('扩展未安装'));
+            return $this->error(__('larke-admin::extension.extension_dont_install'));
         }
         
         if ($installInfo['status'] == 1) {
-            return $this->error(__('扩展已启用中'));
+            return $this->error(__('larke-admin::extension.extension_enabled'));
         }
         
         $status = $installInfo->enable();
         if ($status === false) {
-            return $this->error(__('启用扩展失败'));
+            return $this->error(__('larke-admin::extension.enable_extension_fail'));
         }
         
         // 清除缓存
@@ -539,7 +539,7 @@ class Extension extends Base
         // 启用事件
         event(new Event\ExtensionEnable($name, $installInfo->toArray()));
         
-        return $this->success(__('启用扩展成功'));
+        return $this->success(__('larke-admin::extension.enable_extension_success'));
     }
     
     /**
@@ -557,22 +557,22 @@ class Extension extends Base
     public function disable(string $name)
     {
         if (empty($name)) {
-            return $this->error(__('扩展包名不能为空'));
+            return $this->error(__('larke-admin::extension.extension_package_name_dont_empty'));
         }
         
         $installInfo = ExtensionModel::where(['name' => $name])
             ->first();
         if (empty($installInfo)) {
-            return $this->error(__('扩展未安装'));
+            return $this->error(__('larke-admin::extension.extension_dont_install'));
         }
         
         if ($installInfo['status'] == 0) {
-            return $this->error(__('扩展已禁用中'));
+            return $this->error(__('larke-admin::extension.extension_disabled'));
         }
         
         $status = $installInfo->disable();
         if ($status === false) {
-            return $this->error(__('禁用扩展失败'));
+            return $this->error(__('larke-admin::extension.disable_extension_fail'));
         }
         
         // 清除缓存
@@ -581,7 +581,7 @@ class Extension extends Base
         // 禁用事件
         event(new Event\ExtensionDisable($name, $installInfo->toArray()));
         
-        return $this->success(__('禁用扩展成功'));
+        return $this->success(__('larke-admin::extension.disable_extension_success'));
     }
     
     /**
@@ -600,7 +600,7 @@ class Extension extends Base
     public function config(string $name, Request $request)
     {
         if (empty($name)) {
-            return $this->error(__('扩展包名不能为空'));
+            return $this->error(__('larke-admin::extension.extension_package_name_dont_empty'));
         }
         
         event(new Event\ExtensionConfigBefore($name, $request));
@@ -610,18 +610,18 @@ class Extension extends Base
         $info = ExtensionModel::where(['name' => $name])
             ->first();
         if (empty($info)) {
-            return $this->error(__('扩展未安装'));
+            return $this->error(__('larke-admin::extension.extension_dont_install'));
         }
         
         if (empty(json_decode($config))) {
-            return $this->error(__('扩展配置需要为json'));
+            return $this->error(__('larke-admin::extension.extension_config_error'));
         }
         
         $status = $info->update([
             'config_data' => $config,
         ]);
         if ($status === false) {
-            return $this->error(__('更新扩展配置失败'));
+            return $this->error(__('larke-admin::extension.update_extension_config_fail'));
         }
         
         event(new Event\ExtensionConfigAfter($name, $info));
@@ -629,7 +629,7 @@ class Extension extends Base
         // 清除缓存
         AdminExtension::forgetExtensionCache($name);
         
-        return $this->success(__('更新扩展配置成功'));
+        return $this->success(__('larke-admin::extension.update_extension_config_success'));
     }
     
     /**
@@ -648,13 +648,13 @@ class Extension extends Base
     {
         $requestFile = $request->file('file');
         if (empty($requestFile)) {
-            return $this->error(__('上传扩展文件不能为空'));
+            return $this->error(__('larke-admin::extension.upload_extension_file_dont_empty'));
         }
         
         // 扩展名
         $extension = $requestFile->extension();
         if ($extension != 'zip') {
-            return $this->error(__('上传的扩展文件格式有误'));
+            return $this->error(__('larke-admin::extension.upload_extension_file_ext_error'));
         }
         
         // 缓存目录
@@ -668,7 +668,7 @@ class Extension extends Base
         
         $list = $zip->listContent();
         if ($list == 0) {
-            return $this->error(__('上传的扩展文件错误'));
+            return $this->error(__('larke-admin::extension.upload_extension_file_error'));
         }
         
         $composer = collect($list)
@@ -688,28 +688,28 @@ class Extension extends Base
             ->toArray();
         
         if (empty($composer)) {
-            return $this->error(__('扩展composer.json不存在'));
+            return $this->error(__('larke-admin::extension.extension_composer_not_exists'));
         }
         
         $data = $zip->extractByIndex($composer[0]['index'], PCLZIP_OPT_EXTRACT_AS_STRING);
         if ($data == 0) {
-            return $this->error(__('上传的扩展文件错误'));
+            return $this->error(__('larke-admin::extension.upload_extension_file_error'));
         }
         
         try {
             $composerInfo = json_decode($data[0]['content'], true);
         } catch(\Exception $e) {
-            return $this->error(__('扩展composer.json格式错误'));
+            return $this->error(__('larke-admin::extension.extension_composer_error'));
         }
         
         if (! isset($composerInfo['name']) 
             || empty($composerInfo['name'])
         ) {
-            return $this->error(__('扩展composer.json格式错误'));
+            return $this->error(__('larke-admin::extension.extension_composer_error'));
         }
         
         if (! preg_match('/^[a-zA-Z][a-zA-Z0-9\_\-\/]+$/', $composerInfo['name'])) {
-            return $this->error(__('扩展包名格式错误'));
+            return $this->error(__('larke-admin::extension.extension_package_error'));
         }
         
         $extensionDirectory = AdminExtension::getExtensionPath('');
@@ -719,7 +719,7 @@ class Extension extends Base
         
         // 检查扩展目录是否存在
         if (file_exists($extensionPath) && !$force) {
-            return $this->error(__('扩展(:extension)已经存在', [
+            return $this->error(__('larke-admin::extension.extension_exists', [
                 'extension' => $composerInfo['name'],
             ]), \ResponseCode::EXTENSION_EXISTS);
         }
@@ -737,7 +737,7 @@ class Extension extends Base
         );
         
         if ($list == 0) {
-            return $this->error(__('扩展(:extension)解压失败', [
+            return $this->error(__('larke-admin::extension.extension_extract_fail', [
                 'extension' => $composerInfo['name'],
             ]));
         }
@@ -754,7 +754,7 @@ class Extension extends Base
         // 上传后刷新本地缓存
         AdminExtension::refresh();
         
-        return $this->success(__('扩展(:extension)上传成功', [
+        return $this->success(__('larke-admin::extension.extension_upload_success', [
                 'extension' => $composerInfo['name'],
             ]));
     }
@@ -775,13 +775,13 @@ class Extension extends Base
     public function repositoryRegister(string $name, Request $request)
     {
         if (empty($name)) {
-            return $this->error(__('扩展包名不能为空'));
+            return $this->error(__('larke-admin::extension.extension_package_name_dont_empty'));
         }
         
         // 检测本地扩展是否存在
         $extensionDirectory = AdminExtension::checkLocal($name);
         if ($extensionDirectory === false) {
-            return $this->error(__('扩展不为本地扩展，禁止操作'));
+            return $this->error(__('larke-admin::extension.extension_not_local'));
         }
         
         // 扩展本地仓库
@@ -795,10 +795,10 @@ class Extension extends Base
             ->withDirectory(base_path())
             ->register($name, $repository);
         if ($actionStatus === false) {
-            return $this->error(__('仓库注册扩展失败'));
+            return $this->error(__('larke-admin::extension.extension_repository_register_fail'));
         }
         
-        return $this->success(__('仓库注册扩展成功'));
+        return $this->success(__('larke-admin::extension.extension_repository_register_success'));
     }
     
     /**
@@ -817,23 +817,23 @@ class Extension extends Base
     public function repositoryRemove(string $name, Request $request)
     {
         if (empty($name)) {
-            return $this->error(__('扩展包名不能为空'));
+            return $this->error(__('larke-admin::extension.extension_package_name_dont_empty'));
         }
         
         // 检测本地扩展是否为本地扩展
         $extensionDirectory = AdminExtension::checkLocal($name);
         if ($extensionDirectory === false) {
-            return $this->error(__('扩展不为本地扩展，禁止操作'));
+            return $this->error(__('larke-admin::extension.extension_not_local'));
         }
         
         $actionStatus = ComposerRepository::create()
             ->withDirectory(base_path())
             ->remove($name);
         if ($actionStatus === false) {
-            return $this->error(__('仓库移除扩展失败'));
+            return $this->error(__('larke-admin::extension.extension_repository_remove_fail'));
         }
         
-        return $this->success(__('仓库移除扩展成功'));
+        return $this->success(__('larke-admin::extension.extension_repository_remove_success'));
     }
     
 }

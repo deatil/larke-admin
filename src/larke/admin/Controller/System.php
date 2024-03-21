@@ -54,7 +54,7 @@ class System extends Base
         
         $info = $siEvent->info;
         
-        return $this->success(__('获取成功'), $info);
+        return $this->success(__('larke-admin::common.get_success'), $info);
     }
     
     /**
@@ -81,7 +81,7 @@ class System extends Base
         
         event(new SystemClearCacheEvent());
         
-        return $this->success(__('清除缓存成功'));
+        return $this->success(__('larke-admin::system.clear_cache_success'));
     }
     
     /**
@@ -102,7 +102,7 @@ class System extends Base
         
         event(new SystemCacheEvent());
         
-        return $this->success(__('路由及配置信息缓存成功'));
+        return $this->success(__('larke-admin::system.routes_and_config_chache_success'));
     }
     
     /**
@@ -126,8 +126,8 @@ class System extends Base
         ], [
             'group' => 'required|alpha_num',
         ], [
-            'group.required' => __('请选择要查询的语言分组'),
-            'group.alpha_num' => __('语言分组名称格式错误'),
+            'group.required' => __('larke-admin::system.lang_group_dont_empty'),
+            'group.alpha_num' => __('larke-admin::system.lang_group_error'),
         ]);
 
         if ($validator->fails()) {
@@ -143,8 +143,8 @@ class System extends Base
             ], [
                 'locale' => 'required|alpha_dash',
             ], [
-                'locale.required' => __('请选择要查询的语言'),
-                'locale.alpha_dash' => __('语言名称格式错误'),
+                'locale.required' => __('larke-admin::system.lang_locale_select'),
+                'locale.alpha_dash' => __('larke-admin::system.lang_locale_error'),
             ]);
 
             if ($validator->fails()) {
@@ -161,7 +161,7 @@ class System extends Base
             $langs = $translator->getLoader()->load($locale, $group);
         }
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'list' => $langs,
         ]);
     }
@@ -184,8 +184,8 @@ class System extends Base
         ], [
             'locale' => 'required|alpha_dash',
         ], [
-            'locale.required' => __('设置的语言不能为空'),
-            'locale.alpha_dash' => __('设置的语言格式错误'),
+            'locale.required' => __('larke-admin::system.lang_locale_dont_empty'),
+            'locale.alpha_dash' => __('larke-admin::system.set_lang_locale_error'),
         ]);
 
         if ($validator->fails()) {
@@ -195,7 +195,7 @@ class System extends Base
         // 设置语言缓存
         Cache::put('locale-language', $locale);
         
-        return $this->success(__('设置默认语言成功'));
+        return $this->success(__('larke-admin::system.set_lang_locale_success'));
     }
 
     /**
@@ -229,7 +229,7 @@ class System extends Base
             $gd = gd_info();
             $sysInfo['gdinfo'] = $gd['GD Version'];
         } else {
-            $sysInfo['gdinfo'] = __("未知");
+            $sysInfo['gdinfo'] = __("larke-admin::system.unknown");
         }
         
         $sysInfo['laravel'] = app()->version(); // laravel版本
@@ -253,7 +253,7 @@ class System extends Base
     {
         $list = $model->getAuthList();
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'list' => $list,
         ]);
     }
@@ -274,7 +274,7 @@ class System extends Base
     {
         $tree = $model->getAuthTree();
         
-        return $this->success(__('获取成功'), [
+        return $this->success(__('larke-admin::common.get_success'), [
             'list' => $tree,
         ]);
     }
