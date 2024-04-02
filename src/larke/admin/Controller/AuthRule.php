@@ -148,7 +148,7 @@ class AuthRule extends Base
     {
         $id = $request->input('id', 0);
         if (is_array($id)) {
-            return $this->error(__('larke-admin::common.id_error'));
+            return $this->error(__('larke-admin::auth_rule.id_error'));
         }
         
         $type = $request->input('type');
@@ -178,13 +178,13 @@ class AuthRule extends Base
     public function detail(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('larke-admin::common.id_dont_empty'));
+            return $this->error(__('larke-admin::auth_rule.id_dont_empty'));
         }
         
         $info = AuthRuleModel::where(['id' => $id])
             ->first();
         if (empty($info)) {
-            return $this->error(__('larke-admin::common.info_not_exists'));
+            return $this->error(__('larke-admin::auth_rule.info_not_exists'));
         }
         
         return $this->success(__('larke-admin::common.get_success'), $info);
@@ -205,13 +205,13 @@ class AuthRule extends Base
     public function delete(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('larke-admin::common.id_dont_empty'));
+            return $this->error(__('larke-admin::auth_rule.id_dont_empty'));
         }
         
         $info = AuthRuleModel::where(['id' => $id])
             ->first();
         if (empty($info)) {
-            return $this->error(__('larke-admin::common.info_not_exists'));
+            return $this->error(__('larke-admin::auth_rule.info_not_exists'));
         }
         
         $childInfo = AuthRuleModel::where(['parentid' => $id])
@@ -226,10 +226,10 @@ class AuthRule extends Base
         
         $deleteStatus = $info->delete();
         if ($deleteStatus === false) {
-            return $this->error(__('larke-admin::common.delete_fail'));
+            return $this->error(__('larke-admin::auth_rule.delete_fail'));
         }
         
-        return $this->success(__('larke-admin::common.delete_success'));
+        return $this->success(__('larke-admin::auth_rule.delete_success'));
     }
     
     /**
@@ -361,14 +361,14 @@ class AuthRule extends Base
     public function update(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->error(__('larke-admin::common.id_dont_empty'));
+            return $this->error(__('larke-admin::auth_rule.id_dont_empty'));
         }
         
         $info = AuthRuleModel::with('children')
             ->where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('larke-admin::common.info_not_exists'));
+            return $this->error(__('larke-admin::auth_rule.info_not_exists'));
         }
         
         $requestData = $request->all();
@@ -449,13 +449,13 @@ class AuthRule extends Base
     public function listorder(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->error(__('larke-admin::common.id_dont_empty'));
+            return $this->error(__('larke-admin::auth_rule.id_dont_empty'));
         }
         
         $info = AuthRuleModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('larke-admin::common.info_not_exists'));
+            return $this->error(__('larke-admin::auth_rule.info_not_exists'));
         }
         
         $listorder = $request->input('listorder', 100);
@@ -483,25 +483,25 @@ class AuthRule extends Base
     public function enable(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('larke-admin::common.id_dont_empty'));
+            return $this->error(__('larke-admin::auth_rule.id_dont_empty'));
         }
         
         $info = AuthRuleModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('larke-admin::common.info_not_exists'));
+            return $this->error(__('larke-admin::auth_rule.info_not_exists'));
         }
         
         if ($info->status == 1) {
-            return $this->error(__('larke-admin::common.info_enabled'));
+            return $this->error(__('larke-admin::auth_rule.info_enabled'));
         }
         
         $status = $info->enable();
         if ($status === false) {
-            return $this->error(__('larke-admin::common.enable_fail'));
+            return $this->error(__('larke-admin::auth_rule.enable_fail'));
         }
         
-        return $this->success(__('larke-admin::common.enable_success'));
+        return $this->success(__('larke-admin::auth_rule.enable_success'));
     }
     
     /**
@@ -519,25 +519,25 @@ class AuthRule extends Base
     public function disable(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('larke-admin::common.id_dont_empty'));
+            return $this->error(__('larke-admin::auth_rule.id_dont_empty'));
         }
         
         $info = AuthRuleModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('larke-admin::common.info_not_exists'));
+            return $this->error(__('larke-admin::auth_rule.info_not_exists'));
         }
         
         if ($info->status == 0) {
-            return $this->error(__('larke-admin::common.info_disabled'));
+            return $this->error(__('larke-admin::auth_rule.info_disabled'));
         }
         
         $status = $info->disable();
         if ($status === false) {
-            return $this->error(__('larke-admin::common.disable_fail'));
+            return $this->error(__('larke-admin::auth_rule.disable_fail'));
         }
         
-        return $this->success(__('larke-admin::common.disable_success'));
+        return $this->success(__('larke-admin::auth_rule.le.disable_success'));
     }
     
 }

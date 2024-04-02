@@ -142,7 +142,7 @@ class AuthGroup extends Base
     {
         $id = $request->input('id', 0);
         if (! is_string($id)) {
-            return $this->error(__('larke-admin::common.id_error'));
+            return $this->error(__('larke-admin::auth_group.id_error'));
         }
         
         $type = $request->input('type');
@@ -172,14 +172,14 @@ class AuthGroup extends Base
     public function detail(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('larke-admin::common.id_dont_empty'));
+            return $this->error(__('larke-admin::auth_group.id_dont_empty'));
         }
         
         $info = AuthGroupModel::where(['id' => $id])
             ->with('ruleAccesses')
             ->first();
         if (empty($info)) {
-            return $this->error(__('larke-admin::common.info_not_exists'));
+            return $this->error(__('larke-admin::auth_group.info_not_exists'));
         }
         
         $ruleAccesses = collect($info['ruleAccesses'])
@@ -209,13 +209,13 @@ class AuthGroup extends Base
     public function delete(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('larke-admin::common.id_dont_empty'));
+            return $this->error(__('larke-admin::auth_group.id_dont_empty'));
         }
         
         $info = AuthGroupModel::where(['id' => $id])
             ->first();
         if (empty($info)) {
-            return $this->error(__('larke-admin::common.info_not_exists'));
+            return $this->error(__('larke-admin::auth_group.info_not_exists'));
         }
         
         $childInfo = AuthGroupModel::where(['parentid' => $id])
@@ -230,10 +230,10 @@ class AuthGroup extends Base
         
         $deleteStatus = $info->delete();
         if ($deleteStatus === false) {
-            return $this->error(__('larke-admin::common.delete_fail'));
+            return $this->error(__('larke-admin::auth_group.delete_fail'));
         }
         
-        return $this->success(__('larke-admin::common.delete_success'));
+        return $this->success(__('larke-admin::auth_group.delete_success'));
     }
     
     /**
@@ -302,14 +302,14 @@ class AuthGroup extends Base
     public function update(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->error(__('larke-admin::common.id_dont_empty'));
+            return $this->error(__('larke-admin::auth_group.id_dont_empty'));
         }
         
         $info = AuthGroupModel::with('children')
             ->where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('larke-admin::common.info_not_exists'));
+            return $this->error(__('larke-admin::auth_group.info_not_exists'));
         }
         
         $data = $request->all();
@@ -368,13 +368,13 @@ class AuthGroup extends Base
     public function listorder(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->error(__('larke-admin::common.id_dont_empty'));
+            return $this->error(__('larke-admin::auth_group.id_dont_empty'));
         }
         
         $info = AuthGroupModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('larke-admin::common.info_not_exists'));
+            return $this->error(__('larke-admin::auth_group.info_not_exists'));
         }
         
         $listorder = $request->input('listorder', 100);
@@ -402,25 +402,25 @@ class AuthGroup extends Base
     public function enable(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('larke-admin::common.id_dont_empty'));
+            return $this->error(__('larke-admin::auth_group.id_dont_empty'));
         }
         
         $info = AuthGroupModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('larke-admin::common.info_not_exists'));
+            return $this->error(__('larke-admin::auth_group.info_not_exists'));
         }
         
         if ($info->status == 1) {
-            return $this->error(__('larke-admin::common.info_enabled'));
+            return $this->error(__('larke-admin::auth_group.info_enabled'));
         }
         
         $status = $info->enable();
         if ($status === false) {
-            return $this->error(__('larke-admin::common.enable_fail'));
+            return $this->error(__('larke-admin::auth_group.enable_fail'));
         }
         
-        return $this->success(__('larke-admin::common.enable_success'));
+        return $this->success(__('larke-admin::auth_group.enable_success'));
     }
     
     /**
@@ -438,25 +438,25 @@ class AuthGroup extends Base
     public function disable(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('larke-admin::common.id_dont_empty'));
+            return $this->error(__('larke-admin::auth_group.id_dont_empty'));
         }
         
         $info = AuthGroupModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('larke-admin::common.info_not_exists'));
+            return $this->error(__('larke-admin::auth_group.info_not_exists'));
         }
         
         if ($info->status == 0) {
-            return $this->error(__('larke-admin::common.info_disabled'));
+            return $this->error(__('larke-admin::auth_group.info_disabled'));
         }
         
         $status = $info->disable();
         if ($status === false) {
-            return $this->error(__('larke-admin::common.disable_fail'));
+            return $this->error(__('larke-admin::auth_group.disable_fail'));
         }
         
-        return $this->success(__('larke-admin::common.disable_success'));
+        return $this->success(__('larke-admin::auth_group.disable_success'));
     }
     
     /**
@@ -475,13 +475,13 @@ class AuthGroup extends Base
     public function access(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->error(__('larke-admin::common.id_dont_empty'));
+            return $this->error(__('larke-admin::auth_group.id_dont_empty'));
         }
         
         $info = AuthGroupModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('larke-admin::common.info_not_exists'));
+            return $this->error(__('larke-admin::auth_group.info_not_exists'));
         }
         
         // 删除

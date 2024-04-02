@@ -1,6 +1,21 @@
 <?php
 
 return [
+    'id_error' => 'ID error',
+    'id_dont_empty' => 'ID not empty',
+    'info_not_exists' => 'info empty',
+    
+    'delete_fail' => 'info delete error',
+    'delete_success' => 'info delete success',
+
+    'info_enabled' => 'info enabled',
+    'enable_fail' => 'enable fail',
+    'enable_success' => 'enable success',
+    
+    'info_disabled' => 'info disabled',
+    'disable_fail' => 'disable fail',
+    'disable_success' => 'disable success',
+
     'group_dont_delete' => 'group has children and dont delete',
     'system_info_dont_delete' => 'system info dont delete',
     

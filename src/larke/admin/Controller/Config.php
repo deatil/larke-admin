@@ -127,14 +127,14 @@ class Config extends Base
     public function detail(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('larke-admin::common.id_dont_empty'));
+            return $this->error(__('larke-admin::config.id_dont_empty'));
         }
         
         $info = ConfigModel::where('id', '=', $id)
             ->orWhere('name', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('larke-admin::common.info_not_exists'));
+            return $this->error(__('larke-admin::config.info_not_exists'));
         }
         
         return $this->success(__('larke-admin::common.get_success'), $info);
@@ -155,21 +155,21 @@ class Config extends Base
     public function delete(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('larke-admin::common.id_dont_empty'));
+            return $this->error(__('larke-admin::config.id_dont_empty'));
         }
         
         $info = ConfigModel::where(['id' => $id])
             ->first();
         if (empty($info)) {
-            return $this->error(__('larke-admin::common.info_not_exists'));
+            return $this->error(__('larke-admin::config.info_not_exists'));
         }
         
         $deleteStatus = $info->delete();
         if ($deleteStatus === false) {
-            return $this->error(__('larke-admin::common.delete_fail'));
+            return $this->error(__('larke-admin::config.delete_fail'));
         }
         
-        return $this->success(__('larke-admin::common.delete_success'));
+        return $this->success(__('larke-admin::config.delete_success'));
     }
     
     /**
@@ -250,13 +250,13 @@ class Config extends Base
     public function update(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->error(__('larke-admin::common.id_dont_empty'));
+            return $this->error(__('larke-admin::config.id_dont_empty'));
         }
         
         $info = ConfigModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('larke-admin::common.info_not_exists'));
+            return $this->error(__('larke-admin::config.info_not_exists'));
         }
         
         $data = $request->all();
@@ -412,13 +412,13 @@ class Config extends Base
     public function listorder(string $id, Request $request)
     {
         if (empty($id)) {
-            return $this->error(__('larke-admin::common.id_dont_empty'));
+            return $this->error(__('larke-admin::config.id_dont_empty'));
         }
         
         $info = ConfigModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('larke-admin::common.info_not_exists'));
+            return $this->error(__('larke-admin::config.info_not_exists'));
         }
         
         $listorder = $request->input('listorder', 100);
@@ -446,25 +446,25 @@ class Config extends Base
     public function enable(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('larke-admin::common.id_dont_empty'));
+            return $this->error(__('larke-admin::config.id_dont_empty'));
         }
         
         $info = ConfigModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('larke-admin::common.info_not_exists'));
+            return $this->error(__('larke-admin::config.info_not_exists'));
         }
         
         if ($info->status == 1) {
-            return $this->error(__('larke-admin::common.info_enabled'));
+            return $this->error(__('larke-admin::config.info_enabled'));
         }
         
         $status = $info->enable();
         if ($status === false) {
-            return $this->error(__('larke-admin::common.enable_fail'));
+            return $this->error(__('larke-admin::config.enable_fail'));
         }
         
-        return $this->success(__('larke-admin::common.enable_success'));
+        return $this->success(__('larke-admin::config.enable_success'));
     }
     
     /**
@@ -482,25 +482,25 @@ class Config extends Base
     public function disable(string $id)
     {
         if (empty($id)) {
-            return $this->error(__('larke-admin::common.id_dont_empty'));
+            return $this->error(__('larke-admin::config.id_dont_empty'));
         }
         
         $info = ConfigModel::where('id', '=', $id)
             ->first();
         if (empty($info)) {
-            return $this->error(__('larke-admin::common.info_not_exists'));
+            return $this->error(__('larke-admin::config.info_not_exists'));
         }
         
         if ($info->status == 0) {
-            return $this->error(__('larke-admin::common.info_disabled'));
+            return $this->error(__('larke-admin::config.info_disabled'));
         }
         
         $status = $info->disable();
         if ($status === false) {
-            return $this->error(__('larke-admin::common.disable_fail'));
+            return $this->error(__('larke-admin::config.disable_fail'));
         }
         
-        return $this->success(__('larke-admin::common.disable_success'));
+        return $this->success(__('larke-admin::config.disable_success'));
     }
     
 }
