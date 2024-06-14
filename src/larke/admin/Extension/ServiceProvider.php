@@ -49,6 +49,23 @@ abstract class ServiceProvider extends BaseServiceProvider
         string $icon     = '',
         array  $config   = [],
     ) {
+        if (empty($composer) || empty($icon)) {
+            $newClass = AdminExtension::newClass($name);
+            if ($newClass === false) {
+                return;
+            }
+            
+            $composerDir = realpath(AdminExtension::getPathFromClass($newClass) . '/../');
+            
+            if (empty($composer)) {
+                $composer = $composerDir . '/composer.json';
+            }
+            
+            if (empty($icon)) {
+                $icon = $composerDir . '/icon.png';
+            }
+        }
+        
         $info = $this->fromComposer($composer);
         
         // 扩展包名

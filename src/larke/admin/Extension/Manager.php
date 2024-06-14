@@ -551,9 +551,9 @@ class Manager
      * 实例化类
      *
      * @param string|null $className
-     * @return object
+     * @return mixed
      */
-    public function newClass(?string $className = null): object
+    public function newClass(?string $className = null): mixed
     {
         if (! class_exists($className)) {
             return false;
@@ -600,7 +600,7 @@ class Manager
      * @param string|null $name
      * @return object
      */
-    public function newExtensionClass(?string $name = null): object
+    public function newExtensionClass(?string $name = null): mixed
     {
         $className = $this->getExtensionClass($name);
         

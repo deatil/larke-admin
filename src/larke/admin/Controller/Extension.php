@@ -288,17 +288,17 @@ class Extension extends Base
         }
         
         $extension = ExtensionModel::create([
-            'name' => Arr::get($info, 'name'),
-            'title' => Arr::get($info, 'title'),
+            'name'        => Arr::get($info, 'name'),
+            'title'       => Arr::get($info, 'title'),
             'description' => Arr::get($info, 'description'),
-            'keywords' => json_encode(Arr::get($info, 'keywords', [])), 
-            'homepage' => Arr::get($info, 'homepage'),
-            'authors' => json_encode(Arr::get($info, 'authors', [])),
-            'version' => Arr::get($info, 'version'),
-            'adaptation' => Arr::get($info, 'adaptation'),
-            'require' => json_encode(Arr::get($info, 'require', [])),
-            'config' => json_encode(Arr::get($info, 'config', [])),
-            'class_name' => Arr::get($info, 'class_name'),
+            'keywords'    => json_encode(Arr::get($info, 'keywords', [])), 
+            'homepage'    => Arr::get($info, 'homepage'),
+            'authors'     => json_encode(Arr::get($info, 'authors', [])),
+            'version'     => Arr::get($info, 'version'),
+            'adaptation'  => Arr::get($info, 'adaptation'),
+            'require'     => json_encode(Arr::get($info, 'require', [])),
+            'config'      => json_encode(Arr::get($info, 'config', [])),
+            'class_name'  => Arr::get($info, 'class_name'),
         ]);
         if ($extension === false) {
             return $this->error(__('larke-admin::extension.instell_extension_fail'));
@@ -437,17 +437,17 @@ class Extension extends Base
         }
         
         $updateInfo = $installInfo->update([
-            'name' => Arr::get($info, 'name'),
-            'title' => Arr::get($info, 'title'),
+            'name'        => Arr::get($info, 'name'),
+            'title'       => Arr::get($info, 'title'),
             'description' => Arr::get($info, 'description'),
-            'keywords' => json_encode(Arr::get($info, 'keywords')), 
-            'homepage' => Arr::get($info, 'homepage'),
-            'authors' => json_encode(Arr::get($info, 'authors', [])),
-            'version' => Arr::get($info, 'version'),
-            'adaptation' => Arr::get($info, 'adaptation'),
-            'require' => json_encode(Arr::get($info, 'require', [])),
-            'config' => json_encode(Arr::get($info, 'config', [])),
-            'class_name' => Arr::get($info, 'class_name'),
+            'keywords'    => json_encode(Arr::get($info, 'keywords')), 
+            'homepage'    => Arr::get($info, 'homepage'),
+            'authors'     => json_encode(Arr::get($info, 'authors', [])),
+            'version'     => Arr::get($info, 'version'),
+            'adaptation'  => Arr::get($info, 'adaptation'),
+            'require'     => json_encode(Arr::get($info, 'require', [])),
+            'config'      => json_encode(Arr::get($info, 'config', [])),
+            'class_name'  => Arr::get($info, 'class_name'),
             'upgradetime' => time(),
         ]);
         if ($updateInfo === false) {

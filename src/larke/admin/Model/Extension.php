@@ -95,7 +95,7 @@ class Extension extends Base
             ->version;
         
         try {
-            $versionCheck =  Semver::satisfies($version, $constraints);
+            $versionCheck = Semver::satisfies($version, $constraints);
         } catch(\Exception $e) {
             return false;
         }
