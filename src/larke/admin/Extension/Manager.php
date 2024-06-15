@@ -598,7 +598,7 @@ class Manager
      * 实例化扩展的类
      *
      * @param string|null $name
-     * @return object
+     * @return mixed
      */
     public function newExtensionClass(?string $name = null): mixed
     {

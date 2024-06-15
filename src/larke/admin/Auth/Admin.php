@@ -77,7 +77,7 @@ class Admin
     /**
      * 设置 data
      */
-    public function withData($data): self
+    public function withData(array $data): self
     {
         $this->data = $data;
         
