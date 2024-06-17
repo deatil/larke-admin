@@ -6,8 +6,8 @@ return [
         'name'      => "LarkeAdmin",
         'name_mini' => "Larke",
         'logo'      => "<b>Larke</b> admin",
-        'release'   => "20240615",
-        'version'   => "1.9.1",
+        'release'   => "20240617",
+        'version'   => "1.9.2",
     ],
     
     // 是否使用 https 方式

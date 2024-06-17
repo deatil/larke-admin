@@ -24,9 +24,9 @@ class SystemInfo
      * 
      * @access public
      */
-    public function __construct(array $info)
+    public function __construct(array &$info)
     {
-        $this->info = $info;
+        $this->info = &$info;
     }
     
 }

@@ -25,9 +25,9 @@ class ConfigSettingBefore
      * @access public
      * @param Array $fields 请求数据
      */
-    public function __construct(array $fields)
+    public function __construct(array &$fields)
     {
-        $this->fields = $fields;
+        $this->fields = &$fields;
     }
     
 }
