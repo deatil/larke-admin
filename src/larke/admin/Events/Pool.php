@@ -28,7 +28,7 @@ class Pool
      * @param array $vars     变量
      * @return mixed
      */
-    public function make(string $abstract, array $vars = [])
+    public function make($abstract, array $vars = [])
     {
         if ($abstract instanceof Closure) {
             $object = $this->invokeFunction($abstract, $vars);
