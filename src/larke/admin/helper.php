@@ -6,6 +6,7 @@ namespace Larke\Admin;
 
 use Illuminate\Support\Arr;
 
+use Larke\Admin\Facade\Events;
 use Larke\Admin\Facade\Extension;
 use Larke\Admin\Facade\AuthAdmin;
 use Larke\Admin\Service\Route as RouteService;
@@ -225,5 +226,120 @@ if (! function_exists('Larke\\Admin\\extension_config')) {
         }
         
         return Arr::get($config, $key, $default);
+    }
+}
+
+if (! function_exists('Larke\\Admin\\add_action')) {
+    /**
+     * 注册操作
+     * 
+     * @param string $event    事件名称
+     * @param mixed  $listener 监听操作
+     * @param bool   $sort     排序
+     * @return $this
+     */
+    function add_action(string $event, $listener, int $sort = 1): void
+    {
+        Events::getAction()->listen($event, $listener, $sort);
+    }
+}
+
+if (! function_exists('Larke\\Admin\\do_action')) {
+    /**
+     * 触发操作
+     * 
+     * @param string|object $event 事件名称
+     * @param mixed         $var   更多参数
+     * @return void
+     */
+    function do_action($event, ...$var): void
+    {
+        Events::getAction()->trigger($event, ...$var);
+    }
+}
+
+if (! function_exists('Larke\\Admin\\remove_action')) {
+    /**
+     * 移除操作
+     * 
+     * @param string $event    事件名称
+     * @param mixed  $listener 监听操作
+     * @return $this
+     */
+    function remove_action(string $event, $listener, int $sort = 1): bool
+    {
+        return Events::getAction()->removeListener($event, $listener, $sort);
+    }
+}
+
+if (! function_exists('Larke\\Admin\\has_action')) {
+    /**
+     * 是否有操作
+     * 
+     * @param string $event    事件名称
+     * @param mixed  $listener 监听操作
+     * @return $this
+     */
+    function has_action(string $event, $listener): bool
+    {
+        return Events::getAction()->hasListener($event, $listener);
+    }
+}
+
+if (! function_exists('Larke\\Admin\\add_filter')) {
+    /**
+     * 注册过滤器
+     * 
+     * @param string $event    事件名称
+     * @param mixed  $listener 监听操作
+     * @param bool   $sort     排序
+     * @return $this
+     */
+    function add_filter(string $event, $listener, int $sort = 1): void
+    {
+        Events::getFilter()->listen($event, $listener, $sort);
+    }
+}
+
+if (! function_exists('Larke\\Admin\\apply_filters')) {
+    /**
+     * 触发过滤器
+     * 
+     * @param string|object $event  事件名称
+     * @param mixed         $params 传入参数
+     * @param mixed         $var    更多参数
+     * @return mixed
+     */
+    function apply_filters($event, $params = null, ...$var)
+    {
+        return Events::getFilter()->trigger($event, $params, ...$var);
+    }
+}
+
+if (! function_exists('Larke\\Admin\\remove_filter')) {
+    /**
+     * 移除过滤器
+     * 
+     * @param string $event    事件名称
+     * @param mixed  $listener 监听操作
+     * @return $this
+     */
+    function remove_filter(string $event, $listener, int $sort = 1): bool
+    {
+        return Events::getFilter()->removeListener($event, $listener, $sort);
+    }
+}
+
+if (! function_exists('Larke\\Admin\\has_filter')) {
+    /**
+     * 是否有过滤器
+     * 
+     * @param string $event    事件名称
+     * @param mixed  $listener 监听操作
+     * @return $this
+     */
+    function has_filter(string $event, $listener): bool
+    {
+        return Events::getFilter()->hasListener($event, $listener);
     }
 }

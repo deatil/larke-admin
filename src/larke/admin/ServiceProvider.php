@@ -25,6 +25,7 @@ use Larke\Admin\Permission\Manager as PermissionManager;
 use Larke\Admin\Auth;
 use Larke\Admin\Http;
 use Larke\Admin\Model;
+use Larke\Admin\Events;
 use Larke\Admin\Command;
 use Larke\Admin\Observer;
 use Larke\Admin\Provider;
@@ -211,6 +212,12 @@ class ServiceProvider extends BaseServiceProvider
     {
         // 加载器
         $this->app->bind('larke-admin.loader', Loader::class);
+
+        // 事件
+        $this->app->singleton('larke-admin.events', function() {
+            $pool = new Events\Pool();
+            return new Events\Events($pool);
+        });
         
         // 验证码
         $this->app->bind('larke-admin.captcha', Contracts\Captcha::class);

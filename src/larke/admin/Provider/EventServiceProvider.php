@@ -18,6 +18,21 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
+        // 登陆密钥错误
+        Event\PassportLoginKeyError::class => [
+            Listener\PassportLoginKeyError::class
+        ],
+        
+        // 登陆权限 Token 错误
+        Event\PassportLoginAccessTokenError::class => [
+            Listener\PassportLoginAccessTokenError::class
+        ],
+        
+        // 登陆刷新 Token 错误
+        Event\PassportLoginRefreshTokenError::class => [
+            Listener\PassportLoginRefreshTokenError::class
+        ],
+        
         // 登陆
         Event\PassportLoginAfter::class => [
             Listener\PassportLoginAfter::class
