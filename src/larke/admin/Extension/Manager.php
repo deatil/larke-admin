@@ -450,8 +450,23 @@ class Manager
             
             $extensions = collect($directories)
                 ->map(function($path) {
-                    $composer = ComposerResolve::create()->withDirectory($path);
-                    return $composer->getData();
+                    $composerData = ComposerResolve::create()
+                        ->withDirectory($path)
+                        ->getData();
+                    
+                    $name = Arr::get($composerData, 'info.name', '');
+                    
+                    $package = basename($path);
+                    $vendor = basename(dirname($path));
+                    
+                    if (empty($name) || $vendor . '/' . $package != $name) {
+                        return [];
+                    }
+
+                    return $composerData;
+                })
+                ->filter(function ($data) {
+                    return !empty($data);
                 })
                 ->values()
                 ->toArray();
