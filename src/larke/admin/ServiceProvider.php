@@ -8,6 +8,7 @@ use Illuminate\Foundation\AliasLoader;
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
@@ -144,6 +145,8 @@ class ServiceProvider extends BaseServiceProvider
         $this->bootExtension();
         
         $this->bootCommand();
+
+        $this->bootBladeDirectives();
         
         // 运行前
         app('larke-admin.extension')->callBooting();
@@ -449,5 +452,34 @@ class ServiceProvider extends BaseServiceProvider
             $this->commands($this->commands);
         }
     }
-    
+
+    /**
+     * 添加 blade 标签
+     *
+     * @hook('xxx') 
+     * --- 
+     * @endhook
+     */
+    protected function bootBladeDirectives()
+    {
+        Blade::directive('hook', function ($parameter) {
+            $parameter  = trim($parameter, '()');
+            $parameters = preg_split('/[,\r\n ]+/', trim($parameter, ",\r\n"));
+            $name       = array_shift($parameters);
+            
+            return ' <?php
+                    $__hook_name = ' . $name . ';
+                    $__hook_vars = [' . implode(', ', $parameters) . '];
+                    ob_start();
+                ?>';
+        });
+
+        Blade::directive('endhook', function () {
+            return ' <?php
+                $__hook_content = ob_get_clean();
+                echo \Larke\Admin\apply_filters($__hook_name, $__hook_content, ...$__hook_vars);
+                unset($__hook_name, $__hook_vars, $__hook_content);
+                ?>';
+        });
+    }
 }
