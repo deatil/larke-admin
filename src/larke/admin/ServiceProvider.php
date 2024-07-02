@@ -454,7 +454,7 @@ class ServiceProvider extends BaseServiceProvider
     }
 
     /**
-     * 添加 blade 标签
+     * 添加 blade hook 标签
      *
      * @hook('xxx') 
      * --- 
