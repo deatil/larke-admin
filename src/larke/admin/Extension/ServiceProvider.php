@@ -7,14 +7,14 @@ namespace Larke\Admin\Extension;
 use Closure;
 
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Traits\Macroable;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 use Larke\Admin\Composer\Composer;
-use Larke\Admin\Event as AdminEvent;
 use Larke\Admin\Facade\Extension as AdminExtension;
 use Larke\Admin\Traits\ExtensionServiceProvider as ExtensionServiceProviderTrait;
+
+use function Larke\Admin\add_action;
 
 /*
  * 扩展服务提供者
@@ -178,8 +178,8 @@ abstract class ServiceProvider extends BaseServiceProvider
      */
     protected function onInatll(Closure $callback)
     {
-        Event::listen(function (AdminEvent\ExtensionInstall $event) use($callback) {
-            $callback($event->name, $event->info);
+        add_action('extension_install', function($name, $info) use($callback) {
+            $callback($name, $info);
         });
     }
     
@@ -188,8 +188,8 @@ abstract class ServiceProvider extends BaseServiceProvider
      */
     protected function onUninstall(Closure $callback)
     {
-        Event::listen(function (AdminEvent\ExtensionUninstall $event) use($callback) {
-            $callback($event->name, $event->info);
+        add_action('extension_uninstall', function($name, $info) use($callback) {
+            $callback($name, $info);
         });
     }
     
@@ -198,8 +198,8 @@ abstract class ServiceProvider extends BaseServiceProvider
      */
     protected function onUpgrade(Closure $callback)
     {
-        Event::listen(function (AdminEvent\ExtensionUpgrade $event) use($callback) {
-            $callback($event->name, $event->oldInfo, $event->newInfo);
+        add_action('extension_upgrade', function($name, $oldInfo, $newInfo) use($callback) {
+            $callback($name, $oldInfo, $newInfo);
         });
     }
     
@@ -208,8 +208,8 @@ abstract class ServiceProvider extends BaseServiceProvider
      */
     protected function onEnable(Closure $callback)
     {
-        Event::listen(function (AdminEvent\ExtensionEnable $event) use($callback) {
-            $callback($event->name, $event->info);
+        add_action('extension_enable', function($name, $info) use($callback) {
+            $callback($name, $info);
         });
     }
     
@@ -218,8 +218,8 @@ abstract class ServiceProvider extends BaseServiceProvider
      */
     protected function onDisable(Closure $callback)
     {
-        Event::listen(function (AdminEvent\ExtensionDisable $event) use($callback) {
-            $callback($event->name, $event->info);
+        add_action('extension_disable', function($name, $info) use($callback) {
+            $callback($name, $info);
         });
     }
 }

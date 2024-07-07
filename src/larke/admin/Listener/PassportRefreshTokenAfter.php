@@ -4,7 +4,6 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Listener;
 
-use Larke\Admin\Event;
 use Larke\Admin\Model\Admin as AdminModel;
 
 /*
@@ -15,11 +14,8 @@ use Larke\Admin\Model\Admin as AdminModel;
  */
 class PassportRefreshTokenAfter
 {
-    public function handle(Event\PassportRefreshTokenAfter $event)
+    public function handle($jwt)
     {
-        // jwt 数据
-        $jwt = $event->jwt;
-        
         // 权限 token 签发时间
         $decodeAccessToken = app('larke-admin.auth-token')
             ->decodeAccessToken($jwt['access_token']);

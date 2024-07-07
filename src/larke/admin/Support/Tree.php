@@ -186,7 +186,7 @@ class Tree
         
         $ids = [];
         foreach ($parents as $parent) {
-            if (isset($data[$this->idKey])) {
+            if (isset($parent[$this->idKey])) {
                 $ids[] = $parent[$this->idKey];
             }
         }
@@ -245,7 +245,7 @@ class Tree
         
         $ids = [];
         foreach ($childs as $child) {
-            if (isset($data[$this->idKey])) {
+            if (isset($child[$this->idKey])) {
                 $ids[] = $child[$this->idKey];
             }
         }

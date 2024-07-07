@@ -6,8 +6,6 @@ namespace Larke\Admin\Listener;
 
 use Illuminate\Support\Facades\Log;
 
-use Larke\Admin\Event;
-
 /*
  * 刷新 Token 错误
  *
@@ -16,10 +14,8 @@ use Larke\Admin\Event;
  */
 class PassportLoginRefreshTokenError
 {
-    public function handle(Event\PassportLoginRefreshTokenError $event)
+    public function handle($message)
     {
-        $message = $event->message;
-        
         Log::error('larke-admin-login refreshToken error: ' . $message);
     }
 }

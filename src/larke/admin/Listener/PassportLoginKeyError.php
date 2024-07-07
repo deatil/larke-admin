@@ -6,8 +6,6 @@ namespace Larke\Admin\Listener;
 
 use Illuminate\Support\Facades\Log;
 
-use Larke\Admin\Event;
-
 /*
  * 登陆密钥错误
  *
@@ -16,10 +14,8 @@ use Larke\Admin\Event;
  */
 class PassportLoginKeyError
 {
-    public function handle(Event\PassportLoginKeyError $event)
+    public function handle($message)
     {
-        $message = $event->message;
-        
         Log::error('larke-admin-login loadkey error: ' . $message);
     }
 }

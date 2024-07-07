@@ -4,7 +4,6 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Listener;
 
-use Larke\Admin\Event;
 use Larke\Admin\Model\Admin as AdminModel;
 
 /*
@@ -15,14 +14,14 @@ use Larke\Admin\Model\Admin as AdminModel;
  */
 class PassportLogoutAfter
 {
-    public function handle(Event\PassportLogoutAfter $event)
+    public function handle($data)
     {
         $adminid = app('larke-admin.auth-admin')->getId();
         
         // 更新信息
         AdminModel::where('id', $adminid)->update([
             'refresh_time' => time(), 
-            'refresh_ip' => request()->ip(),
+            'refresh_ip'   => request()->ip(),
         ]);
     }
 }

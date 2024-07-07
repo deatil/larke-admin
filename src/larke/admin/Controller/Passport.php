@@ -15,8 +15,7 @@ use phpseclib3\Crypt\PublicKeyLoader;
 use Larke\Admin\Annotation\RouteRule;
 use Larke\Admin\Model\Admin as AdminModel;
 
-// 文件夹引入
-use Larke\Admin\Event;
+use function Larke\Admin\do_action;
 
 /**
  * 登陆
@@ -136,7 +135,7 @@ class Passport extends Base
     public function login(Request $request)
     {
         // 监听事件
-        event(new Event\PassportLoginBefore($request));
+        do_action("passport_login_before", $request);
         
         $data = $request->all();
         $validator = Validator::make($data, [
@@ -201,20 +200,20 @@ class Passport extends Base
             $password = $rsakey->withPadding(RSA::ENCRYPTION_PKCS1)
                 ->decrypt($password);
         } catch(\Exception $e) {
-            event(new Event\PassportLoginKeyError($e->getMessage()));
+            do_action("passport_login_key_error", $e->getMessage());
             
             return $this->error(__('larke-admin::passport.password_error'), \ResponseCode::LOGIN_ERROR);
         }
 
         $encryptPassword = AdminModel::checkPassword($adminInfo, $password); 
         if (! $encryptPassword) {
-            event(new Event\PassportLoginPasswordError($admin));
+            do_action("passport_login_password_error", $admin);
             
             return $this->error(__('larke-admin::passport.password_check_fail'), \ResponseCode::LOGIN_ERROR);
         }
         
         if ($adminInfo['status'] != 1) {
-            event(new Event\PassportLoginInactive($admin));
+            do_action("passport_login_inactive", $admin);
             
             return $this->error(__('larke-admin::passport.passport_disabled_or_not_exists'), \ResponseCode::LOGIN_ERROR);
         }
@@ -226,7 +225,7 @@ class Passport extends Base
                     'adminid' => $adminInfo['id'],
                 ]);
         } catch(\Exception $e) {
-            event(new Event\PassportLoginAccessTokenError($e->getMessage()));
+            do_action("passport_login_access_token_error", $e->getMessage());
             
             return $this->error(__('larke-admin::passport.login_fail'), \ResponseCode::LOGIN_ERROR);
         }
@@ -242,7 +241,7 @@ class Passport extends Base
                     'adminid' => $adminInfo['id'],
                 ]);
         } catch(\Exception $e) {
-            event(new Event\PassportLoginRefreshTokenError($e->getMessage()));
+            do_action("passport_login_refresh_token_error", $e->getMessage());
             
             return $this->error($e->getMessage(), \ResponseCode::LOGIN_ERROR);
         }
@@ -265,7 +264,7 @@ class Passport extends Base
         ];
         
         // 监听事件
-        event(new Event\PassportLoginAfter($admin, $data));
+        do_action("passport_login_after", $admin, $data);
         
         return $this->success(__('larke-admin::passport.login_success'), $data);
     }
@@ -347,11 +346,11 @@ class Passport extends Base
         // 返回数据
         $data = [
             'access_token' => $newAccessToken,
-            'expires_in' => $expiresIn,
+            'expires_in'   => $expiresIn,
         ];
         
         // 监听事件
-        event(new Event\PassportRefreshTokenAfter($data));
+        do_action("passport_refresh_token_after", $data);
         
         return $this->success(__('larke-admin::auth.refresh_token_success'), $data);
     }
@@ -410,11 +409,11 @@ class Passport extends Base
         app('larke-admin.cache')->add(md5($refreshToken), time(), $refreshTokenExpiresIn);
         
         // 监听事件
-        event(new Event\PassportLogoutAfter([
-            'access_token' => $accessToken,
-            'expires_in' => $refreshTokenExpiresIn,
+        do_action("passport_logout_after", [
+            'access_token'  => $accessToken,
+            'expires_in'    => $refreshTokenExpiresIn,
             'refresh_token' => $refreshToken,
-        ]));
+        ]);
         
         return $this->success(__('larke-admin::passport.logout_success'));
     }

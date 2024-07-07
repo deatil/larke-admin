@@ -65,7 +65,6 @@ class Rule
         }
         
         AuthRuleModel::whereIn('id', $ids)
-            ->first()
             ->delete();
         
         return true;
@@ -85,8 +84,9 @@ class Rule
         }
         
         AuthRuleModel::whereIn('id', $ids)
-            ->first()
-            ->enable();
+            ->update([
+                'status' => 1,
+            ]);
         
         return true;
     }
@@ -105,8 +105,9 @@ class Rule
         }
         
         AuthRuleModel::whereIn('id', $ids)
-            ->first()
-            ->disable();
+            ->update([
+                'status' => 0,
+            ]);
         
         return true;
     }

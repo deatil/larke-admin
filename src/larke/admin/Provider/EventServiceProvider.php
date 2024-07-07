@@ -4,57 +4,38 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Provider;
 
-use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 // use directory
-use Larke\Admin\Event;
 use Larke\Admin\Listener;
 
-class EventServiceProvider extends ServiceProvider
+use function Larke\Admin\add_action;
+
+class EventServiceProvider extends BaseServiceProvider
 {
     /**
-     * The event listener mappings for the application.
-     *
-     * @var array
+     * {@inheritdoc}
      */
-    protected $listen = [
+    public function register()
+    {
         // 登陆密钥错误
-        Event\PassportLoginKeyError::class => [
-            Listener\PassportLoginKeyError::class
-        ],
-        
+        add_action('passport_login_key_error', Listener\PassportLoginKeyError::class);
+
         // 登陆权限 Token 错误
-        Event\PassportLoginAccessTokenError::class => [
-            Listener\PassportLoginAccessTokenError::class
-        ],
-        
+        add_action('passport_login_access_token_error', Listener\PassportLoginAccessTokenError::class);
+
         // 登陆刷新 Token 错误
-        Event\PassportLoginRefreshTokenError::class => [
-            Listener\PassportLoginRefreshTokenError::class
-        ],
-        
+        add_action('passport_login_refresh_token_error', Listener\PassportLoginRefreshTokenError::class);
+
         // 登陆
-        Event\PassportLoginAfter::class => [
-            Listener\PassportLoginAfter::class
-        ],
-        
+        add_action('passport_login_after', Listener\PassportLoginAfter::class);
+
         // 刷新 token
-        Event\PassportRefreshTokenAfter::class => [
-            Listener\PassportRefreshTokenAfter::class
-        ],
-        
+        add_action('passport_refresh_token_after', Listener\PassportRefreshTokenAfter::class);
+
         // 退出
-        Event\PassportLogoutAfter::class => [
-            Listener\PassportLogoutAfter::class
-        ],
-    ];
-    
-    /**
-     * The event subscribe mappings for the application.
-     *
-     * @var array
-     */
-    protected $subscribe = [];
+        add_action('passport_logout_after', Listener\PassportLogoutAfter::class);
+    }
 
     /**
      * Register any events for your application.

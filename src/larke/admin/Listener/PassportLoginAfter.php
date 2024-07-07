@@ -4,8 +4,6 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Listener;
 
-use Larke\Admin\Event;
-
 /*
  * 更新登陆信息
  *
@@ -14,11 +12,8 @@ use Larke\Admin\Event;
  */
 class PassportLoginAfter
 {
-    public function handle(Event\PassportLoginAfter $event)
+    public function handle($admin, $jwt)
     {
-        // jwt 数据
-        $jwt = $event->jwt;
-        
         // 权限 token 签发时间
         $decodeAccessToken = app('larke-admin.auth-token')
                 ->decodeAccessToken($jwt['access_token']);
@@ -31,7 +26,7 @@ class PassportLoginAfter
         $decodeRefreshTokenIat = $decodeRefreshToken->getClaim('iat')
                 ->getTimestamp();
         
-        $event->admin->update([
+        $admin->update([
             'refresh_time' => $decodeAccessTokenIat, 
             'refresh_ip'   => request()->ip(),
             'last_active'  => $decodeRefreshTokenIat, 

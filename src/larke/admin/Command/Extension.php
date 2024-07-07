@@ -12,9 +12,10 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 
-use Larke\Admin\Event;
 use Larke\Admin\Facade\Extension as AdminExtension;
 use Larke\Admin\Model\Extension as ExtensionModel;
+
+use function Larke\Admin\do_action;
 
 /**
  * 扩展
@@ -205,7 +206,7 @@ class Extension extends Command
         }
         
         // 安装事件
-        event(new Event\ExtensionInstall($name, $info));
+        do_action("extension_install", $name, $info);
     }
     
     /**
@@ -237,7 +238,7 @@ class Extension extends Command
         AdminExtension::loadExtension();
         
         // 卸载事件
-        event(new Event\ExtensionUninstall($name, $info->toArray()));
+        do_action("extension_uninstall", $name, $info);
     }
     
     /**
@@ -346,7 +347,7 @@ class Extension extends Command
         }
         
         // 更新事件
-        event(new Event\ExtensionUpgrade($name, $installInfo->toArray(), $info));
+        do_action("extension_upgrade", $name, $installInfo, $info);
     }
     
     /**
@@ -378,7 +379,7 @@ class Extension extends Command
         AdminExtension::loadExtension();
         
         // 启用事件
-        event(new Event\ExtensionEnable($name, $installInfo->toArray()));
+        do_action("extension_enable", $name, $installInfo);
     }
     
     /**
@@ -408,6 +409,6 @@ class Extension extends Command
         }
         
         // 禁用事件
-        event(new Event\ExtensionDisable($name, $installInfo->toArray()));
+        do_action("extension_disable", $name, $installInfo);
     }
 }

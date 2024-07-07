@@ -13,12 +13,13 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 
-use Larke\Admin\Event;
 use Larke\Admin\Support\PclZip;
 use Larke\Admin\Annotation\RouteRule;
 use Larke\Admin\Composer\Repository as ComposerRepository;
 use Larke\Admin\Facade\Extension as AdminExtension;
 use Larke\Admin\Model\Extension as ExtensionModel;
+
+use function Larke\Admin\do_action;
 
 /**
  * 扩展
@@ -145,9 +146,13 @@ class Extension extends Base
                 } else {
                     $data['upgrade'] = 0;
                 }
+                $data['status'] = Arr::get($installInfo, 'status', 0);
+                $data['installed'] = 1;
             } else {
                 $data['install'] = [];
                 $data['upgrade'] = 0;
+                $data['status'] = 0;
+                $data['installed'] = 0;
             }
             
             return $data;
@@ -308,7 +313,7 @@ class Extension extends Base
         AdminExtension::forgetExtensionCache($name);
         
         // 安装事件
-        event(new Event\ExtensionInstall($name, $info));
+        do_action("extension_install", $name, $info);
         
         return $this->success(__('larke-admin::extension.instell_extension_success'), [
             'name' => $extension->name
@@ -354,7 +359,7 @@ class Extension extends Base
         AdminExtension::loadExtension();
         
         // 卸载事件
-        event(new Event\ExtensionUninstall($name, $info->toArray()));
+        do_action("extension_uninstall", $name, $info);
         
         return $this->success(__('larke-admin::extension.uninstell_extension_success'));
     }
@@ -458,7 +463,7 @@ class Extension extends Base
         AdminExtension::forgetExtensionCache($name);
         
         // 更新事件
-        event(new Event\ExtensionUpgrade($name, $installInfo->toArray(), $info));
+        do_action("extension_upgrade", $name, $installInfo, $info);
         
         return $this->success(__('larke-admin::extension.upgrade_extension_success'));
     }
@@ -537,7 +542,7 @@ class Extension extends Base
         AdminExtension::loadExtension();
         
         // 启用事件
-        event(new Event\ExtensionEnable($name, $installInfo->toArray()));
+        do_action("extension_enable", $name, $installInfo);
         
         return $this->success(__('larke-admin::extension.enable_extension_success'));
     }
@@ -579,7 +584,7 @@ class Extension extends Base
         AdminExtension::forgetExtensionCache($name);
         
         // 禁用事件
-        event(new Event\ExtensionDisable($name, $installInfo->toArray()));
+        do_action("extension_disable", $name, $installInfo);
         
         return $this->success(__('larke-admin::extension.disable_extension_success'));
     }
@@ -603,7 +608,7 @@ class Extension extends Base
             return $this->error(__('larke-admin::extension.extension_package_name_dont_empty'));
         }
         
-        event(new Event\ExtensionConfigBefore($name, $request));
+        do_action("extension_config_before", $name);
         
         $config = $request->input('config');
         
@@ -624,10 +629,10 @@ class Extension extends Base
             return $this->error(__('larke-admin::extension.update_extension_config_fail'));
         }
         
-        event(new Event\ExtensionConfigAfter($name, $info));
-        
         // 清除缓存
         AdminExtension::forgetExtensionCache($name);
+        
+        do_action("extension_config_after", $name, $info);
         
         return $this->success(__('larke-admin::extension.update_extension_config_success'));
     }

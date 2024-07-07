@@ -10,9 +10,11 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Validator;
 
-use Larke\Admin\Event;
 use Larke\Admin\Annotation\RouteRule;
 use Larke\Admin\Service\Menu as MenuModel;
+
+use function Larke\Admin\do_action;
+use function Larke\Admin\apply_filters;
 
 /**
  * 系统
@@ -47,7 +49,7 @@ class System extends Base
             'system' => $this->getSysInfo(),
         ];
         
-        event(new Event\SystemInfo($info));
+        $info = apply_filters("system_info", $info);
         
         return $this->success(__('larke-admin::common.get_success'), $info);
     }
@@ -74,7 +76,7 @@ class System extends Base
         // > php artisan config:clear
         // Artisan::call('config:clear');
         
-        event(new Event\SystemClearCache());
+        do_action("system_clear_cache");
         
         return $this->success(__('larke-admin::system.clear_cache_success'));
     }
@@ -95,7 +97,7 @@ class System extends Base
         Artisan::call('route:cache');
         Artisan::call('config:cache');
         
-        event(new Event\SystemCache());
+        do_action("system_cache");
         
         return $this->success(__('larke-admin::system.routes_and_config_chache_success'));
     }

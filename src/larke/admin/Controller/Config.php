@@ -8,9 +8,11 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 
-use Larke\Admin\Event;
 use Larke\Admin\Annotation\RouteRule;
 use Larke\Admin\Model\Config as ConfigModel;
+
+use function Larke\Admin\do_action;
+use function Larke\Admin\apply_filters;
 
 /**
  * 配置
@@ -227,7 +229,7 @@ class Config extends Base
         }
         
         // 监听事件
-        event(new Event\ConfigCreated($config));
+        do_action("config_created", $config);
         
         return $this->success(__('larke-admin::config.create_success'), [
             'id' => $config->id,
@@ -307,7 +309,7 @@ class Config extends Base
         }
         
         // 监听事件
-        event(new Event\ConfigUpdated($info));
+        do_action("config_updated", $info);
         
         return $this->success(__('larke-admin::config.update_success'));
     }
@@ -362,14 +364,13 @@ class Config extends Base
     public function setting(Request $request)
     {
         $fields = $request->input('fields');
-        
-        event(new Event\ConfigSettingBefore($fields));
+        $fields = apply_filters("config_setting_before", $fields);
         
         if (!empty($fields)) {
             ConfigModel::setMany($fields);
         }
         
-        event(new Event\ConfigSettingAfter($fields));
+        do_action("config_setting_after", $fields);
         
         return $this->success(__('larke-admin::config.setting_update_success'));
     }
@@ -388,8 +389,7 @@ class Config extends Base
     public function settings()
     {
         $settings = ConfigModel::getSettings();
-        
-        event(new Event\ConfigSettingsAfter($settings));
+        $settings = apply_filters("config_settings_after", $settings);
         
         return $this->success(__('larke-admin::common.get_success'), [
             'settings' => $settings,

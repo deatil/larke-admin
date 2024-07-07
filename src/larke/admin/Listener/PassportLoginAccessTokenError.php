@@ -6,8 +6,6 @@ namespace Larke\Admin\Listener;
 
 use Illuminate\Support\Facades\Log;
 
-use Larke\Admin\Event;
-
 /*
  * 权限 Token 错误
  *
@@ -16,10 +14,8 @@ use Larke\Admin\Event;
  */
 class PassportLoginAccessTokenError
 {
-    public function handle(Event\PassportLoginAccessTokenError $event)
+    public function handle($message)
     {
-        $message = $event->message;
-        
         Log::error('larke-admin-login accessToken error: ' . $message);
     }
 }
