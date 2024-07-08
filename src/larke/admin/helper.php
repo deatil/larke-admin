@@ -17,16 +17,13 @@ use Larke\Admin\Traits\ResponseJson as ResponseJsonTrait;
 
 if (! function_exists('Larke\\Admin\\success')) {
     /**
-     * 返回成功JSON
+     * 返回成功 JSON
      *
      * @param string $message 信息
      * @param array  $data    数据
      * @param array  $header  响应头
      * @param int    $code    状态码
      * @return mixed
-     *
-     * @create 2020-10-19
-     * @author deatil
      */
     function success(?string $message = null, ?array $data = null, array $header = [], int $code = 0) 
     {
@@ -43,16 +40,13 @@ if (! function_exists('Larke\\Admin\\success')) {
 
 if (! function_exists('Larke\\Admin\\error')) {
     /**
-     * 返回失败JSON
+     * 返回失败 JSON
      *
      * @param string $message 信息
      * @param int    $code    状态码
      * @param array  $data    数据
      * @param array  $header  响应头
      * @return mixed
-     *
-     * @create 2020-10-19
-     * @author deatil
      */
     function error(?string $message = null, int $code = 1, array $data = [], array $header = []) 
     {
@@ -75,9 +69,6 @@ if (! function_exists('Larke\\Admin\\route')) {
      * @param mixed  $params    请求参数
      * @param bool   $absolute
      * @return mixed
-     *
-     * @create 2021-2-27
-     * @author deatil
      */
     function route(string $route, mixed $params = [], bool $absolute = true) 
     {
@@ -91,9 +82,6 @@ if (! function_exists('Larke\\Admin\\route_name')) {
      *
      * @param string $route 路由名称
      * @return mixed
-     *
-     * @create 2021-2-27
-     * @author deatil
      */
     function route_name(string $route)
     {
@@ -107,12 +95,9 @@ if (! function_exists('Larke\\Admin\\can')) {
      *
      * @param string $slug   路由名称
      * @param string $method 请求方式，大写字母
-     * @return mixed
-     *
-     * @create 2021-5-6
-     * @author deatil
+     * @return bool
      */
-    function can(string $slug, string $method = 'GET')
+    function can(string $slug, string $method = 'GET'): bool
     {
         return app('larke-admin.auth-admin')->hasAccess($slug, $method);
     }
@@ -123,14 +108,11 @@ if (! function_exists('Larke\\Admin\\authenticate_excepts')) {
      * 登陆过滤
      *
      * @param array $excepts 权限列表
-     * @return mixed
-     *
-     * @create 2021-3-3
-     * @author deatil
+     * @return void
      */
     function authenticate_excepts(array $excepts)
     {
-        return Extension::authenticateExcepts($excepts);
+        Extension::authenticateExcepts($excepts);
     }
 }
 
@@ -139,14 +121,11 @@ if (! function_exists('Larke\\Admin\\permission_excepts')) {
      * 权限过滤
      *
      * @param array $excepts 权限列表
-     * @return mixed
-     *
-     * @create 2021-3-3
-     * @author deatil
+     * @return void
      */
     function permission_excepts(array $excepts)
     {
-        return Extension::permissionExcepts($excepts);
+        Extension::permissionExcepts($excepts);
     }
 }
 
@@ -156,12 +135,9 @@ if (! function_exists('Larke\\Admin\\check_permission')) {
      *
      * @param string $slug   路由name
      * @param string $method 请求方式
-     * @return mixed
-     *
-     * @create 2021-3-22
-     * @author deatil
+     * @return bool
      */
-    function check_permission(string $slug, string $method = 'GET')
+    function check_permission(string $slug, string $method = 'GET'): bool
     {
         return AuthAdmin::hasAccess($slug, $method);
     }
@@ -174,9 +150,6 @@ if (! function_exists('Larke\\Admin\\config')) {
      * @param string $name    配置关键字
      * @param mixed  $default 默认值
      * @return mixed
-     *
-     * @create 2020-12-17
-     * @author deatil
      */
     function config(string $name, mixed $default = null) 
     {
@@ -192,9 +165,6 @@ if (! function_exists('Larke\\Admin\\attachment_url')) {
      * @param string $id      序列号
      * @param mixed  $default 默认
      * @return mixed
-     *
-     * @create 2020-12-17
-     * @author deatil
      */
     function attachment_url(string $id, mixed $default = null) 
     {
@@ -210,9 +180,6 @@ if (! function_exists('Larke\\Admin\\extension_config')) {
      * @param string $key     配置关键字
      * @param mixed  $default 默认值
      * @return mixed
-     *
-     * @create 2021-3-24
-     * @author deatil
      */
     function extension_config(string $name, string $key = null, mixed $default = null) 
     {
@@ -229,6 +196,51 @@ if (! function_exists('Larke\\Admin\\extension_config')) {
     }
 }
 
+if (! function_exists('Larke\\Admin\\extension_installed')) {
+    /**
+     * 扩展是否安装
+     *
+     * @param string $name 扩展包名
+     * @return bool
+     */
+    function extension_installed(string $name): bool
+    {
+        $extensions = ExtensionModel::getExtensions();
+        
+        $info = Arr::get($extensions, $name, []);
+        if (empty($info)) {
+            return false;
+        }
+        
+        return true;
+    }
+}
+
+if (! function_exists('Larke\\Admin\\extension_enabled')) {
+    /**
+     * 扩展是否启用
+     *
+     * @param string $name 扩展包名
+     * @return bool
+     */
+    function extension_enabled(string $name): bool
+    {
+        $extensions = ExtensionModel::getExtensions();
+        
+        $info = Arr::get($extensions, $name, []);
+        if (empty($info)) {
+            return false;
+        }
+        
+        $status = Arr::get($info, 'status', 0);
+        if ($status != 1) {
+            return false;
+        }
+        
+        return true;
+    }
+}
+
 if (! function_exists('Larke\\Admin\\add_action')) {
     /**
      * 注册操作
@@ -236,7 +248,7 @@ if (! function_exists('Larke\\Admin\\add_action')) {
      * @param string $event    事件名称
      * @param mixed  $listener 监听操作
      * @param bool   $sort     排序
-     * @return $this
+     * @return void
      */
     function add_action(string $event, $listener, int $sort = 1): void
     {
@@ -264,7 +276,7 @@ if (! function_exists('Larke\\Admin\\remove_action')) {
      * 
      * @param string $event    事件名称
      * @param mixed  $listener 监听操作
-     * @return $this
+     * @return bool
      */
     function remove_action(string $event, $listener, int $sort = 1): bool
     {
@@ -278,7 +290,7 @@ if (! function_exists('Larke\\Admin\\has_action')) {
      * 
      * @param string $event    事件名称
      * @param mixed  $listener 监听操作
-     * @return $this
+     * @return bool
      */
     function has_action(string $event, $listener): bool
     {
@@ -293,7 +305,7 @@ if (! function_exists('Larke\\Admin\\add_filter')) {
      * @param string $event    事件名称
      * @param mixed  $listener 监听操作
      * @param bool   $sort     排序
-     * @return $this
+     * @return void
      */
     function add_filter(string $event, $listener, int $sort = 1): void
     {
@@ -322,7 +334,7 @@ if (! function_exists('Larke\\Admin\\remove_filter')) {
      * 
      * @param string $event    事件名称
      * @param mixed  $listener 监听操作
-     * @return $this
+     * @return bool
      */
     function remove_filter(string $event, $listener, int $sort = 1): bool
     {
@@ -336,7 +348,7 @@ if (! function_exists('Larke\\Admin\\has_filter')) {
      * 
      * @param string $event    事件名称
      * @param mixed  $listener 监听操作
-     * @return $this
+     * @return bool
      */
     function has_filter(string $event, $listener): bool
     {
