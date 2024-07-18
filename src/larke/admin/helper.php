@@ -5,6 +5,7 @@ declare (strict_types = 1);
 namespace Larke\Admin;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 use Larke\Admin\Facade\Events;
 use Larke\Admin\Facade\Extension;
@@ -86,6 +87,30 @@ if (! function_exists('Larke\\Admin\\route_name')) {
     function route_name(string $route)
     {
         return RouteService::formatRouteSlug($route);
+    }
+}
+
+if (! function_exists('Larke\\Admin\\is_admin')) {
+    /**
+     * 是否为后台 uri
+     *
+     * @param string $url 
+     * @return bool
+     */
+    function is_admin(string $url = '') 
+    {
+        if (empty($url)) {
+            $url = request()->path();
+        }
+        
+        $url = ltrim($url, '/');
+        
+        $routePrefix = \config('larkeadmin.route.prefix', '');
+        if (Str::startsWith($url, ltrim($routePrefix, '/') . '/')) {
+            return true;
+        }
+        
+        return false;
     }
 }
 
@@ -353,5 +378,75 @@ if (! function_exists('Larke\\Admin\\has_filter')) {
     function has_filter(string $event, $listener): bool
     {
         return Events::getFilter()->hasListener($event, $listener);
+    }
+}
+
+if (! function_exists('Larke\\Admin\\register_install_hook')) {
+    /**
+     * 注册安装操作
+     * 
+     * @param string $name     插件包名
+     * @param mixed  $callback 回调函数
+     * @return void
+     */
+    function register_install_hook(string $name, $callback): void
+    {
+        add_action('admin_install_' . $name, $callback);
+    }
+}
+
+if (! function_exists('Larke\\Admin\\register_uninstall_hook')) {
+    /**
+     * 注册卸载操作
+     * 
+     * @param string $name     插件包名
+     * @param mixed  $callback 回调函数
+     * @return void
+     */
+    function register_uninstall_hook(string $name, $callback): void
+    {
+        add_action('admin_uninstall_' . $name, $callback);
+    }
+}
+
+if (! function_exists('Larke\\Admin\\register_upgrade_hook')) {
+    /**
+     * 注册更新操作
+     * 
+     * @param string $name     插件包名
+     * @param mixed  $callback 回调函数
+     * @return void
+     */
+    function register_upgrade_hook(string $name, $callback): void
+    {
+        add_action('admin_upgrade_' . $name, $callback);
+    }
+}
+
+if (! function_exists('Larke\\Admin\\register_enable_hook')) {
+    /**
+     * 注册启用操作
+     * 
+     * @param string $name     插件包名
+     * @param mixed  $callback 回调函数
+     * @return void
+     */
+    function register_enable_hook(string $name, $callback): void
+    {
+        add_action('admin_enable_' . $name, $callback);
+    }
+}
+
+if (! function_exists('Larke\\Admin\\register_disable_hook')) {
+    /**
+     * 注册禁用操作
+     * 
+     * @param string $name     插件包名
+     * @param mixed  $callback 回调函数
+     * @return void
+     */
+    function register_disable_hook(string $name, $callback): void
+    {
+        add_action('admin_disable_' . $name, $callback);
     }
 }

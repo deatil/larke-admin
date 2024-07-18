@@ -20,7 +20,7 @@ use function Larke\Admin\do_action;
 /**
  * 扩展
  *
- * > php artisan larke-admin:extension [--package=package] [--action=install]
+ * > php artisan larke-admin:extension [--package=package_name] [--action=install]
  *
  * @create 2021-1-25
  * @author deatil
@@ -69,6 +69,7 @@ class Extension extends Command
                 '[3]' => 'Upgrade',
                 '[4]' => 'Enable',
                 '[5]' => 'Disable',
+                '[6]' => 'State',
             ];
             $headers = ['No.', 'Action'];
             $rows = [];
@@ -89,6 +90,7 @@ class Extension extends Command
             '3' => 'upgrade',
             '4' => 'enable',
             '5' => 'disable',
+            '6' => 'state',
         ];
         
         if (isset($actions[$action])) {
@@ -113,8 +115,8 @@ class Extension extends Command
     /**
      * install
      *
-     * @param  Request  $request
-     * @return Response
+     * @param  string $name
+     * @return void
      */
     protected function install($name)
     {
@@ -124,7 +126,7 @@ class Extension extends Command
             ->first();
         if (!empty($installInfo)) {
             $this->line("<error>Extension is installed !</error> ");
-            return false;
+            return ;
         }
         
         AdminExtension::loadExtension();
@@ -132,20 +134,20 @@ class Extension extends Command
         $info = AdminExtension::getExtension($name);
         if (empty($info)) {
             $this->line("<error>Extension info is empty !</error> ");
-            return false;
+            return ;
         }
         
         $checkInfo = AdminExtension::validateInfo($info);
         if (!$checkInfo) {
             $this->line("<error>Extension info is error !</error> ");
-            return false;
+            return ;
         }
         
         try {
             $infoVersion = (new VersionParser())->normalize($info['version']);
         } catch(\Exception $e) {
             $this->line("<error>Extension'version ({$info['version']}) is error !</error> ");
-            return false;
+            return ;
         }
         
         $adminVersion = config('larkeadmin.admin.version');
@@ -154,12 +156,12 @@ class Extension extends Command
             $versionCheck = Semver::satisfies($adminVersion, $info['adaptation']);
         } catch(\Exception $e) {
             $this->line("<error>Extension adaptation'version ({$info['adaptation']}) is error !</error> ");
-            return false;
+            return ;
         }
         
         if (! $versionCheck) {
             $this->line("<error>Extension adaptation'version is error ! Admin'version is {$adminVersion} !</error> ");
-            return false;
+            return ;
         }
         
         $requireExtensions = ExtensionModel::checkRequireExtension($info['require']);
@@ -183,37 +185,48 @@ class Extension extends Command
                 
                 $this->table($headers, $rows, 'default');
                 
-                return false;
+                return ;
             }
         }
         
+        AdminExtension::newClassMethod($info['class_name'], 'action');
+        
+        // 安装前
+        do_action('admin_install_extension', $name);
+        
+        // 安装当前扩展时
+        do_action('admin_install_' . $name);
+
         $createInfo = ExtensionModel::create([
-            'name' => Arr::get($info, 'name'),
-            'title' => Arr::get($info, 'title'),
+            'name'        => Arr::get($info, 'name'),
+            'title'       => Arr::get($info, 'title'),
             'description' => Arr::get($info, 'description'),
-            'keywords' => json_encode(Arr::get($info, 'keywords')), 
-            'homepage' => Arr::get($info, 'homepage'),
-            'authors' => json_encode(Arr::get($info, 'authors', [])),
-            'version' => Arr::get($info, 'version'),
-            'adaptation' => Arr::get($info, 'adaptation'),
-            'require' => json_encode(Arr::get($info, 'require', [])),
-            'config' => json_encode(Arr::get($info, 'config', [])),
-            'class_name' => Arr::get($info, 'class_name'),
+            'keywords'    => json_encode(Arr::get($info, 'keywords')), 
+            'homepage'    => Arr::get($info, 'homepage'),
+            'authors'     => json_encode(Arr::get($info, 'authors', [])),
+            'version'     => Arr::get($info, 'version'),
+            'adaptation'  => Arr::get($info, 'adaptation'),
+            'require'     => json_encode(Arr::get($info, 'require', [])),
+            'config'      => json_encode(Arr::get($info, 'config', [])),
+            'class_name'  => Arr::get($info, 'class_name'),
         ]);
         if ($createInfo === false) {
             $this->line("<error>Extension install error !</error> ");
-            return false;
+            return ;
         }
         
-        // 安装事件
-        do_action("extension_install", $name, $info);
+        // 安装后
+        do_action('admin_installed_extension', $name);
+        
+        // 清除缓存
+        AdminExtension::forgetExtensionCache($name);
     }
     
     /**
      * uninstall
      *
-     * @param  Request  $request
-     * @return Response
+     * @param  string $name
+     * @return void
      */
     protected function uninstall($name)
     {
@@ -221,31 +234,41 @@ class Extension extends Command
             ->first();
         if (empty($info)) {
             $this->line("<error>Extension is not install !</error> ");
-            return false;
+            return ;
         }
         
         if ($info->status == 1) {
             $this->line("<error>Extension need disable before uninstall !</error> ");
-            return false;
-        }
-        
-        $deleteStatus = $info->delete();
-        if ($deleteStatus === false) {
-            $this->line("<error>Extension uninstall error !</error> ");
-            return false;
+            return ;
         }
         
         AdminExtension::loadExtension();
+        AdminExtension::newClassMethod($info['class_name'], 'action');
         
-        // 卸载事件
-        do_action("extension_uninstall", $name, $info);
+        // 卸载前
+        do_action('admin_uninstall_extension', $name);
+
+        $deleteStatus = $info->delete();
+        if ($deleteStatus === false) {
+            $this->line("<error>Extension uninstall error !</error> ");
+            return ;
+        }
+        
+        // 卸载当前扩展时
+        do_action('admin_uninstall_' . $name);
+        
+        // 卸载后
+        do_action('admin_uninstalled_extension', $name);
+        
+        // 清除缓存
+        AdminExtension::forgetExtensionCache($name);
     }
     
     /**
      * Upgrade
      *
-     * @param  Request  $request
-     * @return Response
+     * @param  string $name
+     * @return void
      */
     protected function upgrade($name)
     {
@@ -253,25 +276,25 @@ class Extension extends Command
             ->first();
         if (empty($installInfo)) {
             $this->line("<error>Extension is not install !</error> ");
-            return false;
+            return ;
         }
         
         if ($installInfo->status == 1) {
             $this->line("<error>Extension need disable before upgrade !</error> ");
-            return false;
+            return ;
         }
         
         AdminExtension::loadExtension();
         $info = AdminExtension::getExtension($name);
         if (empty($info)) {
             $this->line("<error>Extension info is empty !</error> ");
-            return false;
+            return ;
         }
         
         $checkInfo = AdminExtension::validateInfo($info);
         if (!$checkInfo) {
             $this->line("<error>Extension info is error !</error> ");
-            return false;
+            return ;
         }
         
         $adminVersion = config('larkeadmin.admin.version');
@@ -280,26 +303,26 @@ class Extension extends Command
             $versionCheck = Semver::satisfies($adminVersion, $info['adaptation']);
         } catch(\Exception $e) {
             $this->line("<error>Extension adaptation'version ({$info['adaptation']}) is error !</error> ");
-            return false;
+            return ;
         }
         
         if (! $versionCheck) {
             $this->line("<error>Extension adaptation'version is error ! Admin'version is {$adminVersion} !</error> ");
-            return false;
+            return ;
         }
         
         try {
             $infoVersion = (new VersionParser())->normalize($info['version']);
         } catch(\Exception $e) {
             $this->line("<error>Extension'version ({$info['version']}) is error !</error> ");
-            return false;
+            return ;
         }
         
         $infoVersion = Arr::get($info, 'version', 0);
         $installVersion = Arr::get($installInfo, 'version', 0);
         if (!Comparator::greaterThan($infoVersion, $installVersion)) {
             $this->line("<error>Extension is not need upgrade !</error> ");
-            return false;
+            return ;
         }
         
         $requireExtensions = ExtensionModel::checkRequireExtension($info['require']);
@@ -323,38 +346,49 @@ class Extension extends Command
                 
                 $this->table($headers, $rows, 'default');
                 
-                return false;
+                return ;
             }
         }
         
+        AdminExtension::newClassMethod($info['class_name'], 'action');
+        
+        // 更新前
+        do_action('admin_upgrade_extension', $name);
+        
+        // 更新当前扩展时
+        do_action('admin_upgrade_' . $name);
+
         $updateInfo = $installInfo->update([
-            'name' => Arr::get($info, 'name'),
-            'title' => Arr::get($info, 'title'),
+            'name'        => Arr::get($info, 'name'),
+            'title'       => Arr::get($info, 'title'),
             'description' => Arr::get($info, 'description'),
-            'keywords' => json_encode(Arr::get($info, 'keywords')), 
-            'homepage' => Arr::get($info, 'homepage'),
-            'authors' => json_encode(Arr::get($info, 'authors', [])),
-            'version' => Arr::get($info, 'version'),
-            'adaptation' => Arr::get($info, 'adaptation'),
-            'require' => json_encode(Arr::get($info, 'require', [])),
-            'config' => json_encode(Arr::get($info, 'config', [])),
-            'class_name' => Arr::get($info, 'class_name'),
+            'keywords'    => json_encode(Arr::get($info, 'keywords')), 
+            'homepage'    => Arr::get($info, 'homepage'),
+            'authors'     => json_encode(Arr::get($info, 'authors', [])),
+            'version'     => Arr::get($info, 'version'),
+            'adaptation'  => Arr::get($info, 'adaptation'),
+            'require'     => json_encode(Arr::get($info, 'require', [])),
+            'config'      => json_encode(Arr::get($info, 'config', [])),
+            'class_name'  => Arr::get($info, 'class_name'),
             'upgradetime' => time(),
         ]);
         if ($updateInfo === false) {
             $this->line("<error>Extension upgrade error !</error> ");
-            return false;
+            return ;
         }
         
-        // 更新事件
-        do_action("extension_upgrade", $name, $installInfo, $info);
+        // 更新后
+        do_action('admin_upgraded_extension', $name);
+
+        // 清除缓存
+        AdminExtension::forgetExtensionCache($name);
     }
     
     /**
      * 启用
      *
-     * @param  Request  $request
-     * @return Response
+     * @param  string $name
+     * @return void
      */
     protected function enable($name)
     {
@@ -362,31 +396,41 @@ class Extension extends Command
             ->first();
         if (empty($installInfo)) {
             $this->line("<error>Extension is not install !</error> ");
-            return false;
+            return ;
         }
         
         if ($installInfo['status'] == 1) {
             $this->line("<error>Extension is enableing !</error> ");
-            return false;
-        }
-        
-        $status = $installInfo->enable();
-        if ($status === false) {
-            $this->line("<error>Extension enable error !</error> ");
-            return false;
+            return ;
         }
         
         AdminExtension::loadExtension();
+        AdminExtension::newClassMethod($installInfo['class_name'], 'action');
         
-        // 启用事件
-        do_action("extension_enable", $name, $installInfo);
+        // 启用前
+        do_action('admin_enable_extension', $name);
+
+        $status = $installInfo->enable();
+        if ($status === false) {
+            $this->line("<error>Extension enable error !</error> ");
+            return ;
+        }
+        
+        // 启用当前扩展时
+        do_action('admin_enable_' . $name);
+        
+        // 启用后
+        do_action('admin_enabled_extension', $name);
+        
+        // 清除缓存
+        AdminExtension::forgetExtensionCache($name);
     }
     
     /**
      * 禁用
      *
-     * @param  Request  $request
-     * @return Response
+     * @param  string $name
+     * @return void
      */
     protected function disable($name)
     {
@@ -394,21 +438,57 @@ class Extension extends Command
             ->first();
         if (empty($installInfo)) {
             $this->line("<error>Extension is not install !</error> ");
-            return false;
+            return ;
         }
         
         if ($installInfo['status'] == 0) {
             $this->line("<error>Extension is disableing !</error> ");
-            return false;
+            return ;
         }
         
+        AdminExtension::newClassMethod($installInfo['class_name'], 'action');
+        
+        // 禁用前
+        do_action('admin_disable_extension', $name);
+
         $status = $installInfo->disable();
         if ($status === false) {
             $this->line("<error>Extension disable error !</error> ");
-            return false;
+            return ;
         }
         
-        // 禁用事件
-        do_action("extension_disable", $name, $installInfo);
+        // 禁用当前扩展时
+        do_action('admin_disable_' . $name);
+        
+        // 禁用后
+        do_action('admin_disabled_extension', $name);
+
+        // 清除缓存
+        AdminExtension::forgetExtensionCache($name);
     }
+    
+    /**
+     * 查看扩展状态
+     *
+     * @param  string $name
+     * @return void
+     */
+    protected function state($name)
+    {
+        $installInfo = ExtensionModel::where(['name' => $name])
+            ->first();
+        if (empty($installInfo)) {
+            $this->line("<error>[{$name}] not install</error> ");
+            return ;
+        } else {
+            if ($installInfo['status'] == 0) {
+                $this->line("<error>[{$name}] installed and disabled</error> ");
+                return ;
+            } else {
+                $this->line("<info>[{$name}] installed and enabled</info> ");
+                return ;
+            }
+        }
+    }
+
 }

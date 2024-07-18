@@ -28,12 +28,16 @@ abstract class ServiceProvider extends BaseServiceProvider
         ExtensionServiceProviderTrait;
 
     /**
+     * 在扩展安装、扩展卸载等操作时有效
+     */
+    public function action()
+    {}
+
+    /**
      * 启动，只有启用后加载
      */
     public function start()
-    {
-        // 业务代码
-    }
+    {}
 
     /**
      * 添加扩展
@@ -172,54 +176,5 @@ abstract class ServiceProvider extends BaseServiceProvider
         
         return $data;
     }
-    
-    /**
-     * 安装后
-     */
-    protected function onInatll(Closure $callback)
-    {
-        add_action('extension_install', function($name, $info) use($callback) {
-            $callback($name, $info);
-        });
-    }
-    
-    /**
-     * 卸载后
-     */
-    protected function onUninstall(Closure $callback)
-    {
-        add_action('extension_uninstall', function($name, $info) use($callback) {
-            $callback($name, $info);
-        });
-    }
-    
-    /**
-     * 更新后
-     */
-    protected function onUpgrade(Closure $callback)
-    {
-        add_action('extension_upgrade', function($name, $oldInfo, $newInfo) use($callback) {
-            $callback($name, $oldInfo, $newInfo);
-        });
-    }
-    
-    /**
-     * 启用后
-     */
-    protected function onEnable(Closure $callback)
-    {
-        add_action('extension_enable', function($name, $info) use($callback) {
-            $callback($name, $info);
-        });
-    }
-    
-    /**
-     * 禁用后
-     */
-    protected function onDisable(Closure $callback)
-    {
-        add_action('extension_disable', function($name, $info) use($callback) {
-            $callback($name, $info);
-        });
-    }
+
 }

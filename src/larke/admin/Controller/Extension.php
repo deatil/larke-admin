@@ -292,6 +292,14 @@ class Extension extends Base
             }
         }
         
+        AdminExtension::newClassMethod($info['class_name'], 'action');
+        
+        // 安装前
+        do_action('admin_install_extension', $name);
+        
+        // 安装当前扩展时
+        do_action('admin_install_' . $name);
+
         $extension = ExtensionModel::create([
             'name'        => Arr::get($info, 'name'),
             'title'       => Arr::get($info, 'title'),
@@ -309,11 +317,11 @@ class Extension extends Base
             return $this->error(__('larke-admin::extension.instell_extension_fail'));
         }
         
+        // 安装后
+        do_action('admin_installed_extension', $name);
+        
         // 清除缓存
         AdminExtension::forgetExtensionCache($name);
-        
-        // 安装事件
-        do_action("extension_install", $name, $info);
         
         return $this->success(__('larke-admin::extension.instell_extension_success'), [
             'name' => $extension->name
@@ -347,19 +355,26 @@ class Extension extends Base
         if ($info->status == 1) {
             return $this->error(__('larke-admin::extension.uninstell_extension_need_disable'));
         }
+        
+        AdminExtension::loadExtension();
+        AdminExtension::newClassMethod($info['class_name'], 'action');
+        
+        // 卸载前
+        do_action('admin_uninstall_extension', $name);
 
         $deleteStatus = $info->delete();
         if ($deleteStatus === false) {
             return $this->error(__('larke-admin::extension.uninstell_extension_fail'));
         }
         
+        // 卸载当前扩展时
+        do_action('admin_uninstall_' . $name);
+        
+        // 卸载后
+        do_action('admin_uninstalled_extension', $name);
+        
         // 清除缓存
         AdminExtension::forgetExtensionCache($name);
-        
-        AdminExtension::loadExtension();
-        
-        // 卸载事件
-        do_action("extension_uninstall", $name, $info);
         
         return $this->success(__('larke-admin::extension.uninstell_extension_success'));
     }
@@ -441,6 +456,14 @@ class Extension extends Base
             }
         }
         
+        AdminExtension::newClassMethod($info['class_name'], 'action');
+        
+        // 更新前
+        do_action('admin_upgrade_extension', $name);
+        
+        // 更新当前扩展时
+        do_action('admin_upgrade_' . $name);
+
         $updateInfo = $installInfo->update([
             'name'        => Arr::get($info, 'name'),
             'title'       => Arr::get($info, 'title'),
@@ -459,11 +482,11 @@ class Extension extends Base
             return $this->error(__('larke-admin::extension.upgrade_extension_fail'));
         }
         
+        // 更新后
+        do_action('admin_upgraded_extension', $name);
+
         // 清除缓存
         AdminExtension::forgetExtensionCache($name);
-        
-        // 更新事件
-        do_action("extension_upgrade", $name, $installInfo, $info);
         
         return $this->success(__('larke-admin::extension.upgrade_extension_success'));
     }
@@ -531,18 +554,25 @@ class Extension extends Base
             return $this->error(__('larke-admin::extension.extension_enabled'));
         }
         
+        AdminExtension::loadExtension();
+        AdminExtension::newClassMethod($installInfo['class_name'], 'action');
+        
+        // 启用前
+        do_action('admin_enable_extension', $name);
+        
         $status = $installInfo->enable();
         if ($status === false) {
             return $this->error(__('larke-admin::extension.enable_extension_fail'));
         }
         
+        // 启用当前扩展时
+        do_action('admin_enable_' . $name);
+        
+        // 启用后
+        do_action('admin_enabled_extension', $name);
+        
         // 清除缓存
         AdminExtension::forgetExtensionCache($name);
-        
-        AdminExtension::loadExtension();
-        
-        // 启用事件
-        do_action("extension_enable", $name, $installInfo);
         
         return $this->success(__('larke-admin::extension.enable_extension_success'));
     }
@@ -575,16 +605,24 @@ class Extension extends Base
             return $this->error(__('larke-admin::extension.extension_disabled'));
         }
         
+        AdminExtension::newClassMethod($installInfo['class_name'], 'action');
+        
+        // 禁用前
+        do_action('admin_disable_extension', $name);
+
         $status = $installInfo->disable();
         if ($status === false) {
             return $this->error(__('larke-admin::extension.disable_extension_fail'));
         }
         
+        // 禁用当前扩展时
+        do_action('admin_disable_' . $name);
+        
+        // 禁用后
+        do_action('admin_disabled_extension', $name);
+
         // 清除缓存
         AdminExtension::forgetExtensionCache($name);
-        
-        // 禁用事件
-        do_action("extension_disable", $name, $installInfo);
         
         return $this->success(__('larke-admin::extension.disable_extension_success'));
     }
