@@ -583,14 +583,14 @@ class Manager
     }
     
     /**
-     * 实例化类方法
+     * 调用类方法
      *
      * @param string|null $className 
      * @param string|null $method 
      * @param array $param 
      * @return mixed
      */
-    public function newClassMethod(?string $className = null, ?string $method = null, array $param = []): mixed
+    public function callClassMethod(?string $className = null, ?string $method = null, array $param = []): mixed
     {
         if (empty($className) || empty($method)) {
             return false;

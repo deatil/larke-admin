@@ -20,6 +20,7 @@ use Larke\Admin\Facade\Extension as AdminExtension;
 use Larke\Admin\Model\Extension as ExtensionModel;
 
 use function Larke\Admin\do_action;
+use function Larke\Admin\apply_filters;
 
 /**
  * 扩展
@@ -294,7 +295,7 @@ class Extension extends Base
             }
         }
         
-        AdminExtension::newClassMethod($info['class_name'], 'action');
+        AdminExtension::callClassMethod($info['class_name'], 'action');
         
         // 安装前
         do_action('install_extension', $name);
@@ -359,7 +360,7 @@ class Extension extends Base
         }
         
         AdminExtension::loadExtension();
-        AdminExtension::newClassMethod($info['class_name'], 'action');
+        AdminExtension::callClassMethod($info['class_name'], 'action');
         
         // 卸载前
         do_action('uninstall_extension', $name);
@@ -458,7 +459,7 @@ class Extension extends Base
             }
         }
         
-        AdminExtension::newClassMethod($info['class_name'], 'action');
+        AdminExtension::callClassMethod($info['class_name'], 'action');
         
         // 更新前
         do_action('upgrade_extension', $name);
@@ -557,7 +558,7 @@ class Extension extends Base
         }
         
         AdminExtension::loadExtension();
-        AdminExtension::newClassMethod($installInfo['class_name'], 'action');
+        AdminExtension::callClassMethod($installInfo['class_name'], 'action');
         
         // 启用前
         do_action('enable_extension', $name);
@@ -607,7 +608,7 @@ class Extension extends Base
             return $this->error(__('larke-admin::extension.extension_disabled'));
         }
         
-        AdminExtension::newClassMethod($installInfo['class_name'], 'action');
+        AdminExtension::callClassMethod($installInfo['class_name'], 'action');
         
         // 禁用前
         do_action('disable_extension', $name);
@@ -648,9 +649,10 @@ class Extension extends Base
             return $this->error(__('larke-admin::extension.extension_package_name_dont_empty'));
         }
         
-        do_action("extension_config_before", $name);
-        
         $config = $request->input('config');
+        
+        // 过滤配置
+        $config = apply_filters("extension_config_before", $config, $name);
         
         $info = ExtensionModel::where(['name' => $name])
             ->first();
@@ -669,10 +671,10 @@ class Extension extends Base
             return $this->error(__('larke-admin::extension.update_extension_config_fail'));
         }
         
+        do_action("extension_config_after", $name);
+        
         // 清除缓存
         AdminExtension::forgetExtensionCache($name);
-        
-        do_action("extension_config_after", $name, $info);
         
         return $this->success(__('larke-admin::extension.update_extension_config_success'));
     }

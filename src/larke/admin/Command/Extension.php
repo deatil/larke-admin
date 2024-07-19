@@ -189,7 +189,7 @@ class Extension extends Command
             }
         }
         
-        AdminExtension::newClassMethod($info['class_name'], 'action');
+        AdminExtension::callClassMethod($info['class_name'], 'action');
         
         // 安装前
         do_action('install_extension', $name);
@@ -243,7 +243,7 @@ class Extension extends Command
         }
         
         AdminExtension::loadExtension();
-        AdminExtension::newClassMethod($info['class_name'], 'action');
+        AdminExtension::callClassMethod($info['class_name'], 'action');
         
         // 卸载前
         do_action('uninstall_extension', $name);
@@ -350,7 +350,7 @@ class Extension extends Command
             }
         }
         
-        AdminExtension::newClassMethod($info['class_name'], 'action');
+        AdminExtension::callClassMethod($info['class_name'], 'action');
         
         // 更新前
         do_action('upgrade_extension', $name);
@@ -405,7 +405,7 @@ class Extension extends Command
         }
         
         AdminExtension::loadExtension();
-        AdminExtension::newClassMethod($installInfo['class_name'], 'action');
+        AdminExtension::callClassMethod($installInfo['class_name'], 'action');
         
         // 启用前
         do_action('enable_extension', $name);
@@ -446,7 +446,7 @@ class Extension extends Command
             return ;
         }
         
-        AdminExtension::newClassMethod($installInfo['class_name'], 'action');
+        AdminExtension::callClassMethod($installInfo['class_name'], 'action');
         
         // 禁用前
         do_action('disable_extension', $name);
