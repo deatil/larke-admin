@@ -391,7 +391,7 @@ if (! function_exists('Larke\\Admin\\register_install_hook')) {
      */
     function register_install_hook(string $name, $callback): void
     {
-        add_action('admin_install_' . $name, $callback);
+        add_action('install_' . $name, $callback);
     }
 }
 
@@ -405,7 +405,7 @@ if (! function_exists('Larke\\Admin\\register_uninstall_hook')) {
      */
     function register_uninstall_hook(string $name, $callback): void
     {
-        add_action('admin_uninstall_' . $name, $callback);
+        add_action('uninstall_' . $name, $callback);
     }
 }
 
@@ -419,7 +419,7 @@ if (! function_exists('Larke\\Admin\\register_upgrade_hook')) {
      */
     function register_upgrade_hook(string $name, $callback): void
     {
-        add_action('admin_upgrade_' . $name, $callback);
+        add_action('upgrade_' . $name, $callback);
     }
 }
 
@@ -433,7 +433,7 @@ if (! function_exists('Larke\\Admin\\register_enable_hook')) {
      */
     function register_enable_hook(string $name, $callback): void
     {
-        add_action('admin_enable_' . $name, $callback);
+        add_action('enable_' . $name, $callback);
     }
 }
 
@@ -447,6 +447,6 @@ if (! function_exists('Larke\\Admin\\register_disable_hook')) {
      */
     function register_disable_hook(string $name, $callback): void
     {
-        add_action('admin_disable_' . $name, $callback);
+        add_action('disable_' . $name, $callback);
     }
 }

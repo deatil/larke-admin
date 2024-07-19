@@ -156,7 +156,9 @@ class Extension extends Base
             }
             
             return $data;
-        });
+        })->sortBy(function($item, $key) {
+            return $item['name'];
+        })->toArray();
         
         return $this->success(__('larke-admin::common.get_success'), [
             'list' => $extensions,
@@ -295,10 +297,10 @@ class Extension extends Base
         AdminExtension::newClassMethod($info['class_name'], 'action');
         
         // 安装前
-        do_action('admin_install_extension', $name);
+        do_action('install_extension', $name);
         
         // 安装当前扩展时
-        do_action('admin_install_' . $name);
+        do_action('install_' . $name);
 
         $extension = ExtensionModel::create([
             'name'        => Arr::get($info, 'name'),
@@ -318,7 +320,7 @@ class Extension extends Base
         }
         
         // 安装后
-        do_action('admin_installed_extension', $name);
+        do_action('installed_extension', $name);
         
         // 清除缓存
         AdminExtension::forgetExtensionCache($name);
@@ -360,7 +362,7 @@ class Extension extends Base
         AdminExtension::newClassMethod($info['class_name'], 'action');
         
         // 卸载前
-        do_action('admin_uninstall_extension', $name);
+        do_action('uninstall_extension', $name);
 
         $deleteStatus = $info->delete();
         if ($deleteStatus === false) {
@@ -368,10 +370,10 @@ class Extension extends Base
         }
         
         // 卸载当前扩展时
-        do_action('admin_uninstall_' . $name);
+        do_action('uninstall_' . $name);
         
         // 卸载后
-        do_action('admin_uninstalled_extension', $name);
+        do_action('uninstalled_extension', $name);
         
         // 清除缓存
         AdminExtension::forgetExtensionCache($name);
@@ -459,10 +461,10 @@ class Extension extends Base
         AdminExtension::newClassMethod($info['class_name'], 'action');
         
         // 更新前
-        do_action('admin_upgrade_extension', $name);
+        do_action('upgrade_extension', $name);
         
         // 更新当前扩展时
-        do_action('admin_upgrade_' . $name);
+        do_action('upgrade_' . $name);
 
         $updateInfo = $installInfo->update([
             'name'        => Arr::get($info, 'name'),
@@ -483,7 +485,7 @@ class Extension extends Base
         }
         
         // 更新后
-        do_action('admin_upgraded_extension', $name);
+        do_action('upgraded_extension', $name);
 
         // 清除缓存
         AdminExtension::forgetExtensionCache($name);
@@ -558,7 +560,7 @@ class Extension extends Base
         AdminExtension::newClassMethod($installInfo['class_name'], 'action');
         
         // 启用前
-        do_action('admin_enable_extension', $name);
+        do_action('enable_extension', $name);
         
         $status = $installInfo->enable();
         if ($status === false) {
@@ -566,10 +568,10 @@ class Extension extends Base
         }
         
         // 启用当前扩展时
-        do_action('admin_enable_' . $name);
+        do_action('enable_' . $name);
         
         // 启用后
-        do_action('admin_enabled_extension', $name);
+        do_action('enabled_extension', $name);
         
         // 清除缓存
         AdminExtension::forgetExtensionCache($name);
@@ -608,7 +610,7 @@ class Extension extends Base
         AdminExtension::newClassMethod($installInfo['class_name'], 'action');
         
         // 禁用前
-        do_action('admin_disable_extension', $name);
+        do_action('disable_extension', $name);
 
         $status = $installInfo->disable();
         if ($status === false) {
@@ -616,10 +618,10 @@ class Extension extends Base
         }
         
         // 禁用当前扩展时
-        do_action('admin_disable_' . $name);
+        do_action('disable_' . $name);
         
         // 禁用后
-        do_action('admin_disabled_extension', $name);
+        do_action('disabled_extension', $name);
 
         // 清除缓存
         AdminExtension::forgetExtensionCache($name);
