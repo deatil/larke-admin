@@ -217,7 +217,7 @@ class ServiceProvider extends BaseServiceProvider
         $this->app->bind('larke-admin.loader', Loader::class);
 
         // 事件
-        $this->app->singleton('larke-admin.event', function() {
+        $this->app->singleton('larke-admin.events', function() {
             $pool = new Events\Pool();
             return new Events\Events($pool);
         });

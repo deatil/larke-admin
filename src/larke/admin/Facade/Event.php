@@ -16,6 +16,6 @@ class Event extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'larke-admin.event';
+        return 'larke-admin.events';
     }
 }
