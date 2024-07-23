@@ -31,7 +31,7 @@ class AuthRule
             'slug',
             'description',
         ])->where('status', 1)
-            ->orderBy('listorder', 'ASC')
+            ->orderBy('listorder', 'DESC')
             ->orderBy('create_time', 'ASC')
             ->get()
             ->toArray();
@@ -63,7 +63,7 @@ class AuthRule
         
             $data = AuthRuleModel::with('children')
                 ->wheres($wheres)
-                ->orderBy('listorder', 'ASC')
+                ->orderBy('listorder', 'DESC')
                 ->orderBy('create_time', 'ASC')
                 ->get()
                 ->toArray();

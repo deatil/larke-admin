@@ -77,7 +77,7 @@ class Admin
                 $query->whereIn('group_id', $groupids);
             })
             ->where('status', 1)
-            ->orderBy('listorder', 'ASC')
+            ->orderBy('listorder', 'DESC')
             ->get()
             ->toArray();
         
@@ -112,7 +112,7 @@ class Admin
             'slug',
             'description',
         ])->where('status', 1)
-            ->orderBy('listorder', 'ASC')
+            ->orderBy('listorder', 'DESC')
             ->orderBy('create_time', 'ASC')
             ->get()
             ->toArray();

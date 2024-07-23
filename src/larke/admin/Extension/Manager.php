@@ -658,6 +658,7 @@ class Manager
             'version'     => Arr::get($info, 'version'),
             'adaptation'  => Arr::get($info, 'adaptation'),
             'require'     => Arr::get($info, 'require', []),
+            'order'       => Arr::get($info, 'order', 100),
             'config'      => $config,
             'icon'        => $icon,
             'class_name'  => $className,

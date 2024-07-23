@@ -22,7 +22,7 @@ use Larke\Admin\Service\Upload as UploadService;
 #[RouteRule(
     title: "附件上传", 
     desc:  "附件上传",
-    order: 571,
+    order: 135,
     auth:  true,
     slug:  "{prefix}upload"
 )]
@@ -38,7 +38,7 @@ class Upload extends Base
     #[RouteRule(
         title: "上传文件", 
         desc:  "上传附件文件",
-        order: 572,
+        order: 100,
         auth:  true
     )]
     public function file(Request $request)

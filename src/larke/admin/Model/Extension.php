@@ -86,7 +86,7 @@ class Extension extends Base
     /**
      * 版本检测
      *
-     * @return void
+     * @return bool
      */
     public static function versionSatisfies(string $name, string $constraints = null)
     {
@@ -104,14 +104,14 @@ class Extension extends Base
     }
     
     /**
-     * 缓存扩展
+     * 获取扩展带缓存
      *
-     * @return void
+     * @return array
      */
     public static function getExtensions()
     {
         return Cache::rememberForever(md5('larkeadmin.model.extensions'), function() {
-            return self::orderBy('listorder', 'ASC')
+            return self::orderBy('listorder', 'DESC')
                 ->orderBy('installtime', 'ASC')
                 ->get()
                 ->mapWithKeys(function ($extension) {
@@ -134,7 +134,7 @@ class Extension extends Base
     /**
      * 检测是否安装
      *
-     * @return void
+     * @return bool
      */
     public static function has(string $name)
     {

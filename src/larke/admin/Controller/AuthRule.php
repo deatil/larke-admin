@@ -22,7 +22,7 @@ use Larke\Admin\Repository\AuthRule as AuthRuleRepository;
 #[RouteRule(
     title: "权限", 
     desc:  "系统权限管理",
-    order: 400,
+    order: 105,
     auth:  true,
     slug:  "{prefix}auth-rule"
 )]
@@ -37,7 +37,7 @@ class AuthRule extends Base
     #[RouteRule(
         title: "权限列表", 
         desc:  "系统权限列表",
-        order: 401,
+        order: 100,
         auth:  true
     )]
     public function index(Request $request)
@@ -110,12 +110,12 @@ class AuthRule extends Base
     #[RouteRule(
         title: "权限树结构", 
         desc:  "权限树结构列表",
-        order: 402,
+        order: 99,
         auth:  true
     )]
     public function indexTree(Request $request)
     {
-        $result = AuthRuleModel::orderBy('listorder', 'ASC')
+        $result = AuthRuleModel::orderBy('listorder', 'DESC')
             ->orderBy('slug', 'ASC')
             ->orderBy('create_time', 'ASC')
             ->get()
@@ -141,7 +141,7 @@ class AuthRule extends Base
     #[RouteRule(
         title: "权限子列表", 
         desc:  "权限子结构列表",
-        order: 403,
+        order: 98,
         auth:  true
     )]
     public function indexChildren(Request $request)
@@ -172,7 +172,7 @@ class AuthRule extends Base
     #[RouteRule(
         title: "权限详情", 
         desc:  "权限详情",
-        order: 404,
+        order: 97,
         auth:  true
     )]
     public function detail(string $id)
@@ -199,7 +199,7 @@ class AuthRule extends Base
     #[RouteRule(
         title: "权限删除", 
         desc:  "权限删除",
-        order: 405,
+        order: 96,
         auth:  true
     )]
     public function delete(string $id)
@@ -241,7 +241,7 @@ class AuthRule extends Base
     #[RouteRule(
         title: "权限清空", 
         desc:  "清空特定ID权限",
-        order: 406,
+        order: 95,
         auth:  true
     )]
     public function clear(Request $request)
@@ -284,7 +284,7 @@ class AuthRule extends Base
     #[RouteRule(
         title: "权限添加", 
         desc:  "添加权限",
-        order: 407,
+        order: 94,
         auth:  true
     )]
     public function create(Request $request)
@@ -355,7 +355,7 @@ class AuthRule extends Base
     #[RouteRule(
         title: "权限更新", 
         desc:  "权限更新",
-        order: 408,
+        order: 93,
         auth:  true
     )]
     public function update(string $id, Request $request)
@@ -443,7 +443,7 @@ class AuthRule extends Base
     #[RouteRule(
         title: "权限排序", 
         desc:  "更新权限排序",
-        order: 409,
+        order: 92,
         auth:  true
     )]
     public function listorder(string $id, Request $request)
@@ -477,7 +477,7 @@ class AuthRule extends Base
     #[RouteRule(
         title: "权限启用", 
         desc:  "更新权限启用",
-        order: 410,
+        order: 91,
         auth:  true
     )]
     public function enable(string $id)
@@ -513,7 +513,7 @@ class AuthRule extends Base
     #[RouteRule(
         title: "权限禁用", 
         desc:  "更新权限禁用",
-        order: 411,
+        order: 90,
         auth:  true
     )]
     public function disable(string $id)

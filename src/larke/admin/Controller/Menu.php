@@ -21,7 +21,7 @@ use Larke\Admin\Service\Menu as MenuModel;
 #[RouteRule(
     title: "菜单管理", 
     desc:  "菜单管理",
-    order: 650,
+    order: 130,
     auth:  true,
     slug:  "{prefix}menu"
 )]
@@ -37,7 +37,7 @@ class Menu extends BaseController
     #[RouteRule(
         title: "菜单列表", 
         desc:  "菜单列表管理",
-        order: 651,
+        order: 100,
         auth:  true
     )]
     public function index(Request $request, MenuModel $menuModel)
@@ -58,7 +58,7 @@ class Menu extends BaseController
     #[RouteRule(
         title: "菜单树列表", 
         desc:  "菜单树列表管理",
-        order: 652,
+        order: 99,
         auth:  true
     )]
     public function indexTree(Request $request, MenuModel $menuModel)
@@ -66,7 +66,7 @@ class Menu extends BaseController
         $result = $menuModel->getList();
         
         $result = collect($result)
-            ->sortBy('sort')
+            ->sortByDesc('sort')
             ->toArray();
         
         $Tree = new Tree();
@@ -90,7 +90,7 @@ class Menu extends BaseController
     #[RouteRule(
         title: "菜单子列表", 
         desc:  "菜单子列表管理",
-        order: 653,
+        order: 98,
         auth:  true
     )]
     public function indexChildren(Request $request, MenuModel $menuModel)
@@ -120,7 +120,7 @@ class Menu extends BaseController
             $list = $Tree
                 ->withConfig('parentidKey', 'pid')
                 ->withConfig('buildChildKey', 'children')
-                ->buildFormatList($list, $id, 'asc');
+                ->buildFormatList($list, $id);
         } else {
             $list = $Tree
                 ->withConfig('parentidKey', 'pid')
@@ -142,7 +142,7 @@ class Menu extends BaseController
     #[RouteRule(
         title: "菜单创建", 
         desc:  "菜单创建管理",
-        order: 654,
+        order: 97,
         auth:  true
     )]
     public function create(Request $request, MenuModel $menuModel)
@@ -171,7 +171,7 @@ class Menu extends BaseController
     #[RouteRule(
         title: "菜单更新", 
         desc:  "菜单更新管理",
-        order: 655,
+        order: 96,
         auth:  true
     )]
     public function update(String $id, Request $request, MenuModel $menuModel)
@@ -219,7 +219,7 @@ class Menu extends BaseController
     #[RouteRule(
         title: "菜单删除", 
         desc:  "菜单删除管理",
-        order: 656,
+        order: 95,
         auth:  true
     )]
     public function delete(String $id, Request $request, MenuModel $menuModel)
@@ -255,7 +255,7 @@ class Menu extends BaseController
     #[RouteRule(
         title: "菜单获取全部", 
         desc:  "菜单获取全部管理",
-        order: 657,
+        order: 94,
         auth:  true
     )]
     public function getJson(Request $request, MenuModel $menuModel)
@@ -276,7 +276,7 @@ class Menu extends BaseController
     #[RouteRule(
         title: "菜单保存全部", 
         desc:  "菜单保存全部管理",
-        order: 658,
+        order: 93,
         auth:  true
     )]
     public function saveJson(Request $request, MenuModel $menuModel)

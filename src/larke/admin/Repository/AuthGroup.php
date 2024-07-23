@@ -24,7 +24,7 @@ class AuthGroup
     {
         $data = AuthGroupModel::query()
             ->where('status', 1)
-            ->orderBy('listorder', 'ASC')
+            ->orderBy('listorder', 'DESC')
             ->orderBy('create_time', 'ASC')
             ->get()
             ->toArray();
@@ -56,7 +56,7 @@ class AuthGroup
             
             $data = AuthGroupModel::with('children')
                 ->wheres($wheres)
-                ->orderBy('listorder', 'ASC')
+                ->orderBy('listorder', 'DESC')
                 ->orderBy('create_time', 'ASC')
                 ->get()
                 ->toArray();

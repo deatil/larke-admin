@@ -20,7 +20,7 @@ use Larke\Admin\Model\Admin as AdminModel;
 #[RouteRule(
     title: "个人信息", 
     desc:  "个人信息管理",
-    order: 150,
+    order: 145,
     auth:  true,
     slug:  "{prefix}profile"
 )]
@@ -34,7 +34,7 @@ class Profile extends Base
     #[RouteRule(
         title: "我的信息", 
         desc:  "我的信息管理",
-        order: 151,
+        order: 100,
         auth:  true
     )]
     public function index()
@@ -53,7 +53,7 @@ class Profile extends Base
     #[RouteRule(
         title: "修改我的信息", 
         desc:  "修改我的信息管理",
-        order: 152,
+        order: 99,
         auth:  true
     )]
     public function update(Request $request)
@@ -104,7 +104,7 @@ class Profile extends Base
     #[RouteRule(
         title: "修改头像", 
         desc:  "修改头像管理",
-        order: 153,
+        order: 98,
         auth:  true
     )]
     public function updateAvatar(Request $request)
@@ -142,7 +142,7 @@ class Profile extends Base
     #[RouteRule(
         title: "修改密码", 
         desc:  "修改密码管理",
-        order: 154,
+        order: 97,
         auth:  true
     )]
     public function updatePasssword(Request $request)
@@ -204,7 +204,7 @@ class Profile extends Base
     #[RouteRule(
         title: "权限列表", 
         desc:  "权限列表管理",
-        order: 155,
+        order: 96,
         auth:  true
     )]
     public function rules()
@@ -225,7 +225,7 @@ class Profile extends Base
     #[RouteRule(
         title: "权限列表配置", 
         desc:  "权限列表配置",
-        order: 208,
+        order: 95,
         auth:  true
     )]
     public function roles()

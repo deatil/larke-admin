@@ -31,7 +31,7 @@ use function Larke\Admin\apply_filters;
 #[RouteRule(
     title: "扩展", 
     desc:  "系统扩展管理",
-    order: 560,
+    order: 100,
     auth:  true,
     slug:  "{prefix}extension"
 )]
@@ -46,7 +46,7 @@ class Extension extends Base
     #[RouteRule(
         title: "扩展列表", 
         desc:  "系统扩展列表管理",
-        order: 561,
+        order: 100,
         auth:  true
     )]
     public function index(Request $request)
@@ -128,7 +128,7 @@ class Extension extends Base
     #[RouteRule(
         title: "本地扩展", 
         desc:  "本地全部扩展",
-        order: 562,
+        order: 99,
         auth:  true
     )]
     public function local()
@@ -174,7 +174,7 @@ class Extension extends Base
     #[RouteRule(
         title: "刷新扩展", 
         desc:  "刷新本地扩展",
-        order: 563,
+        order: 98,
         auth:  true
     )]
     public function refreshLocal()
@@ -193,7 +193,7 @@ class Extension extends Base
     #[RouteRule(
         title: "本地扩展命令", 
         desc:  "本地扩展命令，只限用于非composer扩展",
-        order: 564,
+        order: 97,
         auth:  true
     )]
     public function command(string $name)
@@ -236,7 +236,7 @@ class Extension extends Base
     #[RouteRule(
         title: "扩展安装", 
         desc:  "系统扩展安装",
-        order: 565,
+        order: 96,
         auth:  true
     )]
     public function install(string $name)
@@ -315,6 +315,7 @@ class Extension extends Base
             'require'     => json_encode(Arr::get($info, 'require', [])),
             'config'      => json_encode(Arr::get($info, 'config', [])),
             'class_name'  => Arr::get($info, 'class_name'),
+            'listorder'   => Arr::get($info, 'order'),
         ]);
         if ($extension === false) {
             return $this->error(__('larke-admin::extension.instell_extension_fail'));
@@ -340,7 +341,7 @@ class Extension extends Base
     #[RouteRule(
         title: "扩展卸载", 
         desc:  "系统扩展卸载",
-        order: 566,
+        order: 95,
         auth:  true
     )]
     public function uninstall(string $name)
@@ -391,7 +392,7 @@ class Extension extends Base
     #[RouteRule(
         title: "扩展更新", 
         desc:  "系统扩展更新",
-        order: 567,
+        order: 94,
         auth:  true
     )]
     public function upgrade(string $name)
@@ -479,6 +480,7 @@ class Extension extends Base
             'require'     => json_encode(Arr::get($info, 'require', [])),
             'config'      => json_encode(Arr::get($info, 'config', [])),
             'class_name'  => Arr::get($info, 'class_name'),
+            'listorder'   => Arr::get($info, 'order'),
             'upgradetime' => time(),
         ]);
         if ($updateInfo === false) {
@@ -504,7 +506,7 @@ class Extension extends Base
     #[RouteRule(
         title: "扩展排序", 
         desc:  "系统扩展排序",
-        order: 568,
+        order: 93,
         auth:  true
     )]
     public function listorder(string $name, Request $request)
@@ -538,7 +540,7 @@ class Extension extends Base
     #[RouteRule(
         title: "扩展启用", 
         desc:  "系统扩展启用",
-        order: 569,
+        order: 92,
         auth:  true
     )]
     public function enable(string $name)
@@ -589,7 +591,7 @@ class Extension extends Base
     #[RouteRule(
         title: "扩展禁用", 
         desc:  "系统扩展禁用",
-        order: 570,
+        order: 91,
         auth:  true
     )]
     public function disable(string $name)
@@ -640,7 +642,7 @@ class Extension extends Base
     #[RouteRule(
         title: "扩展配置", 
         desc:  "系统扩展配置",
-        order: 571,
+        order: 90,
         auth:  true
     )]
     public function config(string $name, Request $request)
@@ -688,7 +690,7 @@ class Extension extends Base
     #[RouteRule(
         title: "扩展上传", 
         desc:  "扩展压缩包上传",
-        order: 572,
+        order: 89,
         auth:  true
     )]
     public function upload(Request $request)
@@ -816,7 +818,7 @@ class Extension extends Base
     #[RouteRule(
         title: "仓库注册扩展", 
         desc:  "本地扩展注册到composer.json仓库",
-        order: 573,
+        order: 88,
         auth:  true
     )]
     public function repositoryRegister(string $name, Request $request)
@@ -858,7 +860,7 @@ class Extension extends Base
     #[RouteRule(
         title: "仓库移除扩展", 
         desc:  "本地扩展从composer.json仓库移除",
-        order: 574,
+        order: 87,
         auth:  true
     )]
     public function repositoryRemove(string $name, Request $request)

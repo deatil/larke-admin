@@ -25,7 +25,7 @@ use function Larke\Admin\apply_filters;
 #[RouteRule(
     title: "系统", 
     desc:  "系统管理",
-    order: 200,
+    order: 140,
     auth:  true,
     slug:  "{prefix}system"
 )]
@@ -39,7 +39,7 @@ class System extends Base
     #[RouteRule(
         title: "系统详情", 
         desc:  "系统详情管理",
-        order: 201,
+        order: 100,
         auth:  true
     )]
     public function info()
@@ -62,7 +62,7 @@ class System extends Base
     #[RouteRule(
         title: "清除缓存", 
         desc:  "清除缓存管理",
-        order: 202,
+        order: 99,
         auth:  true
     )]
     public function clearCache()
@@ -89,7 +89,7 @@ class System extends Base
     #[RouteRule(
         title: "设置缓存", 
         desc:  "设置缓存管理",
-        order: 203,
+        order: 98,
         auth:  true
     )]
     public function cache()
@@ -111,7 +111,7 @@ class System extends Base
     #[RouteRule(
         title: "语言包", 
         desc:  "语言包管理",
-        order: 204,
+        order: 97,
         auth:  true
     )]
     public function lang(Request $request)
@@ -171,7 +171,7 @@ class System extends Base
     #[RouteRule(
         title: "语言设置", 
         desc:  "设置系统默认语言",
-        order: 205,
+        order: 96,
         auth:  true
     )]
     public function setLang(string $locale)
@@ -243,7 +243,7 @@ class System extends Base
     #[RouteRule(
         title: "菜单列表", 
         desc:  "菜单列表配置",
-        order: 206,
+        order: 95,
         auth:  true
     )]
     public function menus(MenuModel $model)
@@ -264,7 +264,7 @@ class System extends Base
     #[RouteRule(
         title: "菜单树", 
         desc:  "菜单树配置",
-        order: 207,
+        order: 94,
         auth:  true
     )]
     public function menusTree(MenuModel $model)

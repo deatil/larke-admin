@@ -23,7 +23,7 @@ use Larke\Admin\Service\Upload as UploadService;
 #[RouteRule(
     title: "附件", 
     desc:  "系统附件管理",
-    order: 570,
+    order: 120,
     auth:  true,
     slug:  "{prefix}attachment"
 )]
@@ -38,7 +38,7 @@ class Attachment extends Base
     #[RouteRule(
         title: "附件列表", 
         desc:  "附件列表",
-        order: 501,
+        order: 100,
         auth:  true
     )]
     public function index(Request $request)
@@ -105,7 +105,7 @@ class Attachment extends Base
     #[RouteRule(
         title: "附件详情", 
         desc:  "附件详情",
-        order: 502,
+        order: 99,
         auth:  true
     )]
     public function detail(string $id)
@@ -132,7 +132,7 @@ class Attachment extends Base
     #[RouteRule(
         title: "附件删除", 
         desc:  "附件删除",
-        order: 503,
+        order: 98,
         auth:  true
     )]
     public function delete(string $id)
@@ -171,7 +171,7 @@ class Attachment extends Base
     #[RouteRule(
         title: "附件启用", 
         desc:  "附件启用",
-        order: 504,
+        order: 97,
         auth:  true
     )]
     public function enable(string $id)
@@ -207,7 +207,7 @@ class Attachment extends Base
     #[RouteRule(
         title: "附件禁用", 
         desc:  "附件禁用",
-        order: 505,
+        order: 96,
         auth:  true
     )]
     public function disable(string $id)
@@ -243,7 +243,7 @@ class Attachment extends Base
     #[RouteRule(
         title: "附件下载码", 
         desc:  "附件下载码",
-        order: 506,
+        order: 95,
         auth:  true
     )]
     public function downloadCode(string $id)
@@ -275,7 +275,7 @@ class Attachment extends Base
     #[RouteRule(
         title: "附件下载", 
         desc:  "附件下载",
-        order: 507,
+        order: 94,
         auth:  true
     )]
     public function download(string $code)

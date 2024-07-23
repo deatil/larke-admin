@@ -25,7 +25,7 @@ use Larke\Admin\Repository\AuthGroup as AuthGroupRepository;
 #[RouteRule(
     title: "管理分组", 
     desc:  "系统管理分组管理",
-    order: 450,
+    order: 110,
     auth:  true,
     slug:  "{prefix}auth-group"
 )]
@@ -40,7 +40,7 @@ class AuthGroup extends Base
     #[RouteRule(
         title: "分组列表", 
         desc:  "系统管理分组列表",
-        order: 451,
+        order: 100,
         auth:  true
     )]
     public function index(Request $request)
@@ -105,12 +105,12 @@ class AuthGroup extends Base
     #[RouteRule(
         title: "分组树结构", 
         desc:  "管理分组树结构",
-        order: 452,
+        order: 99,
         auth:  true
     )]
     public function indexTree(Request $request)
     {
-        $result = AuthGroupModel::orderBy('listorder', 'ASC')
+        $result = AuthGroupModel::orderBy('listorder', 'DESC')
             ->orderBy('create_time', 'ASC')
             ->get()
             ->toArray(); 
@@ -135,7 +135,7 @@ class AuthGroup extends Base
     #[RouteRule(
         title: "分组子列表", 
         desc:  "管理分组子列表",
-        order: 453,
+        order: 98,
         auth:  true
     )]
     public function indexChildren(Request $request)
@@ -166,7 +166,7 @@ class AuthGroup extends Base
     #[RouteRule(
         title: "分组详情", 
         desc:  "管理分组详情",
-        order: 454,
+        order: 97,
         auth:  true
     )]
     public function detail(string $id)
@@ -203,7 +203,7 @@ class AuthGroup extends Base
     #[RouteRule(
         title: "分组删除", 
         desc:  "管理分组删除",
-        order: 455,
+        order: 96,
         auth:  true
     )]
     public function delete(string $id)
@@ -245,7 +245,7 @@ class AuthGroup extends Base
     #[RouteRule(
         title: "分组添加", 
         desc:  "管理分组添加",
-        order: 456,
+        order: 95,
         auth:  true
     )]
     public function create(Request $request)
@@ -296,7 +296,7 @@ class AuthGroup extends Base
     #[RouteRule(
         title: "分组更新", 
         desc:  "管理分组更新",
-        order: 457,
+        order: 94,
         auth:  true
     )]
     public function update(string $id, Request $request)
@@ -362,7 +362,7 @@ class AuthGroup extends Base
     #[RouteRule(
         title: "分组排序", 
         desc:  "管理分组排序",
-        order: 458,
+        order: 93,
         auth:  true
     )]
     public function listorder(string $id, Request $request)
@@ -396,7 +396,7 @@ class AuthGroup extends Base
     #[RouteRule(
         title: "分组启用", 
         desc:  "管理分组启用",
-        order: 459,
+        order: 92,
         auth:  true
     )]
     public function enable(string $id)
@@ -432,7 +432,7 @@ class AuthGroup extends Base
     #[RouteRule(
         title: "分组禁用", 
         desc:  "管理分组禁用",
-        order: 459,
+        order: 91,
         auth:  true
     )]
     public function disable(string $id)
@@ -469,7 +469,7 @@ class AuthGroup extends Base
     #[RouteRule(
         title: "分组授权", 
         desc:  "管理分组授权",
-        order: 461,
+        order: 90,
         auth:  true
     )]
     public function access(string $id, Request $request)

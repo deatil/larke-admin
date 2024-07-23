@@ -209,6 +209,7 @@ class Extension extends Command
             'require'     => json_encode(Arr::get($info, 'require', [])),
             'config'      => json_encode(Arr::get($info, 'config', [])),
             'class_name'  => Arr::get($info, 'class_name'),
+            'listorder'   => Arr::get($info, 'order'),
         ]);
         if ($createInfo === false) {
             $this->line("<error>Extension install error !</error> ");
@@ -370,6 +371,7 @@ class Extension extends Command
             'require'     => json_encode(Arr::get($info, 'require', [])),
             'config'      => json_encode(Arr::get($info, 'config', [])),
             'class_name'  => Arr::get($info, 'class_name'),
+            'listorder'   => Arr::get($info, 'order'),
             'upgradetime' => time(),
         ]);
         if ($updateInfo === false) {

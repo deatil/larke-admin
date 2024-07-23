@@ -26,7 +26,7 @@ use function Larke\Admin\do_action;
 #[RouteRule(
     title: "登陆", 
     desc:  "系统登陆管理",
-    order: 100,
+    order: 150,
     auth:  false,
     slug:  "{prefix}passport"
 )]
@@ -41,7 +41,7 @@ class Passport extends Base
     #[RouteRule(
         title: "验证码", 
         desc:  "登陆验证码",
-        order: 101,
+        order: 100,
         auth:  false
     )]
     public function captcha(Request $request)
@@ -76,7 +76,7 @@ class Passport extends Base
     #[RouteRule(
         title: "公钥", 
         desc:  "登陆使用公钥",
-        order: 102,
+        order: 99,
         auth:  false
     )]
     public function passkey(Request $request)
@@ -129,7 +129,7 @@ class Passport extends Base
     #[RouteRule(
         title: "登陆", 
         desc:  "登陆登陆",
-        order: 103,
+        order: 98,
         auth:  false
     )]
     public function login(Request $request)
@@ -278,7 +278,7 @@ class Passport extends Base
     #[RouteRule(
         title: "刷新token", 
         desc:  "刷新token",
-        order: 104,
+        order: 97,
         auth:  false
     )]
     public function refreshToken(Request $request)
@@ -364,7 +364,7 @@ class Passport extends Base
     #[RouteRule(
         title: "退出", 
         desc:  "账号退出",
-        order: 105,
+        order: 96,
         auth:  true
     )]
     public function logout(Request $request)

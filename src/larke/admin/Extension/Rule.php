@@ -131,7 +131,7 @@ class Rule
             ->toArray();
 
         if ($rule) {
-            $ruleList = AuthRuleModel::orderBy('listorder', 'ASC')
+            $ruleList = AuthRuleModel::orderBy('listorder', 'DESC')
                 ->where('id', 'in', $ids)
                 ->get()
                 ->toArray();
@@ -158,7 +158,7 @@ class Rule
             ->get()
             ->toArray();
         
-        $ruleList = AuthRuleModel::orderBy('listorder', 'ASC')
+        $ruleList = AuthRuleModel::orderBy('listorder', 'DESC')
             ->select(['id', 'parentid', 'slug'])
             ->get()
             ->toArray();
