@@ -118,9 +118,10 @@ php artisan larke-admin:import-route
 
 | 名称 | 描述 |
 | --- | --- |
+| [系统通用配置](https://github.com/deatil/larke-configs) | 自定义数据配置，将配置信息统一到一个表 |
 | [操作日志](https://github.com/deatil/larke-operation-log) | 记录 admin 系统的相关操作日志 |
-| [签名证书](https://github.com/deatil/larke-admin-signcert) | 生成RSA,EDDSA,ECDSA等非对称签名证书 |
-| [日志查看器](https://github.com/deatil/larke-admin-logviewer) | laravel日志查看扩展 |
+| [签名证书](https://github.com/deatil/larke-admin-signcert) | 生成 RSA, EdDSA, ECDSA 等非对称签名证书 |
+| [日志查看器](https://github.com/deatil/larke-admin-logviewer) | laravel 日志查看扩展 |
 | [demo](https://github.com/deatil/larke-admin-demo) | 扩展示例 |
 
 注：扩展目录默认为 `/extension` 目录
