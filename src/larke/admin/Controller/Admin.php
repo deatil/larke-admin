@@ -272,9 +272,9 @@ class Admin extends Base
             $list = collect($list)
                 ->map(function($data) {
                     return [
-                        'id' => $data['id'],
-                        'parentid' => $data['parentid'],
-                        'title' => $data['title'],
+                        'id'          => $data['id'],
+                        'parentid'    => $data['parentid'],
+                        'title'       => $data['title'],
                         'description' => $data['description'],
                     ];
                 })

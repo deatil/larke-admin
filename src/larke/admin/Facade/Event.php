@@ -12,10 +12,10 @@ use Illuminate\Support\Facades\Facade;
  * @create 2024-6-18
  * @author deatil
  */
-class Events extends Facade
+class Event extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'larke-admin.events';
+        return 'larke-admin.event';
     }
 }

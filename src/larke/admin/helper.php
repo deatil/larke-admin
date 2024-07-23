@@ -7,7 +7,7 @@ namespace Larke\Admin;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
-use Larke\Admin\Facade\Events;
+use Larke\Admin\Facade\Event;
 use Larke\Admin\Facade\Extension;
 use Larke\Admin\Facade\AuthAdmin;
 use Larke\Admin\Service\Route as RouteService;
@@ -277,7 +277,7 @@ if (! function_exists('Larke\\Admin\\add_action')) {
      */
     function add_action(string $event, $listener, int $sort = 1): void
     {
-        Events::getAction()->listen($event, $listener, $sort);
+        Event::action()->listen($event, $listener, $sort);
     }
 }
 
@@ -291,7 +291,7 @@ if (! function_exists('Larke\\Admin\\do_action')) {
      */
     function do_action($event, ...$var): void
     {
-        Events::getAction()->trigger($event, ...$var);
+        Event::action()->trigger($event, ...$var);
     }
 }
 
@@ -305,7 +305,7 @@ if (! function_exists('Larke\\Admin\\remove_action')) {
      */
     function remove_action(string $event, $listener, int $sort = 1): bool
     {
-        return Events::getAction()->removeListener($event, $listener, $sort);
+        return Event::action()->removeListener($event, $listener, $sort);
     }
 }
 
@@ -319,7 +319,7 @@ if (! function_exists('Larke\\Admin\\has_action')) {
      */
     function has_action(string $event, $listener): bool
     {
-        return Events::getAction()->hasListener($event, $listener);
+        return Event::action()->hasListener($event, $listener);
     }
 }
 
@@ -334,7 +334,7 @@ if (! function_exists('Larke\\Admin\\add_filter')) {
      */
     function add_filter(string $event, $listener, int $sort = 1): void
     {
-        Events::getFilter()->listen($event, $listener, $sort);
+        Event::filter()->listen($event, $listener, $sort);
     }
 }
 
@@ -349,7 +349,7 @@ if (! function_exists('Larke\\Admin\\apply_filters')) {
      */
     function apply_filters($event, $params = null, ...$var)
     {
-        return Events::getFilter()->trigger($event, $params, ...$var);
+        return Event::filter()->trigger($event, $params, ...$var);
     }
 }
 
@@ -363,7 +363,7 @@ if (! function_exists('Larke\\Admin\\remove_filter')) {
      */
     function remove_filter(string $event, $listener, int $sort = 1): bool
     {
-        return Events::getFilter()->removeListener($event, $listener, $sort);
+        return Event::filter()->removeListener($event, $listener, $sort);
     }
 }
 
@@ -377,7 +377,7 @@ if (! function_exists('Larke\\Admin\\has_filter')) {
      */
     function has_filter(string $event, $listener): bool
     {
-        return Events::getFilter()->hasListener($event, $listener);
+        return Event::filter()->hasListener($event, $listener);
     }
 }
 

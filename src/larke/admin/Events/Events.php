@@ -12,33 +12,33 @@ class Events
     /**
      * 动作事件
      */
-    protected Action $action;
+    protected Action $actionHandle;
 
     /**
      * 过滤事件
      */
-    protected Filter $filter;
+    protected Filter $filterHandle;
     
     public function __construct($pool)
     {
-        $this->action = new Action($pool);
-        $this->filter = new Filter($pool);
+        $this->actionHandle = new Action($pool);
+        $this->filterHandle = new Filter($pool);
     }
 
     /**
      * 获取动作事件
      */
-    public function getAction(): Action
+    public function action(): Action
     {
-        return $this->action;
+        return $this->actionHandle;
     }
 
     /**
      * 获取过滤事件
      */
-    public function getFilter(): Filter
+    public function filter(): Filter
     {
-        return $this->filter;
+        return $this->filterHandle;
     }
 
 }
