@@ -66,9 +66,9 @@ class Event
      * 设置回调函数
      *
      * @param string $component 当前组件
-     * @param callable $value 回调函数
+     * @param mixed  $value     回调函数
      */
-    public function __set(string $component, callable $value)
+    public function __set(string $component, $value)
     {
         $weight = 1;
 
@@ -88,12 +88,12 @@ class Event
     }
     
     /**
-     * 回调函数
+     * 调用
      *
      * @param string $component 当前组件
-     * @param array $args 参数
+     * @param mixed  $args      参数
      */
-    public function __call(string $component, array $args)
+    public function call(string $component, ...$args)
     {
         $component = $this->handle . ':' . $component;
 
@@ -104,6 +104,17 @@ class Event
         }
     }
     
+    /**
+     * 回调函数
+     *
+     * @param string $component 当前组件
+     * @param array $args       参数
+     */
+    public function __call(string $component, array $args)
+    {
+        return $this->call($component, ...$args);
+    }
+
     /**
      * @param string $className
      * @return string
