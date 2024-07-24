@@ -80,10 +80,10 @@ class Event
 
         $component = $this->handle . ':' . $component;
         
-        if ($this->type == 'action') {
-            AdminEvent::action()->listen($component, $value, $weight);
-        } else {
+        if ($this->type == 'filter') {
             AdminEvent::filter()->listen($component, $value, $weight);
+        } else {
+            AdminEvent::action()->listen($component, $value, $weight);
         }
     }
     
@@ -92,15 +92,16 @@ class Event
      *
      * @param string $component 当前组件
      * @param mixed  $args      参数
+     * @return mixed
      */
     public function call(string $component, ...$args)
     {
         $component = $this->handle . ':' . $component;
 
-        if ($this->type == 'action') {
-            AdminEvent::action()->trigger($component, ...$args);
-        } else {
+        if ($this->type == 'filter') {
             return AdminEvent::filter()->trigger($component, ...$args);
+        } else {
+            AdminEvent::action()->trigger($component, ...$args);
         }
     }
     
@@ -108,7 +109,8 @@ class Event
      * 回调函数
      *
      * @param string $component 当前组件
-     * @param array $args       参数
+     * @param array  $args      参数
+     * @return mixed
      */
     public function __call(string $component, array $args)
     {
