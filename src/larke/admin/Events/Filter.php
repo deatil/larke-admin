@@ -27,20 +27,16 @@ class Filter extends Event
         $listeners = $this->listener[$event] ?? [];
 
         if (str_contains($event, '.*')) {
-            $needSort = false;
             [$prefix, $event] = explode('.', $event, 2);
             
             foreach ($this->listener as $e => $listener) {
                 if ($event == '*' && str_starts_with($e, $prefix . '.')) {
                     $listeners = array_merge($listeners, $listener);
-                    $needSort = true;
                 }
             }
-            
-            if ($needSort) {
-                $listeners = $this->arraySort($listeners, 'sort');
-            }
         }
+
+        $listeners = $this->arraySort($listeners, 'sort');
 
         $tmp = $var;
         $result = $params;
