@@ -7,6 +7,7 @@ namespace Larke\Admin;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Response;
@@ -204,6 +205,12 @@ class ServiceProvider extends BaseServiceProvider
         
         // 路由
         $this->loadRoutesFrom(__DIR__ . '/../resources/routes/admin.php');
+        
+        // 动态设置版本号
+        config(Arr::dot([
+            'version' => Admin::VERSION,
+            'release' => Admin::RELEASE,
+        ], 'larkeadmin.admin.'));
     }
     
     /**

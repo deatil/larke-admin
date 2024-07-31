@@ -13,6 +13,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 
+use Larke\Admin\Admin;
 use Larke\Admin\Support\PclZip;
 use Larke\Admin\Annotation\RouteRule;
 use Larke\Admin\Composer\Repository as ComposerRepository;
@@ -269,7 +270,7 @@ class Extension extends Base
             return $this->error(__('larke-admin::extension.extension_version_error'));
         }
         
-        $adminVersion = config('larkeadmin.admin.version');
+        $adminVersion = Admin::VERSION;
         
         try {
             $versionCheck = Semver::satisfies($adminVersion, $info['adaptation']);
@@ -422,7 +423,7 @@ class Extension extends Base
             return $this->error(__('larke-admin::extension.extension_info_error'));
         }
         
-        $adminVersion = config('larkeadmin.admin.version');
+        $adminVersion = Admin::VERSION;
         
         try {
             $versionCheck = Semver::satisfies($adminVersion, $info['adaptation']);

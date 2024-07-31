@@ -12,6 +12,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 
+use Larke\Admin\Admin;
 use Larke\Admin\Facade\Extension as AdminExtension;
 use Larke\Admin\Model\Extension as ExtensionModel;
 
@@ -150,7 +151,7 @@ class Extension extends Command
             return ;
         }
         
-        $adminVersion = config('larkeadmin.admin.version');
+        $adminVersion = Admin::VERSION;
         
         try {
             $versionCheck = Semver::satisfies($adminVersion, $info['adaptation']);
@@ -298,7 +299,7 @@ class Extension extends Command
             return ;
         }
         
-        $adminVersion = config('larkeadmin.admin.version');
+        $adminVersion = Admin::VERSION;
         
         try {
             $versionCheck = Semver::satisfies($adminVersion, $info['adaptation']);
