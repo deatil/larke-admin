@@ -12,6 +12,7 @@
 /.github export-ignore
 /docs export-ignore
 /tests export-ignore
+/logo.png export-ignore
 /.gitattributes export-ignore
 /.gitignore export-ignore
 /.php_cs export-ignore
