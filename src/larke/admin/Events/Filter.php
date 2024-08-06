@@ -40,7 +40,7 @@ class Filter extends Event
 
         $tmp = $var;
         $result = $params;
-        foreach ($listeners as $key => $listener) {
+        foreach ($this->range($listeners) as $listener) {
             array_unshift($tmp, $result);
             
             $result = $this->dispatch($listener['listener'], $tmp);

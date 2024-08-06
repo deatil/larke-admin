@@ -4,6 +4,7 @@ declare (strict_types = 1);
 
 namespace Larke\Admin\Events;
 
+use Iterator;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -253,6 +254,19 @@ abstract class Event
         return $this->pool->call($call, $params);
     }
     
+    /**
+     * 迭代数据
+     * 
+     * @param array $data 数据
+     * @return Iterator
+     */
+    protected function range(array $data = []): Iterator
+    {
+        foreach ($data as $k => $v) {
+            yield $k => $v;
+        }
+    }
+
     /**
      * 排序
      */

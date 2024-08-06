@@ -36,7 +36,7 @@ class Action extends Event
 
         $listeners = $this->arraySort($listeners, 'sort');
 
-        foreach ($listeners as $key => $listener) {
+        foreach ($this->range($listeners) as $listener) {
             $this->dispatch($listener['listener'], $var);
         }
     }
