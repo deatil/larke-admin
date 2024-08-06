@@ -31,10 +31,10 @@
     },
     "autoload": {
         "psr-4": {
-            "Larke\\Admin\\": "src/larke/admin"
+            "Larke\\Admin\\": "src"
         },
         "files": [
-            "src/larke/admin/helper.php"
+            "src/helper.php"
         ]
     },
     "extra" : {
