@@ -53,33 +53,3 @@ addPermissionExcepts(array $excepts)
 ```php
 registerNamespace($prefix, $paths = [])
 ```
-
-### 事件，安装后
-
-```php
-onInatll(Closure $callback)
-```
-
-### 事件，卸载后
-
-```php
-onUninstall(Closure $callback)
-```
-
-### 事件，更新后
-
-```php
-onUpgrade(Closure $callback)
-```
-
-### 事件，启用后
-
-```php
-onEnable(Closure $callback)
-```
-
-### 事件，禁用后
-
-```php
-onDisable(Closure $callback)
-```
