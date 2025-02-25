@@ -21,7 +21,7 @@
     ],
     "require": {
         "php": "^8.2",
-        "laravel/framework": "^11.0",
+        "laravel/framework": "^11.0|^12.0",
         "composer/semver": "^3.2",
         "phpseclib/phpseclib": "^3.0",
         "ramsey/uuid": "^4.3",
