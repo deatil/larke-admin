@@ -36,8 +36,11 @@ class Signer
         'ES384' => Signer\Ecdsa\Sha384::class,
         'ES512' => Signer\Ecdsa\Sha512::class,
         
+        // Secp256k1
+        'ES256K' => Signer\Ecdsa\Sha256k::class,
+        
         // Eddsa 加密
-        'EdDSA'   => Signer\Eddsa::class,
+        'EdDSA' => Signer\Eddsa::class,
         
         // Blake2b 加密
         'Blake2b' => Signer\Blake2b::class,

@@ -89,7 +89,7 @@ return [
             // EdDSA key 请填写 base64 编码的字符或者文件路径，文件为 PKCS8 编码的公钥和私钥
             // 其他的填写 key 的文件路径
             // RS256, RS384, RS512
-            // ES256, ES384, ES512
+            // ES256, ES384, ES512, ES256K
             // EdDSA
             'private_key' => env('LARKE_ADMIN_JWT_SIGNER_PRIVATE_KEY', ''),
             'public_key'  => env('LARKE_ADMIN_JWT_SIGNER_PUBLIC_KEY', ''),
