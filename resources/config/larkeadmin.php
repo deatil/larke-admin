@@ -13,10 +13,9 @@ return [
     
     // 路由
     'route' => [
-        'domain'    => env('LARKE_ADMIN_ROUTE_DOMAIN', null),
-        'prefix'    => env('LARKE_ADMIN_ROUTE_PREFIX', 'admin-api'),
-        'namespace' => env('LARKE_ADMIN_ROUTE_NAMESPACE', 'Larke\\Admin\\Controller'),
-        'as'        => env('LARKE_ADMIN_ROUTE_AS', 'larke-admin.'),
+        'domain' => env('LARKE_ADMIN_ROUTE_DOMAIN', null),
+        'prefix' => env('LARKE_ADMIN_ROUTE_PREFIX', 'admin-api'),
+        'as'     => env('LARKE_ADMIN_ROUTE_AS', 'larke-admin.'),
         
         // 中间件
         'middleware' => [

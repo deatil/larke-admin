@@ -265,7 +265,7 @@ class Manager
     }
     
     /**
-     * 设置扩展路由
+     * 设置扩展后台路由
      *
      * @param callable $callback
      * @param array    $config
@@ -275,6 +275,7 @@ class Manager
     {
         $attributes = array_merge(
             [
+                'domain'     => config('larkeadmin.route.domain'),
                 'prefix'     => config('larkeadmin.route.prefix'),
                 'middleware' => config('larkeadmin.route.middleware'),
             ],
@@ -287,7 +288,7 @@ class Manager
     }
     
     /**
-     * 设置命名空间
+     * 注册命名空间
      *
      * @param mixed $prefix
      * @param mixed $paths

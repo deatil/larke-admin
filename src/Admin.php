@@ -18,12 +18,12 @@ class Admin
     /**
      * 版本号
      */
-    const VERSION = "2.1.0";
+    const VERSION = "2.1.1";
     
     /**
      * 发布号
      */
-    const RELEASE = "20250225";
+    const RELEASE = "20250317";
     
     /**
      * 扩展
