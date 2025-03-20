@@ -83,13 +83,13 @@ larke-admin 是一套使用 Laravel、JWT 和 RBAC 鉴权的通用后台管理�
 composer require lake/larke-admin
 ```
 
-2. 然后运行下面的命令，推送配置文件
+2. 运行下面的命令安装完成系统
 
 ```php
-php artisan vendor:publish --tag=larke-admin-config
+php artisan larke-admin:install
 ```
 
-运行完命令后
+安装完成系统后
 
 你需要复制 `config/larkeadmin.php.larke` 重命名为 `config/larkeadmin.php`，
 
@@ -97,13 +97,13 @@ php artisan vendor:publish --tag=larke-admin-config
 
 复制 `larkeauth-rbac-model.conf.larke` 重命名为 `larkeauth-rbac-model.conf`
 
-如果文件已存在，请根据情况复制内容到对应配置文件
-
-3. 最后运行下面的命令安装完成系统
+3. 如果需要重新获取配置文件，可以运行下面的命令，推送配置文件
 
 ```php
-php artisan larke-admin:install
+php artisan vendor:publish --tag=larke-admin-config
 ```
+
+如果文件已存在，请根据情况复制内容到对应配置文件
 
 4. 你可能第一次安装需要运行以下命令导入路由权限规则
 
