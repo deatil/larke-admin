@@ -49,7 +49,7 @@ class System extends Base
             'system' => $this->getSysInfo(),
         ];
         
-        $info = apply_filters("system_info", $info);
+        $info = apply_filters("admin.system.info", $info);
         
         return $this->success(__('larke-admin::common.get_success'), $info);
     }
@@ -76,7 +76,7 @@ class System extends Base
         // > php artisan config:clear
         // Artisan::call('config:clear');
         
-        do_action("system_clear_cache");
+        do_action("admin.system.clear_cache");
         
         return $this->success(__('larke-admin::system.clear_cache_success'));
     }
@@ -97,7 +97,7 @@ class System extends Base
         Artisan::call('route:cache');
         Artisan::call('config:cache');
         
-        do_action("system_cache");
+        do_action("admin.system.cache");
         
         return $this->success(__('larke-admin::system.routes_and_config_chache_success'));
     }

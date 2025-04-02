@@ -655,7 +655,7 @@ class Extension extends Base
         $config = $request->input('config');
         
         // 过滤配置
-        $config = apply_filters("extension_config_before", $config, $name);
+        $config = apply_filters("admin.extension.config_before", $config, $name);
         
         $info = ExtensionModel::where(['name' => $name])
             ->first();

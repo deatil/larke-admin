@@ -229,7 +229,7 @@ class Config extends Base
         }
         
         // 监听事件
-        do_action("config_created", $config);
+        do_action("admin.config.created", $config);
         
         return $this->success(__('larke-admin::config.create_success'), [
             'id' => $config->id,
@@ -309,7 +309,7 @@ class Config extends Base
         }
         
         // 监听事件
-        do_action("config_updated", $info);
+        do_action("admin.config.updated", $info);
         
         return $this->success(__('larke-admin::config.update_success'));
     }
@@ -364,13 +364,13 @@ class Config extends Base
     public function setting(Request $request)
     {
         $fields = $request->input('fields');
-        $fields = apply_filters("config_setting_before", $fields);
+        $fields = apply_filters("admin.config.setting_before", $fields);
         
         if (!empty($fields)) {
             ConfigModel::setMany($fields);
         }
         
-        do_action("config_setting_after", $fields);
+        do_action("admin.config.setting_after", $fields);
         
         return $this->success(__('larke-admin::config.setting_update_success'));
     }
@@ -389,7 +389,7 @@ class Config extends Base
     public function settings()
     {
         $settings = ConfigModel::getSettings();
-        $settings = apply_filters("config_settings_after", $settings);
+        $settings = apply_filters("admin.config.settings_after", $settings);
         
         return $this->success(__('larke-admin::common.get_success'), [
             'settings' => $settings,
