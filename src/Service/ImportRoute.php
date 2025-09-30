@@ -319,7 +319,7 @@ class ImportRoute
     /**
      * 格式化 slug
      */
-    public function formatSlug($slug = null)
+    public function formatSlug(?mixed $slug = null)
     {
         $as = config('larkeadmin.route.as', '');
         if (empty($as)) {

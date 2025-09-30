@@ -88,7 +88,7 @@ class Extension extends Base
      *
      * @return bool
      */
-    public static function versionSatisfies(string $name, string $constraints = null)
+    public static function versionSatisfies(string $name, ?string $constraints = null)
     {
         $version = static::where('name', $name)
             ->first()

@@ -24,7 +24,7 @@ class Cache
     /**
      * Cache store.
      */
-    public function store($store = null)
+    public function store(?mixed $store = null)
     {
         if (!$store) {
             $store = config('larkeadmin.cache.store', 'default');

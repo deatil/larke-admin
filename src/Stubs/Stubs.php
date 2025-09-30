@@ -193,7 +193,7 @@ class Stubs
     /**
      * 复制文件夹
      */
-    public function copyDirectory(string $directory, string $destination, $options = null): mixed
+    public function copyDirectory(string $directory, string $destination, ?mixed $options = null): mixed
     {
         if (! File::isDirectory($directory)) {
             return "[{$directory}] not dir";

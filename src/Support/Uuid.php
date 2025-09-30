@@ -32,7 +32,7 @@ class Uuid
      *
      * @return string
      */
-    public static function toV1String($node = null, ?int $clockSeq = null): string
+    public static function toV1String(?$node = null, ?int $clockSeq = null): string
     {
         $uuid = RamseyUuid::uuid1($node, $clockSeq);
         

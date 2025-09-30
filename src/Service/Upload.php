@@ -71,7 +71,7 @@ class Upload
      * @param string $disk Disks defined in `config/filesystems.php`.
      * @return $this
      */
-    public static function driver(string $disk = null)
+    public static function driver(?string $disk = null)
     {
         return (new static())->disk($disk);
     }

@@ -66,7 +66,7 @@ class Attachment extends Base
     /**
      * 快捷查询地址
      */
-    public static function path($id, $default = null)
+    public static function path($id, ?mixed $default = null)
     {
         return static::where('id', $id)
             ->first()

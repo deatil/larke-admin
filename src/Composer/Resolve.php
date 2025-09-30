@@ -366,7 +366,7 @@ class Resolve
     /**
      * 注册别名
      */
-    public function registerAlias(mixed $alias, string $class = null): self
+    public function registerAlias(mixed $alias, ?string $class = null): self
     {
         if (is_array($alias)) {
             foreach ($alias as $name => $class) {

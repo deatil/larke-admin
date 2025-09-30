@@ -173,7 +173,7 @@ class Info
      * @param  mixed  $default 默认值
      * @return \Illuminate\Support\Collection
      */
-    public function getInfo(string $name = "", mixed $default = null): Collection
+    public function getInfo(string $name = "", ?mixed $default = null): Collection
     {
         if (empty($name)) {
             return collect($this->info);
@@ -191,7 +191,7 @@ class Info
      * @param  mixed  $default 默认值
      * @return \Illuminate\Support\Collection
      */
-    public function getConfig(string $name = "", mixed $default = null): Collection
+    public function getConfig(string $name = "", ?mixed $default = null): Collection
     {
         if (empty($name)) {
             return collect($this->config);

@@ -47,7 +47,7 @@ class Config extends Base
             ->exists();
     }
     
-    public static function get(string $key, $default = null)
+    public static function get(string $key, ?mixed $default = null)
     {
         return static::where('name', $key)
             ->first()

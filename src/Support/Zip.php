@@ -25,7 +25,7 @@ class Zip
      *
      * @param $archive
      */
-    public function __construct(ZipArchive $archive = null)
+    public function __construct(?ZipArchive $archive = null)
     {
         if (! class_exists('ZipArchive')) {
             throw new Exception('Error: Your PHP version is not compiled with zip support');
@@ -241,7 +241,7 @@ class Zip
      *
      * @return bool
      */
-    public function extractTo(string $pathto, array|string|null $files = null): bool
+    public function extractTo(string $pathto, ?array|string|null $files = null): bool
     {
         return $this->archive->extractTo($pathto, $files);
     }

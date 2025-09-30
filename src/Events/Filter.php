@@ -17,7 +17,7 @@ class Filter extends Event
      * @param mixed         $var    更多参数
      * @return mixed
      */
-    public function trigger($event, $params = null, ...$var)
+    public function trigger($event, ?mixed $params = null, ...$var)
     {
         if (is_object($event)) {
             $params = $event;

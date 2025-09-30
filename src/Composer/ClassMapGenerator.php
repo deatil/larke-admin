@@ -11,7 +11,7 @@ class ClassMapGenerator
     /**
      * 创建map列表
      */
-    public static function createMap(mixed $path, string $excluded = null): array
+    public static function createMap(mixed $path, ?string $excluded = null): array
     {
         $basePath = $path;
         if (is_string($path)) {

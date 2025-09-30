@@ -42,7 +42,7 @@ class AuthRule
     /*
      * 获取 Children
      */
-    public static function getChildren(mixed $ruleid = null): array
+    public static function getChildren(?mixed $ruleid = null): array
     {
         if (is_array($ruleid)) {
             $data = [];
@@ -82,7 +82,7 @@ class AuthRule
     /*
      * 获取 ChildrenIds
      */
-    public static function getChildrenIds(mixed $ruleid = null): array
+    public static function getChildrenIds(?mixed $ruleid = null): array
     {
         $list = self::getChildren($ruleid);
         return collect($list)->pluck('id')->toArray();

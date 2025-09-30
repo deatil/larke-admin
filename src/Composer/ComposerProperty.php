@@ -49,7 +49,7 @@ class ComposerProperty implements Arrayable
     /**
      * 获取
      */
-    public function get(string $key, mixed $default = null): mixed
+    public function get(string $key, ?mixed $default = null): mixed
     {
         return Arr::get($this->attributes, $key, $default);
     }

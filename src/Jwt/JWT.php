@@ -444,7 +444,7 @@ class JWT
     /**
      * 获取配置
      */
-    protected function configGet(string $key, mixed $default = null): mixed
+    protected function configGet(string $key, ?mixed $default = null): mixed
     {
         return Arr::get($this->config, $key, $default);
     }

@@ -39,7 +39,7 @@ class Config
      * @param  mixed  $default 默认值
      * @return mixed 配置数据
      */
-    public static function get(string $name, ?string $key = null, mixed $default = null): Collection
+    public static function get(string $name, ?string $key = null, ?mixed $default = null): Collection
     {
         $data = static::name($name);
         if (empty($key)) {

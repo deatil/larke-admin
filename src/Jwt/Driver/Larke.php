@@ -105,7 +105,7 @@ class Larke implements JWTContract
     /**
      * 构造函数
      */
-    public function __construct(DateTimeImmutable $now = null) 
+    public function __construct(?DateTimeImmutable $now = null) 
     {
         $this->now = $now ?: SystemClock::fromSystemTimezone()->now();
     }
@@ -113,7 +113,7 @@ class Larke implements JWTContract
     /**
      * 设置 header
      */
-    public function withHeader(string $name, mixed $value = null)
+    public function withHeader(string $name, ?mixed $value = null)
     {
         $this->headers[$name] = $value;
         
@@ -123,7 +123,7 @@ class Larke implements JWTContract
     /**
      * 设置 claim
      */
-    public function withClaim(string $claim, mixed $value = null)
+    public function withClaim(string $claim, ?mixed $value = null)
     {
         $this->claims[$claim] = $value;
         

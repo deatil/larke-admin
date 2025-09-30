@@ -92,7 +92,7 @@ class Manager
      * @param  Info   $info
      * @return self
      */
-    public function extend(string $name, Info $info = null): self
+    public function extend(string $name, ?Info $info = null): self
     {
         if (!empty($name) && !empty($info)) {
             $this->forget($name);
@@ -109,7 +109,7 @@ class Manager
      * @param string|array $name
      * @return Info|array|null
      */
-    public function getExtend(mixed $name = null): mixed
+    public function getExtend(?mixed $name = null): mixed
     {
         if (is_array($name)) {
             $extensions = [];

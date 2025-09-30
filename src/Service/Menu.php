@@ -37,7 +37,7 @@ class Menu
     /**
      * 获取数据
      */
-    public function getFileData($file = null)
+    public function getFileData(?mixed $file = null)
     {
         if (empty($file)) {
             $file = config('larkeadmin.menu.file');
@@ -55,7 +55,7 @@ class Menu
     /**
      * 保存数据
      */
-    public function saveFileData($data, $file = null)
+    public function saveFileData($data, ?mixed $file = null)
     {
         if (empty($data)) {
             return false;
@@ -78,7 +78,7 @@ class Menu
     /**
      * 读取
      */
-    public function read($file = null)
+    public function read(?mixed $file = null)
     {
         $data = $this->getFileData($file);
         if (empty($data)) {
@@ -92,7 +92,7 @@ class Menu
     /**
      * 保存
      */
-    public function save(array $content, $file = null)
+    public function save(array $content, ?mixed $file = null)
     {
         $content = collect($content)
             ->sortBy('slug')

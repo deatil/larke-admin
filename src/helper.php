@@ -31,7 +31,7 @@ if (! function_exists('Larke\\Admin\\success')) {
         return (new class {
             use ResponseJsonTrait;
             
-            public function json($message = null, $data = null, $header = [], $code = 0)
+            public function json($message = "", ?mixed $data = null, $header = [], $code = 0)
             {
                 return $this->success($message, $data, $header, $code);
             }
@@ -54,7 +54,7 @@ if (! function_exists('Larke\\Admin\\error')) {
         return (new class {
             use ResponseJsonTrait;
             
-            public function json($message = null, $code = 1, $data = [], $header = [])
+            public function json($message = "", $code = 1, $data = [], $header = [])
             {
                 return $this->error($message, $code, $data, $header);
             }
@@ -176,7 +176,7 @@ if (! function_exists('Larke\\Admin\\config')) {
      * @param mixed  $default 默认值
      * @return mixed
      */
-    function config(string $name, mixed $default = null) 
+    function config(string $name, ?mixed $default = null) 
     {
         $settings =  ConfigModel::getSettings();
         return Arr::get($settings, $name, $default);
@@ -191,7 +191,7 @@ if (! function_exists('Larke\\Admin\\attachment_url')) {
      * @param mixed  $default 默认
      * @return mixed
      */
-    function attachment_url(string $id, mixed $default = null) 
+    function attachment_url(string $id, ?mixed $default = null) 
     {
         return AttachmentModel::path($id, $default);
     }
@@ -206,7 +206,7 @@ if (! function_exists('Larke\\Admin\\extension_config')) {
      * @param mixed  $default 默认值
      * @return mixed
      */
-    function extension_config(string $name, string $key = null, mixed $default = null) 
+    function extension_config(string $name, ?string $key = null, ?mixed $default = null) 
     {
         $extensions = ExtensionModel::getExtensions();
         
@@ -347,7 +347,7 @@ if (! function_exists('Larke\\Admin\\apply_filters')) {
      * @param mixed         $var    更多参数
      * @return mixed
      */
-    function apply_filters($event, $params = null, ...$var)
+    function apply_filters($event, ?mixed $params = null, ...$var)
     {
         return Event::filter()->trigger($event, $params, ...$var);
     }

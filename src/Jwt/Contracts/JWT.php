@@ -18,12 +18,12 @@ interface JWT
     /**
      * 设置 header
      */
-    public function withHeader(string $name, mixed $value = null);
+    public function withHeader(string $name, ?mixed $value = null);
     
     /**
      * 设置 claim
      */
-    public function withClaim(string $claim, mixed $value = null);
+    public function withClaim(string $claim, ?mixed $value = null);
     
     /**
      * 设置 iss

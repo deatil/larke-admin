@@ -20,7 +20,7 @@ class Admin
     /*
      * 获取 Groups
      */
-    public static function getGroups($adminid = null)
+    public static function getGroups(?mixed $adminid = null)
     {
         if (empty($adminid)) {
             return [];
@@ -48,7 +48,7 @@ class Admin
     /*
      * 获取 groupids
      */
-    public static function getGroupids($adminid = null)
+    public static function getGroupids(?mixed $adminid = null)
     {
         $groupids = self::getGroups($adminid);
         return collect($groupids)->pluck('id');

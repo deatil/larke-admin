@@ -35,7 +35,7 @@ class AuthGroup
     /**
      * 获取 Children
      */
-    public static function getChildren(mixed $groupid = null): array
+    public static function getChildren(?mixed $groupid = null): array
     {
         if (is_array($groupid)) {
             $data = [];
@@ -75,7 +75,7 @@ class AuthGroup
     /**
      * 获取 ChildrenIds
      */
-    public static function getChildrenIds(mixed $groupid = null): array
+    public static function getChildrenIds(?mixed $groupid = null): array
     {
         $list = self::getChildren($groupid);
         return collect($list)->pluck('id')->toArray();

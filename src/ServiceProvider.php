@@ -335,12 +335,12 @@ class ServiceProvider extends BaseServiceProvider
     protected function bootBind()
     {
         // response()->success('success');
-        Response::macro('success', function($message = null, $data = null, $header = [], $code = 0) {
+        Response::macro('success', function($message = "", $data = "", $header = [], $code = 0) {
             return app('larke-admin.response')->json(true, $code, $message, $data, $header);
         });
         
         // response()->error('error');
-        Response::macro('error', function($message = null, $code = 1, $data = [], $header = []) {
+        Response::macro('error', function($message = "", $code = 1, $data = [], $header = []) {
             return app('larke-admin.response')->json(false, $code, $message, $data, $header);
         });
     }
